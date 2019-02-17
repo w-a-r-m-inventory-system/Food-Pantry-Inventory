@@ -1,6 +1,6 @@
 # Food-Pantry-Inventory
 
-Requirments for a MVP:
+Requirements for a MVP:
 
 1. Keep track of expiration dates, at least to the year, preferably the month/quarter/half-year/etc as well
 2. Keep track of location in warehouse (row, bin, tier)
