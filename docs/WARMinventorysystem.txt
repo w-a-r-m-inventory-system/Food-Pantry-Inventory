@@ -1,0 +1,5 @@
+Welcome to the WARM Inventory System Documentation!
+
+Contents:
+
+This application will start out in the browser (later might move to a mobile app) and be able to track the items as they move through the warehouse in WARM.
