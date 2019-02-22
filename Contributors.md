@@ -1,8 +1,8 @@
 # Original contributers to this project.
 
-Shelby Elzinga
-Travis Risner
-
+*   Shelby Elzinga
+*   Travis Risner
+*   Harland Hansen
 
 (Steps to modify this file:)
 
