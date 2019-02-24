@@ -6,12 +6,19 @@
 Welcome to Food Pantry Inventory System's documentation!
 ========================================================
 
+
+This system is designed to manage a local food pantry inventory.  Initially
+it will manage the inventory in the warehouse.
+
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
 
-This system is designed to manage a local food pantry inventory.  Initially
-it will manage the inventory in the warehouse.
+   UML Diagrams
+
+
+
 
 Indices and tables
 ==================

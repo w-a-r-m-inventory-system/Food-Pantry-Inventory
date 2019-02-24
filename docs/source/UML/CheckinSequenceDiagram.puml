@@ -1,0 +1,14 @@
+@startuml
+User -> Website: Scan QR Code on box
+Website -> Database: Request box information
+
+Website <- Database: Return box information
+Website <-- Database: or create empty box record\n and return it
+User <- Website: Present (usually) empty box info
+User -> Website: Enter product
+User -> Website: Expiration year\n(maybe partial year)
+User -> Website: Box location
+Website -> Database: Store information entered
+Website <- Database: Return confirmation
+User <- Website: Display confirmation
+@enduml
