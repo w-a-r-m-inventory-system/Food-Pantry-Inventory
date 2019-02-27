@@ -1,0 +1,24 @@
+@startuml
+User -> SmartPhone: Activate QR Code\nScanning Application
+User -> SmartPhone: Scan QR Code on sealed box
+SmartPhone -> Website: Lookup the QR Code URL
+Website -> Database: Request box information
+
+Website <- Database: Return box information
+Website -> SmartPhone: Present (usually) filled box info
+
+User -> SmartPhone: Touch move box button
+
+SmartPhone -> Website: Send request to move box
+Website -> Database: Send request to move box
+Website <- Database: Retrieve box info and return
+SmartPhone <- Website: Present box info and\nnew location blanks
+User <- SmartPhone: Display box info and\nnew location blanks
+User -> SmartPhone: Verify box information and\nenter new location
+User -> SmartPhone: Touch update box\nlocation button
+SmartPhone -> Website: Send new box\nlocation information
+Website -> Database: Send new box\nlocation information
+Website <- Database: Return new box\nlocation confirmation
+SmartPhone <- Website: Display move confirmation
+User <- SmartPhone: Visually confirm move
+@enduml

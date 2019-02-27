@@ -1,0 +1,17 @@
+@startuml
+User -> SmartPhone: Activate QR Code Scanning Application
+User -> SmartPhone: Scan QR Code on sealed box
+SmartPhone -> Website: Lookup the QR Code URL
+Website -> Database: Request box information
+
+Website <- Database: Return box information
+Website -> SmartPhone: Present (usually) filled box info
+
+User -> SmartPhone: Touch checkout button
+
+SmartPhone -> Website: Send request to checkout box
+Website -> Database: Send checkout request
+Website <- Database: Check box out of inventory and save history
+SmartPhone <- Website: Present checkout confirmation
+User <- SmartPhone: User verifies confirmation visually
+@enduml
