@@ -1,0 +1,16 @@
+@startuml
+(Warehouse\nInventory\nSystem) as (Use)
+
+User -> (Checkout)
+User --> (Use)
+
+note right of (Use)
+See the Checkout sequence diagram for
+the steps for checking out a box of inventory.
+end note
+
+note "User finds a box containing product to be removed from inventory" as N2
+(Checkout) .. N2
+
+N2 ..(Use)
+@enduml
