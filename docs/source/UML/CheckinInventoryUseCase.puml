@@ -1,0 +1,22 @@
+@startuml
+(Warehouse\nInventory\nSystem) as (Use)
+
+User -> (Checkin)
+User --> (Use)
+
+note right of (Use)
+See the Checkin sequence diagram for
+the steps for checking in a box of inventory.
+end note
+
+note "User has filled, sealed\n and labeled a box." as N2
+(Checkin) .. N2
+
+note as N3
+Labels include a QR code, the product, year of expiration and
+optionally the part of the year (e.g. quarter it expires)
+end note
+N2 .. N3
+
+N3 ..(Use)
+@enduml
