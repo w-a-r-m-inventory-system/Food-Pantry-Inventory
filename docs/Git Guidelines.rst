@@ -134,18 +134,18 @@ Setting Up Your Personal Repository
 #.  From the command line (either an external command prompt or using
     "Terminal" within PyCharm enter the following:
 
-::
+    ::
 
-    git remote -v
+        git remote -v
 
 #.  Verify  that there are two lines for "origin", that both point to your
     public repository, and that the first line has "(fetch)" while the
     second has "(push)" at the end.
 
-::
+    ::
 
-    git remote add original https://github.com/w-a-r-m-inventory-system/Food-Pantry-Inventory.git
-    git remote -v
+        git remote add original https://github.com/w-a-r-m-inventory-system/Food-Pantry-Inventory.git
+        git remote -v
 
 #.  Now you should see four lines.  The first two are the same as before.
     The third and fourth lines should begin with "original" and the URL
@@ -167,15 +167,15 @@ Make Local Changes
 
 #.  Create a new branch with a name you substitute for <newbranchname> below.
 
-::
+    ::
 
-    git branch <newbranchname>
+        git branch <newbranchname>
 
 #.  Make the new branch active for changes.
 
-::
+    ::
 
-    git checkout <newbranchname>
+        git checkout <newbranchname>
 
 #.  Make whatever changes you wish to make.
 
@@ -208,22 +208,22 @@ Make Local Changes
 #.  Change back to the master branch with PyCharm or by typing in the
     terminal command area:
 
-::
+    ::
 
-    git checkout master
+        git checkout master
 
 #.  Merge the new branch into the master branch by typing:
 
-::
+    ::
 
-    git merge <newbranchname>
+        git merge <newbranchname>
 
 #.  Now that the branch has been merged back into the master, the branch
     name can be discarded by typing:
 
-::
+    ::
 
-    git branch -d <newbranchname>
+        git branch -d <newbranchname>
 
 Pushing Changes To Your Public Repository On GitHub
 ---------------------------------------------------
@@ -235,9 +235,9 @@ Pushing Changes To Your Public Repository On GitHub
 
 #.  Enter the following command in the terminal command area:
 
-::
+    ::
 
-    git push
+        git push
 
 #.  Verify that your public repository on GitHub has been updated by
     checking the web page for your repository.  It should now say that your
@@ -283,9 +283,11 @@ Update Your Public Repository To Match The Main Repository (both On GitHub)
 #.  Issue the following from the Terminal window or do the equvalent from
     PyCharm.
 
-::
+    ::
 
-    git fetch original
-    git pull original master
-    git push
+        git fetch original
+
+        git pull original master
+
+        git push
 
