@@ -218,6 +218,13 @@ Make Local Changes
 
     git merge <newbranchname>
 
+#.  Now that the branch has been merged back into the master, the branch
+    name can be discarded by typing:
+
+::
+
+    git branch -d <newbranchname>
+
 Pushing Changes To Your Public Repository On GitHub
 ---------------------------------------------------
 
