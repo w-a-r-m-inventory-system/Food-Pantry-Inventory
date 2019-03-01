@@ -255,10 +255,17 @@ Creating A Pull Request To The Main Repository
 
 #.  Click on the "New Pull Request" button.
 
-#.  Fill in comments about why this pull request should be incorporated into
-    the main repository, what issue(s) it resolves, etc.
+#.  GitHub verifies that the changes can be applied to the main repository.
 
-#.  Click on submit.
+    A.  GitHub checks for conflicts, a common ancestor starting point, etc.
+
+#.  If GitHub allows the pull request to procede, a green "Create pull
+    request" button is presented.  Click on that button.
+
+#.  Fill in a meaningful title and comments about why this pull request should
+    be incorporated into the main repository, what issue(s) it resolves, etc.
+
+#.  Click on green "Create pull request" button.
 
 #.  Send an email to Shelby that you have submitted a pull request.
 
