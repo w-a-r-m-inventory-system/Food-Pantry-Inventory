@@ -41,7 +41,7 @@ Setting Up Your Working Environment
 Setting Up Your Public Repository
 ---------------------------------
 
-1.  If you have not already done so, go to GitHub.com and create a user Id
+#.  If you have not already done so, go to GitHub.com and create a user Id
     for your self.
 
 #.  Login to GitHub with your user Id and credentials.
@@ -84,7 +84,7 @@ Either the Community Edition (which is free) or the Professional Edition is
 fine.  After installing PyCharm, configure it as follows to provide support
 for this project.
 
-1.  Add these plugins:
+#.  Add these plugins:
 
     A.  .ignore
 
@@ -102,7 +102,7 @@ Setting Up Your Personal Repository
 -----------------------------------
 
 
-1.  Verify that you have the URL saved in step 9 above.
+#.  Verify that you have the URL saved in step 9 above.
 
 #.  Start PyCharm.  (If you have other projects open, please close them for
     the moment.)
@@ -134,26 +134,29 @@ Setting Up Your Personal Repository
 #.  From the command line (either an external command prompt or using
     "Terminal" within PyCharm enter the following:
 
-::
+    ::
 
-    git remote -v
+        git remote -v
 
 #.  Verify  that there are two lines for "origin", that both point to your
     public repository, and that the first line has "(fetch)" while the
     second has "(push)" at the end.
 
-::
+#.  Enter the following commands to allow git to pull changes from the main
+    repository.
 
-    git remote add original https://github.com/w-a-r-m-inventory-system/Food-Pantry-Inventory.git
-    git remote -v
+    ::
+
+        git remote add original https://github.com/w-a-r-m-inventory-system/Food-Pantry-Inventory.git
+        git remote -v
 
 #.  Now you should see four lines.  The first two are the same as before.
     The third and fourth lines should begin with "original" and the URL
     should be for the main repository.
 
     A.  The label "original" is arbitrary.  The following sections that
-    discuss git and GitHub operations assume that "original" has been set
-    this way.
+        discuss git and GitHub operations assume that "original" has been set
+        this way.
 
 #.  Install graphviz from https://graphviz.org/.  This is needed for PlantUML.
 
@@ -163,34 +166,34 @@ Git and GitHub Operations For Our Project
 Make Local Changes
 ------------------
 
-1.  Verify or set PyCharm to the master branch.
+#.  Verify or set PyCharm to the master branch.
 
 #.  Create a new branch with a name you substitute for <newbranchname> below.
 
-::
+    ::
 
-    git branch <newbranchname>
+        git branch <newbranchname>
 
 #.  Make the new branch active for changes.
 
-::
+    ::
 
-    git checkout <newbranchname>
+        git checkout <newbranchname>
 
 #.  Make whatever changes you wish to make.
 
 #.  If you haven't added new files to your personal repository any other
     way, add each file by highlighting it and using the menu
-    **VCS** -> **Git** -> **Add**.
+    **VCS -> Git -> Add**.
 
 #.  Commit the changes to the git branch by clicking on the project
     folder (Food-Pantry-Inventory) and using the menu
-    **VCS** -> **Git** -> **Commit Directory...** to bring up the commit
+    **VCS -> Git -> Commit Directory...** to bring up the commit
     dialog.
 
 #.  Add a commit mesage.
 
-    A.  The first line should be a summary of the change and be less than 72
+    #.  The first line should be a summary of the change and be less than 72
         characters long.
 
     #.  The second line should be blank.
@@ -208,36 +211,39 @@ Make Local Changes
 #.  Change back to the master branch with PyCharm or by typing in the
     terminal command area:
 
-::
+    ::
 
-    git checkout master
+        git checkout master
 
 #.  Merge the new branch into the master branch by typing:
 
-::
+    ::
 
-    git merge <newbranchname>
+        git merge <newbranchname>
 
 #.  Now that the branch has been merged back into the master, the branch
     name can be discarded by typing:
 
-::
+    ::
 
-    git branch -d <newbranchname>
+        git branch -d <newbranchname>
 
 Pushing Changes To Your Public Repository On GitHub
 ---------------------------------------------------
 
-1.  Make changes as noted above.  Be sure that you have merged your changes
+#.  Make changes as noted above.  Be sure that you have merged your changes
     back into the master branch.
 
 #.  If you have not already done so, switch back to the master branch.
 
 #.  Enter the following command in the terminal command area:
 
-::
+    ::
 
-    git push
+        git push
+
+    #.  This applies the change to your public repository so others can see
+        those changes.
 
 #.  Verify that your public repository on GitHub has been updated by
     checking the web page for your repository.  It should now say that your
@@ -246,7 +252,7 @@ Pushing Changes To Your Public Repository On GitHub
 Creating A Pull Request To The Main Repository
 ----------------------------------------------
 
-1.  After making a change (or a set of changes), committing them to the
+#.  After making a change (or a set of changes), committing them to the
     master branch and pushing the changes to your public repository, verify
     that all files and changes to files are reflected in your public
     repository.
@@ -260,12 +266,16 @@ Creating A Pull Request To The Main Repository
     A.  GitHub checks for conflicts, a common ancestor starting point, etc.
 
 #.  If GitHub allows the pull request to procede, a green "Create pull
-    request" button is presented.  Click on that button.
+    request" button will be available on the web page.
 
 #.  Fill in a meaningful title and comments about why this pull request should
     be incorporated into the main repository, what issue(s) it resolves, etc.
 
-#.  Click on green "Create pull request" button.
+    #.  Markdown can be used in your comments.  To see what GitHub allows for
+        markdown see
+        https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet.
+
+#.  Click on the green "Create pull request" button.
 
 #.  Send an email to Shelby that you have submitted a pull request.
 
@@ -283,9 +293,15 @@ Update Your Public Repository To Match The Main Repository (both On GitHub)
 #.  Issue the following from the Terminal window or do the equvalent from
     PyCharm.
 
-::
+    ::
 
-    git fetch original
-    git pull original master
-    git push
+        git pull original master
 
+        git push
+
+    #.  The first command identifies the changes between the main repository
+        and your personal master branch.  It then automatically commits those
+        changes to your personal repository.
+
+    #.  The second command pushs those same changes up to your public
+        repository.
