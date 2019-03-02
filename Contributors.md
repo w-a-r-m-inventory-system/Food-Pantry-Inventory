@@ -3,6 +3,7 @@
 *   Shelby Elzinga
 *   Travis Risner
 *   Harland Hansen
+*   John Cassidy
 
 (Steps to modify this file:)
 
