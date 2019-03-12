@@ -131,6 +131,8 @@ Setting Up Your Personal Repository
 
     #.  PyYAML - used for managing configuration files
 
+    #.  Django - used for web part of project
+
 #.  From the command line (either an external command prompt or using
     "Terminal" within PyCharm enter the following:
 
