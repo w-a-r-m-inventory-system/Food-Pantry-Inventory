@@ -166,9 +166,10 @@ Git and GitHub Operations For Our Project
 Make Local Changes
 ------------------
 
-#.  Verify or set PyCharm to the master branch.
+#.  Verify or set PyCharm to the master branch (should be in the very bottom right corner).
 
-#.  Create a new branch with a name you substitute for <newbranchname> below.
+#.  Create a new branch with a name you substitute for <newbranchname> below (can be done
+    manually in bottom right corner or in the terminal).
 
     ::
 
