@@ -127,6 +127,9 @@ Setting Up Your Personal Repository
 
     A.  Sphinx - used for documentation
 
+    #.  sphinxcontrib-plantuml - used by Sphinx to include UML
+        diagrams (created by PlantUML) in the Sphinx-generated documentation.
+
     #.  Pytest - used for testing - expecially TDD
 
     #.  PyYAML - used for managing configuration files
