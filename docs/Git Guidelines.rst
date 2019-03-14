@@ -134,6 +134,8 @@ Setting Up Your Personal Repository
 
     #.  PyYAML - used for managing configuration files
 
+    #.  Django - used for web part of project
+
 #.  From the command line (either an external command prompt or using
     "Terminal" within PyCharm enter the following:
 
@@ -169,9 +171,10 @@ Git and GitHub Operations For Our Project
 Make Local Changes
 ------------------
 
-#.  Verify or set PyCharm to the master branch.
+#.  Verify or set PyCharm to the master branch (should be in the very bottom right corner).
 
-#.  Create a new branch with a name you substitute for <newbranchname> below.
+#.  Create a new branch with a name you substitute for <newbranchname> below (can be done
+    manually in bottom right corner or in the terminal).
 
     ::
 
