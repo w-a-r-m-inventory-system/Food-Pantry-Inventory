@@ -17,7 +17,7 @@ it will manage the inventory in the warehouse.
 
    UML Diagrams
 
-
+   Django
 
 
 Indices and tables
