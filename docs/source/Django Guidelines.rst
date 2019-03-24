@@ -121,12 +121,14 @@ managing sessions.  To prepare for this, do the following:
     in FPIDjango/settings.py.  It should look like:
 
     ::
+
             # 'fpiweb.apps.FpiwebConfig',
 
 #.  Temporarily use the default templating system that comes with Django by
     uncommenting line 60 and commenting line 61 so it looks like this:
 
     ::
+
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # 'BACKEND': 'django.template.backends.jinja2.Jinja2',
 
@@ -134,6 +136,7 @@ managing sessions.  To prepare for this, do the following:
 #.  Prepare for the most current Django tables.
 
     ::
+
         python3 manage.py migrate
 
     At this point the tables in the database that Django needs have been
@@ -142,6 +145,7 @@ managing sessions.  To prepare for this, do the following:
 #.  Create a superuser account (to administer the database).
 
     ::
+
         python3 manage.py createsuperuser
 
     This will ask you for a username, an email address and a password (twice).
@@ -149,6 +153,7 @@ managing sessions.  To prepare for this, do the following:
 #.  Test this by starting the server and going to the following URL.
 
     ::
+
         http://localhost:8765/admin/
 
     A login page will be presented.
@@ -161,6 +166,7 @@ managing sessions.  To prepare for this, do the following:
     should look like:
 
     ::
+
             'fpiweb.apps.FpiwebConfig',
 
 #.  Leave the templating set to the Django default for now.
@@ -182,6 +188,7 @@ the database from it.  The following steps are used to create the table.
 #.  Tell Django to look for new or revised models:
 
     ::
+
         python3 manage.py makemigrations fpiweb
 
     This builds the SQL commands that Django will run in a later step.  Note
@@ -191,6 +198,7 @@ the database from it.  The following steps are used to create the table.
     change to the database for this migration.
 
     ::
+
         python3 manage.py sqlmigrate fpiweb <migration number>
 
         <migration number> is the four digit number noted in the prevous step.
@@ -202,6 +210,7 @@ the database from it.  The following steps are used to create the table.
     database.
 
     ::
+
         python3 manage.py check
 
     If any problems are found, correct them before continuing.
@@ -209,6 +218,7 @@ the database from it.  The following steps are used to create the table.
 #.  Apply model changes to the database.
 
     ::
+
         python3 manage.py migrate
 
     Verify the schema changes with pgAdmin 4 or a tool of your choice.
