@@ -96,3 +96,121 @@ steps:
 
 #.  When finished, click on the red box on the left edge of the Run window
     to stop the Django web server.
+
+Manage Django
+=============
+
+As the application moves from conception to production, Django has varous
+tools to assist the development of the application.
+
+Database Management
+-------------------
+
+As is widely known, one of the major features of Django is the ORM (Object
+Relational Model which is used for automating the relationship between the
+Python code and the database.
+
+Preliminary Setup
+-----------------
+
+Django has some internal tables it will need to setup in the database.
+These tables include administering credentials for authorized users and
+managing sessions.  To prepare for this, do the following:
+
+#.  Temporarily block Django from seeing our code by commenting out line 36
+    in FPIDjango/settings.py.  It should look like:
+
+    ::
+            # 'fpiweb.apps.FpiwebConfig',
+
+#.  Temporarily use the default templating system that comes with Django by
+    uncommenting line 60 and commenting line 61 so it looks like this:
+
+    ::
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # 'BACKEND': 'django.template.backends.jinja2.Jinja2',
+
+
+#.  Prepare for the most current Django tables.
+
+    ::
+        python3 manage.py migrate
+
+    At this point the tables in the database that Django needs have been
+    created.
+
+#.  Create a superuser account (to administer the database).
+
+    ::
+        python3 manage.py createsuperuser
+
+    This will ask you for a username, an email address and a password (twice).
+
+#.  Test this by starting the server and going to the following URL.
+
+    ::
+        http://localhost:8765/admin/
+
+    A login page will be presented.
+
+#.  Login with the credentials created two steps above.
+
+#.  Create another user for your system.
+
+#.  Uncomment our application at line 36 in FPIDjango/settings.py.  It
+    should look like:
+
+    ::
+            'fpiweb.apps.FpiwebConfig',
+
+#.  Leave the templating set to the Django default for now.
+
+Development Interactions
+========================
+
+Developers interact with Django in a number of ways.
+
+Table Models
+------------
+
+For each table desired in the database, a "model" is coded.  The model tells
+Django the name of the table, the name of the fields, and the field attributes.
+
+Once a model is defined for a table, Django can create the actual table in
+the database from it.  The following steps are used to create the table.
+
+#.  Tell Django to look for new or revised models:
+
+    ::
+        python3 manage.py makemigrations fpiweb
+
+    This builds the SQL commands that Django will run in a later step.  Note
+    the four digit prefix for the migration file created.
+
+#.  View the proposed SQL commands the Django will run to propagate the
+    change to the database for this migration.
+
+    ::
+        python3 manage.py sqlmigrate fpiweb <migration number>
+
+        <migration number> is the four digit number noted in the prevous step.
+
+    Review the SQL statement(s) to verify that the additions and changes you
+    desire will be correctly propagated to the database.
+
+#.  Verify that Django hasn't found a problem with our changes to the
+    database.
+
+    ::
+        python3 manage.py check
+
+    If any problems are found, correct them before continuing.
+
+#.  Apply model changes to the database.
+
+    ::
+        python3 manage.py migrate
+
+    Verify the schema changes with pgAdmin 4 or a tool of your choice.
+
+

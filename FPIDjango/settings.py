@@ -33,13 +33,13 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'fpiweb.apps.FpiwebConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'FoodPantryInventory.apps.FoodpantryinventoryConfig',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,8 @@ ROOT_URLCONF = 'FPIDjango.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # 'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -85,7 +86,7 @@ DATABASES = {
     #         'ENGINE': 'django.db.backends.postgresql',
     #         'NAME': 'WARM',
     #         'USER': 'postgres',
-    #         'PASSWORD': 'pswd',
+    #         'PASSWORD': 'PSWD',
     #         'HOST': '127.0.0.1',
     #         'PORT': '5432',
     # }
