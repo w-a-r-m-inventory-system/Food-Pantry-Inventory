@@ -15,6 +15,8 @@ it will manage the inventory in the warehouse.
    :maxdepth: 3
    :caption: Contents:
 
+   Specifications
+
    UML Diagrams
 
    Django
