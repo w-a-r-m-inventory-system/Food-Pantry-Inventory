@@ -1,3 +1,4 @@
+:orphan:
 
 **************
 Git Guidelines
@@ -311,3 +312,16 @@ Update Your Public Repository To Match The Main Repository (both On GitHub)
 
     #.  The second command pushs those same changes up to your public
         repository.
+
+Here is a graphical representation of this process showing the steps involved.
+
+
+..  uml:: GitUpdatefromMainUseCase.puml
+    :caption: **Updating From the Main Repository (Use Case)**
+
+Here is another graphical representation of this process showing the flow of
+information for each step.
+
+..  uml:: GitUpdatefromMainSequence.puml
+    :caption: **Updating From the Main Repository (Sequence Diagram)**
+

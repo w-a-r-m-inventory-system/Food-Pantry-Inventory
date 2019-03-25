@@ -1,0 +1,19 @@
+@startuml
+
+maintainer -> main: Pull request accepted and applied
+
+main -> public: Now public repository is one or more commits behind
+
+main -> local: Change also puts local behind
+
+public <- user: User notices that their public repository is behind
+
+user -> local: git pull original master
+
+local <- main: Git pulls changes from main and applies changes to local
+
+local <- user: git push
+
+public <- local: git applies changes to public repository
+
+@enduml
