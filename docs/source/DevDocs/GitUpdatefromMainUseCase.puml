@@ -1,0 +1,48 @@
+@startuml
+
+(View Public Repository) as (vpr)
+
+User -> (Start)
+
+(Start) --> (vpr)
+
+note right of (vpr)
+Notice that your public repository
+is now one or more commits
+behind the main repository.
+end note
+
+(Prepare Local Repository) as (lr1)
+
+(vpr) --> (lr1)
+
+note right of (lr1)
+Switch back to master branch
+if not on master already.
+end note
+
+(git pull original master) as (lr2)
+
+(lr1) --> (lr2)
+
+note right of (lr2)
+This "**pulls**" the changes from the main
+repository and applies them to the local
+repository.
+
+If changes are from someone else, a
+commit message will be required.
+end note
+
+(git push) as (lr3)
+
+(lr2) --> (lr3)
+
+note right of (lr3)
+This "**pushes**" the changes up to your public
+repository that were just committed to your
+local repository.
+end note
+
+(lr3) --> (Done)
+@enduml
