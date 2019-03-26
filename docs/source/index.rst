@@ -12,14 +12,14 @@ it will manage the inventory in the warehouse.
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents:
 
    Specifications
 
    UML Diagrams
 
-   Django
+   Developer Documentation
 
 
 Indices and tables
