@@ -375,3 +375,5 @@ fabric.properties
 # Project-specific files and folders
 # Ignore data for now
 work/
+# Ignore private settings
+/FPIDjango/private/

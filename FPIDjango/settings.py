@@ -14,6 +14,8 @@ import os
 
 import psycopg2.extensions
 
+from .settings_public import *
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,12 +24,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5)sz7&n-fl11so3tq^#63=9*y%fhw!m+0xib=tqf+uc+g)m(6@'
+SECRET_KEY = MY_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
 
 
 # Application definition
@@ -78,18 +80,18 @@ WSGI_APPLICATION = 'FPIDjango.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
     # 'default': {
-    #         'ENGINE': 'django.db.backends.postgresql',
-    #         'NAME': 'WARM',
-    #         'USER': 'postgres',
-    #         'PASSWORD': 'PSWD',
-    #         'HOST': '127.0.0.1',
-    #         'PORT': '5432',
-    # }
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # },
+    'default': {
+            'ENGINE': DB_ENGINE,
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PSWD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+    }
 }
 
 
