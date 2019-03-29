@@ -31,7 +31,8 @@ Configuration with the following properties:
 |              |                              | magic.                        |
 +--------------+------------------------------+-------------------------------+
 |Environment   | DJANGO_SETTINGS_MODULE=      | This tells Django where to    |
-|variables:    | FTPDjango.settings           | look.                         |
+|variables:    | FTPDjango.private.settings   | look for your private         |
+|              |                              | configuration file.           |
 +--------------+------------------------------+-------------------------------+
 |Working       | <project directory>/work     | If you haven't created this   |
 |Directory:    |                              | directory yet, please do so   |
@@ -60,23 +61,21 @@ Tailor Django Access
 Find the the file <project>/FPIDjango/settings.py and make the following
 changes:
 
-#.  Find the section starting with **"DATABASES"** (currently at line 79).
+#.  Make a directory called <project>/FPIDjango/private.
 
-#.  Comment out the three lines following that reference a "default" sqlite
-    database.
+#.  Copy the files settings.py and settings_public.py into the new private
+    directory.
 
-#.  Uncomment the lines describing access to the PostgreSQL server
-    (currently lines 84 through 91).
+#.  Rename the settings_public.py in the private directory to
+    settings_private.py.
 
-#.  Modify the parameters for accessing the PostgreSQL server.  In
-    particular change the values for:
+#.  Change the file settings.py in the private directory to import from
+    settings_private.py.
 
-    -   USER - this is the userid for the database administrator.
+#.  Edit the file settings_private.py in the private directory to match your
+    database values.
 
-    -   PASSWORD - this is the password for the same user given above.
-
-    -   PORT - change as needed if you had to install PostgreSQL using a
-        non-default port.
+#.  Change the value for MY_SECRET_KEY to some 50 character random value.
 
 Run Django
 ==========
