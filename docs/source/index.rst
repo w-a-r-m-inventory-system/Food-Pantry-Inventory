@@ -19,6 +19,10 @@ it will manage the inventory in the warehouse.
 
    Developer Documentation
 
+   modules/models
+
+   modules/views
+
 
 
 Indices and tables
