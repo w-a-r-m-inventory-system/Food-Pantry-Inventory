@@ -7,7 +7,7 @@ from django.db import models
 
 class BoxType(models.Model):
     """
-    Type of box and default quantity.
+    Type of box (Evan's boxes, large boxes, etc.) and default quantity.
     """
     BoxTypeID = models.AutoField('Internal Box Type ID', primary_key=True)
     BoxTypeCode = models.CharField('Box Type Code', max_length=10,
@@ -24,7 +24,7 @@ class BoxType(models.Model):
 
 class ProductCategory(models.Model):
     """
-    Category or group of product.
+    Category or group of product. i.e. Tomato Soup, Canned Pasta, Fruits
     """
     ProdCatID = models.AutoField('Internal Product Category ID',
                                  primary_key=True)
@@ -39,7 +39,7 @@ class ProductCategory(models.Model):
 
 class Product(models.Model):
     """
-    Product name and attributes.
+    Product name and attributes.  Oranges, Pineapple, Mixed Fruit are products within the Fruits category
     """
     ProdID = models.AutoField('Internal Product ID', primary_key=True)
     ProdName = models.CharField('Product Name', max_length=30)
