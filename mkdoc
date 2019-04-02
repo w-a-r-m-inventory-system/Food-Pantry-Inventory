@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# bash script to run the new Sphinx build
+pushd .
+cd docs
+make html
+popd
+
+# echo $PYTHONPATH
+
+# EOF

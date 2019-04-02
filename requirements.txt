@@ -6,7 +6,6 @@ Babel==2.6.0
 certifi==2019.3.9
 chardet==3.0.4
 Django==2.1.7
-django-sphinx-autodoc==0.2
 docutils==0.14
 idna==2.8
 imagesize==1.1.0
