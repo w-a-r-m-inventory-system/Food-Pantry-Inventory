@@ -5,10 +5,12 @@ views.py - establish the views (pages) for the F. P. I. web application.
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import FormView
+from django.views.generic import FormView, ListView, TemplateView
 from django.urls import reverse_lazy
 
 from fpiweb.forms import LoginForm
+from fpiweb.models import Constraints
+
 
 
 def index(request):
@@ -21,6 +23,13 @@ def index(request):
 
     response = HttpResponse("Hello world from Food Pantry Inventory.")
     return response
+
+
+class AboutView(TemplateView):
+    """
+    The About View for this application.
+    """
+    template_name = 'fpiweb/about.html'
 
 
 class LoginView(FormView):
@@ -44,7 +53,5 @@ class LoginView(FormView):
 
         login(self.request, user)
         return super().form_valid(form)
-
-
 
 # EOF

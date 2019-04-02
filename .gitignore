@@ -377,3 +377,13 @@ fabric.properties
 work/
 # Ignore private settings
 /FPIDjango/private/
+
+# Travis personal ignore files
+/fpiweb/templates/fpiweb/animal_edit.html
+/fpiweb/templates/fpiweb/animal_detail.html
+/fpiweb/templates/fpiweb/animal_delete.html
+/fpiweb/templates/fpiweb/puzzle_solve_edit.html
+/fpiweb/templates/fpiweb/puzzle_edit.html
+/fpiweb/templates/fpiweb/puzzle_detail.html
+/fpiweb/wordtrek_views.py
+/fpiweb/wordtrek_forms.py
