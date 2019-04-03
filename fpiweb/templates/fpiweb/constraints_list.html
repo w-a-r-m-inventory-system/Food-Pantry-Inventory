@@ -1,0 +1,123 @@
+{%  extends 'fpiweb/base.html' %}
+
+{# Purpose: List all constraints #}
+{# URL Name constraints_view #}
+{# URL response: GET #}
+{# Table: Constraints #}
+{# form: none #}
+
+{% block title %}Constraint List{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div> {# class="col-md-12 text-center"> #}
+            <h1 class="h1">
+                Constraints List
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one">
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <div class="col-md-11 text-center">
+            <a class="btn alert-info"
+               role="button"
+               href="{% url 'fpiweb:constraint_new' %}">
+                Add a Constraint
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row text-left">
+        <div class="col-md-1"><strong>Name</strong></div>
+        <div class="col-md-2"><strong>Type</strong></div>
+        <div class="col-md-1"><strong>Minimum Value</strong></div>
+        <div class="col-md-1"><strong>Maximum Value</strong></div>
+        <div class="col-md-1"><strong>Range</strong></div>
+{#        <div class="col-md-3"><strong>Description</strong></div>#}
+        <div class="col-md-2 text-center">
+            <strong>Edit this constraint</strong>
+        </div>
+        <div class="col-md-2 text-center">
+            <strong>Delete this constraint</strong>
+        </div>
+    </div>
+
+    <div class="row text-left">
+        {% if object_list %}
+               {% for constraint in object_list %}
+                    <div class="row text-left">
+                        <div class="col-md-1">
+                            {{ constraint.ConstraintName|safe }}
+                        </div>
+                        <div class="col-md-2">
+                            {{ constraint.ConstraintType }}
+                        </div>
+                       {% if constraint.ConstraintType  in range_list %}
+                            <div class="col-md-3">
+                                {{ constraint.ConstraintMin }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ constraint.ConstraintMax }}
+                            </div>
+                        {% else %}
+                            <div class="col-md-5">
+                                {{ constraint.ConstraintList }}
+                            </div>
+                        {% endif %}
+{#                        <div class="col-md-3">#}
+{#                            {{ constraint.ConstraintDescr }}#}
+{#                        </div>#}
+                       <div class="col-md-2">
+                            <div class="text-center">
+                                <a class="btn alert-info"
+                                   role="button"
+                                   href="
+                            {% url 'fpiweb:constraint_update' constraint.ConstraintID %}">
+                                    Edit
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="text-center">
+                                <a class="btn alert-info"
+                                   role="button"
+                                   href="
+                            {% url 'fpiweb:constraint_delete' constraint.ConstraintID %}">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+        {% else %}
+            <p>No constraints are available.</p>
+        {% endif %}
+    </div>
+
+
+    <hr class="style-one">
+
+    <h6>
+        Template: constraint_list.html
+    </h6>
+    <h6>
+        View: ConstraintsListView
+    </h6>
+    <h6>
+        Detail URL: {% url 'fpiweb:constraint_detail' 1 %}
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:constraint_new' %}
+    </h6>
+
+{% endblock %}

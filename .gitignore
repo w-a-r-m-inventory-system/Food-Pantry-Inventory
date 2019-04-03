@@ -387,3 +387,5 @@ work/
 /fpiweb/templates/fpiweb/puzzle_detail.html
 /fpiweb/wordtrek_views.py
 /fpiweb/wordtrek_forms.py
+/fpiweb/templates/fpiweb/animal_list.html
+/fpiweb/wordtrek_urls.py
