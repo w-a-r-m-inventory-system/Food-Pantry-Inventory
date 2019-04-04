@@ -28,9 +28,9 @@ class ConstraintsForm(forms.ModelForm):
         Additional info to help Django provide intelligent defaults.
         """
         model = Constraints
-        fields = ['ConstraintID', 'ConstraintName', 'ConstraintDescr',
-                  'ConstraintType', 'ConstraintMin', 'ConstraintMax',
-                  'ConstraintList']
+        fields = ['constraint_id', 'constraint_name', 'constraint_descr',
+                  'constraint_type', 'constraint_min', 'constraint_max',
+                  'constraint_list']
 
     def clean(self):
         """

@@ -1,61 +1,67 @@
-{% load static %}
-
+<!DOCTYPE html>
 {# Load the bootstrap4 tag library #}
 {%  load bootstrap4 %}
+{% if 'use_i18n'|bootstrap_setting %}
+    {% load i18n %}
+    {% get_current_language as LANGUAGE_CODE %}
+{% endif %}
+<html lang="{{ LANGUAGE_CODE|default:'en_us' }}">
 
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
+{% load static %}
 
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
+    <!-- Required meta tags -->
     <meta charset="UTF-8" name="viewport" content="width-device-width"
           initial-scale="1", shrink-to-fit=no">
 
-{#    <!-- Bootstrap CSS -->#}
-{#    <link rel="stylesheet"#}
-{#          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"#}
-{#          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"#}
-{#          crossorigin="anonymous">#}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+
+    {% if 'javascript_in_head'|bootstrap_setting %}
+        {% if 'include_jquery'|bootstrap_setting %}
+            <!-- jQuery JavaScript if it is in head -->
+            {% bootstrap_jquery jquery='include_jquery'|bootstrap_setting %}
+        {% endif %}
+        <!-- Bootstrap JavaScript if it is in head -->
+        {% bootstrap_javascript %}
+    {% endif %}
+
+    {% block bootstrap4_extra_head %}{% endblock %}
+
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
 
     {# Purpose - Base html for all other templates. #}
-{# URL Name - (N/A) #}
-{# URL Response - (N/A) #}
-{# Table - (N/A) #}
-{# Form - (N/A) #}
+    {# URL Name - (N/A) #}
+    {# URL Response - (N/A) #}
+    {# Table - (N/A) #}
+    {# Form - (N/A) #}
 
     <title>
         {% block title %}
         {% endblock %}
     </title>
-{#        <link rel="stylesheet" type="text/css" href=#}
-{#                "{% static 'bootstrap/css/bootstrap.min.css' %}"/>#}
+
         <link rel="stylesheet" type="text/css" href=
                 "{% static 'fpiweb/style.css' %}"/>
 
 </head>
 <body>
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
-{#    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>#}
-
-{#    <!-- Optional JavaScript -->#}
-{#    <!-- jQuery first, then Popper.js, then Bootstrap JS -->#}
-{#    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"#}
-{#            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"#}
-{#            crossorigin="anonymous"></script>#}
-{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"#}
-{#            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"#}
-{#            crossorigin="anonymous"></script>#}
-{#    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"#}
-{#            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"#}
-{#            crossorigin="anonymous"></script>#}
-
+    {% block bootstrap4_before_content %}{% endblock %}
+        <div class="container">
+            {% block content %}
+                CONTENT
+            {% endblock %}
+    {% block bootstrap4_after_content %}{% endblock %}
+    {% if not 'javascript_in_head'|bootstrap_setting %}
+        {% if 'include_jquery'|bootstrap_setting %}
+            <!-- jQuery JavaScript if it is in body -->
+            {% bootstrap_jquery jquery='include_jquery'|bootstrap_setting %}
+        {% endif %}
+        <!-- Bootstrap JavaScript if it is in body -->
+        {% bootstrap_javascript %}
+    {% endif %}
+    {% block bootstrap4_extra_script %}{% endblock %}
 </body>
+
 </html>
