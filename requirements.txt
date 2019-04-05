@@ -5,6 +5,7 @@ attrs==19.1.0
 Babel==2.6.0
 certifi==2019.3.9
 chardet==3.0.4
+colorama==0.4.1
 Django==2.1.7
 django-bootstrap4==0.0.8
 docutils==0.14

@@ -1,5 +1,5 @@
 """
-forms.py - provide details validation of an animal or DQ.
+forms.py - provide validation of a forms.
 """
 
 from logging import getLogger, debug, error
@@ -7,6 +7,7 @@ from logging import getLogger, debug, error
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory, BaseInlineFormSet
+from django.forms import CharField, Form, PasswordInput, ValidationError
 from django.shortcuts import get_object_or_404
 
 from fpiweb.models import Box, BoxType, Constraints, Product, ProductCategory
@@ -123,5 +124,20 @@ class ConstraintsForm(forms.ModelForm):
 
 
         return self.cleaned_data
+
+
+
+class LoginForm(Form):
+
+    username = CharField(
+        label='Username',
+        max_length=100,
+    )
+
+    password = CharField(
+        label='Password',
+        max_length=100,
+        widget=PasswordInput
+    )
 
 # EOF

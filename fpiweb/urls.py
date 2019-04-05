@@ -6,7 +6,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import AboutView, ConstraintsListView, index, \
+from fpiweb.views import index, LoginView, AboutView, ConstraintsListView,  \
     ConstraintDetailView, ConstraintCreateView, ConstraintUpdateView, \
     ConstraintDeleteView
 
@@ -25,6 +25,9 @@ urlpatterns = [
 
     # about page
     # path('about/', views.AboutView, name='about'),
+
+    # login page
+    path('login/', LoginView.as_view(), name='login'),
 
     # Constraint List page
     # e.g. /fpiweb/constraints/ = list of constraints
