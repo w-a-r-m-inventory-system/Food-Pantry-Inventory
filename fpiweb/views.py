@@ -2,11 +2,12 @@
 views.py - establish the views (pages) for the F. P. I. web application.
 """
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
-from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView, \
-    CreateView, UpdateView, DeleteView
-
+    CreateView, UpdateView, DeleteView, FormView
+from django.urls import reverse_lazy, reverse
+from fpiweb.forms import LoginForm
 from forms import ConstraintsForm
 from fpiweb.models import Constraints
 
@@ -28,6 +29,29 @@ class AboutView(TemplateView):
     The About View for this application.
     """
     template_name = 'fpiweb/about.html'
+
+
+class LoginView(FormView):
+    template_name = 'fpiweb/login.html'
+    form_class = LoginForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+
+        user = authenticate(
+            self.request,
+            username=username,
+            password=password
+        )
+
+        if user is None:
+            form.add_error(None, "Invalid username and/or password")
+            return self.form_invalid(form)
+
+        login(self.request, user)
+        return super().form_valid(form)
 
 
 class ConstraintsListView(ListView):
