@@ -80,10 +80,12 @@ ROOT_URLCONF = 'FPIDjango.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+
         # 'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [
             os.path.join(BASE_DIR, 'fpiweb/')
         ],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
