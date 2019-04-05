@@ -57,7 +57,7 @@ ROOT_URLCONF = 'FPIDjango.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'BACKEND': 'django.template.backends.jinja2.Jinja2',
+       # 'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -78,18 +78,18 @@ WSGI_APPLICATION = 'FPIDjango.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
     # 'default': {
-    #         'ENGINE': 'django.db.backends.postgresql',
-    #         'NAME': 'WARM',
-    #         'USER': 'postgres',
-    #         'PASSWORD': 'PSWD',
-    #         'HOST': '127.0.0.1',
-    #         'PORT': '5432',
-    # }
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # },
+      'default': {
+             'ENGINE': 'django.db.backends.postgresql',
+             'NAME': 'WARM',
+             'USER': 'user',
+             'PASSWORD': 'password',
+             'HOST': '127.0.0.1',
+             'PORT': '5432',
+     }
 }
 
 
