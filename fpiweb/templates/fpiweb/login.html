@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<form action="{% url 'login' %}" method="post">
+<form action="{% url 'fpiweb:login' %}" method="post">
     {% csrf_token %}
     <table border="2">
         {{ form.as_table }}
