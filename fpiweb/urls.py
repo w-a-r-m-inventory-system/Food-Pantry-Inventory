@@ -12,7 +12,6 @@ from . import views
 app_name = 'fpiweb'
 
 urlpatterns = [
-
     # index page
     path('', views.index, name='index'),
 
@@ -25,4 +24,7 @@ urlpatterns = [
 
     # about page
     # path('about/', views.AboutView, name='about'),
+
+    # login page
+    path('login/', views.LoginView.as_view(), name='login'),
 ]

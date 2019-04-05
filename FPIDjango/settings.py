@@ -33,11 +33,9 @@ import os
 
 import psycopg2.extensions
 
-from FPIDjango.private.settings_private import *
-"""
-Original import of dummy values:
-from .settings_public import *
-"""
+
+from .settings_private import *
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
