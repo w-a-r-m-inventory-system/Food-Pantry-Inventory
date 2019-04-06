@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="{% url 'fpiweb:login' %}" method="post">
+    {% csrf_token %}
+    <table border="2">
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Login">
+</form>
+
+
+</body>
+</html>

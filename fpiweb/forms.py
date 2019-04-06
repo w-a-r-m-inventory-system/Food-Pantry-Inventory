@@ -5,7 +5,8 @@ forms.py - provide details validation of an animal or DQ.
 from logging import getLogger, debug, error
 
 from django import forms
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
+from django.forms import CharField, Form, PasswordInput, ValidationError
 from django.forms import inlineformset_factory, BaseInlineFormSet
 from django.shortcuts import get_object_or_404
 
@@ -18,6 +19,19 @@ __creation_date__ = "04/01/2019"
 # log = getLogger(__name__)
 
 
+class LoginForm(Form):
+    username = CharField(
+        label='Username',
+        max_length=100,
+    )
+
+    password = CharField(
+        label='Password',
+        max_length=100,
+        widget=PasswordInput
+    )
+
+
 class ConstraintsForm(forms.ModelForm):
     """
     Manage Constraint details with a generic form.
@@ -28,9 +42,9 @@ class ConstraintsForm(forms.ModelForm):
         Additional info to help Django provide intelligent defaults.
         """
         model = Constraints
-        fields = ['ConstraintID', 'ConstraintName', 'ConstraintDescr',
-                  'ConstraintType', 'ConstraintMin', 'ConstraintMax',
-                  'ConstraintList']
+        fields = ['constraint_id', 'constraint_name', 'constraint_descr',
+                  'constraint_type', 'constraint_min', 'constraint_max',
+                  'constraint_list']
 
     def clean(self):
         """

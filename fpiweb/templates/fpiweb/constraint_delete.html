@@ -1,0 +1,82 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose - Confirm delete of a constraint. #}
+{# URL Name - constraint_delete #}
+{# URL Response - POST #}
+{# Table - Constraints #}
+{# Form - none #}
+
+{% block title %}
+    Delete Constraint
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Delete Constraint
+            </h1>
+         </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+            <div class="col-md-12 text-center">
+                <strong>
+                    Are you sure you want to delete the Constraint
+                    {{ constraint_delete_context }}?
+                </strong>
+            </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <form action="
+            {%  url 'fpiweb:constraint_delete' pk=constraint_delete_context.id %}"
+          method="POST">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button id="delete_constraint"
+                        type="submit"
+                        class="btn btn-default alert-success">
+                    Confirm
+                </button>
+            </div>
+        </div>
+
+{#        <input type="submit" value="Confirm" />#}
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="btn alert-info"
+                   role="button"
+                   href="{% url 'fpiweb:constraints_view' %}">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <hr class="style-one">
+
+    <h6>
+        Template: constraint_delete.html
+    </h6>
+    <h6>
+        View: ConstraintDelete
+    </h6>
+    <h6>
+        Delete URL: {%  url 'fpiweb:constraint_delete' pk=1 %}
+    </h6>
+    <h6>
+        Cancel URL: {% url 'fpiweb:constraints_view' %}
+    </h6>
+
+{% endblock %}

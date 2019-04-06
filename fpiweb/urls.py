@@ -6,7 +6,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import AboutView, ConstraintsListView, index, \
+from fpiweb.views import index, ConstraintsListView, AboutView, LoginView,\
     ConstraintDetailView, ConstraintCreateView, ConstraintUpdateView, \
     ConstraintDeleteView
 
@@ -20,11 +20,13 @@ urlpatterns = [
     path('index/', index, name='index'),
 
     # about page
-    path('about/', AboutView.as_view, name='about_view'),
-    # path('about/', views.AboutView.as_view(template_name='about.html')),
+    path('about/', AboutView.as_view(), name='about'),
 
     # about page
     # path('about/', views.AboutView, name='about'),
+
+    # login page
+    path('login/', LoginView.as_view(), name='login'),
 
     # Constraint List page
     # e.g. /fpiweb/constraints/ = list of constraints
@@ -40,7 +42,7 @@ urlpatterns = [
       name='constraint_new', ),
 
     # e.g. /fpiweb/constraints/edit/4/ = edit constraint # 4
-    path('constraint/edit/<int:constraint>', ConstraintUpdateView.as_view(),
+    path('constraint/edit/<int:constraint_id>', ConstraintUpdateView.as_view(),
         name='constraint_update', ),
 
     # # e.g. /fpiweb/constraints/delete/4/ = delete constraint # 4
