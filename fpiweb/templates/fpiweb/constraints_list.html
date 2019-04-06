@@ -41,10 +41,6 @@
         <div class="col-md-3"><strong>Name</strong></div>
         <div class="col-md-2"><strong>Type</strong></div>
         <div class="col-md-3"><strong>Valid Values</strong></div>
-        {#        <div class="col-md-2"><strong>Minimum Value</strong></div>#}
-        {#        <div class="col-md-2"><strong>Maximum Value</strong></div>#}
-        {#        <div class="col-md-2"><strong>Specific Values</strong></div>#}
-        {#        <div class="col-md-3"><strong>Description</strong></div>#}
         <div class="col-md-2 text-center">
             <strong>Edit this constraint</strong>
         </div>
@@ -78,7 +74,7 @@
                         <a class="btn alert-info"
                            role="button"
                            href="
-                            {% url 'fpiweb:constraint_update' constraint.constraint_id %}">
+                            {% url 'fpiweb:constraint_update' pk=constraint.id %}">
                             Edit
                         </a>
                     </div>
@@ -88,7 +84,7 @@
                         <a class="btn alert-info"
                            role="button"
                            href="
-                            {% url 'fpiweb:constraint_delete' constraint.constraint_id %}">
+                            {% url 'fpiweb:constraint_delete' pk=constraint.id %}">
                             Delete
                         </a>
                     </div>
@@ -117,11 +113,17 @@
     <h6>
         View: ConstraintsListView
     </h6>
-    <h6>
-        Detail URL: {% url 'fpiweb:constraint_detail' 1 %}
-    </h6>
+{#    <h6>#}
+{#        Detail URL: {% url 'fpiweb:constraint_detail' 1 %}#}
+{#    </h6>#}
     <h6>
         Add URL: {% url 'fpiweb:constraint_new' %}
+    </h6>
+    <h6>
+        Edit URL: {% url 'fpiweb:constraint_update' pk=1 %}"
+    </h6>
+    <h6>
+        Delete URL: {% url 'fpiweb:constraint_delete' pk=1 %}
     </h6>
 
 {% endblock %}

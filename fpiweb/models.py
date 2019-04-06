@@ -34,13 +34,14 @@ class ProductCategory(models.Model):
     """
     Category or group of product.
     """
-    prod_cat_id = models.AutoField('Internal product Category ID',
+    prod_cat_id = models.AutoField('Internal Product Category ID',
                                    primary_key=True)
     """ Internal record identifier for product category. """
-    prod_cat_name = models.CharField('product Category Name', max_length=30,
+    prod_cat_name = models.CharField('Product Category Name', max_length=30,
                                      unique=True)
     """ Name of this product category. """
-    prod_cat_descr = models.TextField('product Category Description', null=True)
+    prod_cat_descr = models.TextField('Product Category Description',
+                                      null=True)
     """ Description of this product category. """
 
     # define a default display of product Category
@@ -60,12 +61,12 @@ class Product(models.Model):
     """
     product name and attributes.
     """
-    prod_id = models.AutoField('Internal product ID', primary_key=True)
+    prod_id = models.AutoField('Internal Product ID', primary_key=True)
     """ Internal record identifier for product. """
     prod_name = models.CharField('product Name', max_length=30)
     """ Name of this product. """
     prod_cat = models.ForeignKey(ProductCategory, on_delete=models.PROTECT,
-                                 verbose_name='product Category')
+                                 verbose_name='Product Category')
     """ Product category associated with this product. """
 
     # define a default display of product
@@ -103,7 +104,7 @@ class Box(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT,
                                 verbose_name='product', null=True, blank=True)
     """ Product contained in this box, if filled. """
-    exp_year = models.IntegerField('Year product Expires', null=True,
+    exp_year = models.IntegerField('Year Product Expires', null=True,
                                    blank=True)
     """ Year the product expires, if filled. """
     exp_month_start = models.IntegerField('Expiration Start Month '
@@ -160,9 +161,9 @@ class Activity(models.Model):
     """ Bin box was in at the time product was consumed. """
     loc_tier = models.CharField('Tier Location', max_length=2)
     """ Tier box was in at the time product was consumed. """
-    prod_name = models.CharField('product Name', max_length=30)
+    prod_name = models.CharField('Product Name', max_length=30)
     """ Product contained in box at time of consumption. """
-    prod_cat_name = models.CharField('product Category Name', max_length=30)
+    prod_cat_name = models.CharField('Product Category Name', max_length=30)
     """ Category of product consumed. """
     date_filled = models.DateField('Date Box Filled')
     """ Approximate date product was put in the box. """
@@ -217,7 +218,7 @@ class Constraints(models.Model):
         (INT_RANGE, 'Integer Min/Max'), (CHAR_RANGE, 'Character Min/Max'),
         (INT_LIST, 'Integer Valid List'), (CHAR_LIST, 'Character Valid List'),)
 
-    constraint_id = models.AutoField('Internal Constraint ID', primary_key=True)
+    id = models.AutoField('Internal Constraint ID', primary_key=True)
     """ Internal record identifier for a constraint. """
     constraint_name = models.CharField('Constraint Name', max_length=30)
     """ Coded name of a constraint. """
@@ -234,7 +235,7 @@ class Constraints(models.Model):
     """ If a range, what is the maximum valid value? """
     constraint_list = models.CharField('Valid Constraint List', null=True,
                                        max_length=500, blank=True)
-    """ If a list, what aew the valid values? """
+    """ If a list, what are the valid values? """
 
     # define a default display of Constraints
     def __str__(self):
