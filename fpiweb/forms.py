@@ -45,8 +45,5 @@ class ConstraintsForm(forms.ModelForm):
         fields = ['id', 'constraint_name', 'constraint_descr',
                   'constraint_type', 'constraint_min', 'constraint_max',
                   'constraint_list']
-        fields = ['constraint_id', 'constraint_name', 'constraint_descr',
-                  'constraint_type', 'constraint_min', 'constraint_max',
-                  'constraint_list']
 
 # EOF
