@@ -1,0 +1,27 @@
+{% extends 'fpiweb/base.html' %}
+
+{% block title %}
+About Food Pantry Inventory
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome to the Food Pantry Inventory System</h1>
+    <br/>
+    <h3>Links to other parts of the system:</h3>
+    <br/>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        About
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:login' %}">
+        Login
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:constraints_view' %}">
+    Constraints List
+    </a>
+{% endblock %}

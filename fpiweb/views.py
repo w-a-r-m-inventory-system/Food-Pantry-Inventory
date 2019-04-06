@@ -12,16 +12,23 @@ from fpiweb.forms import LoginForm, ConstraintsForm
 from fpiweb.models import Constraints
 
 
-def index(request):
-    """
-    Build index.html web page.
+# def index(request):
+#     """
+#     Build index.html web page.
+#
+#     :param request:
+#     :return:
+#     """
+#
+#     response = HttpResponse("Hello world from Food Pantry Inventory.")
+#     return response
 
-    :param request:
-    :return:
-    """
 
-    response = HttpResponse("Hello world from Food Pantry Inventory.")
-    return response
+class IndexView(TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/index.html'
 
 
 class AboutView(TemplateView):

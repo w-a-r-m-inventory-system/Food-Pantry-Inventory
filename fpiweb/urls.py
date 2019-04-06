@@ -6,8 +6,10 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import index, LoginView, AboutView, ConstraintsListView,  \
-    ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView
+from fpiweb.views import IndexView, LoginView, AboutView, \
+    ConstraintsListView, ConstraintCreateView, ConstraintUpdateView, \
+    ConstraintDeleteView
+
 # from fpiweb.views import ConstraintDetailView
 
 # set the namespace for the application
@@ -17,8 +19,8 @@ urlpatterns = [
 
     # index page
     # e.g. /fpiweb/ or /fpiweb/index/
-    path('', index, name='index'),
-    path('index/', index, name='index'),
+    path('', IndexView.as_view(), name='index'),
+    path('index/', IndexView.as_view(), name='index'),
 
     # about page
     # e.g. /fpiweb/about/
