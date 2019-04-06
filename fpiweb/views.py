@@ -4,11 +4,11 @@ views.py - establish the views (pages) for the F. P. I. web application.
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
-from django.urls import reverse_lazy, reverse
-from fpiweb.forms import LoginForm
-from forms import ConstraintsForm
+
+from fpiweb.forms import LoginForm, ConstraintsForm
 from fpiweb.models import Constraints
 
 
@@ -29,12 +29,15 @@ class AboutView(TemplateView):
     The About View for this application.
     """
     template_name = 'fpiweb/about.html'
+    mycontext = dict()
+    mycontext['project_type'] = 'open source'
+    extra_context = mycontext
 
 
 class LoginView(FormView):
     template_name = 'fpiweb/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('fpiweb:index')
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
@@ -52,7 +55,6 @@ class LoginView(FormView):
 
         login(self.request, user)
         return super().form_valid(form)
-
 
 class ConstraintsListView(ListView):
     """
@@ -74,7 +76,7 @@ class ConstraintsListView(ListView):
 
         context['project_type'] = 'open source'
 
-        # provide additional information
+        # provide additional information to the template
         INT_RANGE = Constraints.INT_RANGE
         CHAR_RANGE = Constraints.CHAR_RANGE
         range_list = [INT_RANGE, CHAR_RANGE]
@@ -83,38 +85,38 @@ class ConstraintsListView(ListView):
         return context
 
 
-class ConstraintDetailView(DetailView):
-    """
-    Show details of a constraint using a generic DetailView.
-    """
-    model = Constraints
-    template_name = 'fpiweb/constraint_detail.html'
-    context_object_name = 'constraint_detail_context'
-    constraint = 'ConstraintID'
-
-    def get_context_data(self, **kwargs):
-        """
-        Add additional content to the context.
-
-        :param kwargs:
-        :return: context
-        """
-        context = super(ConstraintDetailView, self).get_context_data()
-
-        # provide additional information
-        # ConstraintID = context['id']
-        constraint = context['object']
-
-        # add puzzles
-        constraint_info = Constraints.objects.filter(
-            constraint_id__exact=Constraints.ConstraintID
-        )
-
-        # add stuff back to context
-        context['constraint'] = constraint
-        context['constraint_info'] = constraint_info
-
-        return context
+# class ConstraintDetailView(DetailView):
+#     """
+#     Show details of a constraint using a generic DetailView.
+#     """
+#     model = Constraints
+#     template_name = 'fpiweb/constraint_detail.html'
+#     context_object_name = 'constraint_detail_context'
+#     constraint = 'id'
+#
+#     def get_context_data(self, **kwargs):
+#         """
+#         Add additional content to the context.
+#
+#         :param kwargs:
+#         :return: context
+#         """
+#         context = super(ConstraintDetailView, self).get_context_data()
+#
+#         # provide additional information
+#         # ConstraintID = context['id']
+#         constraint = context['object']
+#
+#         # add puzzles
+#         constraint_info = Constraints.objects.filter(
+#             constraint_id__exact=Constraints.id
+#         )
+#
+#         # add stuff back to context
+#         context['constraint'] = constraint
+#         context['constraint_info'] = constraint_info
+#
+#         return context
 
 
 class ConstraintCreateView(CreateView):
@@ -128,8 +130,8 @@ class ConstraintCreateView(CreateView):
     formClass = ConstraintsForm
 
     # TODO Why are fields required here in the create - 1/18/17
-    fields = ['ConstraintName', 'ConstraintDescr', 'ConstraintType',
-              'ConstraintMin', 'ConstraintMax', 'ConstraintList', ]
+    fields = ['constraint_name', 'constraint_descr', 'constraint_type',
+              'constraint_min', 'constraint_max', 'constraint_list', ]
 
     def get_context_data(self, **kwargs):
         """
@@ -153,14 +155,15 @@ class ConstraintCreateView(CreateView):
         return results
 
 
+
 class ConstraintUpdateView(UpdateView):
     """
     Update an animal or daily quest using a generic UpdateView.
     """
 
     model = Constraints
-    template_name = 'fpiweb/constraints_edit.html'
-    context_object_name = 'constraints_edit_context'
+    template_name = 'fpiweb/constraint_edit.html'
+    context_object_name = 'constraint_edit_context'
 
     form_class = ConstraintsForm
 
@@ -175,8 +178,8 @@ class ConstraintUpdateView(UpdateView):
         :return:
         """
 
-        context = super(ConstraintsUpdateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraints_update',
+        context = super(ConstraintUpdateView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:constraint_update',
                                     kwargs={'pk': self.get_object().id})
         return context
 
@@ -195,8 +198,8 @@ class ConstraintDeleteView(DeleteView):
     Delete an animal or daily quest using a generic DeleteView.
     """
     model = Constraints
-    template_name = 'fpiweb/constraints_delete.html'
-    context_object_name = 'constraints_delete_context'
+    template_name = 'fpiweb/constraint_delete.html'
+    context_object_name = 'constraint_delete_context'
 
     def get_success_url(self):
         """

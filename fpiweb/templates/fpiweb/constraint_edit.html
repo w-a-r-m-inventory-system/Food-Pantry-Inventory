@@ -7,7 +7,7 @@
 {# Form - AnimalDQForm #}
 
 {% block title %}
-    {% if constraint_edit_context.ConstraintID %}
+    {% if constraint_edit_context.id %}
         Edit Constraint
     {% else %}
         Add Constraint
@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-md-4 text-center">
             <h1 class="h1">
-                {% if constraint_edit_context.ConstraintID %}
+                {% if constraint_edit_context.id %}
                     Edit Constraint
                 {% else %}
                 Add Constraint
