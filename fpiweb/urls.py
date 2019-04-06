@@ -6,25 +6,49 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from . import views
+from fpiweb.views import IndexView, LoginView, AboutView, \
+    ConstraintsListView, ConstraintCreateView, ConstraintUpdateView, \
+    ConstraintDeleteView
+
+# from fpiweb.views import ConstraintDetailView
 
 # set the namespace for the application
 app_name = 'fpiweb'
 
 urlpatterns = [
-    # index page
-    path('', views.index, name='index'),
-
-    # about page
-    path('about/', views.AboutView.as_view()),
-    # path('about/', views.AboutView.as_view(template_name='about.html')),
 
     # index page
-    path('index/', views.index, name='index'),
+    # e.g. /fpiweb/ or /fpiweb/index/
+    path('', IndexView.as_view(), name='index'),
+    path('index/', IndexView.as_view(), name='index'),
 
     # about page
-    # path('about/', views.AboutView, name='about'),
+    # e.g. /fpiweb/about/
+    path('about/', AboutView.as_view(), name='about'),
 
     # login page
-    path('login/', views.LoginView.as_view(), name='login'),
+    # e.g. /fpiweb/login/
+    path('login/', LoginView.as_view(), name='login'),
+
+    # Constraint List page
+    # e.g. /fpiweb/constraints/ = list of constraints
+    path('constraints/', ConstraintsListView.as_view(),
+         name='constraints_view'),
+
+    # # e.g. /fpiweb/constraints/4/ = show constraint # 4
+    # path('constraint/<int:constraint>', ConstraintDetailView.as_view(),
+    #      name='constraint_detail', ),
+
+    # e.g. /fpiweb/constraints/add/ = add a constraint
+    path('constraint/add/', ConstraintCreateView.as_view(),
+      name='constraint_new', ),
+
+    # e.g. /fpiweb/constraints/edit/4/ = edit constraint # 4
+    path('constraint/edit/<int:pk>', ConstraintUpdateView.as_view(),
+        name='constraint_update', ),
+
+    # # e.g. /fpiweb/constraints/delete/4/ = delete constraint # 4
+    path('constraint/delete/<int:pk>', ConstraintDeleteView.as_view(),
+        name='constraint_delete', ),
+
 ]
