@@ -9,7 +9,7 @@ class BoxType(models.Model):
     """
     Type of box and default quantity.
     """
-    box_type_id = models.AutoField('Internal Box Type ID', primary_key=True)
+    id = models.AutoField('Internal Box Type ID', primary_key=True)
     """ Internal record identifier for box type. """
     box_type_code = models.CharField('Box Type Code', max_length=10, unique=True)
     """ Type of box (code or shorthand). """
@@ -34,7 +34,7 @@ class ProductCategory(models.Model):
     """
     Category or group of product.
     """
-    prod_cat_id = models.AutoField('Internal Product Category ID',
+    id = models.AutoField('Internal Product Category ID',
                                    primary_key=True)
     """ Internal record identifier for product category. """
     prod_cat_name = models.CharField('Product Category Name', max_length=30,
@@ -61,7 +61,7 @@ class Product(models.Model):
     """
     product name and attributes.
     """
-    prod_id = models.AutoField('Internal Product ID', primary_key=True)
+    id = models.AutoField('Internal Product ID', primary_key=True)
     """ Internal record identifier for product. """
     prod_name = models.CharField('product Name', max_length=30)
     """ Name of this product. """
@@ -84,7 +84,7 @@ class Box(models.Model):
     """
     Box or container for product.
     """
-    box_id = models.AutoField('Internal Box ID', primary_key=True)
+    id = models.AutoField('Internal Box ID', primary_key=True)
     """ Internal record identifier for box. """
     box_number = models.CharField('Visible Box Number', max_length=8,
                                   unique=True)
@@ -148,7 +148,7 @@ class Activity(models.Model):
     """
     Activity (history) from the past.
     """
-    activity_id = models.AutoField('Internal Activity ID', primary_key=True)
+    id = models.AutoField('Internal Activity ID', primary_key=True)
     """ Internal record identifier for an activity. """
     box_number = models.CharField('Visible Box Number', max_length=8,
                                   unique=True)
