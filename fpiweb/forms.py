@@ -11,8 +11,8 @@ from django.forms import CharField, Form, PasswordInput, ValidationError
 from django.shortcuts import get_object_or_404
 
 from fpiweb.models import Box, BoxType, Constraints, Product, ProductCategory
-__author__ = 'Travis Risner'
-__project__ = "WordTrekSolver"
+__author__ = '(Multiple)'
+__project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 # "${CopyRight.py}"
 

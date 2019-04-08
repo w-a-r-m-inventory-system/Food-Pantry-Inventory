@@ -12,6 +12,10 @@ from fpiweb.views import IndexView, LoginView, AboutView, \
 
 # from fpiweb.views import ConstraintDetailView
 
+__author__ = '(Multiple)'
+__project__ = "Food-Pantry-Inventory"
+__creation_date__ = "04/01/2019"
+
 # set the namespace for the application
 app_name = 'fpiweb'
 

@@ -11,6 +11,10 @@ from django.views.generic import TemplateView, ListView, DetailView, \
 from fpiweb.forms import LoginForm, ConstraintsForm
 from fpiweb.models import Constraints
 
+__author__ = '(Multiple)'
+__project__ = "Food-Pantry-Inventory"
+__creation_date__ = "04/01/2019"
+
 
 # def index(request):
 #     """
