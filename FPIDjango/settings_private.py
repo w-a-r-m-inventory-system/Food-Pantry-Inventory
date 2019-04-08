@@ -13,6 +13,10 @@ variable for DJANGO_SETTINGS_MODULE from FPIDjango.settings to
 FPIDjango.private.settings.
 """
 
+__author__ = '(Multiple)'
+__project__ = "Food-Pantry-Inventory"
+__creation_date__ = "04/01/2019"
+
 # The name of the engine Django needs to use to access the database
 DB_ENGINE = 'django.db.backends.postgresql'
 

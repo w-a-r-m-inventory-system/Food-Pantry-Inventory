@@ -4,6 +4,10 @@ models.py - Define the database tables using ORM models.
 
 from django.db import models
 
+__author__ = '(Multiple)'
+__project__ = "Food-Pantry-Inventory"
+__creation_date__ = "04/01/2019"
+
 
 class BoxType(models.Model):
     """
