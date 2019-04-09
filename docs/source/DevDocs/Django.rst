@@ -47,3 +47,26 @@ How to Run
 #.  Start a browser and go to the port indicated.  There should be a
     Django page displayed.
 
+Using Django's Authentication
+#############################
+
+https://docs.djangoproject.com/en/2.2/topics/auth/default/ covers the basic usage of the authentication.  We want to limit most views to logged in users only.  To do that we use the LoginRequiredMixin in our view classes.  i.e. (from the Django documentation)
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class MyView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    
+If we want to limit access to a specific subset of users (i.e. Only certain users may edit BoxTypes)  we can do that with the PermissionRequiredMixin.  i.e.:
+
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
+class EditBoxTypesView(PermissionRequiredMixin, View):
+    permission_required = 'boxtype.can_edit'
+    # Or multiple of permissions:
+    permission_required = ('boxtype.can_delete', 'boxtype.can_edit')
+    
+Pro Tip: It makes life easier to grant permissions to groups rather than to individual users.  
+
+If those methods don't cover a specific need the UserPassesTestMixin may be used.  https://docs.djangoproject.com/en/2.2/topics/auth/default/#django.contrib.auth.mixins.UserPassesTestMixin
