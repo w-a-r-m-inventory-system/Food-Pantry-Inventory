@@ -46,4 +46,15 @@ class ConstraintsForm(forms.ModelForm):
                   'constraint_type', 'constraint_min', 'constraint_max',
                   'constraint_list']
 
+
+class BoxForm(forms.ModelForm):
+    class Meta:
+        model = Box
+        fields = [
+            'box_number', 'box_type',
+            'loc_row', 'loc_bin', 'loc_tier',
+            'product', 'exp_year', 'exp_month_start',
+            'exp_month_end'
+        ]
+
 # EOF

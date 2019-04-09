@@ -1,0 +1,49 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+    {% if box.id %}
+        Edit Box
+    {% else %}
+        Add Box
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <h1 class="h1">
+                {% if box.id %}
+                    Edit Box
+                {% else %}
+                    Add Box
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+
+    {% bootstrap_form form %}
+
+
+{#    <form action="" method="post">#}
+{#        {% csrf_token %}#}
+{##}
+        {# Non-field error messages appear here #}
+{#        {% if form.non_field_errors %}#}
+{#            <div class="row">#}
+{#                <ul class="col-md-6">#}
+{#                    {% for error in form.non_field_errors %}#}
+{#                        <li class="lead alert-danger bg-danger">#}
+{#                            <strong>{{ error }}</strong>#}
+{#                        </li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#            </div>#}
+{#        {% endif %}#}
+{##}
+{#        <table class="form-group">#}
+{#            #}
+{#        </table>#}
+{#    </form>#}
+
+{% endblock %}

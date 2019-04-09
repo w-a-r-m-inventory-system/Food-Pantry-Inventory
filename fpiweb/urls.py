@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 
 from fpiweb.views import IndexView, LoginView, AboutView, \
     ConstraintsListView, ConstraintCreateView, ConstraintUpdateView, \
-    ConstraintDeleteView
+    ConstraintDeleteView, BoxAddView
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -55,4 +55,5 @@ urlpatterns = [
     path('constraint/delete/<int:pk>', ConstraintDeleteView.as_view(),
         name='constraint_delete', ),
 
+    path('box/add/', BoxAddView.as_view(), name='box_add')
 ]

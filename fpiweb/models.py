@@ -91,9 +91,14 @@ class Box(models.Model):
     """
     id = models.AutoField('Internal Box ID', primary_key=True)
     """ Internal record identifier for box. """
-    box_number = models.CharField('Visible Box Number', max_length=8,
-                                  unique=True)
-    """ Number printed in the label on the box. """
+
+    box_number = models.CharField(
+        'Visible Box Number',
+        max_length=8,
+        unique=True,
+        help_text="Number printed in the label on the box."
+    )
+
     box_type = models.ForeignKey(BoxType, on_delete=models.PROTECT,
                                  verbose_name='Type of Box')
     """ Type of box with this number. """
