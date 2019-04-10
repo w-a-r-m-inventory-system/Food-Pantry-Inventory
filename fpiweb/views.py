@@ -3,6 +3,7 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, \
@@ -42,11 +43,7 @@ class LoginView(FormView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
 
-        user = authenticate(
-            self.request,
-            username=username,
-            password=password
-        )
+        user = authenticate(self.request, username=username, password=password)
 
         if user is None:
             form.add_error(None, "Invalid username and/or password")
@@ -55,7 +52,8 @@ class LoginView(FormView):
         login(self.request, user)
         return super().form_valid(form)
 
-class ConstraintsListView(ListView):
+
+class ConstraintsListView(LoginRequiredMixin, ListView):
     """
     List of existing constraints.
     """
@@ -82,7 +80,7 @@ class ConstraintsListView(ListView):
         return context
 
 
-class ConstraintCreateView(CreateView):
+class ConstraintCreateView(LoginRequiredMixin, CreateView):
     """
     Create an animal or daily quest using a generic CreateView.
     """
@@ -118,8 +116,7 @@ class ConstraintCreateView(CreateView):
         return results
 
 
-
-class ConstraintUpdateView(UpdateView):
+class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
     """
     Update an animal or daily quest using a generic UpdateView.
     """
@@ -131,7 +128,8 @@ class ConstraintUpdateView(UpdateView):
     form_class = ConstraintsForm
 
     # TODO Why are fields forbidden here in the update - 1/18/17
-    # fields = ['category', 'constraints_order', 'constraints_name', 'date_started', ]
+    # fields = ['category', 'constraints_order', 'constraints_name',
+    # 'date_started', ]
 
     def get_context_data(self, **kwargs):
         """
@@ -156,7 +154,7 @@ class ConstraintUpdateView(UpdateView):
         return results
 
 
-class ConstraintDeleteView(DeleteView):
+class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
     """
     Delete an animal or daily quest using a generic DeleteView.
     """
