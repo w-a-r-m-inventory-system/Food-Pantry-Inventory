@@ -260,7 +260,7 @@ class Activity(models.Model):
         """ Default way to display this activity record. """
         if self.date_filled:
             display = f'{self.box_number} ({self.box_type_code}) ' \
-                f'{self.prod_name} ({self.prod_cat_name})' \
+                f'{self.prod_name} ({self.prod_cat_name}) ' \
                 f'{self.quantity} ' \
                 f'{self.expiration_year}' \
                 f'({self.expiration_month_start}-{self.expiration_month_end})' \
@@ -272,7 +272,7 @@ class Activity(models.Model):
         return display
 
     class Meta:
-        ordering = ['date_consumed', ['box_number']]
+        ordering = ['-date_consumed', 'box_number']
         app_label = 'fpiweb'
 
 
