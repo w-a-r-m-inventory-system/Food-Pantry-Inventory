@@ -1,6 +1,8 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+from typing import Union, Optional
+
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
@@ -54,11 +56,7 @@ class LoginView(FormView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
 
-        user = authenticate(
-            self.request,
-            username=username,
-            password=password
-        )
+        user = authenticate(self.request, username=username, password=password)
 
         if user is None:
             form.add_error(None, "Invalid username and/or password")
@@ -66,6 +64,7 @@ class LoginView(FormView):
 
         login(self.request, user)
         return super().form_valid(form)
+
 
 class ConstraintsListView(ListView):
     """
@@ -84,8 +83,6 @@ class ConstraintsListView(ListView):
         :return:
         """
         context = super(ConstraintsListView, self).get_context_data()
-
-        context['project_type'] = 'open source'
 
         # provide additional information to the template
         INT_RANGE = Constraints.INT_RANGE
@@ -130,6 +127,68 @@ class ConstraintsListView(ListView):
 #         return context
 
 
+def validate_constraint_data(con_name: str, con_descr: str,
+                             con_type: Constraints.CONSTRAINT_TYPE_CHOICES,
+                             con_min: Union[str, int, None],
+                             con_max: Union[str, int, None],
+                             con_list: Optional[list]) -> tuple:
+    """
+    Validate the constraint data provided in a web page.
+
+    :param con_name: constraint name
+    :param con_descr: constraint description
+    :param con_type: constraint type
+    :param con_min: constraint minimum
+    :param con_max: constraint maximum
+    :param con_list: constraint list
+    :return: Two part tuple.  First part: True if valid or False if not,
+        second part: None if valid, error message(s) if not (as a string)
+    """
+
+    # assume valid until proven otherwise.
+    valid = True
+    msg = ''
+
+    # validation logic
+    if not con_name or (len(con_name) < 1):
+        msg += "A constraint name must be specified; "
+        valid = False
+
+    if not con_descr or (len(con_descr) < 1):
+        msg += "A constraint name must be specified; "
+        valid = False
+
+    if con_type == Constraints.INT_LIST:
+        if con_min or con_max:
+            msg += 'Do not specify a minimum or maximum with a list'
+            valid = False  # validate that con_list is a list and that it
+            # contains all integers
+    elif con_type == Constraints.CHAR_LIST:
+        if con_min or con_max:
+            msg += 'Do not specify a minimum or maximum with a list'
+            valid = False  # validate that con_list is a list and and has at
+            # least one value
+    elif con_type == Constraints.INT_RANGE:
+        if con_list:
+            msg += 'Do not specify a list with min/max type; '
+            valid = False  # validate that min and max contain integers
+    elif con_type == Constraints.CHAR_RANGE:
+        if con_list:
+            msg += 'Do not specify a list with min/max type; '
+            valid = False  # validate that min and max contain characters
+    else:
+        msg += 'A valid constraint tipe must be chosen; '
+        valid = False
+
+    # report results
+    if valid:
+        response = (True, None)
+    else:
+        response = (False, msg[-2])
+
+    return response
+
+
 class ConstraintCreateView(CreateView):
     """
     Create an animal or daily quest using a generic CreateView.
@@ -156,6 +215,35 @@ class ConstraintCreateView(CreateView):
         context['action'] = reverse('fpiweb:constraint_new')
         return context
 
+    def form_valid(self, form):
+        """
+        Validate the form data before pushing to the database.
+
+        :param form:
+        :return:
+        """
+        cname = form.cleaned_data.get('constraint_name')
+        cdescr = form.cleaned_data.get('constraint_descr')
+        ctype = form.cleaned_data.get('constraint_type')
+        cmin = form.cleaned_data.get('constraint_min')
+        cmax = form.cleaned_data.get('constraint_max')
+        clist = form.cleaned_data.get('constraint_list')
+
+        Validation_response = validate_constraint_data(con_name=cname,
+                                                       con_descr=cdescr,
+                                                       con_type=ctype,
+                                                       con_min=cmin,
+                                                       con_max=cmax,
+                                                       con_list=clist)
+
+        if Validation_response[0]:
+            form_response = super().form_valid(form)
+        else:
+            form.add_error(None, Validation_response[1])
+            form_response = self.form_invalid(form)
+
+        return form_response
+
     def get_success_url(self):
         """
         Run once form is successfully validated.
@@ -164,7 +252,6 @@ class ConstraintCreateView(CreateView):
         """
         results = reverse('fpiweb:constraints_view')
         return results
-
 
 
 class ConstraintUpdateView(UpdateView):
@@ -179,7 +266,8 @@ class ConstraintUpdateView(UpdateView):
     form_class = ConstraintsForm
 
     # TODO Why are fields forbidden here in the update - 1/18/17
-    # fields = ['category', 'constraints_order', 'constraints_name', 'date_started', ]
+    # fields = ['category', 'constraints_order', 'constraints_name',
+    # 'date_started', ]
 
     def get_context_data(self, **kwargs):
         """
@@ -193,6 +281,35 @@ class ConstraintUpdateView(UpdateView):
         context['action'] = reverse('fpiweb:constraint_update',
                                     kwargs={'pk': self.get_object().id})
         return context
+
+    def form_valid(self, form):
+        """
+        Validate the form data before pushing to the database.
+
+        :param form:
+        :return:
+        """
+        cname = form.cleaned_data.get('constraint_name')
+        cdescr = form.cleaned_data.get('constraint_descr')
+        ctype = form.cleaned_data.get('constraint_type')
+        cmin = form.cleaned_data.get('constraint_min')
+        cmax = form.cleaned_data.get('constraint_max')
+        clist = form.cleaned_data.get('constraint_list')
+
+        Validation_response = validate_constraint_data(con_name=cname,
+                                                       con_descr=cdescr,
+                                                       con_type=ctype,
+                                                       con_min=cmin,
+                                                       con_max=cmax,
+                                                       con_list=clist)
+
+        if Validation_response[0]:
+            form_response = super().form_valid(form)
+        else:
+            form.add_error(None, Validation_response[1])
+            form_response = self.form_invalid(form)
+
+        return form_response
 
     def get_success_url(self):
         """
