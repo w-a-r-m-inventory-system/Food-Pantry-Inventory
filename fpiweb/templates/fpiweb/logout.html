@@ -1,0 +1,22 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: Logout (deauthenticate) #}
+{# URL Name: fpiweb:logout #}
+{# URL response: Post #}
+{# Table: (none)) #}
+{# form: logout #}
+
+{% block title %}Logout{% endblock %}
+
+{% block content %}
+
+    <form action="{% url 'fpiweb:logout' %}" method="post">
+        {% csrf_token %}
+        <table border="2">
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Logout">
+    </form>
+
+{% endblock %}
+
