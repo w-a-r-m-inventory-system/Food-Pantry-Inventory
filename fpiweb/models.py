@@ -82,7 +82,7 @@ class Product(models.Model):
     id = models.AutoField('Internal Product ID', primary_key=True,
                           help_text='Internal record identifier for product.')
     """ Internal record identifier for product. """
-    prod_name = models.CharField('product Name', max_length=30,
+    prod_name = models.CharField('product Name', max_length=30, unique=True,
                                  help_text='Name of this product.')
     """ Name of this product. """
     prod_cat = models.ForeignKey(ProductCategory, on_delete=models.PROTECT,
@@ -195,9 +195,8 @@ class Activity(models.Model):
                                     'activity.')
     """ Internal record identifier for an activity. """
     box_number = models.CharField('Visible Box Number', max_length=8,
-                                  unique=True, help_text='Box number on box '
-                                                         'at time of '
-                                                         'consumption.')
+                                  help_text='Box number on box at time of '
+                                            'consumption.')
     """ Box number on box at time of consumption. """
     box_type_code = models.CharField('Box Type Code', max_length=10,
                                      help_text='Box type holding consumed '
@@ -296,6 +295,7 @@ class Constraints(models.Model):
                                     'constraint.')
     """ Internal record identifier for a constraint. """
     constraint_name = models.CharField('Constraint Name', max_length=30,
+                                       unique=True,
                                        help_text='Coded name of a constraint.')
     """ Coded name of a constraint. """
     constraint_descr = models.TextField('Constraint Description', null=True,
@@ -339,6 +339,34 @@ class Constraints(models.Model):
 
     class Meta:
         ordering = ['constraint_name']
+        app_label = 'fpiweb'
+
+
+class ProductExample(models.Model):
+    """
+    Examples of items that go into a labeled product.
+    """
+    id = models.AutoField('Internal Product Example ID', primary_key=True,
+                          help_text='Internal reccord identifier for '
+                                    'product example')
+    """ Internal reccord identifier for product example"""
+    prod_example_name = models.CharField('Product Example Name',
+                                         max_length=30,unique=True,
+                                         help_text='Name of example product.')
+    """Name of example product."""
+    prod_id = models.ForeignKey(Product, on_delete=models.PROTECT,
+                                verbose_name='Product',
+                                help_text='Product with which this product '
+                                          'name is associated.')
+    """ Product with which this product name is associated. """
+
+    def __str__(self):
+        """ Default way to display this product example """
+        display = f'{self.prod_example_name} ({self.prod_id})'
+        return display
+
+    class Meta:
+        ordering = ['prod_example_name']
         app_label = 'fpiweb'
 
 # EOF
