@@ -1,0 +1,143 @@
+Baking Supplies
+	Baking Ingredients (flour, sugar, shortening)
+	Bread Mixes (Muffin*)
+	Cake Mix/Brownies*
+	Dessert Mixes
+	Jello/Pudding*
+	Pancake Mix
+	Pumpkin
+	Other (baking powder, baking soda, salt, etc.)*
+
+Beans
+	Baked Beans
+	Black Beans
+	Black-Eyed Peas
+	Dry Beans
+	Garbanzo Beans
+	Green Beans
+	Kidney Beans
+	Misc Beans
+	Pinto Beans
+	Pork & Beans
+
+Beverages
+	Beverage
+	Coffee
+	Juice
+	Tea*
+	Other Beverage
+
+Breakfast Foods
+	Cereal (Hot/Cold)
+	Breakfast Food Not Cereal*
+
+Chicken Noodle Soup
+    Ckn Ndl Soup
+
+Condiments
+	BBQ
+	Jelly
+	Ketchup
+	Mustard
+	Peanut Butter
+	Salad Dressing
+	Syrup
+	Vegetable Oil
+	Vinegar
+
+Corn
+    Corn
+
+Cream Soup
+    Cream of Chicken Soup
+    Cream of Celery Soup
+    Cream of Mushroom Soup
+    Cream of Potato Soup
+    Misc Cream Soup
+
+Fruits
+	Applesauce
+	Cranberry Sauce
+	Mixed Fruit
+	Oranges
+	Other Fruit
+	Peaches
+	Pears
+
+Geen Beans
+    Green Beans
+
+Meats
+	Beef Stew
+	Canned Chicken
+	Chili
+	Sloppy Joe
+	Tuna
+	Other Meat
+
+Non Food Category
+	Baby Products*
+	House/Cleaning Supplies*
+	Paper Towels
+	Personal Care Items
+	Pet Supplies*
+	Toilet Paper
+
+Other
+    Other
+
+Other Soups
+    Bean Soup
+    Broth
+	Chicken & Rice
+    Chicken and Stars
+    Clam Chowder
+    Dry Soup
+    Misc Soup
+    Vegetable Beef Soup
+    Vegetable soup
+    Vegetarian Vegetable Soup
+
+Pasta/Noodles/Rice
+	Boxed Pasta
+	Canned Pasta
+	Helpers
+	Mac & Cheese
+	Noodles
+	Pasta Sides
+	Ramen Noodles
+	Rice
+	Rice Sides
+	Spaghetti
+	Stuffing
+
+Potatoes
+    Boxed Potatoes
+    Canned Potatoes
+    Sweet Potatoes
+
+Snacks
+    Snacks
+
+Soup Kitchen
+    Soup Kitchen
+
+Tomato Soup
+	Tomato Soup
+
+Tomatose
+	Crushed Tomatoes
+	Diced Tomatoes
+	Spaghetti Sauce
+	Stewed Tomatoes
+	Tomato Paste
+	Tomato Sauce
+	Whole Tomatoes
+
+Vegetables
+	Beets
+	Carrots
+	Mixed Veggies
+	Other Veggies
+	Peas
+	Spinach
