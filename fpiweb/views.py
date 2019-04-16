@@ -3,6 +3,7 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, \
@@ -14,18 +15,6 @@ from fpiweb.models import Constraints
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
-
-
-# def index(request):
-#     """
-#     Build index.html web page.
-#
-#     :param request:
-#     :return:
-#     """
-#
-#     response = HttpResponse("Hello world from Food Pantry Inventory.")
-#     return response
 
 
 class IndexView(TemplateView):
@@ -54,11 +43,7 @@ class LoginView(FormView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
 
-        user = authenticate(
-            self.request,
-            username=username,
-            password=password
-        )
+        user = authenticate(self.request, username=username, password=password)
 
         if user is None:
             form.add_error(None, "Invalid username and/or password")
@@ -67,7 +52,8 @@ class LoginView(FormView):
         login(self.request, user)
         return super().form_valid(form)
 
-class ConstraintsListView(ListView):
+
+class ConstraintsListView(LoginRequiredMixin, ListView):
     """
     List of existing constraints.
     """
@@ -85,8 +71,6 @@ class ConstraintsListView(ListView):
         """
         context = super(ConstraintsListView, self).get_context_data()
 
-        context['project_type'] = 'open source'
-
         # provide additional information to the template
         INT_RANGE = Constraints.INT_RANGE
         CHAR_RANGE = Constraints.CHAR_RANGE
@@ -96,41 +80,7 @@ class ConstraintsListView(ListView):
         return context
 
 
-# class ConstraintDetailView(DetailView):
-#     """
-#     Show details of a constraint using a generic DetailView.
-#     """
-#     model = Constraints
-#     template_name = 'fpiweb/constraint_detail.html'
-#     context_object_name = 'constraint_detail_context'
-#     constraint = 'id'
-#
-#     def get_context_data(self, **kwargs):
-#         """
-#         Add additional content to the context.
-#
-#         :param kwargs:
-#         :return: context
-#         """
-#         context = super(ConstraintDetailView, self).get_context_data()
-#
-#         # provide additional information
-#         # ConstraintID = context['id']
-#         constraint = context['object']
-#
-#         # add puzzles
-#         constraint_info = Constraints.objects.filter(
-#             constraint_id__exact=Constraints.id
-#         )
-#
-#         # add stuff back to context
-#         context['constraint'] = constraint
-#         context['constraint_info'] = constraint_info
-#
-#         return context
-
-
-class ConstraintCreateView(CreateView):
+class ConstraintCreateView(LoginRequiredMixin, CreateView):
     """
     Create an animal or daily quest using a generic CreateView.
     """
@@ -166,8 +116,7 @@ class ConstraintCreateView(CreateView):
         return results
 
 
-
-class ConstraintUpdateView(UpdateView):
+class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
     """
     Update an animal or daily quest using a generic UpdateView.
     """
@@ -179,7 +128,8 @@ class ConstraintUpdateView(UpdateView):
     form_class = ConstraintsForm
 
     # TODO Why are fields forbidden here in the update - 1/18/17
-    # fields = ['category', 'constraints_order', 'constraints_name', 'date_started', ]
+    # fields = ['category', 'constraints_order', 'constraints_name',
+    # 'date_started', ]
 
     def get_context_data(self, **kwargs):
         """
@@ -204,7 +154,7 @@ class ConstraintUpdateView(UpdateView):
         return results
 
 
-class ConstraintDeleteView(DeleteView):
+class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
     """
     Delete an animal or daily quest using a generic DeleteView.
     """
