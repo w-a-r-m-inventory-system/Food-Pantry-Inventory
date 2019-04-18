@@ -99,6 +99,8 @@ for this project.
 
     #.  String Manipulation (optional)
 
+    #.  Database Navigator (Optional)
+
 Setting Up Your Personal Repository
 -----------------------------------
 
