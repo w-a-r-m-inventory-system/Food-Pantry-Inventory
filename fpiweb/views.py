@@ -55,13 +55,13 @@ class LoginView(FormView):
 
 class LogoutView(TemplateView):
     template_name = 'fpiweb/logout.html'
-    form_class = LogoutForm
-    success_url = reverse_lazy('fpiweb:index')
 
-    def form_valid(self, form):
+    def get_context_data(self, **kwargs):
 
         logout(self.request)
-        return super().form_valid(form)
+        nothing = dict()
+        return nothing
+
 
 
 class ConstraintsListView(LoginRequiredMixin, ListView):
