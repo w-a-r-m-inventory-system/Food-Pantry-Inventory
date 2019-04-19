@@ -1,18 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
 
-<form action="{% url 'fpiweb:login' %}" method="post">
-    {% csrf_token %}
-    <table border="2">
-        {{ form.as_table }}
-    </table>
-    <input type="submit" value="Login">
-</form>
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_field form.username %}
+        {% bootstrap_field form.password %}
+        <input type="submit" value="Login">
+    </form>
+
+
+
+{% endblock %}
 
 
 </body>

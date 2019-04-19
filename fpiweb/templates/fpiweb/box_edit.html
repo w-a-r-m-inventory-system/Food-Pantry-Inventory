@@ -22,28 +22,18 @@
         </div>
     </div>
 
-    {% bootstrap_form form %}
+    <form action="" method="post">
+        {% bootstrap_field form.box_number %}
+        {% bootstrap_field form.box_type %}
+        {% bootstrap_field form.loc_row %}
+        {% bootstrap_field form.loc_bin %}
+        {% bootstrap_field form.loc_tier %}
+        {% bootstrap_field form.product %}
+        {% bootstrap_field form.exp_year %}
+        {% bootstrap_field form.exp_month_start %}
+        {% bootstrap_field form.exp_month_end %}
+        <input type="submit" value="Submit"/>
+    </form>
 
-
-{#    <form action="" method="post">#}
-{#        {% csrf_token %}#}
-{##}
-        {# Non-field error messages appear here #}
-{#        {% if form.non_field_errors %}#}
-{#            <div class="row">#}
-{#                <ul class="col-md-6">#}
-{#                    {% for error in form.non_field_errors %}#}
-{#                        <li class="lead alert-danger bg-danger">#}
-{#                            <strong>{{ error }}</strong>#}
-{#                        </li>#}
-{#                    {% endfor %}#}
-{#                </ul>#}
-{#            </div>#}
-{#        {% endif %}#}
-{##}
-{#        <table class="form-group">#}
-{#            #}
-{#        </table>#}
-{#    </form>#}
 
 {% endblock %}
