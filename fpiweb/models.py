@@ -141,30 +141,33 @@ class Box(models.Model):
                                           'if filled.')
     """ Product contained in this box, if filled. """
 
+    exp_year_help_text = 'Year the product expires, if filled.'
     exp_year = models.IntegerField(
         'Year Product Expires',
         null=True,
         blank=True,
-        help_text='Year the product expires, if filled.',
+        help_text=exp_year_help_text,
     )
     """ Year the product expires, if filled. """
 
-
-    exp_month_start = models.IntegerField('Expiration Start Month '
-                                          '(Optional)', null=True, blank=True,
-                                          help_text='Optional starting month '
-                                                    'range of when the '
-                                                    'product expires, '
-                                                    'if filled.')
+    exp_month_start_help_text = 'Optional starting month range of when the product expires, if filled.'
+    exp_month_start = models.IntegerField(
+        'Expiration Start Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_start_help_text)
     """ 
     Optional starting month range of when the product expires, if filled. 
     """
-    exp_month_end = models.IntegerField('Expiration End Month '
-                                        '(Optional)', null=True, blank=True,
-                                        help_text='Optional ending month '
-                                                  'range of when the product '
-                                                  'expires, if filled.')
+
+    exp_month_end_help_text = 'Optional ending month range of when the product expires, if filled.'
+    exp_month_end = models.IntegerField(
+        'Expiration End Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_end_help_text)
     """ Optional emding month range of when the product expires, if filled. """
+
     date_filled = models.DateTimeField('Date Box Filled', null=True,
                                        blank=True,
                                        help_text='Approximate date box was '

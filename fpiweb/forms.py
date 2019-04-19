@@ -21,12 +21,17 @@ __creation_date__ = "04/01/2019"
 # "${CopyRight.py}"
 
 
+month_choices = [('--', '--')] + [(str(i), str(i)) for i in range(1, 13)]
+
 def expire_year_choices():
     current_year = timezone.now().year
     years_ahead = 5
     for i in range(years_ahead + 1):
         value = str(current_year + i)
         yield value, value
+
+
+
 
 
 # log = getLogger(__name__)
@@ -66,13 +71,25 @@ class BoxForm(forms.ModelForm):
         fields = [
             'box_number', 'box_type',
             'loc_row', 'loc_bin', 'loc_tier',
-            'product', 'exp_year', 'exp_month_start',
-            'exp_month_end'
+            'product',
         ]
 
     exp_year = forms.TypedChoiceField(
         choices=expire_year_choices,
         coerce=int,
+        help_text=Box.exp_year_help_text,
+    )
+
+    exp_month_start = forms.TypedChoiceField(
+        choices=month_choices,
+        coerce=int,
+        help_text=Box.exp_month_start_help_text,
+    )
+
+    exp_month_end = forms.TypedChoiceField(
+        choices=month_choices,
+        coerce=int,
+        help_text=Box.exp_month_end_help_text,
     )
 
 # EOF
