@@ -1,7 +1,7 @@
 {% extends 'fpiweb/base.html' %}
 
 {% block title %}
-About Food Pantry Inventory
+Welcome to Food Pantry Inventory System
 {% endblock %}
 
 {% block content %}
@@ -21,7 +21,13 @@ About Food Pantry Inventory
     </a>
 
     <br/>
+    <a href="{% url 'fpiweb:logout' %}">
+        Logout
+    </a>
+
+    <br/>
     <a href="{% url 'fpiweb:constraints_view' %}">
     Constraints List
     </a>
+
 {% endblock %}
