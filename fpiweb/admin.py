@@ -18,6 +18,17 @@ admin.site.register(ProductCategory)
 admin.site.register(Product)
 admin.site.register(ProductExample)
 admin.site.register(Activity)
-admin.site.register(Constraints)
+
+
+@admin.register(Constraints)
+class ConstraintsAdmin(admin.ModelAdmin):
+    list_display = (
+        'constraint_name',
+        'constraint_type',
+        'constraint_min',
+        'constraint_max',
+        'constraint_list',
+    )
+
 
 # EOF
