@@ -9,12 +9,25 @@ from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory, BaseInlineFormSet
 from django.forms import CharField, Form, PasswordInput, ValidationError
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from fpiweb.models import Box, BoxType, Constraints, Product, ProductCategory
+
+
+
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 # "${CopyRight.py}"
+
+
+def expire_year_choices():
+    current_year = timezone.now().year
+    years_ahead = 5
+    for i in range(years_ahead + 1):
+        value = str(current_year + i)
+        yield value, value
+
 
 # log = getLogger(__name__)
 
@@ -56,5 +69,10 @@ class BoxForm(forms.ModelForm):
             'product', 'exp_year', 'exp_month_start',
             'exp_month_end'
         ]
+
+    exp_year = forms.TypedChoiceField(
+        choices=expire_year_choices,
+        coerce=int,
+    )
 
 # EOF

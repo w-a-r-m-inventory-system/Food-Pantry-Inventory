@@ -3,6 +3,7 @@ models.py - Define the database tables using ORM models.
 """
 
 from django.db import models
+from django.utils import timezone
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -139,10 +140,16 @@ class Box(models.Model):
                                 help_text='Product contained in this box, '
                                           'if filled.')
     """ Product contained in this box, if filled. """
-    exp_year = models.IntegerField('Year Product Expires', null=True,
-                                   blank=True, help_text='Year the product '
-                                                         'expires, if filled.')
+
+    exp_year = models.IntegerField(
+        'Year Product Expires',
+        null=True,
+        blank=True,
+        help_text='Year the product expires, if filled.',
+    )
     """ Year the product expires, if filled. """
+
+
     exp_month_start = models.IntegerField('Expiration Start Month '
                                           '(Optional)', null=True, blank=True,
                                           help_text='Optional starting month '
@@ -154,7 +161,7 @@ class Box(models.Model):
     """
     exp_month_end = models.IntegerField('Expiration End Month '
                                         '(Optional)', null=True, blank=True,
-                                        help_text='Optional emding month '
+                                        help_text='Optional ending month '
                                                   'range of when the product '
                                                   'expires, if filled.')
     """ Optional emding month range of when the product expires, if filled. """
