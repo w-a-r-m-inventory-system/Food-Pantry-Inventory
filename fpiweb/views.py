@@ -2,14 +2,14 @@
 views.py - establish the views (pages) for the F. P. I. web application.
 """
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-from fpiweb.forms import LoginForm, ConstraintsForm
+from fpiweb.forms import LoginForm, ConstraintsForm, LogoutForm
 from fpiweb.models import Constraints
 
 __author__ = '(Multiple)'
@@ -51,6 +51,17 @@ class LoginView(FormView):
 
         login(self.request, user)
         return super().form_valid(form)
+
+
+class LogoutView(TemplateView):
+    template_name = 'fpiweb/logout.html'
+
+    def get_context_data(self, **kwargs):
+
+        logout(self.request)
+        nothing = dict()
+        return nothing
+
 
 
 class ConstraintsListView(LoginRequiredMixin, ListView):

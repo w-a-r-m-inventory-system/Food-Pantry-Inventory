@@ -6,9 +6,9 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import IndexView, LoginView, AboutView, \
-    ConstraintsListView, ConstraintCreateView, ConstraintUpdateView, \
-    ConstraintDeleteView
+from fpiweb.views import IndexView, LoginView, AboutView, ConstraintsListView, \
+    ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView, \
+    LogoutView
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -33,6 +33,10 @@ urlpatterns = [
     # login page
     # e.g. /fpiweb/login/
     path('login/', LoginView.as_view(), name='login'),
+
+    # logout page
+    # e.g. /fpiweb/logout/
+    path('logout/', LogoutView.as_view(), name='logout'),
 
     # Constraint List page
     # e.g. /fpiweb/constraints/ = list of constraints
