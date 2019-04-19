@@ -37,17 +37,18 @@ def expire_year_choices():
 # log = getLogger(__name__)
 
 
-class LoginForm(Form):
+class LogoutForm(Form):
     username = CharField(
         label='Username',
         max_length=100,
     )
 
-    password = CharField(
-        label='Password',
-        max_length=100,
-        widget=PasswordInput
-    )
+
+class LoginForm(Form):
+    username = CharField(label='Username', max_length=100, )
+
+    password = CharField(label='Password', max_length=100,
+        widget=PasswordInput)
 
 
 class ConstraintsForm(forms.ModelForm):
