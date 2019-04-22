@@ -184,11 +184,12 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
         return results
 
 
-class BoxAddView(CreateView):
+class BoxAddView(LoginRequiredMixin, CreateView):
     model = Box
     template_name = 'fpiweb/box_edit.html'
     context_object_name = 'box'
     form_class = BoxForm
+    success_url = reverse_lazy('fpiweb:box/add/')
 
 
 # EOF

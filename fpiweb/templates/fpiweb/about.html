@@ -5,7 +5,15 @@ About Food Pantry Inventory
 {% endblock %}
 
 {% block content %}
-About the Food Pantry Inventory System:
+    <div>
+        <h1>
+            About the Food Pantry Inventory System
+        </h1>
+    </div>
     <br/>
-    This project is considered {{ project_type }}.
+
+    <div>
+        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+    </div>
+
 {% endblock %}
