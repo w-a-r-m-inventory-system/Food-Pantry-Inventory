@@ -123,18 +123,37 @@ class Box(models.Model):
                                  verbose_name='Type of Box',
                                  help_text='Type of box with this number.')
     """ Type of box with this number. """
-    loc_row = models.CharField('Row Location', max_length=2, null=True,
-                               blank=True, help_text='Row containing this '
-                                                     'box, if filled.')
+
+    loc_row_help_text = 'Row containing this box, if filled.'
+    loc_row = models.CharField(
+        'Row Location',
+        max_length=2,
+        null=True,
+        blank=True,
+        help_text=loc_row_help_text,
+    )
     """ Row containing this box, if filled. """
-    loc_bin = models.CharField('Bin Location', max_length=2, null=True,
-                               blank=True, help_text='Bin containing this '
-                                                     'box, if filled.')
+
+    loc_bin_help_text = 'Bin containing this box, if filled.'
+    loc_bin = models.CharField(
+        'Bin Location',
+        max_length=2,
+        null=True,
+        blank=True,
+        help_text=loc_bin_help_text,
+    )
     """ Bin containing this box, if filled. """
-    loc_tier = models.CharField('Tier Location', max_length=2, null=True,
-                                blank=True, help_text='Tier containing this '
-                                                      'box, if filled.')
+
+    loc_tier_help_text = 'Tier containing this box, if filled.'
+    loc_tier = models.CharField(
+        'Tier Location',
+        max_length=2,
+        null=True,
+        blank=True,
+        help_text=loc_bin_help_text,
+    )
     """ Tier containing this box, if filled. """
+
     product = models.ForeignKey(Product, on_delete=models.PROTECT,
                                 verbose_name='product', null=True, blank=True,
                                 help_text='Product contained in this box, '
@@ -294,6 +313,10 @@ class Constraints(models.Model):
     Constraints of valid values.
     """
 
+    class Meta:
+        ordering = ['constraint_name']
+        app_label = 'fpiweb'
+
     # Constraint Choice Names
     INT_RANGE = 'Int-MM'
     CHAR_RANGE = 'Char-MM'
@@ -301,13 +324,17 @@ class Constraints(models.Model):
     CHAR_LIST = 'Char-List'
 
     CONSTRAINT_TYPE_CHOICES = (
-        (INT_RANGE, 'Integer Min/Max'), (CHAR_RANGE, 'Character Min/Max'),
-        (INT_LIST, 'Integer Valid List'), (CHAR_LIST, 'Character Valid List'),)
+        (INT_RANGE, 'Integer Min/Max'),
+        (CHAR_RANGE, 'Character Min/Max'),
+        (INT_LIST, 'Integer Valid List'),
+        (CHAR_LIST, 'Character Valid List'),
+    )
 
     id = models.AutoField('Internal Constraint ID', primary_key=True,
                           help_text='Internal record identifier for a '
                                     'constraint.')
     """ Internal record identifier for a constraint. """
+
     constraint_name = models.CharField('Constraint Name', max_length=30,
                                        unique=True,
                                        help_text='Coded name of a constraint.')
@@ -351,9 +378,49 @@ class Constraints(models.Model):
             display += f' -- {self.constraint_descr[:50]}'
         return display
 
-    class Meta:
-        ordering = ['constraint_name']
-        app_label = 'fpiweb'
+    @staticmethod
+    def get_values(constraint_name):
+        try:
+            constraint = Constraints.objects.get(
+                constraint_name__iexact=constraint_name)
+        except Constraints.DoesNotExist:
+            return None
+
+        if constraint.constraint_type == Constraints.INT_RANGE:
+            return [
+                int(constraint.constraint_min),
+                int(constraint.constraint_max),
+            ]
+
+        if constraint.constraint_type == Constraints.CHAR_RANGE:
+            return [
+                constraint.constraint_min,
+                constraint.constraint_max,
+            ]
+
+        if constraint.constraint_type == Constraints.INT_LIST:
+            if not constraint.constraint_list:
+                return []
+
+            values = []
+            for piece in constraint.constraint_list.split(','):
+                piece = piece.strip()
+                values.append(int(piece))
+            return values
+
+        if constraint.constraint_type == Constraints.CHAR_LIST:
+            if not constraint.constraint_list:
+                return []
+
+            values = []
+            for piece in constraint.constraint_list.split(','):
+                piece = piece.strip()
+                values.append(piece)
+            return values
+
+        raise ValueError(f"Unrecognized constraint_type {constraint.constraint_type}")
+
+
 
 
 class ProductExample(models.Model):
