@@ -1,6 +1,7 @@
 """
 models.py - Define the database tables using ORM models.
 """
+from enum import Enum, unique
 
 from django.db import models
 from django.utils import timezone
@@ -14,21 +15,37 @@ class BoxType(models.Model):
     """
     Type of box (Evan's boxes, large boxes, etc.) and default quantity.
     """
-    id = models.AutoField('Internal Box Type ID', primary_key=True,
-                          help_text='Internal record identifier for box type.')
+    id_help_text = 'Internal record identifier for box type.'
+    id = models.AutoField(
+        'Internal Box Type ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for box type. """
-    box_type_code = models.CharField('Box Type Code', max_length=10,
-                                     unique=True, help_text='Type of box ('
-                                                            'code or '
-                                                            'shorthand).')
+
+    box_type_code_help_text = 'Type of box (code or shorthand).'
+    box_type_code = models.CharField(
+        'Box Type Code',
+        max_length=10,
+        unique=True,
+        help_text=box_type_code_help_text,
+    )
     """ Type of box (code or shorthand). """
-    box_type_descr = models.CharField('Box Type Description', max_length=30,
-                                      help_text='Type of box (description).')
+
+    box_type_descr_help_text = 'Type of box (description).'
+    box_type_descr = models.CharField(
+        'Box Type Description',
+        max_length=30,
+        help_text=box_type_descr_help_text,
+    )
     """ Type of box (description). """
-    box_type_qty = models.IntegerField('Default Box Type Quantity',
-                                       help_text='Number of items (usually '
-                                                 'cans) that can typically '
-                                                 'fix in this box.')
+
+    box_type_qty_help_text = 'Number of items (usually cans) that can ' \
+                             'typically fix in this box.'
+    box_type_qty = models.IntegerField(
+        'Default Box Type Quantity',
+        help_text=box_type_qty_help_text,
+    )
     """ Number of items (usually cans) that can typically fix in this box. """
 
     # define a default display of box_type
@@ -47,19 +64,29 @@ class ProductCategory(models.Model):
     """
     Category or group of product. i.e. Tomato Soup, Canned Pasta, Fruits
     """
-    id = models.AutoField('Internal Product Category ID', primary_key=True,
-                          help_text='Internal record identifier for product '
-                                    'category.')
+    id_help_text = 'Internal record identifier for product category.'
+    id = models.AutoField(
+        'Internal Product Category ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for product category. """
-    prod_cat_name = models.CharField('Product Category Name', max_length=30,
-                                     unique=True, help_text='Name of this '
-                                                            'product '
-                                                            'category.')
+
+    prod_cat_name_help_text = 'Name of this product category.'
+    prod_cat_name = models.CharField(
+        'Product Category Name',
+        max_length=30,
+        unique=True,
+        help_text=prod_cat_name_help_text,
+    )
     """ Name of this product category. """
-    prod_cat_descr = models.TextField('Product Category Description',
-                                      null=True, help_text='Description of '
-                                                           'this product '
-                                                           'category.')
+
+    prod_cat_descr_help_text = 'Description of this product category.'
+    prod_cat_descr = models.TextField(
+        'Product Category Description',
+        null=True,
+        help_text=prod_cat_descr_help_text,
+    )
     """ Description of this product category. """
 
     # define a default display of product Category
@@ -80,16 +107,30 @@ class Product(models.Model):
     Product name and attributes.  Oranges, Pineapple, Mixed Fruit are products
     within the Fruits category
     """
-    id = models.AutoField('Internal Product ID', primary_key=True,
-                          help_text='Internal record identifier for product.')
+    id_help_text = 'Internal record identifier for product.'
+    id = models.AutoField(
+        'Internal Product ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for product. """
-    prod_name = models.CharField('product Name', max_length=30, unique=True,
-                                 help_text='Name of this product.')
+
+    prod_name_help_text = 'Name of this product.'
+    prod_name = models.CharField(
+        'product Name',
+        max_length=30,
+        unique=True,
+        help_text=prod_name_help_text,
+    )
     """ Name of this product. """
-    prod_cat = models.ForeignKey(ProductCategory, on_delete=models.PROTECT,
-                                 verbose_name='Product Category',
-                                 help_text='Product category associated with '
-                                           'this product.')
+
+    prod_cat_help_text = 'Product category associated with this product.'
+    prod_cat = models.ForeignKey(
+        ProductCategory,
+        on_delete=models.PROTECT,
+        verbose_name='Product Category',
+        help_text=prod_cat_help_text,
+    )
     """ Product category associated with this product. """
 
     # define a default display of product
@@ -107,38 +148,69 @@ class Box(models.Model):
     """
     Box or container for product.
     """
-    id = models.AutoField('Internal Box ID', primary_key=True,
-                          help_text='Internal record identifier for box.')
+    id_help_text = 'Internal record identifier for box.'
+    id = models.AutoField(
+        'Internal Box ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for box. """
 
+    box_number_help_text = "Number printed in the label on the box."
     box_number = models.CharField(
         'Visible Box Number',
         max_length=8,
         unique=True,
-        help_text="Number printed in the label on the box."
+        help_text=box_number_help_text,
     )
     """ Number printed in the label on the box. """
 
-    box_type = models.ForeignKey(BoxType, on_delete=models.PROTECT,
-                                 verbose_name='Type of Box',
-                                 help_text='Type of box with this number.')
+    box_type_help_text = 'Type of box with this number.'
+    box_type = models.ForeignKey(
+        BoxType, on_delete=models.PROTECT,
+        verbose_name='Type of Box',
+        help_text=box_type_help_text.index,
+    )
     """ Type of box with this number. """
-    loc_row = models.CharField('Row Location', max_length=2, null=True,
-                               blank=True, help_text='Row containing this '
-                                                     'box, if filled.')
+
+    loc_row_help_text = 'Row containing this box, if filled.'
+    loc_row = models.CharField(
+        'Row Location',
+        max_length=2,
+        null=True,
+        help_text=loc_row_help_text,
+    )
     """ Row containing this box, if filled. """
-    loc_bin = models.CharField('Bin Location', max_length=2, null=True,
-                               blank=True, help_text='Bin containing this '
-                                                     'box, if filled.')
+
+    loc_bin_help_text = 'Bin containing this box, if filled.'
+    loc_bin = models.CharField(
+        'Bin Location',
+        max_length=2,
+        null=True,
+        blank=True,
+        help_text=loc_bin_help_text,
+    )
     """ Bin containing this box, if filled. """
-    loc_tier = models.CharField('Tier Location', max_length=2, null=True,
-                                blank=True, help_text='Tier containing this '
-                                                      'box, if filled.')
+
+    loc_tier_help_text = 'Tier containing this box, if filled.'
+    loc_tier = models.CharField(
+        'Tier Location',
+        max_length=2,
+        null=True,
+        blank=True,
+        help_text=loc_tier_help_text,
+    )
     """ Tier containing this box, if filled. """
-    product = models.ForeignKey(Product, on_delete=models.PROTECT,
-                                verbose_name='product', null=True, blank=True,
-                                help_text='Product contained in this box, '
-                                          'if filled.')
+
+    product_help_text = 'Product contained in this box, if filled.'
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.PROTECT,
+        verbose_name='product',
+        null=True,
+        blank=True,
+        help_text=product_help_text,
+    )
     """ Product contained in this box, if filled. """
 
     exp_year_help_text = 'Year the product expires, if filled.'
@@ -150,7 +222,8 @@ class Box(models.Model):
     )
     """ Year the product expires, if filled. """
 
-    exp_month_start_help_text = 'Optional starting month range of when the product expires, if filled.'
+    exp_month_start_help_text = 'Optional starting month range of when the ' \
+                                'product expires, if filled.'
     exp_month_start = models.IntegerField(
         'Expiration Start Month (Optional)',
         null=True,
@@ -160,7 +233,8 @@ class Box(models.Model):
     Optional starting month range of when the product expires, if filled. 
     """
 
-    exp_month_end_help_text = 'Optional ending month range of when the product expires, if filled.'
+    exp_month_end_help_text = 'Optional ending month range of when the ' \
+                              'product expires, if filled.'
     exp_month_end = models.IntegerField(
         'Expiration End Month (Optional)',
         null=True,
@@ -168,14 +242,23 @@ class Box(models.Model):
         help_text=exp_month_end_help_text)
     """ Optional emding month range of when the product expires, if filled. """
 
-    date_filled = models.DateTimeField('Date Box Filled', null=True,
-                                       blank=True,
-                                       help_text='Approximate date box was '
-                                                 'filled, if filled.')
+    date_filled_help_text = 'Approximate date box was filled, if filled.'
+    date_filled = models.DateTimeField(
+        'Date Box Filled',
+        null=True,
+        blank=True,
+        help_text=date_filled_help_text,
+    )
     """ Approximate date box was filled, if filled. """
-    quantity = models.IntegerField('Quantity in Box', null=True, blank=True,
-                                   help_text='Approximate or default number '
-                                             'of items in the box, if filled.')
+
+    quantity_help_text = 'Approximate or default number of items in the ' \
+                         'box, if filled.'
+    quantity = models.IntegerField(
+        'Quantity in Box',
+        null=True,
+        blank=True,
+        help_text=quantity_help_text,
+    )
     """ Approximate or default number of items in the box, if filled. """
 
     # define a default display of Box
@@ -204,68 +287,126 @@ class Activity(models.Model):
     """
     Activity (history) from the past.
     """
-    id = models.AutoField('Internal Activity ID', primary_key=True,
-                          help_text='Internal record identifier for an '
-                                    'activity.')
+    id_help_text = 'Internal record identifier for an activity.'
+    id = models.AutoField(
+        'Internal Activity ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for an activity. """
-    box_number = models.CharField('Visible Box Number', max_length=8,
-                                  help_text='Box number on box at time of '
-                                            'consumption.')
+
+    box_number_help_text = 'Box number on box at time of consumption.'
+    box_number = models.CharField(
+        'Visible Box Number',
+        max_length=8,
+        help_text=box_number_help_text,
+    )
     """ Box number on box at time of consumption. """
-    box_type_code = models.CharField('Box Type Code', max_length=10,
-                                     help_text='Box type holding consumed '
-                                               'product.')
+
+    box_type_help_text = 'Box type holding consumed product.'
+    box_type = models.CharField(
+        'Box Type Code',
+        max_length=10,
+        help_text=box_type_help_text,
+    )
     """ Box type holding consumed product. """
-    loc_row = models.CharField('Row Location', max_length=2,
-                               help_text='Rox box was in at the time product '
-                                         'was consumed.')
-    """ Rox box was in at the time product was consumed. """
-    loc_bin = models.CharField('Bin Location', max_length=2,
-                               help_text='Bin box was in at the time product '
-                                         'was consumed.')
+
+    loc_row_help_text = 'Row box was in at the time product was consumed.'
+    loc_row = models.CharField(
+        'Row Location',
+        max_length=2,
+        help_text=loc_row_help_text,
+    )
+    """ Row box was in at the time product was consumed. """
+
+    loc_bin_help_text = 'Bin box was in at the time product was consumed.'
+    loc_bin = models.CharField(
+        'Bin Location',
+        max_length=2,
+        help_text=loc_bin_help_text,
+    )
     """ Bin box was in at the time product was consumed. """
-    loc_tier = models.CharField('Tier Location', max_length=2,
-                                help_text='Tier box was in at the time '
-                                          'product was consumed.')
+
+    loc_tier_help_text = 'Tier box was in at the time product was consumed.'
+    loc_tier = models.CharField(
+        'Tier Location',
+        max_length=2,
+        help_text=loc_tier_help_text,
+    )
     """ Tier box was in at the time product was consumed. """
-    prod_name = models.CharField('Product Name', max_length=30,
-                                 help_text='Product contained in box at time '
-                                           'of consumption.')
+
+    prod_name_help_text = 'Product contained in box at time of consumption.'
+    prod_name = models.CharField(
+        'Product Name',
+        max_length=30,
+        help_text=prod_name_help_text,
+    )
     """ Product contained in box at time of consumption. """
-    prod_cat_name = models.CharField('Product Category Name', max_length=30,
-                                     help_text='Category of product consumed.')
+
+    prod_cat_name_help_text = 'Category of product consumed.'
+    prod_cat_name = models.CharField(
+        'Product Category Name',
+        max_length=30,
+        help_text=prod_cat_name_help_text,
+    )
     """ Category of product consumed. """
-    date_filled = models.DateField('Date Box Filled',
-                                   help_text='Approximate date product was '
-                                             'put in the box.')
+
+    date_filled_help_text = 'Approximate date product was put in the box.'
+    date_filled = models.DateField(
+        'Date Box Filled',
+        help_text=date_filled_help_text,
+    )
     """ Approximate date product was put in the box. """
-    date_consumed = models.DateField('Date Box Emptied',
-                                     help_text='Date product was consumed.')
+
+    date_consumed_help_text = 'Date product was consumed.'
+    date_consumed = models.DateField(
+        'Date Box Emptied',
+        help_text=date_consumed_help_text,
+    )
     """ Date product was consumed. """
-    duration = models.IntegerField('Duration',
-                                   help_text='Number of days between date '
-                                             'box was filled and consumed.')
+
+    duration_help_text = 'Number of days between date box was filled and ' \
+                         'consumed.'
+    duration = models.IntegerField(
+        'Duration',
+        help_text=duration_help_text,
+    )
     """ Number of days between date box was filled and consumed. """
-    expiration_year = models.IntegerField('Year Expired',
-                                          help_text='Year product would have '
-                                                    'expired.')
+
+    exp_year_help_text = 'Year product would have expired.'
+    exp_year = models.IntegerField(
+        'Year Expired',
+        help_text=exp_year_help_text,
+    )
     """ Year product would have expired. """
-    expiration_month_start = models.IntegerField('Start Expiration Month',
-                                                 null=True, blank=True,
-                                                 help_text='Year product '
-                                                           'would have '
-                                                           'expired.')
+
+    exp_month_start_help_text = 'Optional starting month product ' \
+                                       'would have expired.'
+    exp_month_start = models.IntegerField(
+        'Start Expiration Month',
+        null=True,
+        blank=True,
+        help_text=exp_month_start_help_text,
+    )
     """ Optional starting month product would have expired. """
-    expiration_month_end = models.IntegerField('End Expiration Month',
-                                               null=True, blank=True,
-                                               help_text='Optional ending '
-                                                         'month product would '
-                                                         'have expired.')
+
+    exp_month_end_help_text = 'Optional ending month product would ' \
+                                     'have expired.'
+    exp_month_end = models.IntegerField(
+        'End Expiration Month',
+        null=True,
+        blank=True,
+        help_text=exp_month_end_help_text,
+    )
     """ Optional ending month product would have expired. """
-    quantity = models.IntegerField('Quantity in Box', null=True,
-                                   help_text='Approximate number of items in '
-                                             'the '
-                                             'box when it was filled.')
+
+    quantity_help_text = 'Approximate number of items in the box when it ' \
+                         'was filled.'
+    quantity = models.IntegerField(
+        'Quantity in Box',
+        null=True,
+        help_text=quantity_help_text,
+    )
     """ Approximate number of items in the box when it was filled. """
 
     # define a default display of Activity
@@ -275,10 +416,13 @@ class Activity(models.Model):
             display = f'{self.box_number} ({self.box_type_code}) ' \
                 f'{self.prod_name} ({self.prod_cat_name}) ' \
                 f'{self.quantity} ' \
-                f'{self.expiration_year}' \
-                f'({self.expiration_month_start}-{self.expiration_month_end})' \
-                f'{self.date_filled} - {self.date_consumed} ' \
-                f'({self.duration}) at {self.loc_row} / {self.loc_bin} / ' \
+                f'{self.exp_year}' \
+                f'({self.exp_month_start}-' \
+                f'{self.exp_month_end})' \
+                f'{self.date_filled} - {self.date_consumed}' \
+                f'({self.duration}) at ' \
+                f'{self.loc_row} / ' \
+                f'{self.loc_bin} / ' \
                 f'{self.loc_tier}'
         else:
             display = f'{self.box_number} ({self.box_type_code}) - Empty'
@@ -287,6 +431,18 @@ class Activity(models.Model):
     class Meta:
         ordering = ['-date_consumed', 'box_number']
         app_label = 'fpiweb'
+
+
+@unique
+class CONSTRAINT_NAME_KEYS(Enum):
+    """
+    Valid constraint key values with associated names for each key.
+    """
+    TIER: 'Tier'
+    ROW: 'Row'
+    BIN: 'Bin'
+    EXP_YEAR: 'Expiration Year'
+    QUANTITY: 'Quantity'
 
 
 class Constraints(models.Model):
@@ -301,41 +457,75 @@ class Constraints(models.Model):
     CHAR_LIST = 'Char-List'
 
     CONSTRAINT_TYPE_CHOICES = (
-        (INT_RANGE, 'Integer Min/Max'), (CHAR_RANGE, 'Character Min/Max'),
-        (INT_LIST, 'Integer Valid List'), (CHAR_LIST, 'Character Valid List'),)
+        (INT_RANGE, 'Integer Min/Max'),
+        (CHAR_RANGE, 'Character Min/Max'),
+        (INT_LIST, 'Integer Valid List'),
+        (CHAR_LIST, 'Character Valid List'),
+    )
 
-    id = models.AutoField('Internal Constraint ID', primary_key=True,
-                          help_text='Internal record identifier for a '
-                                    'constraint.')
+    id_help_text = 'Internal record identifier for a constraint.'
+    id = models.AutoField(
+        'Internal Constraint ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for a constraint. """
-    constraint_name = models.CharField('Constraint Name', max_length=30,
-                                       unique=True,
-                                       help_text='Coded name of a constraint.')
+
+    constraint_name_help_text = 'Coded name of a constraint.'
+    constraint_name = models.CharField(
+        'Constraint Name',
+        max_length=30,
+        unique=True,
+        help_text=constraint_name_help_text,
+    )
     """ Coded name of a constraint. """
-    constraint_descr = models.TextField('Constraint Description', null=True,
-                                        help_text='Description of a '
-                                                  'constraint.')
-    """ Description of a constraint. """
-    constraint_type = models.CharField('Constraint Type', max_length=15,
-                                       choices=CONSTRAINT_TYPE_CHOICES,
-                                       help_text='Type of constraint ('
-                                                 'integer or character, '
-                                                 'list or range).')
+
+    constraint_descr_help_text = 'Description of this constraint.'
+    constraint_descr = models.TextField(
+        'Constraint Description',
+        null=True,
+        help_text=constraint_descr_help_text,
+    )
+    """ Description of this constraint. """
+
+    constraint_type_help_text = 'Type of constraint (integer or character, ' \
+                                'list or range).'
+    constraint_type = models.CharField(
+        'Constraint Type',
+        max_length=15,
+        choices=CONSTRAINT_TYPE_CHOICES,
+        help_text=constraint_type_help_text,
+    )
     """ Type of constraint (integer or character, list or range). """
-    constraint_min = models.CharField('Minimum Valid Constraint', null=True,
-                                      max_length=30, blank=True,
-                                      help_text='If a range, what is the '
-                                                'minimum valid value?')
+
+    constraint_min_help_text = 'If a range, what is the minimum valid value?'
+    constraint_min = models.CharField(
+        'Minimum Valid Constraint',
+        null=True,
+        max_length=30,
+        blank=True,
+        help_text=constraint_min_help_text,
+    )
     """ If a range, what is the minimum valid value? """
-    constraint_max = models.CharField('Maximum Valid Constraint', null=True,
-                                      max_length=30, blank=True,
-                                      help_text='If a range, what is the '
-                                                'maximum valid value?')
+
+    constraint_max_help_text = 'If a range, what is the maximum valid value?'
+    constraint_max = models.CharField(
+        'Maximum Valid Constraint',
+        null=True,
+        max_length=30,
+        blank=True,
+        help_text=constraint_max_help_text,
+    )
     """ If a range, what is the maximum valid value? """
-    constraint_list = models.CharField('Valid Constraint List', null=True,
-                                       max_length=500, blank=True,
-                                       help_text='If a list, what are the '
-                                                 'valid values?')
+
+    constraint_list_help_text = 'If a list, what are the valid values?'
+    constraint_list = models.CharField(
+        'Valid Constraint List',
+        null=True,
+        max_length=500,
+        blank=True,
+        help_text=constraint_list_help_text,
+    )
     """ If a list, what are the valid values? """
 
     # define a default display of Constraints
@@ -360,18 +550,30 @@ class ProductExample(models.Model):
     """
     Examples of items that go into a labeled product.
     """
-    id = models.AutoField('Internal Product Example ID', primary_key=True,
-                          help_text='Internal reccord identifier for '
-                                    'product example')
+    id_help_text = 'Internal reccord identifier for product example'
+    id = models.AutoField(
+        'Internal Product Example ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal reccord identifier for product example"""
-    prod_example_name = models.CharField('Product Example Name',
-                                         max_length=30,unique=True,
-                                         help_text='Name of example product.')
+
+    prod_example_name_help_text = 'Name of example product.'
+    prod_example_name = models.CharField(
+        'Product Example Name',
+        max_length=30,
+        unique=True,
+        help_text=prod_example_name_help_text,
+    )
     """Name of example product."""
-    prod_id = models.ForeignKey(Product, on_delete=models.PROTECT,
-                                verbose_name='Product',
-                                help_text='Product with which this product '
-                                          'name is associated.')
+
+    prod_id_help_text = 'Product with which this product name is associated.'
+    prod_id = models.ForeignKey(
+        Product,
+        on_delete=models.PROTECT,
+        verbose_name='Product',
+        help_text=prod_id_help_text,
+    )
     """ Product with which this product name is associated. """
 
     def __str__(self):
