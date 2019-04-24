@@ -18,8 +18,8 @@ MarkupSafe==1.1.1
 more-itertools==7.0.0
 packaging==19.0
 pluggy==0.9.0
-psycopg2==2.8.1
-psycopg2-binary==2.8.1
+psycopg2==2.8.2
+psycopg2-binary==2.8.2
 py==1.8.0
 Pygments==2.3.1
 pyparsing==2.3.1
@@ -29,7 +29,7 @@ PyYAML==5.1
 requests==2.21.0
 six==1.12.0
 snowballstemmer==1.2.1
-Sphinx==2.0.0
+Sphinx==2.0.1
 sphinx-autoapi==0.7.1
 sphinx-markdown==1.0.1
 sphinxcontrib-applehelp==1.0.1
@@ -44,5 +44,5 @@ sphinxcontrib-serializinghtml==1.1.3
 sphinxcontrib-websupport==1.1.0
 typed-ast==1.3.1
 Unidecode==1.0.23
-urllib3==1.24.1
+urllib3==1.24.2
 wrapt==1.11.1
