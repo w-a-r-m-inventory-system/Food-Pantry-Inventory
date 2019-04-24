@@ -11,8 +11,9 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-from fpiweb.forms import LoginForm, ConstraintsForm, LogoutForm
-from fpiweb.models import Constraints
+
+from fpiweb.forms import BoxForm, LoginForm, ConstraintsForm, LogoutForm
+from fpiweb.models import Box, Constraints
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -183,5 +184,13 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
 
         results = reverse('fpiweb:constraints_view')
         return results
+
+
+class BoxAddView(CreateView):
+    model = Box
+    template_name = 'fpiweb/box_edit.html'
+    context_object_name = 'box'
+    form_class = BoxForm
+
 
 # EOF

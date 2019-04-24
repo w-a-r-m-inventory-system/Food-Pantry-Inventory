@@ -1,0 +1,39 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+    {% if box.id %}
+        Edit Box
+    {% else %}
+        Add Box
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <h1 class="h1">
+                {% if box.id %}
+                    Edit Box
+                {% else %}
+                    Add Box
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <form action="" method="post">
+        {% bootstrap_field form.box_number %}
+        {% bootstrap_field form.box_type %}
+        {% bootstrap_field form.loc_row %}
+        {% bootstrap_field form.loc_bin %}
+        {% bootstrap_field form.loc_tier %}
+        {% bootstrap_field form.product %}
+        {% bootstrap_field form.exp_year %}
+        {% bootstrap_field form.exp_month_start %}
+        {% bootstrap_field form.exp_month_end %}
+        <input type="submit" value="Submit"/>
+    </form>
+
+
+{% endblock %}

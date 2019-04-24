@@ -3,6 +3,7 @@ models.py - Define the database tables using ORM models.
 """
 
 from django.db import models
+from django.utils import timezone
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -109,11 +110,15 @@ class Box(models.Model):
     id = models.AutoField('Internal Box ID', primary_key=True,
                           help_text='Internal record identifier for box.')
     """ Internal record identifier for box. """
-    box_number = models.CharField('Visible Box Number', max_length=8,
-                                  unique=True, help_text='Number printed in '
-                                                         'the label on the '
-                                                         'box.')
+
+    box_number = models.CharField(
+        'Visible Box Number',
+        max_length=8,
+        unique=True,
+        help_text="Number printed in the label on the box."
+    )
     """ Number printed in the label on the box. """
+
     box_type = models.ForeignKey(BoxType, on_delete=models.PROTECT,
                                  verbose_name='Type of Box',
                                  help_text='Type of box with this number.')
@@ -135,25 +140,34 @@ class Box(models.Model):
                                 help_text='Product contained in this box, '
                                           'if filled.')
     """ Product contained in this box, if filled. """
-    exp_year = models.IntegerField('Year Product Expires', null=True,
-                                   blank=True, help_text='Year the product '
-                                                         'expires, if filled.')
+
+    exp_year_help_text = 'Year the product expires, if filled.'
+    exp_year = models.IntegerField(
+        'Year Product Expires',
+        null=True,
+        blank=True,
+        help_text=exp_year_help_text,
+    )
     """ Year the product expires, if filled. """
-    exp_month_start = models.IntegerField('Expiration Start Month '
-                                          '(Optional)', null=True, blank=True,
-                                          help_text='Optional starting month '
-                                                    'range of when the '
-                                                    'product expires, '
-                                                    'if filled.')
+
+    exp_month_start_help_text = 'Optional starting month range of when the product expires, if filled.'
+    exp_month_start = models.IntegerField(
+        'Expiration Start Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_start_help_text)
     """ 
     Optional starting month range of when the product expires, if filled. 
     """
-    exp_month_end = models.IntegerField('Expiration End Month '
-                                        '(Optional)', null=True, blank=True,
-                                        help_text='Optional emding month '
-                                                  'range of when the product '
-                                                  'expires, if filled.')
+
+    exp_month_end_help_text = 'Optional ending month range of when the product expires, if filled.'
+    exp_month_end = models.IntegerField(
+        'Expiration End Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_end_help_text)
     """ Optional emding month range of when the product expires, if filled. """
+
     date_filled = models.DateTimeField('Date Box Filled', null=True,
                                        blank=True,
                                        help_text='Approximate date box was '
