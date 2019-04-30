@@ -1,7 +1,7 @@
 [
 {
     "model": "fpiweb.constraints",
-    "pk": 3,
+    "pk": 3,./
     "fields": {
         "constraint_name": "Tier",
         "constraint_descr": "Third part of location identifier.  Indicates which of six locations in a bin contain the box.  The tier designator indicates where in the bin the pallet containing the box is located. There are three levels with two positions in each level. B: left side of each level, A: right side of each level.  1: ground level, 2: first rack above ground level, 3: second rack above ground level.",
