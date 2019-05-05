@@ -13,30 +13,30 @@ variable for DJANGO_SETTINGS_MODULE from FPIDjango.settings to
 FPIDjango.private.settings.
 """
 
-__author__ = '(Multiple)'
+__author__ = "(Multiple)"
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
 # The name of the engine Django needs to use to access the database
-DB_ENGINE = 'django.db.backends.postgresql'
+DB_ENGINE = "django.db.backends.postgresql"
 
 # The name of your database
-DB_NAME = 'WARM'
+DB_NAME = "WARM"
 
 # The user ID to be used by Django to accss the database.
-DB_USER = 'postgres'
+DB_USER = "postgres"
 
 # The password for this user
-DB_PSWD = 'PSWD'
+DB_PSWD = "PSWD"
 
 # The host for the database server
-DB_HOST = 'localhost'   # can also be '127.0.0.1'
+DB_HOST = "localhost"  # can also be '127.0.0.1'
 
 # The port used by the database server
-DB_PORT = '5432'
+DB_PORT = "5432"
 
 
 # Specify any additonal private parameters here.
-MY_SECRET_KEY = '<specify your own random  string of 50 characters>'
+MY_SECRET_KEY = "<specify your own random  string of 50 characters>"
 
 # EOF
