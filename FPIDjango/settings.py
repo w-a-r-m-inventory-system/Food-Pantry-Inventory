@@ -33,7 +33,7 @@ import os
 
 import psycopg2.extensions
 
-from FPIDjango.settings_private import *
+from FPIDjango.private.settings_private import *
 
 """
 Original import of dummy values:
@@ -63,13 +63,20 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
 # Application definition
 
 INSTALLED_APPS = [
+
+    # Application app(s)
     'fpiweb.apps.FpiwebConfig',
+
+    # Django supplied apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Third party apps
     'bootstrap4',
 ]
 
