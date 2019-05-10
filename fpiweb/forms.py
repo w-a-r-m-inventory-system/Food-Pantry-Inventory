@@ -23,6 +23,7 @@ __creation_date__ = "04/01/2019"
 
 month_choices = [('--', '--')] + [(str(i), str(i)) for i in range(1, 13)]
 
+
 def expire_year_choices():
     current_year = timezone.now().year
     years_ahead = 5
@@ -30,6 +31,27 @@ def expire_year_choices():
         value = str(current_year + i)
         yield value, value
 
+
+def min_max_choices(constraint_name):
+    min_value, max_value = Constraints.get_values(constraint_name)
+    select_range = [str(i) for i in range(min_value, max_value + 1)]
+    return list(zip(select_range, select_range))
+
+
+def char_list_choices(constraint_name):
+    values = Constraints.get_values(constraint_name)
+    return list(zip(values, values))
+
+def row_choices():
+    return min_max_choices('Row')
+
+
+def bin_choices():
+    return min_max_choices('Bin')
+
+
+def tier_choices():
+    return char_list_choices('Tier')
 
 
 
@@ -70,10 +92,25 @@ class BoxForm(forms.ModelForm):
     class Meta:
         model = Box
         fields = [
-            'box_number', 'box_type',
-            'loc_row', 'loc_bin', 'loc_tier',
+            'box_number',
+            'box_type',
             'product',
         ]
+
+    loc_row = forms.ChoiceField(
+        choices=row_choices,
+        help_text=Box.loc_row_help_text,
+    )
+
+    loc_bin = forms.ChoiceField(
+        choices=bin_choices,
+        help_text=Box.loc_bin_help_text,
+    )
+
+    loc_tier = forms.ChoiceField(
+        choices=tier_choices,
+        help_text=Box.loc_tier_help_text,
+    )
 
     exp_year = forms.TypedChoiceField(
         choices=expire_year_choices,

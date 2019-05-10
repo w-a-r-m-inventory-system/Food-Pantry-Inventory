@@ -1,0 +1,20 @@
+[
+{
+  "model": "fpiweb.boxtype",
+  "pk": 1,
+  "fields": {
+    "box_type_code": "Evans",
+    "box_type_descr": "Evans Logo Box",
+    "box_type_qty": 24
+  }
+},
+{
+  "model": "fpiweb.boxtype",
+  "pk": 2,
+  "fields": {
+    "box_type_code": "Banana",
+    "box_type_descr": "Pseudo-banana box",
+    "box_type_qty": 52
+  }
+}
+]

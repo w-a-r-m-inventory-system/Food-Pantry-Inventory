@@ -178,6 +178,7 @@ class Box(models.Model):
         'Row Location',
         max_length=2,
         null=True,
+        blank=True,
         help_text=loc_row_help_text,
     )
     """ Row containing this box, if filled. """
@@ -450,6 +451,10 @@ class Constraints(models.Model):
     Constraints of valid values.
     """
 
+    class Meta:
+        ordering = ['constraint_name']
+        app_label = 'fpiweb'
+
     # Constraint Choice Names
     INT_RANGE = 'Int-MM'
     CHAR_RANGE = 'Char-MM'
@@ -544,6 +549,49 @@ class Constraints(models.Model):
     class Meta:
         ordering = ['constraint_name']
         app_label = 'fpiweb'
+
+    @staticmethod
+    def get_values(constraint_name):
+        try:
+            constraint = Constraints.objects.get(
+                constraint_name__iexact=constraint_name)
+        except Constraints.DoesNotExist:
+            return None
+
+        if constraint.constraint_type == Constraints.INT_RANGE:
+            return [
+                int(constraint.constraint_min),
+                int(constraint.constraint_max),
+            ]
+
+        if constraint.constraint_type == Constraints.CHAR_RANGE:
+            return [
+                constraint.constraint_min,
+                constraint.constraint_max,
+            ]
+
+        if constraint.constraint_type == Constraints.INT_LIST:
+            if not constraint.constraint_list:
+                return []
+
+            values = []
+            for piece in constraint.constraint_list.split(','):
+                piece = piece.strip()
+                values.append(int(piece))
+            return values
+
+        if constraint.constraint_type == Constraints.CHAR_LIST:
+            if not constraint.constraint_list:
+                return []
+
+            values = []
+            for piece in constraint.constraint_list.split(','):
+                piece = piece.strip()
+                values.append(piece)
+            return values
+
+        raise ValueError(
+            f"Unrecognized constraint_type {constraint.constraint_type}")
 
 
 class ProductExample(models.Model):
