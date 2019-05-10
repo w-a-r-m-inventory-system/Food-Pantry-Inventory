@@ -33,7 +33,7 @@ import os
 
 import psycopg2.extensions
 
-from FPIDjango.settings_private import *
+from FPIDjango.private.settings_private import *
 
 """
 Original import of dummy values:
