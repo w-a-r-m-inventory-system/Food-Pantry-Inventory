@@ -23,6 +23,7 @@
     </div>
 
     <form action="" method="post">
+        {% csrf_token %}
         {% bootstrap_field form.box_number %}
         {% bootstrap_field form.box_type %}
         {% bootstrap_field form.loc_row %}
@@ -35,5 +36,28 @@
         <input type="submit" value="Submit"/>
     </form>
 
+
+    <br/>
+    <a href="{% url 'fpiweb:index/' %}">
+        Return to main page
+    </a>
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: box_edit.html
+    </h6>
+    <h6>
+        View: BoxAddView
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:box_add/' %}
+    </h6>
+    <h6>
+        Edit URL: (undefined)
+    </h6>
+    <h6>
+        Delete URL: (undefined)
+    </h6>
 
 {% endblock %}

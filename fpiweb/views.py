@@ -38,7 +38,7 @@ class AboutView(TemplateView):
 class LoginView(FormView):
     template_name = 'fpiweb/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('fpiweb:index')
+    success_url = reverse_lazy('fpiweb:index/')
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
@@ -115,7 +115,7 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
         """
 
         context = super(ConstraintCreateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_new')
+        context['action'] = reverse('fpiweb:constraint_new/')
         return context
 
     def get_success_url(self):
@@ -124,7 +124,7 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
 
         :return:
         """
-        results = reverse('fpiweb:constraints_view')
+        results = reverse('fpiweb:constraints_view/')
         return results
 
 
@@ -135,7 +135,7 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
-    context_object_name = 'constraint_edit_context'
+    context_object_name = 'constraint_edit_context/'
 
     form_class = ConstraintsForm
 
@@ -152,7 +152,7 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
         """
 
         context = super(ConstraintUpdateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_update',
+        context['action'] = reverse('fpiweb:constraint_update/',
                                     kwargs={'pk': self.get_object().id})
         return context
 
@@ -162,7 +162,7 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
         :return:
         """
 
-        results = reverse('fpiweb:constraints_view')
+        results = reverse('fpiweb:constraints_view/')
         return results
 
 
@@ -180,15 +180,16 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
         :return:
         """
 
-        results = reverse('fpiweb:constraints_view')
+        results = reverse('fpiweb:constraints_view/')
         return results
 
 
-class BoxAddView(CreateView):
+class BoxAddView(LoginRequiredMixin, CreateView):
     model = Box
     template_name = 'fpiweb/box_edit.html'
     context_object_name = 'box'
     form_class = BoxForm
+    success_url = reverse_lazy('fpiweb:box/add/')
 
 
 # EOF

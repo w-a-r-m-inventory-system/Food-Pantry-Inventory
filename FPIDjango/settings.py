@@ -34,6 +34,7 @@ import os
 import psycopg2.extensions
 
 from FPIDjango.private.settings_private import *
+
 """
 Original import of dummy values:
 from .settings_public import *
@@ -62,13 +63,20 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
 # Application definition
 
 INSTALLED_APPS = [
+
+    # Application app(s)
     'fpiweb.apps.FpiwebConfig',
+
+    # Django supplied apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Third party apps
     'bootstrap4',
 ]
 
@@ -148,7 +156,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # URL to allow a user to authenticate herself.  This becomes the default
 # used whenever Django detects someone trying to do something requiring
 # authentication.
-LOGIN_URL = 'fpiweb:login'
+LOGIN_URL = 'fpiweb:login/'
 
 
 # Internationalization

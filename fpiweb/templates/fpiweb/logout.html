@@ -9,8 +9,14 @@
 {% block title %}Logout{% endblock %}
 
 {% block content %}
-
-            <a href="{% url 'fpiweb:index' %}">Successful</a>
+    <div>
+        <h3 class="'row text-center">
+            Now logged out.
+        </h3>
+    </div>
+    <div>
+        <a href="{% url 'fpiweb:index/' %}">Return to main page.</a>
+    </div>
 
 {% endblock %}
 
