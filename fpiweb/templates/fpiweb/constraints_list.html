@@ -27,7 +27,7 @@
         <div class="col-md-12 text-center">
             <a class="btn alert-info"
                role="button"
-               href="{% url 'fpiweb:constraint_new' %}">
+               href="{% url 'fpiweb:constraint_new/' %}">
                 Add a Constraint
             </a>
         </div>
@@ -74,7 +74,7 @@
                         <a class="btn alert-info"
                            role="button"
                            href="
-                            {% url 'fpiweb:constraint_update' pk=constraint.id %}">
+                            {% url 'fpiweb:constraint_update/' pk=constraint.id %}">
                             Edit
                         </a>
                     </div>
@@ -84,7 +84,7 @@
                         <a class="btn alert-info"
                            role="button"
                            href="
-                            {% url 'fpiweb:constraint_delete' pk=constraint.id %}">
+                            {% url 'fpiweb:constraint_delete/' pk=constraint.id %}">
                             Delete
                         </a>
                     </div>
@@ -104,7 +104,7 @@
         <p>No constraints are available.</p>
     {% endif %}
     <div class='row'>
-        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+        <a href="{% url 'fpiweb:index/' %}">Return to main page.</a>
     </div>
 
 
@@ -117,13 +117,13 @@
         View: ConstraintsListView
     </h6>
     <h6>
-        Add URL: {% url 'fpiweb:constraint_new' %}
+        Add URL: {% url 'fpiweb:constraint_new/' %}
     </h6>
     <h6>
-        Edit URL: {% url 'fpiweb:constraint_update' pk=1 %}"
+        Edit URL: {% url 'fpiweb:constraint_update/' pk=1 %}"
     </h6>
     <h6>
-        Delete URL: {% url 'fpiweb:constraint_delete' pk=1 %}
+        Delete URL: {% url 'fpiweb:constraint_delete/' pk=1 %}
     </h6>
 
 {% endblock %}
