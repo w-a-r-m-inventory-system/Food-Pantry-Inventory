@@ -1,0 +1,818 @@
+[
+  {
+    "model": "fpiweb.product",
+    "pk": 1,
+    "fields": {
+      "prod_name": "Corn",
+      "prod_cat": 1
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 2,
+    "fields": {
+      "prod_name": "Green Beans",
+      "prod_cat": 2
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 4,
+    "fields": {
+      "prod_name": "Toilet Paper",
+      "prod_cat": 52
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 5,
+    "fields": {
+      "prod_name": "Baby Products",
+      "prod_cat": 52
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 6,
+    "fields": {
+      "prod_name": "House/Cleaning Supplies",
+      "prod_cat": 52
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 7,
+    "fields": {
+      "prod_name": "Paper Towels",
+      "prod_cat": 52
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 8,
+    "fields": {
+      "prod_name": "Personal Care Items",
+      "prod_cat": 52
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 9,
+    "fields": {
+      "prod_name": "Pet Supplies",
+      "prod_cat": 52
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 11,
+    "fields": {
+      "prod_name": "Beets",
+      "prod_cat": 54
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 12,
+    "fields": {
+      "prod_name": "Carrots",
+      "prod_cat": 54
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 13,
+    "fields": {
+      "prod_name": "Mixed Veggies",
+      "prod_cat": 54
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 14,
+    "fields": {
+      "prod_name": "Other Veggies",
+      "prod_cat": 54
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 15,
+    "fields": {
+      "prod_name": "Peas",
+      "prod_cat": 54
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 16,
+    "fields": {
+      "prod_name": "Spinach",
+      "prod_cat": 54
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 17,
+    "fields": {
+      "prod_name": "Crushed Tomatoes",
+      "prod_cat": 25
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 18,
+    "fields": {
+      "prod_name": "Diced Tomatoes",
+      "prod_cat": 25
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 19,
+    "fields": {
+      "prod_name": "Stewed Tomatoes",
+      "prod_cat": 25
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 20,
+    "fields": {
+      "prod_name": "Whole Tomatoes",
+      "prod_cat": 25
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 21,
+    "fields": {
+      "prod_name": "Spaghetti Sauce",
+      "prod_cat": 25
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 22,
+    "fields": {
+      "prod_name": "Tomato Sauce",
+      "prod_cat": 25
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 23,
+    "fields": {
+      "prod_name": "Tomato Paste",
+      "prod_cat": 25
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 24,
+    "fields": {
+      "prod_name": "Vegetable Soup",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 25,
+    "fields": {
+      "prod_name": "Vegetarian Vegetable Soup",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 26,
+    "fields": {
+      "prod_name": "Vegetable Beef Soup",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 27,
+    "fields": {
+      "prod_name": "Tomato Soup",
+      "prod_cat": 3
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 28,
+    "fields": {
+      "prod_name": "Misc Soup",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 30,
+    "fields": {
+      "prod_name": "Dry Soup",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 31,
+    "fields": {
+      "prod_name": "Cream of Potato Soup",
+      "prod_cat": 22
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 32,
+    "fields": {
+      "prod_name": "Cream of Mushroom Soup",
+      "prod_cat": 22
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 33,
+    "fields": {
+      "prod_name": "Cream of Celery Soup",
+      "prod_cat": 22
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 34,
+    "fields": {
+      "prod_name": "Cream Chicken Soup",
+      "prod_cat": 22
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 35,
+    "fields": {
+      "prod_name": "Clam Chower",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 36,
+    "fields": {
+      "prod_name": "Chicken and Stars",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 37,
+    "fields": {
+      "prod_name": "Bean Soup",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 38,
+    "fields": {
+      "prod_name": "Broth",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 39,
+    "fields": {
+      "prod_name": "Snacks",
+      "prod_cat": 19
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 40,
+    "fields": {
+      "prod_name": "Boxed Pasta",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 42,
+    "fields": {
+      "prod_name": "Helpers",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 43,
+    "fields": {
+      "prod_name": "Mac & Cheese",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 45,
+    "fields": {
+      "prod_name": "Noodles",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 46,
+    "fields": {
+      "prod_name": "Pasta Sides",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 47,
+    "fields": {
+      "prod_name": "Ramen Noodles",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 48,
+    "fields": {
+      "prod_name": "Rice",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 49,
+    "fields": {
+      "prod_name": "Rice Sides",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 50,
+    "fields": {
+      "prod_name": "Spaghetti",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 51,
+    "fields": {
+      "prod_name": "Stuffing",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 52,
+    "fields": {
+      "prod_name": "Beef Stew",
+      "prod_cat": 26
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 41,
+    "fields": {
+      "prod_name": "Canned Pasta",
+      "prod_cat": 50
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 53,
+    "fields": {
+      "prod_name": "Canned Chicken",
+      "prod_cat": 26
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 54,
+    "fields": {
+      "prod_name": "Chili",
+      "prod_cat": 26
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 55,
+    "fields": {
+      "prod_name": "Sloppy Joe",
+      "prod_cat": 26
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 56,
+    "fields": {
+      "prod_name": "Tuna",
+      "prod_cat": 26
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 57,
+    "fields": {
+      "prod_name": "Other Meat",
+      "prod_cat": 26
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 58,
+    "fields": {
+      "prod_name": "Applesauce",
+      "prod_cat": 40
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 59,
+    "fields": {
+      "prod_name": "Cranberry Sauce",
+      "prod_cat": 40
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 60,
+    "fields": {
+      "prod_name": "Mixed Fruit",
+      "prod_cat": 40
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 61,
+    "fields": {
+      "prod_name": "Oranges",
+      "prod_cat": 40
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 62,
+    "fields": {
+      "prod_name": "Other Fruit",
+      "prod_cat": 40
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 63,
+    "fields": {
+      "prod_name": "Peaches",
+      "prod_cat": 40
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 65,
+    "fields": {
+      "prod_name": "Pears",
+      "prod_cat": 40
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 66,
+    "fields": {
+      "prod_name": "BBQ",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 67,
+    "fields": {
+      "prod_name": "Jelly",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 68,
+    "fields": {
+      "prod_name": "Ketchup",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 69,
+    "fields": {
+      "prod_name": "Mustard",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 70,
+    "fields": {
+      "prod_name": "Peanut Butter",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 71,
+    "fields": {
+      "prod_name": "Salad Dressing",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 72,
+    "fields": {
+      "prod_name": "Syrup",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 73,
+    "fields": {
+      "prod_name": "Vegetable Oil",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 74,
+    "fields": {
+      "prod_name": "Vinegar",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 75,
+    "fields": {
+      "prod_name": "Cereal",
+      "prod_cat": 33
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 76,
+    "fields": {
+      "prod_name": "Breakfast Food (Not Cereal)",
+      "prod_cat": 33
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 78,
+    "fields": {
+      "prod_name": "Coffee",
+      "prod_cat": 20
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 79,
+    "fields": {
+      "prod_name": "Juice",
+      "prod_cat": 20
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 80,
+    "fields": {
+      "prod_name": "Tea",
+      "prod_cat": 20
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 81,
+    "fields": {
+      "prod_name": "Other Beverage",
+      "prod_cat": 20
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 82,
+    "fields": {
+      "prod_name": "Baked Beans",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 83,
+    "fields": {
+      "prod_name": "Black Beans",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 84,
+    "fields": {
+      "prod_name": "Black-Eyed Peas",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 85,
+    "fields": {
+      "prod_name": "Dry Beans",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 86,
+    "fields": {
+      "prod_name": "Garbanzo Beans",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 87,
+    "fields": {
+      "prod_name": "Kidney Beans",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 88,
+    "fields": {
+      "prod_name": "Misc Beans",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 89,
+    "fields": {
+      "prod_name": "Pinto Beans",
+      "prod_cat": 49
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 90,
+    "fields": {
+      "prod_name": "Baking Ingredients",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 91,
+    "fields": {
+      "prod_name": "Bread Mixes",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 92,
+    "fields": {
+      "prod_name": "Cake Mix/Brownies",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 93,
+    "fields": {
+      "prod_name": "Dessert Mixes",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 94,
+    "fields": {
+      "prod_name": "Jello/Pudding",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 95,
+    "fields": {
+      "prod_name": "Pancake Mix",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 96,
+    "fields": {
+      "prod_name": "Pumpkin",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 97,
+    "fields": {
+      "prod_name": "Baking Other",
+      "prod_cat": 11
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 98,
+    "fields": {
+      "prod_name": "Chk Ndl Soup",
+      "prod_cat": 4
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 99,
+    "fields": {
+      "prod_name": "Hash",
+      "prod_cat": 26
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 100,
+    "fields": {
+      "prod_name": "Canned Potatoes",
+      "prod_cat": 36
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 101,
+    "fields": {
+      "prod_name": "Boxed Potatoes",
+      "prod_cat": 36
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 102,
+    "fields": {
+      "prod_name": "Sweet Potatoes",
+      "prod_cat": 36
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 103,
+    "fields": {
+      "prod_name": "Soup Kitchen",
+      "prod_cat": 53
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 104,
+    "fields": {
+      "prod_name": "Other",
+      "prod_cat": 47
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 29,
+    "fields": {
+      "prod_name": "Misc Cream Soup",
+      "prod_cat": 22
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 105,
+    "fields": {
+      "prod_name": "Chicken & Rice",
+      "prod_cat": 6
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 106,
+    "fields": {
+      "prod_name": "Other Condiment",
+      "prod_cat": 32
+    }
+  },
+  {
+    "model": "fpiweb.product",
+    "pk": 108,
+    "fields": {
+      "prod_name": "Pork and Beans",
+      "prod_cat": 49
+    }
+  }
+]

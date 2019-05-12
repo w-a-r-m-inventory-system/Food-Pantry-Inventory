@@ -21,6 +21,7 @@ __creation_date__ = "04/01/2019"
 # "${CopyRight.py}"
 
 
+# month_choices = [(str(i), str(i)) for i in range(1, 13)]
 month_choices = [('--', '--')] + [(str(i), str(i)) for i in range(1, 13)]
 
 
@@ -120,12 +121,16 @@ class BoxForm(forms.ModelForm):
 
     exp_month_start = forms.TypedChoiceField(
         choices=month_choices,
+        required=False,
+        empty_value='--',
         coerce=int,
         help_text=Box.exp_month_start_help_text,
     )
 
     exp_month_end = forms.TypedChoiceField(
         choices=month_choices,
+        required=False,
+        empty_value='--',
         coerce=int,
         help_text=Box.exp_month_end_help_text,
     )

@@ -167,9 +167,10 @@ class Box(models.Model):
 
     box_type_help_text = 'Type of box with this number.'
     box_type = models.ForeignKey(
-        BoxType, on_delete=models.PROTECT,
+        BoxType,
+        on_delete=models.PROTECT,
         verbose_name='Type of Box',
-        help_text=box_type_help_text.index,
+        help_text=box_type_help_text,
     )
     """ Type of box with this number. """
 
