@@ -2,6 +2,42 @@
 Developer Documentation
 ***********************
 
+Getting Started
+===============
+
+This project is based on using PyCharm as the IDE, Django as the web
+framework, and PostgreSQL as the database backend for development.
+
+Contributing to this Project
+----------------------------
+
+In order for you to contribute to this project, you will need to spend some
+time setting up your environment.
+
+PyCharm
++++++++
+
+PyCharm is available from JetBrains (http://www.jetbrains.com) in two
+editions - Professional($) and Community(Free).  This project only requires
+the Community edition, althogh it will work with the Professional edition if
+you are lucky enough to have it.
+
+GitHub
+++++++
+
+This project requires you to have a GitHub account.
+
+Django
+++++++
+
+The Django web framework code will be downloaded as part of the project code.
+
+Starting Point
+--------------
+
+Please start with the :doc:`Git Guidelines <DevDocs/Git Guidelines>`.
+
+
 General Developer Documentation
 ===============================
 
