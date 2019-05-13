@@ -1,17 +1,30 @@
-# Food-Pantry-Inventory
+# Food Pantry Inventory Tracking
 
-Requirements for a MVP:
+Welcome to the Food Pantry Inventory open source project!
 
-1. Keep track of expiration dates, at least to the year, preferably the month/quarter/half-year/etc as well
-2. Keep track of location in warehouse (row, bin, tier)
-3. Read QR codes that will link to a URL to a website that will work on mobile phones (doesn't need to be a phone app yet)
-4. Needs to know products in the boxes, as the boxes should be consistent
-5. Have some way of reporting what we need more of for W.A.R.M.
+This project is designed to track the inventory in the warehouse of a food
+pantry.  It tracks boxes of product by location (row, bin, and  tier), contents
+(green beans, corn, etc.) and by expiration year.  The expriation can 
+optionally be tracked by half-year, quarter, or arbitrary month ranges.
 
+Details of this system are given in the [documentation](docs/source/index
+.rst].
 
-TODO: 
+## Code of Conduct
 
-1. Set up Sphinx documentation
-2. Try to figure out more steps to put in this todo.
-3. At some point will need to figure out how the database will work, whether already provided or will we need to make one?
-  3.1. If so, MySQL? Postgress? etc?
+Code of conduct for this project is given in 
+[Code of Conduct](Code_of_Conduct.md).
+
+## Licensing
+
+This project is licensed following the MIT licene given in
+[License](LICENSE),
+
+## Contributors
+
+Contributers are noted in [Contributors](Contributors.md)
+
+## How to Get Started
+
+Please refer to the Wiki for this project on how to get set up to contribute
+to this project.
