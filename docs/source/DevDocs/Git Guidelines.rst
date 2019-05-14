@@ -168,6 +168,15 @@ Setting Up Your Personal Repository
 
 #.  Install graphviz from https://graphviz.org/.  This is needed for PlantUML.
 
+Other PyCharm Settings
+----------------------
+
+There are lots of other PyCharm settings that we have not specified.  You
+are free to set this however you wish.  There may be some settings that will
+be effectively overridden or ignored due to our adhering to PEP 8 or using
+a preformatting program such as black.
+
+
 Git and GitHub Operations For Our Project
 =========================================
 
