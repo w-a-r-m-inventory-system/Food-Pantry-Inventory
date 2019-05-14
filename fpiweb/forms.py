@@ -22,6 +22,7 @@ month_choices = [(None, '--')] + [(str(i), str(i)) for i in range(1, 13)]
 
 # logger = getLogger(__name__)
 
+
 def expire_year_choices():
     current_year = timezone.now().year
     years_ahead = 5
@@ -149,7 +150,8 @@ class BoxForm(forms.ModelForm):
         help_text=Box.exp_month_end_help_text,
     )
 
-    def validate_exp_month_start_end(self, exp_month_start, exp_month_end):
+    @staticmethod
+    def validate_exp_month_start_end(exp_month_start, exp_month_end):
         if exp_month_start is None and exp_month_end is None:
             return
 
@@ -161,7 +163,8 @@ class BoxForm(forms.ModelForm):
         if exp_month_end is not None and exp_month_start is None:
             raise ValidationError(error_msg.format('end', 'start'))
 
-
+        if exp_month_end <= exp_month_start:
+            raise ValidationError('Exp month end must be after Exp month start')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -171,9 +174,6 @@ class BoxForm(forms.ModelForm):
         exp_month_end = cleaned_data.get('exp_month_end')
         self.validate_exp_month_start_end(exp_month_start, exp_month_end)
 
-
-        if exp_month_start is not None or exp_month_end is not None:
-            pass
 
 
 # EOF
