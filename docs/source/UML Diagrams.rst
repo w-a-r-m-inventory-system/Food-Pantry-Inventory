@@ -3,12 +3,12 @@
 UML Diagrams
 ************
 
-
 Overview
 ========
 
 An overview of this inventory system is illustrated by the following UML
 diagrams.
+
 For more information about UML diagrams, please see any of these links.
 
 -   `Wikipedia article <https://en.wikipedia.org/wiki/Unified_Modeling_Language>`_
@@ -17,9 +17,17 @@ For more information about UML diagrams, please see any of these links.
 
 -   `Official UML Site <https://www.uml-diagrams.org>`_
 
+Scan QR Code
+============
+
+..  uml:: UML/ScanQRCodeUseCase.puml
+    :caption: **Scan QR Code Use Case**
+
+..  uml:: UML/ScanQRCodeSequenceDiagram.puml
+    :caption: **Scan QR Code Sequence Diagram**
 
 Checkin
--------
+=======
 
 ..  uml:: UML/CheckinInventoryUseCase.puml
     :caption: **Checkin Inventory Use Case**
@@ -29,7 +37,7 @@ Checkin
 
 
 Checkout
---------
+========
 
 ..  uml:: UML/CheckoutInventoryUseCase.puml
     :caption: **Checkout Inventory Use Case**
@@ -39,7 +47,7 @@ Checkout
 
 
 Move Box
---------
+========
 
 ..  uml:: UML/MoveBoxInventoryUseCase.puml
     :caption: **Move Box Inventory Use Case**
@@ -49,6 +57,6 @@ Move Box
 
 
 TBD
----
+===
 
 More diagrams will be needed in the future.

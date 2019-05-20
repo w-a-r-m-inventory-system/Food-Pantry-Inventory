@@ -192,7 +192,8 @@ BOOTSTRAP4 = {
                 "/bootstrap.min.css",
         "integrity": "sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId"
                      "/iRN3ewGhXQFZCSftd1LZCfmhktB",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+    },
 
     # The complete URL to the Bootstrap JavaScript file
     "javascript_url": {
@@ -200,7 +201,8 @@ BOOTSTRAP4 = {
                "/bootstrap.min.js",
         "integrity": "sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB"
                      "/pTJ0euyQp0Mk8ck+5T",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+    },
 
     # The complete URL to the Bootstrap CSS file (None means no theme)
     "theme_url": None,
@@ -209,7 +211,8 @@ BOOTSTRAP4 = {
     "jquery_url": {"url": "https://code.jquery.com/jquery-3.3.1.min.js",
         "integrity": "sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI"
                      "/8aZajjp4Bqd+V6D5IgvKT",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+                   },
 
     # The URL to the jQuery JavaScript file (slim)
     "jquery_slim_url": {
@@ -226,7 +229,8 @@ BOOTSTRAP4 = {
         "integrity":
             "sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK"
             "/l8WvCWPIPm49",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+    },
 
     # Put JavaScript in the HEAD section of the HTML document (only relevant
     # if you use bootstrap4.html)

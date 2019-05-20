@@ -1,0 +1,36 @@
+@startuml
+(Warehouse\nInventory\nSystem) as (Use)
+
+User -> (Scan QR Code)
+User --> (Use)
+
+note right of (Use)
+The response from the Warehouse System
+determines the next screen presented.
+end note
+
+note as N3
+Label includes a QR code and a box number.
+end note
+
+(Scan QR Code) .. N3
+
+N3 ..(Use)
+
+(Use) .. (New Box)
+
+(Use) .. (Existing Empty Box)
+
+(Use) .. (Existing Filled Box)
+
+(New Box) .. (Checkin)
+
+(Existing Empty Box) .. (Checkin)
+
+(Existing Filled Box) .. (Checkout)
+
+(Existing Filled Box) .. (Move Box)
+
+(Existing Filled Box) .. (Empty Box)
+
+@enduml
