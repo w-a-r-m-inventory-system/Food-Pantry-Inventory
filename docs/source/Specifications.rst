@@ -174,7 +174,7 @@ Development Configuration
 Software
 --------
 
-Developers will have the following software installed an configured on their
+Developers will have the following software installed and configured on their
 system:
 
 -   PyCharm (Professional or Community)
@@ -199,3 +199,14 @@ Changes will be implemented by:
 #.  Retest/regression test
 #.  Push the changes into the developer's fork on GitHub
 #.  Submit a pull request into the main repository
+
+See the :doc:`Developer Docummentation <Developer Documentation>` for more
+information about how to be a contributor to this project and how to get
+started.
+
+
+Tasks
+=====
+
+Please refer to the document :doc:`Outstanding Tasks <Outstanding Tasks>` for
+specific items that need to be accomplished.

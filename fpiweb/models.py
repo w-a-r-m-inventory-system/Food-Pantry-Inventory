@@ -469,10 +469,6 @@ class Constraints(models.Model):
     Constraints of valid values.
     """
 
-    class Meta:
-        ordering = ['constraint_name']
-        app_label = 'fpiweb'
-
     # Constraint Choice Names
     INT_RANGE = 'Int-MM'
     CHAR_RANGE = 'Char-MM'

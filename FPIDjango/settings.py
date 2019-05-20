@@ -192,7 +192,8 @@ BOOTSTRAP4 = {
                 "/bootstrap.min.css",
         "integrity": "sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId"
                      "/iRN3ewGhXQFZCSftd1LZCfmhktB",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+    },
 
     # The complete URL to the Bootstrap JavaScript file
     "javascript_url": {
