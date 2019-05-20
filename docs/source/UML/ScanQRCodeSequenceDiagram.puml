@@ -1,0 +1,14 @@
+@startuml
+User -> SmartPhone: Activate QR Code Scanning Application
+User -> SmartPhone: Scan QR Code on box
+SmartPhone -> Website: Lookup the QR Code URL
+Website -> Database: Request box information
+Website <- Database: No box record
+Website -> SmartPhone: Present add box screen
+Website <- Database: Empty box record
+Website -> SmartPhone: Present add box screen
+Website <- Database: Filled box record
+Website -> SmartPhone: Empty or move box screen
+User -> SmartPhone: Enters appropriate information
+
+@enduml
