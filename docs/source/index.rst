@@ -15,6 +15,8 @@ it will manage the inventory in the warehouse.
 
    Specifications
 
+   Outstanding Tasks
+
    UML Diagrams
 
    Developer Documentation

@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 
+# Check if one parameter or none
+if [ $# == 0 ] ; then
+    TYPE='html'
+elif [ $# == 1 ] ;  then
+    TYPE="$1"
+else
+    echo 'usage: mkdir html | latex | latexpdf'
+    exit 1
+fi
+
 # bash script to run the new Sphinx build
 pushd .
 cd docs
-make html
+make $TYPE
 popd
 
 # echo $PYTHONPATH
