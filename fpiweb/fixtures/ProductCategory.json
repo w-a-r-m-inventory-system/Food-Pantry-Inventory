@@ -1,0 +1,170 @@
+[
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 49,
+    "fields": {
+      "prod_cat_name": "Beans",
+      "prod_cat_descr": "Beans other than green beans"
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 11,
+    "fields": {
+      "prod_cat_name": "Baking Supplies",
+      "prod_cat_descr": "Included all products that need to be mixed with other ingredients and baked before eating."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 20,
+    "fields": {
+      "prod_cat_name": "Bevereges",
+      "prod_cat_descr": "Hot or cold beverages."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 33,
+    "fields": {
+      "prod_cat_name": "Breakfast Foods",
+      "prod_cat_descr": "Products usually consumed at breakfast."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 32,
+    "fields": {
+      "prod_cat_name": "Condiments",
+      "prod_cat_descr": "Products added to other foods before eating."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 1,
+    "fields": {
+      "prod_cat_name": "Corn",
+      "prod_cat_descr": "Canned corn."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 40,
+    "fields": {
+      "prod_cat_name": "Fruit",
+      "prod_cat_descr": "Packaged fruit."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 26,
+    "fields": {
+      "prod_cat_name": "Meat",
+      "prod_cat_descr": "Packaged meat."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 50,
+    "fields": {
+      "prod_cat_name": "Pasta and Rice",
+      "prod_cat_descr": "Packaged pasta and/or rice."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 19,
+    "fields": {
+      "prod_cat_name": "Snacks",
+      "prod_cat_descr": "Products eaten between meals."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 52,
+    "fields": {
+      "prod_cat_name": "Non-Food Category",
+      "prod_cat_descr": "Products that are not to be eaten."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 53,
+    "fields": {
+      "prod_cat_name": "Soup Kitchen",
+      "prod_cat_descr": "Any product that have been expired for six months to a year ."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 54,
+    "fields": {
+      "prod_cat_name": "Vegetables",
+      "prod_cat_descr": "Packaged vegetables."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 22,
+    "fields": {
+      "prod_cat_name": "Cream Soups",
+      "prod_cat_descr": "Soups with \"cream\" in the name."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 4,
+    "fields": {
+      "prod_cat_name": "Chicken Noodle Soup",
+      "prod_cat_descr": "Chicken Noodle Soup (no other soup)"
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 2,
+    "fields": {
+      "prod_cat_name": "Green Beens",
+      "prod_cat_descr": "Green beans (no other beans)"
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 6,
+    "fields": {
+      "prod_cat_name": "Other Soups",
+      "prod_cat_descr": "Soups that are not chicken noodle, tomato, or cream soups."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 47,
+    "fields": {
+      "prod_cat_name": "Other",
+      "prod_cat_descr": "Anything that does not fit in any of the other product categories.  (These items don't get boxed.)"
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 36,
+    "fields": {
+      "prod_cat_name": "Potatoes",
+      "prod_cat_descr": "Anything with potatoes in it -- other than potato soup."
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 3,
+    "fields": {
+      "prod_cat_name": "Tomato Soup",
+      "prod_cat_descr": "Tomato soup (no other soup)"
+    }
+  },
+  {
+    "model": "fpiweb.productcategory",
+    "pk": 25,
+    "fields": {
+      "prod_cat_name": "Tomatoes",
+      "prod_cat_descr": "Anything with primarily tomatoes in it (other than tomato soup)."
+    }
+  }
+]
