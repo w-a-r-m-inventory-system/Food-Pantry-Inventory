@@ -30,6 +30,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from os.path import dirname, join
 
 import psycopg2.extensions
 
@@ -268,5 +269,44 @@ BOOTSTRAP4 = {
     'field_renderers': {
         'default': 'bootstrap4.renderers.FieldRenderer',
         'inline': 'bootstrap4.renderers.InlineFieldRenderer',
+    },
+}
+
+
+LOG_DIR = join(dirname(BASE_DIR), 'log')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters':{
+        'standard': {
+            'format': "{levelname}:{asctime}:{filename}:{lineno}:{message}",
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'django': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': join(LOG_DIR, 'django.log')
+        },
+        'fpiweb': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': join(LOG_DIR, 'fpiweb.log'),
+            'formatter': 'standard',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['django'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'fpiweb': {
+            'handlers': ['fpiweb'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
     },
 }
