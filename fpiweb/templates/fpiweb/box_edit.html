@@ -33,12 +33,14 @@
         {% bootstrap_field form.exp_year %}
         {% bootstrap_field form.exp_month_start %}
         {% bootstrap_field form.exp_month_end %}
+        {% bootstrap_field form.date_filled %}
+        {% bootstrap_field form.quantity %}
         <input type="submit" value="Submit"/>
     </form>
 
 
     <br/>
-    <a href="{% url 'fpiweb:index/' %}">
+    <a href="{% url 'fpiweb:index' %}">
         Return to main page
     </a>
 
@@ -51,7 +53,7 @@
         View: BoxAddView
     </h6>
     <h6>
-        Add URL: {% url 'fpiweb:box_add/' %}
+        Add URL: {% url 'fpiweb:box_add' %}
     </h6>
     <h6>
         Edit URL: (undefined)
