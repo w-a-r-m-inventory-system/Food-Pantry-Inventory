@@ -1,6 +1,8 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+from logging import getLogger
+
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,6 +19,8 @@ __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
+
+logger = getLogger('fpiweb')
 
 class IndexView(TemplateView):
     """
