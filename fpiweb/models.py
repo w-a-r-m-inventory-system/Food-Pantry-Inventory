@@ -15,6 +15,11 @@ class BoxType(models.Model):
     """
     Type of box (Evan's boxes, large boxes, etc.) and default quantity.
     """
+
+    class Meta:
+        ordering = ['box_type_code']
+        app_label = 'fpiweb'
+
     id_help_text = 'Internal record identifier for box type.'
     id = models.AutoField(
         'Internal Box Type ID',
@@ -55,15 +60,17 @@ class BoxType(models.Model):
             f'({self.box_type_qty})'
         return display
 
-    class Meta:
-        ordering = ['box_type_code']
-        app_label = 'fpiweb'
-
 
 class ProductCategory(models.Model):
     """
     Category or group of product. i.e. Tomato Soup, Canned Pasta, Fruits
     """
+
+    class Meta:
+        ordering = ['prod_cat_name']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Product Categories'
+
     id_help_text = 'Internal record identifier for product category.'
     id = models.AutoField(
         'Internal Product Category ID',
@@ -97,16 +104,17 @@ class ProductCategory(models.Model):
             display += f' - {self.prod_cat_descr[:50]}'
         return display
 
-    class Meta:
-        ordering = ['prod_cat_name']
-        app_label = 'fpiweb'
-
 
 class Product(models.Model):
     """
     Product name and attributes.  Oranges, Pineapple, Mixed Fruit are products
     within the Fruits category
     """
+
+    class Meta:
+        ordering = ['prod_name']
+        app_label = 'fpiweb'
+
     id_help_text = 'Internal record identifier for product.'
     id = models.AutoField(
         'Internal Product ID',
@@ -139,15 +147,17 @@ class Product(models.Model):
         display = f'{self.prod_name} ({self.prod_cat})'
         return display
 
-    class Meta:
-        ordering = ['prod_name']
-        app_label = 'fpiweb'
-
 
 class Box(models.Model):
     """
     Box or container for product.
     """
+
+    class Meta:
+        ordering = ['box_number']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Boxes'
+
     id_help_text = 'Internal record identifier for box.'
     id = models.AutoField(
         'Internal Box ID',
@@ -280,15 +290,17 @@ class Box(models.Model):
                 f'{self.exp_year} {self.date_filled}'
         return display
 
-    class Meta:
-        ordering = ['box_number']
-        app_label = 'fpiweb'
-
 
 class Activity(models.Model):
     """
     Activity (history) from the past.
     """
+
+    class Meta:
+        ordering = ['-date_consumed', 'box_number']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Activities'
+
     id_help_text = 'Internal record identifier for an activity.'
     id = models.AutoField(
         'Internal Activity ID',
@@ -382,8 +394,8 @@ class Activity(models.Model):
     )
     """ Year product would have expired. """
 
-    exp_month_start_help_text = 'Optional starting month product ' \
-                                       'would have expired.'
+    exp_month_start_help_text = \
+        'Optional starting month product would have expired.'
     exp_month_start = models.IntegerField(
         'Start Expiration Month',
         null=True,
@@ -392,8 +404,8 @@ class Activity(models.Model):
     )
     """ Optional starting month product would have expired. """
 
-    exp_month_end_help_text = 'Optional ending month product would ' \
-                                     'have expired.'
+    exp_month_end_help_text = \
+        'Optional ending month product would have expired.'
     exp_month_end = models.IntegerField(
         'End Expiration Month',
         null=True,
@@ -415,7 +427,7 @@ class Activity(models.Model):
     def __str__(self):
         """ Default way to display this activity record. """
         if self.date_filled:
-            display = f'{self.box_number} ({self.box_type_code}) ' \
+            display = f'{self.box_number} ({self.box_type}) ' \
                 f'{self.prod_name} ({self.prod_cat_name}) ' \
                 f'{self.quantity} ' \
                 f'{self.exp_year}' \
@@ -427,12 +439,8 @@ class Activity(models.Model):
                 f'{self.loc_bin} / ' \
                 f'{self.loc_tier}'
         else:
-            display = f'{self.box_number} ({self.box_type_code}) - Empty'
+            display = f'{self.box_number} ({self.box_type}) - Empty'
         return display
-
-    class Meta:
-        ordering = ['-date_consumed', 'box_number']
-        app_label = 'fpiweb'
 
 
 @unique
@@ -451,6 +459,11 @@ class Constraints(models.Model):
     """
     Constraints of valid values.
     """
+
+    class Meta:
+        ordering = ['constraint_name']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Constraints'
 
     # Constraint Choice Names
     INT_RANGE = 'Int-MM'
@@ -543,10 +556,6 @@ class Constraints(models.Model):
             display += f' -- {self.constraint_descr[:50]}'
         return display
 
-    class Meta:
-        ordering = ['constraint_name']
-        app_label = 'fpiweb'
-
     @staticmethod
     def get_values(constraint_name):
         try:
@@ -595,6 +604,11 @@ class ProductExample(models.Model):
     """
     Examples of items that go into a labeled product.
     """
+
+    class Meta:
+        ordering = ['prod_example_name']
+        app_label = 'fpiweb'
+
     id_help_text = 'Internal reccord identifier for product example'
     id = models.AutoField(
         'Internal Product Example ID',
@@ -625,9 +639,5 @@ class ProductExample(models.Model):
         """ Default way to display this product example """
         display = f'{self.prod_example_name} ({self.prod_id})'
         return display
-
-    class Meta:
-        ordering = ['prod_example_name']
-        app_label = 'fpiweb'
 
 # EOF
