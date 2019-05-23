@@ -2,10 +2,12 @@
 views.py - establish the views (pages) for the F. P. I. web application.
 """
 from logging import getLogger
+from random import choice
 
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Max
 from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, \
@@ -205,6 +207,23 @@ class BoxDetailsView(LoginRequiredMixin, DetailView):
         print(f"kwargs are {kwargs}")
         context = super().get_context_data(**kwargs)
         return context
+
+
+class TestScanView(LoginRequiredMixin, TemplateView):
+
+    template_name = 'fpiweb/test_scan.html'
+
+    def get_context_data(self, **kwargs):
+
+        box_pks = Box.objects.values_list('pk', flat=True)[:100]
+
+        max_pk = Box.objects.aggregate(max_pk=Max('pk'))
+        nonexistent_box_pk = max_pk['max_pk'] + 10
+
+        return {
+            'extant_box_pk': choice(box_pks),
+            'nonexistent_box_pk': nonexistent_box_pk,
+        }
 
 
 # EOF
