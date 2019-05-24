@@ -21,27 +21,34 @@ screens.</p>
 <table border="2">
     <tr>
         <td>
-            <div>A box that is in the system</div>
+            <div>A box that is in the system and is full</div>
             <div>
-                <a href="{% url 'fpiweb:box_details' extant_box_pk %}">
-                    {% url 'fpiweb:box_details' extant_box_pk %}
-                </a>
+                <a href="{{ full_box_url }}">{{ full_box_url }}</a>
             </div>
             <div>QR Code goes here</div>
         </td>
         <td>
             <div>A box that is NOT in the system</div>
             <div>
-                <a href="{% url 'fpiweb:box_details' nonexistent_box_pk %}">
-                    {% url 'fpiweb:box_details' nonexistent_box_pk %}
-                </a>
+                <a href="{{ nonexistent_box_url }}">{{ nonexistent_box_url }}</a>
             </div>
             <div>QR Code goes here</div>
         </td>
     </tr>
-    <tr>
-        <td>A box w/out a label</td>
-        <td></td>
+    <td>
+        <div>
+            <div>A box w/out a label</div>
+            <div>
+                <a href="{% url 'fpiweb:box_add' %}">Add Box</a>
+            </div>
+        </td>
+        <td>
+            <div>A box that is in the system and is empty</div>
+            <div>
+                <a href="{{ empty_box_url }}">{{ empty_box_url }}</a>
+            </div>
+            <div>QR Code goes here</div>
+        </td>
     </tr>
 </table>
 

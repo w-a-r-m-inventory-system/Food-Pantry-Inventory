@@ -418,7 +418,7 @@ class Activity(models.Model):
                          'was filled.'
     quantity = models.IntegerField(
         'Quantity in Box',
-        null=True,
+        default=0,
         help_text=quantity_help_text,
     )
     """ Approximate number of items in the box when it was filled. """
