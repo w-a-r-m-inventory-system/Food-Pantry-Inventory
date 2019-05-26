@@ -1,0 +1,56 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Test Scan{% endblock %}
+
+{% block content %}
+
+<p>The purpose of this page is to simulate the stack of boxes that the user is
+working with. &nbsp;Some of these boxes are in the system, some are not, some
+don't have labels. &nbsp;QR codes will be displayed so you have something to
+scan when testing with a cellphone or similar device.  This page is only
+intended for use during development & testing</p>
+
+<p>May want to have box details page redirect to either enter box or fill box
+screens.</p>
+
+<div>
+    <a href="{% url 'fpiweb:index' %}">Index</a>
+</div>
+
+<table border="2">
+    <tr>
+        <td>
+            <div>A box that is in the system and is full</div>
+            <div>
+                <a href="{{ full_box_url }}">{{ full_box_url }}</a>
+            </div>
+            <div>QR Code goes here</div>
+        </td>
+        <td>
+            <div>A box that is NOT in the system</div>
+            <div>
+                <a href="{{ nonexistent_box_url }}">{{ nonexistent_box_url }}</a>
+            </div>
+            <div>QR Code goes here</div>
+        </td>
+    </tr>
+    <td>
+        <div>
+            <div>A box w/out a label</div>
+            <div>
+                <a href="{% url 'fpiweb:box_add' %}">Add Box</a>
+            </div>
+        </td>
+        <td>
+            <div>A box that is in the system and is empty</div>
+            <div>
+                <a href="{{ empty_box_url }}">{{ empty_box_url }}</a>
+            </div>
+            <div>QR Code goes here</div>
+        </td>
+    </tr>
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'fpiweb/base.html' %}
+
+{% block title %}
+Error
+{% endblock %}
+
+{% block content %}
+
+<p>{{ message }}</p>
+
+<ul>
+{% for item in messages %}
+    <li>{{ item }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
