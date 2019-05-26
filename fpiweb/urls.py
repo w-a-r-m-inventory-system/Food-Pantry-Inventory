@@ -6,9 +6,15 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import IndexView, LoginView, AboutView, ConstraintsListView, \
+from fpiweb.views import \
+    AboutView, \
+    BoxEditView, \
+    BoxEmptyMoveView, \
+    BoxScannedView, \
+    IndexView, LoginView, ConstraintsListView, \
     ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView, \
-    LogoutView, BoxAddView, BoxDetailsView
+    LogoutView, BoxAddView, BoxDetailsView, \
+    TestScanView
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -62,5 +68,13 @@ urlpatterns = [
     # e.g.  /fpiweb/box/add/ = add a box to inventory
     path('box/add/', BoxAddView.as_view(), name='box_add'),
 
+    path('box/<int:pk>/edit/', BoxEditView.as_view(), name='box_edit'),
+
     path('box/<int:pk>/', BoxDetailsView.as_view(), name='box_details'),
+
+    path('box/<int:pk>/scanned/', BoxScannedView.as_view(), name='box_scanned'),
+
+    path('box/<int:pk>/empty_move', BoxEmptyMoveView.as_view(), name='box_empty_move'),
+
+    path('test_scan/', TestScanView.as_view(), name='test_scan'),
 ]
