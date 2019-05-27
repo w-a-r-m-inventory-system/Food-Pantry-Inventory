@@ -292,12 +292,16 @@ LOGGING = {
         'django': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': join(LOG_DIR, 'django.log')
+            # 'filename': join(LOG_DIR, 'django.log')
+            'filename': 'django.log',
+            'mode': 'w',
         },
         'fpiweb': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': join(LOG_DIR, 'fpiweb.log'),
+            # 'filename': join(LOG_DIR, 'fpiweb.log'),
+            'filename': 'fpiweb.log',
+            'mode': 'w',
             'formatter': 'standard',
         }
     },
@@ -311,6 +315,6 @@ LOGGING = {
             'handlers': ['fpiweb'],
             'level': 'DEBUG',
             'propagate': True,
-        }
+        },
     },
 }
