@@ -27,8 +27,10 @@ class BoxAdmin(admin.ModelAdmin):
         'loc_row',
         'loc_bin',
         'loc_tier',
+        'quantity',
         'product',
     )
+    list_filter = ('box_type', )
 
 
 @admin.register(Constraints)

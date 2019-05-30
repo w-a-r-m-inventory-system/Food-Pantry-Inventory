@@ -3,11 +3,12 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 from logging import getLogger
 
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.db.models import Max
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
@@ -21,11 +22,29 @@ __creation_date__ = "04/01/2019"
 
 logger = getLogger('fpiweb')
 
+
 class IndexView(TemplateView):
     """
     Default web page (/index)
     """
     template_name = 'fpiweb/index.html'
+
+
+def error_page(
+        request,
+        message=None,
+        message_list=tuple(),
+        status=400):
+
+    return render(
+        request,
+        'fpiweb/error.html',
+        {
+            'message': message,
+            'message_list': message_list,
+        },
+        status=status
+    )
 
 
 class AboutView(TemplateView):
@@ -194,6 +213,14 @@ class BoxAddView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('fpiweb:box_add')
 
 
+class BoxEditView(LoginRequiredMixin, UpdateView):
+    model = Box
+    template_name = 'fpiweb/box_edit.html'
+    context_object_name = 'box'
+    form_class = BoxForm
+    success_url = reverse_lazy('fpiweb:index')
+
+
 class BoxDetailsView(LoginRequiredMixin, DetailView):
 
     model = Box
@@ -204,6 +231,64 @@ class BoxDetailsView(LoginRequiredMixin, DetailView):
         print(f"kwargs are {kwargs}")
         context = super().get_context_data(**kwargs)
         return context
+
+
+class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
+    template_name = 'fpiweb/box_empty_move.html'
+
+    def get_context_data(self, **kwargs):
+        return {}
+
+
+class BoxScannedView(LoginRequiredMixin, View):
+
+    def get(self, request, **kwargs):
+        pk = kwargs.get('pk')
+        if pk is None:
+            return error_page(request, "missing kwargs['pk']")
+
+        try:
+            box = Box.objects.get(pk=pk)
+        except Box.DoesNotExist:
+            return redirect('fpiweb:box_add')
+
+        if box.quantity == 0:
+            return redirect('fpiweb:box_edit', pk=pk)
+
+        return redirect('fpiweb:box_empty_move', pk=pk)
+
+
+class TestScanView(LoginRequiredMixin, TemplateView):
+
+    template_name = 'fpiweb/test_scan.html'
+
+    @staticmethod
+    def get_box_scanned_url(box_pk):
+        return reverse('fpiweb:box_scanned', args=(box_pk,))
+
+    @staticmethod
+    def get_box_url_by_filters(**filters):
+        box_pk = Box.objects \
+            .filter(**filters) \
+            .values_list('pk', flat=True) \
+            .first()
+        if box_pk is None:
+            return ""
+        return TestScanView.get_box_scanned_url(box_pk)
+
+    def get_context_data(self, **kwargs):
+
+        full_box_url = self.get_box_url_by_filters(quantity__gt=0)
+        empty_box_url = self.get_box_url_by_filters(quantity=0)
+
+        max_pk = Box.objects.aggregate(max_pk=Max('pk'))['max_pk']
+        nonexistent_box_url = self.get_box_scanned_url(max_pk + 10)
+
+        return {
+            'full_box_url': full_box_url,
+            'empty_box_url': empty_box_url,
+            'nonexistent_box_url': nonexistent_box_url,
+        }
 
 
 # EOF

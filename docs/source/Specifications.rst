@@ -55,20 +55,20 @@ Product Management
 -   Product will be stored in boxes that are uniformly sized (with some
     exceptions).
 
--   The boxes will have labels on the end.
+-   The boxes will have three labels on the end.
 
-    -   One of the labels will be a printed QR code that has a URL that
+    -   The first label will be a printed QR code that has a URL that
         includes a unique box number.  The URL will be such that scanning it
         will access the system to bring up a web page.  That web page will
         allow the user to check the box in, move the box to a new location,
         or check the box out of the system.
 
-    -   Another label will identify the category of procduct contained in
+    -   The second label will identify the category of procduct contained in
         the box.  The granularity of the category will be determined by the
         distribution manager.
 
-    -   Another label will identify the expiration date of the product
-        contained in the box.  At least the year will always be identiried.
+    -   The third label will identify the expiration date of the product
+        contained in the box.  At least the year will always be identified.
         At the discretion of the distribution manager, additional labels may
         be attached that identify the half-year, quarter, or month of
         expiration.
@@ -124,7 +124,7 @@ QR code.
 
 The web site brought up by the QR code will have the following functions:
 
--   Identify and validate the useer.
+-   Identify and validate the user.
 
 -   Checkin Product
 
