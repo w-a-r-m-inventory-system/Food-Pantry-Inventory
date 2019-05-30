@@ -290,6 +290,18 @@ class Box(models.Model):
                 f'{self.exp_year} {self.date_filled}'
         return display
 
+    def empty(self):
+
+        # TODO: finish creating activity record
+        Activity.objects.create(
+            box_number=self.box_number,
+            box_type=self.box_type,
+
+        )
+
+        # TODO: clear out location and product info
+
+
 
 class Activity(models.Model):
     """

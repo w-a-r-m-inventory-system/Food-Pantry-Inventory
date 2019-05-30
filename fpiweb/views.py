@@ -279,8 +279,8 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
 
-        full_box_url = self.get_box_url_by_filters(quantity__gt=0)
-        empty_box_url = self.get_box_url_by_filters(quantity=0)
+        full_box_url = self.get_box_url_by_filters(product__isnull=False)
+        empty_box_url = self.get_box_url_by_filters(product__isnull=True)
 
         max_pk = Box.objects.aggregate(max_pk=Max('pk'))['max_pk']
         nonexistent_box_url = self.get_box_scanned_url(max_pk + 10)
