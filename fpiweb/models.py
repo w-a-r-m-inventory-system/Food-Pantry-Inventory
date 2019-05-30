@@ -302,7 +302,6 @@ class Box(models.Model):
         # TODO: clear out location and product info
 
 
-
 class Activity(models.Model):
     """
     Activity (history) from the past.
