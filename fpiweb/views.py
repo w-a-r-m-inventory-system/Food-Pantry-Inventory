@@ -12,9 +12,8 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-
-from fpiweb.forms import BoxForm, LoginForm, ConstraintsForm
 from fpiweb.models import Box, Constraints
+from fpiweb.forms import BoxForm, LoginForm, ConstraintsForm, LogoutForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"

@@ -13,6 +13,8 @@ it will manage the inventory in the warehouse.
    :maxdepth: 2
    :caption: Contents:
 
+   User Documentation
+
    Specifications
 
    Outstanding Tasks
