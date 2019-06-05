@@ -211,7 +211,10 @@ class BoxAddView(LoginRequiredMixin, CreateView):
     template_name = 'fpiweb/box_edit.html'
     context_object_name = 'box'
     form_class = BoxForm
-    success_url = reverse_lazy('fpiweb:box_add')
+
+    # CreateView has a get_success_url, but it's returning None so override it.
+    def get_success_url(self):
+        return reverse('fpiweb:index')
 
 
 class BoxEditView(LoginRequiredMixin, UpdateView):
@@ -244,16 +247,16 @@ class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
-        pk = kwargs.get('pk')
+        pk = kwargs.get('number')
         if pk is None:
-            return error_page(request, "missing kwargs['pk']")
+            return error_page(request, "missing kwargs['number']")
 
         try:
             box = Box.objects.get(pk=pk)
         except Box.DoesNotExist:
             return redirect('fpiweb:box_add')
 
-        if box.quantity == 0:
+        if not box.product:
             return redirect('fpiweb:box_edit', pk=pk)
 
         return redirect('fpiweb:box_empty_move', pk=pk)
@@ -265,6 +268,8 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
     @staticmethod
     def get_box_scanned_url(box_pk):
+
+        raise Exception('have this use Box.box_number!!!')
         return reverse('fpiweb:box_scanned', args=(box_pk,))
 
     @staticmethod
@@ -278,6 +283,8 @@ class TestScanView(LoginRequiredMixin, TemplateView):
         return TestScanView.get_box_scanned_url(box_pk)
 
     def get_context_data(self, **kwargs):
+
+
 
         full_box_url = self.get_box_url_by_filters(product__isnull=False)
         empty_box_url = self.get_box_url_by_filters(product__isnull=True)
