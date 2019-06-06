@@ -30,8 +30,12 @@ Configuration with the following properties:
 |              |                              | that Django used to do its    |
 |              |                              | magic.                        |
 +--------------+------------------------------+-------------------------------+
+|Parameters:   | runserver localhost:8765     | This tells Django we run the  |
+|              |                              | server on our own machine on  |
+|              |                              | port 8765                     |
++--------------+------------------------------+-------------------------------+
 |Environment   | DJANGO_SETTINGS_MODULE=      | This tells Django where to    |
-|variables:    | FPIDjango.private.settings   | look for your private         |
+|variables:    | FPIDjango.private            | look for your private         |
 |              |                              | configuration file.           |
 +--------------+------------------------------+-------------------------------+
 |Working       | <project directory>/work     | If you haven't created this   |
