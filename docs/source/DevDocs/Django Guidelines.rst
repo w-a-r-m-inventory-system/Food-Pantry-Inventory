@@ -31,7 +31,7 @@ Configuration with the following properties:
 |              |                              | magic.                        |
 +--------------+------------------------------+-------------------------------+
 |Environment   | DJANGO_SETTINGS_MODULE=      | This tells Django where to    |
-|variables:    | FTPDjango.private.settings   | look for your private         |
+|variables:    | FPIDjango.private.settings   | look for your private         |
 |              |                              | configuration file.           |
 +--------------+------------------------------+-------------------------------+
 |Working       | <project directory>/work     | If you haven't created this   |
