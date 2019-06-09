@@ -254,8 +254,12 @@ coverage.xml
 
 # Django stuff:
 *.log
-local_settings.py
 db.sqlite3
+
+# Keep log directory itself and the placeholder.txt file, but ignore
+# everything else.
+!log/placeholder.txt
+log/**
 
 # Flask stuff:
 instance/
@@ -265,7 +269,6 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
 docs/build/
 
 # PyBuilder

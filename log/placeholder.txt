@@ -1,0 +1,4 @@
+This is just a placeholder file.  Its purpose is to force git to create the log
+subdirectory in the root directory of the project.  All other files in the log
+directory will be ignored.  This is especially true for the django.log and the
+fpiweb.log files which might contain sensitive information.

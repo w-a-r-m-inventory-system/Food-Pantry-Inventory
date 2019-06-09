@@ -277,7 +277,7 @@ BOOTSTRAP4 = {
 }
 
 
-LOG_DIR = join(dirname(BASE_DIR), 'log')
+LOG_DIR = join(BASE_DIR, 'log')
 
 LOGGING = {
     'version': 1,
@@ -292,16 +292,12 @@ LOGGING = {
         'django': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            # 'filename': join(LOG_DIR, 'django.log')
             'filename': 'django.log',
-            'mode': 'w',
         },
         'fpiweb': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            # 'filename': join(LOG_DIR, 'fpiweb.log'),
             'filename': 'fpiweb.log',
-            'mode': 'w',
             'formatter': 'standard',
         }
     },
