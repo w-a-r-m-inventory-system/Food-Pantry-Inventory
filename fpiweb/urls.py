@@ -72,7 +72,7 @@ urlpatterns = [
 
     path('box/<int:pk>/', BoxDetailsView.as_view(), name='box_details'),
 
-    path('box/<int:pk>/scanned/', BoxScannedView.as_view(), name='box_scanned'),
+    path('box/box<int:number>', BoxScannedView.as_view(), name='box_scanned'),
 
     path('box/<int:pk>/empty_move', BoxEmptyMoveView.as_view(), name='box_empty_move'),
 
