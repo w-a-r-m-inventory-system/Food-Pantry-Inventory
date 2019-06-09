@@ -20,7 +20,7 @@ __creation_date__ = "04/01/2019"
 
 month_choices = [(None, '--')] + [(str(i), str(i)) for i in range(1, 13)]
 
-# logger = getLogger(__name__)
+logger = getLogger('fpiweb')
 
 
 def expire_year_choices():
