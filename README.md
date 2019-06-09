@@ -7,8 +7,7 @@ pantry.  It tracks boxes of product by location (row, bin, and  tier), contents
 (green beans, corn, etc.) and by expiration year.  The expriation can 
 optionally be tracked by half-year, quarter, or arbitrary month ranges.
 
-Details of this system are given in the 
-[documentation](docs/source/index.rst].
+Details of this system are given in the documentation located at docs/source/index.rst.
 
 ## Code of Conduct
 

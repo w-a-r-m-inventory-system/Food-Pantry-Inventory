@@ -11,6 +11,6 @@ Some good possible sources to learn things:
 
     Explains what Sphinx is and why we should use it.
 
-#.  `Django main web site <https://docs.djangoproject.com/en/2.1/>`_
+#.  `Django main web site <https://docs.djangoproject.com/en/2.2/>`_
 
-    (Currently we are using version 2.1.7.)
+    (Currently we are using version 2.2.1.)

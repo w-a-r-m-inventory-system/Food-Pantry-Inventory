@@ -39,4 +39,11 @@ DB_PORT = "5432"
 # Specify any additonal private parameters here.
 MY_SECRET_KEY = "<specify your own random  string of 50 characters>"
 
+# This snippet of code can be used to generate a random secret key
+# from string import printable
+# from datetime import datetime
+# from random import choice, seed
+# seed(datetime.now().microsecond)
+# "".join([choice(printable) for i in range(50)])
+
 # EOF

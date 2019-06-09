@@ -12,12 +12,25 @@ __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
 # Register the models for which we want default admin pages to be built.
-admin.site.register(Box)
 admin.site.register(BoxType)
 admin.site.register(ProductCategory)
 admin.site.register(Product)
 admin.site.register(ProductExample)
 admin.site.register(Activity)
+
+
+@admin.register(Box)
+class BoxAdmin(admin.ModelAdmin):
+    list_display = (
+        'box_number',
+        'box_type',
+        'loc_row',
+        'loc_bin',
+        'loc_tier',
+        'quantity',
+        'product',
+    )
+    list_filter = ('box_type', )
 
 
 @admin.register(Constraints)
