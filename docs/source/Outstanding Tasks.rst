@@ -36,8 +36,8 @@ Task Descriptions
 
 .. _T1:
 
-**QR Label print program needed**
----------------------------------
+**T1: QR Label print program needed**
+-------------------------------------
 
 This program can be standalone.  It does not need to be incorporated into
 the Django framework.
@@ -112,8 +112,8 @@ Requirements:
 
 .. _T2:
 
-**Product Examples Table**
---------------------------
+**T2: Product Examples Table**
+------------------------------
 
 Build web pages that will allow an authorized user to add, change and delete
 product example entries.  Each product example entry must be associated
@@ -122,8 +122,8 @@ include changing which product is associated with it.
 
 .. _T3:
 
-**Modify base.html template to use static files**
--------------------------------------------------
+**T3: Modify base.html template to use static files**
+-----------------------------------------------------
 
 Currently, when the we site is first presented to the user, the code
 downloads the bootstrap css and javascript.  The code needs to be changed so
@@ -133,8 +133,8 @@ on the web when using our application.
 
 .. _T4:
 
-**Box Type Table**
-------------------
+**T4: Box Type Table**
+----------------------
 
 Build web pages that will allow an authorized user to add, change and delete
 box type entries.  Deleting a box type will not be permitted
@@ -142,8 +142,8 @@ if there are any product entries referencing this box type.
 
 .. _T5:
 
-**Product Table**
------------------
+**T5: Product Table**
+---------------------
 
 Build web pages that will allow an authorized user to add, change and delete
 product entries.  Each product entry must be associated with one (and only
@@ -153,8 +153,8 @@ permitted only if no product example entries are associated with it.
 
 .. _T6:
 
-**Product Category Table**
---------------------------
+**T6: Product Category Table**
+------------------------------
 
 Build web pages that will allow an authorized user to add, change and delete
 product category entries.  Deleting a product category will not be permitted
@@ -162,8 +162,8 @@ if there are any product entries referencing this product category.
 
 .. _T7:
 
-**Build Add Inventory Screen**
-------------------------------
+**T7: Build Add Inventory Screen**
+----------------------------------
 
 Build web pages to add inventory to the system.
 
@@ -205,8 +205,8 @@ Requirements:
 
 .. _T8:
 
-**Add ability to move a box**
------------------------------
+**T8: Add ability to move a box**
+---------------------------------
 
 Build web pages to move a box from one location to another.  Validate that
 the box is in inventory and already filled with product.  Also validate that
@@ -217,7 +217,8 @@ changing the location.
 
 .. _T9:
 
-**Scan a QR code**
+**T9: Scan a QR code**
+----------------------
 
 Build a screen that is presented when a QR code has been scanned.  Based on
 what is found or not found in the database, switch to an appropriate screen.
@@ -236,9 +237,10 @@ Box record filled  Present empty or move box screen
 
 .. _t10:
 
-**Getting error from autodoc when running Sphinx to create documentation**
+**T10: Getting error from autodoc when running Sphinx to create documentation**
+-------------------------------------------------------------------------------
 
-Getting the foloowing error when running Sphinx.
+Getting the following error when running Sphinx.
 
 ::
 

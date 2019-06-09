@@ -1,21 +1,26 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
-from django.shortcuts import render
+from logging import getLogger
+
+from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.db.models import Max
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-
-from fpiweb.forms import BoxForm, LoginForm, ConstraintsForm, LogoutForm
 from fpiweb.models import Box, Constraints
+from fpiweb.forms import BoxForm, LoginForm, ConstraintsForm, LogoutForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
+
+
+logger = getLogger('fpiweb')
 
 
 class IndexView(TemplateView):
@@ -23,6 +28,23 @@ class IndexView(TemplateView):
     Default web page (/index)
     """
     template_name = 'fpiweb/index.html'
+
+
+def error_page(
+        request,
+        message=None,
+        message_list=tuple(),
+        status=400):
+
+    return render(
+        request,
+        'fpiweb/error.html',
+        {
+            'message': message,
+            'message_list': message_list,
+        },
+        status=status
+    )
 
 
 class AboutView(TemplateView):
@@ -38,7 +60,7 @@ class AboutView(TemplateView):
 class LoginView(FormView):
     template_name = 'fpiweb/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('fpiweb:index/')
+    success_url = reverse_lazy('fpiweb:index')
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
@@ -62,7 +84,6 @@ class LogoutView(TemplateView):
         logout(self.request)
         nothing = dict()
         return nothing
-
 
 
 class ConstraintsListView(LoginRequiredMixin, ListView):
@@ -115,7 +136,7 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
         """
 
         context = super(ConstraintCreateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_new/')
+        context['action'] = reverse('fpiweb:constraint_new')
         return context
 
     def get_success_url(self):
@@ -124,7 +145,7 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
 
         :return:
         """
-        results = reverse('fpiweb:constraints_view/')
+        results = reverse('fpiweb:constraints_view')
         return results
 
 
@@ -152,7 +173,7 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
         """
 
         context = super(ConstraintUpdateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_update/',
+        context['action'] = reverse('fpiweb:constraint_update',
                                     kwargs={'pk': self.get_object().id})
         return context
 
@@ -162,7 +183,7 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
         :return:
         """
 
-        results = reverse('fpiweb:constraints_view/')
+        results = reverse('fpiweb:constraints_view')
         return results
 
 
@@ -180,7 +201,7 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
         :return:
         """
 
-        results = reverse('fpiweb:constraints_view/')
+        results = reverse('fpiweb:constraints_view')
         return results
 
 
@@ -189,7 +210,92 @@ class BoxAddView(LoginRequiredMixin, CreateView):
     template_name = 'fpiweb/box_edit.html'
     context_object_name = 'box'
     form_class = BoxForm
-    success_url = reverse_lazy('fpiweb:box/add/')
+
+    # CreateView has a get_success_url, but it's returning None so override it.
+    def get_success_url(self):
+        return reverse('fpiweb:index')
+
+
+class BoxEditView(LoginRequiredMixin, UpdateView):
+    model = Box
+    template_name = 'fpiweb/box_edit.html'
+    context_object_name = 'box'
+    form_class = BoxForm
+    success_url = reverse_lazy('fpiweb:index')
+
+
+class BoxDetailsView(LoginRequiredMixin, DetailView):
+
+    model = Box
+    template_name = 'fpiweb/box_detail.html'
+    context_object_name = 'box'
+
+    def get_context_data(self, **kwargs):
+        print(f"kwargs are {kwargs}")
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
+    template_name = 'fpiweb/box_empty_move.html'
+
+    def get_context_data(self, **kwargs):
+        return {}
+
+
+class BoxScannedView(LoginRequiredMixin, View):
+
+    def get(self, request, **kwargs):
+        pk = kwargs.get('number')
+        if pk is None:
+            return error_page(request, "missing kwargs['number']")
+
+        try:
+            box = Box.objects.get(pk=pk)
+        except Box.DoesNotExist:
+            return redirect('fpiweb:box_add')
+
+        if not box.product:
+            return redirect('fpiweb:box_edit', pk=pk)
+
+        return redirect('fpiweb:box_empty_move', pk=pk)
+
+
+class TestScanView(LoginRequiredMixin, TemplateView):
+
+    template_name = 'fpiweb/test_scan.html'
+
+    @staticmethod
+    def get_box_scanned_url(box_pk):
+
+        raise Exception('have this use Box.box_number!!!')
+        return reverse('fpiweb:box_scanned', args=(box_pk,))
+
+    @staticmethod
+    def get_box_url_by_filters(**filters):
+        box_pk = Box.objects \
+            .filter(**filters) \
+            .values_list('pk', flat=True) \
+            .first()
+        if box_pk is None:
+            return ""
+        return TestScanView.get_box_scanned_url(box_pk)
+
+    def get_context_data(self, **kwargs):
+
+
+
+        full_box_url = self.get_box_url_by_filters(product__isnull=False)
+        empty_box_url = self.get_box_url_by_filters(product__isnull=True)
+
+        max_pk = Box.objects.aggregate(max_pk=Max('pk'))['max_pk']
+        nonexistent_box_url = self.get_box_scanned_url(max_pk + 10)
+
+        return {
+            'full_box_url': full_box_url,
+            'empty_box_url': empty_box_url,
+            'nonexistent_box_url': nonexistent_box_url,
+        }
 
 
 # EOF
