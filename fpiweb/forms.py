@@ -107,7 +107,6 @@ class BoxForm(forms.ModelForm):
             'exp_month_start',
             'exp_month_end',
             'date_filled',
-            'quantity'
         ]
         widgets = {
             'date_filled': Html5DateInput
@@ -168,11 +167,17 @@ class BoxForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        print("cleaned_data", cleaned_data)
-
         exp_month_start = cleaned_data.get('exp_month_start')
         exp_month_end = cleaned_data.get('exp_month_end')
         self.validate_exp_month_start_end(exp_month_start, exp_month_end)
+
+    def save(self, commit=True):
+        if self.instance and not self.instance.pk:
+            if self.instance.box_type:
+                box_type = self.instance.box_type
+                self.instance.quantity = box_type.box_type_qty
+        super(BoxForm, self).save(commit=commit)
+
 
 
 

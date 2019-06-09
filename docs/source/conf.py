@@ -103,4 +103,8 @@ htmo_short_title = "Inventory"
 # Date stamp each page of documentation.  (Empty string used default format.)
 html_last_updated_fmt = ""
 
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
+html_logo = os.path.join('_static', 'Food_Pantry_Logo.jpg')
+
 # EOF
