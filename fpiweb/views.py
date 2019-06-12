@@ -1,7 +1,7 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
-from logging import getLogger
+from logging import getLogger, debug
 
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
@@ -236,7 +236,7 @@ class BoxDetailsView(LoginRequiredMixin, DetailView):
     context_object_name = 'box'
 
     def get_context_data(self, **kwargs):
-        print(f"kwargs are {kwargs}")
+        debug(f"kwargs are {kwargs}")
         context = super().get_context_data(**kwargs)
         return context
 
@@ -273,7 +273,7 @@ class TestScanView(LoginRequiredMixin, TemplateView):
     @staticmethod
     def get_box_scanned_url(box_pk):
 
-        raise Exception('have this use Box.box_number!!!')
+        # raise Exception('have this use Box.box_number!!!')
         return reverse('fpiweb:box_scanned', args=(box_pk,))
 
     @staticmethod
@@ -287,8 +287,6 @@ class TestScanView(LoginRequiredMixin, TemplateView):
         return TestScanView.get_box_scanned_url(box_pk)
 
     def get_context_data(self, **kwargs):
-
-
 
         full_box_url = self.get_box_url_by_filters(product__isnull=False)
         empty_box_url = self.get_box_url_by_filters(product__isnull=True)
