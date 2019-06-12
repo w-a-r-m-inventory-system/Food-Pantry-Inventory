@@ -93,15 +93,26 @@ class ConstraintsForm(forms.ModelForm):
                   'constraint_list']
 
 
-class BoxForm(forms.ModelForm):
+class NewBoxForm(forms.ModelForm):
     class Meta:
         model = Box
         fields = [
             'box_number',
             'box_type',
-            'loc_row',
-            'loc_bin',
-            'loc_tier',
+        ]
+
+    def save(self, commit=True):
+        if self.instance and not self.instance.pk:
+            if self.instance.box_type:
+                box_type = self.instance.box_type
+                self.instance.quantity = box_type.box_type_qty
+        return super(NewBoxForm, self).save(commit=commit)
+
+
+class FillBoxForm(forms.ModelForm):
+    class Meta:
+        model = Box
+        fields = [
             'product',
             'exp_year',
             'exp_month_start',
@@ -111,21 +122,6 @@ class BoxForm(forms.ModelForm):
         widgets = {
             'date_filled': Html5DateInput
         }
-
-    loc_row = forms.ChoiceField(
-        choices=row_choices,
-        help_text=Box.loc_row_help_text,
-    )
-
-    loc_bin = forms.ChoiceField(
-        choices=bin_choices,
-        help_text=Box.loc_bin_help_text,
-    )
-
-    loc_tier = forms.ChoiceField(
-        choices=tier_choices,
-        help_text=Box.loc_tier_help_text,
-    )
 
     exp_year = forms.TypedChoiceField(
         choices=expire_year_choices,
@@ -171,14 +167,30 @@ class BoxForm(forms.ModelForm):
         exp_month_end = cleaned_data.get('exp_month_end')
         self.validate_exp_month_start_end(exp_month_start, exp_month_end)
 
-    def save(self, commit=True):
-        if self.instance and not self.instance.pk:
-            if self.instance.box_type:
-                box_type = self.instance.box_type
-                self.instance.quantity = box_type.box_type_qty
-        super(BoxForm, self).save(commit=commit)
 
+class MoveBoxForm(forms.ModelForm):
+    class Meta:
+        model = Box
+        fields = [
+            'loc_row',
+            'loc_bin',
+            'loc_tier',
+        ]
 
+    loc_row = forms.ChoiceField(
+        choices=row_choices,
+        help_text=Box.loc_row_help_text,
+    )
+
+    loc_bin = forms.ChoiceField(
+        choices=bin_choices,
+        help_text=Box.loc_bin_help_text,
+    )
+
+    loc_tier = forms.ChoiceField(
+        choices=tier_choices,
+        help_text=Box.loc_tier_help_text,
+    )
 
 
 # EOF

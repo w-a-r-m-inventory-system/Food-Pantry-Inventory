@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from fpiweb.models import BoxType
+from fpiweb.models import Box, BoxType
 
 
 class BoxAddViewTest(TestCase):
@@ -49,17 +49,14 @@ class BoxAddViewTest(TestCase):
         # to make Django act like we've gone through the login page
         client.force_login(user)
 
-        url = reverse('fpiweb:box_add')
+        url = reverse('fpiweb:box_new')
 
         box_type = BoxType.objects.get(box_type_code='Evans')
 
+        box_number = 'box0001'
         post_data = {
-            'box_number': 'box0001',
+            'box_number': box_number,
             'box_type': box_type.pk,
-            'loc_row': '1',
-            'loc_bin': '1',
-            'loc_tier': 'A1',
-            'exp_year': 2019,
         }
 
         response = client.post(url, post_data)
@@ -78,4 +75,10 @@ class BoxAddViewTest(TestCase):
         # Status code 418 is my favorite!
         self.assertEqual(302, response.status_code, response.content)
         self.assertEqual(reverse('fpiweb:index'), response.url)
+
+        box = Box.objects.get(box_number=box_number)
+
+        self.assertEqual(box_type, box.box_type)
+        self.assertEqual(box_type.box_type_qty, box.quantity)
+        self.assertTrue(box.print_box_number_label)
 

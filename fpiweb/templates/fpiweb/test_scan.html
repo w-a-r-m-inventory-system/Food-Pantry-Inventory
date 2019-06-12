@@ -22,6 +22,7 @@ screens.</p>
     <tr>
         <td>
             <div>A box that is in the system and is full [Box.product is not None]</div>
+            <div>Action: Present empty or move box screen</div>
             <div>
                 <a href="{{ full_box_url }}">{{ full_box_url }}</a>
             </div>
@@ -29,6 +30,7 @@ screens.</p>
         </td>
         <td>
             <div>A box that is NOT in the system</div>
+            <div>Action: Present new box screen</div>
             <div>
                 <a href="{{ nonexistent_box_url }}">{{ nonexistent_box_url }}</a>
             </div>
@@ -38,12 +40,12 @@ screens.</p>
     <td>
         <div>
             <div>A box w/out a label</div>
-            <div>
-                <a href="{% url 'fpiweb:box_add' %}">Add Box</a>
-            </div>
+            <div>A number of box number labels will be pre-printed.&nbsp; Add
+                one of these labels then scan.</div>
         </td>
         <td>
             <div>A box that is in the system and is empty [Box.product is None]</div>
+            <div>Action: Present new box screen (should this be a fill box screen?)</div>
             <div>
                 <a href="{{ empty_box_url }}">{{ empty_box_url }}</a>
             </div>

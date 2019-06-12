@@ -5,11 +5,11 @@ __creation_date__ = "06/03/2019"
 
 from django.test import TestCase
 
-from fpiweb.forms import BoxForm
+from fpiweb.forms import NewBoxForm
 from fpiweb.models import Box, BoxType
 
 
-class BoxFormTest(TestCase):
+class AddBoxFormTest(TestCase):
 
     fixtures = ('BoxType', 'Constraints')
 
@@ -20,13 +20,9 @@ class BoxFormTest(TestCase):
         post_data = {
             'box_number': '27',
             'box_type': box_type.pk,
-            'loc_row': '1',
-            'loc_bin': '1',
-            'loc_tier': 'A1',
-            'exp_year': '2019',
         }
 
-        form = BoxForm(post_data)
+        form = NewBoxForm(post_data)
         self.assertTrue(
             form.is_valid(),
             f"{form.errors} {form.non_field_errors()}",
@@ -37,6 +33,7 @@ class BoxFormTest(TestCase):
         self.assertIsNotNone(box)
         self.assertIsNotNone(box.pk)
         self.assertEqual(box_type.box_type_qty, box.quantity)
+        self.assertTrue(box.print_box_number_label)
 
 
 

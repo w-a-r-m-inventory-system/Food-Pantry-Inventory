@@ -5,6 +5,7 @@ from enum import Enum, unique
 
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -300,6 +301,12 @@ class Box(models.Model):
         )
 
         # TODO: clear out location and product info
+
+    def get_absolute_url(self):
+        return reverse(
+            'fpiweb:box_details',
+            kwargs={'pk': self.pk},
+        )
 
 
 class Activity(models.Model):
