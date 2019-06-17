@@ -66,7 +66,7 @@ urlpatterns = [
         name='constraint_delete', ),
 
     # e.g.  /fpiweb/box/add/ = add a box to inventory
-    path('box/new/', BoxNewView.as_view(), name='box_new'),
+    path('box/new/<str:box_number>/', BoxNewView.as_view(), name='box_new'),
 
     path('box/<int:pk>/edit/', BoxEditView.as_view(), name='box_edit'),
 

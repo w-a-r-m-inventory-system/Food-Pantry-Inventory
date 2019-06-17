@@ -9,7 +9,7 @@ from fpiweb.forms import NewBoxForm
 from fpiweb.models import Box, BoxType
 
 
-class AddBoxFormTest(TestCase):
+class NewBoxFormTest(TestCase):
 
     fixtures = ('BoxType', 'Constraints')
 
@@ -33,7 +33,6 @@ class AddBoxFormTest(TestCase):
         self.assertIsNotNone(box)
         self.assertIsNotNone(box.pk)
         self.assertEqual(box_type.box_type_qty, box.quantity)
-        self.assertTrue(box.print_box_number_label)
 
 
 

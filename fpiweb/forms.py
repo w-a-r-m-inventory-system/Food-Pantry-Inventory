@@ -101,6 +101,13 @@ class NewBoxForm(forms.ModelForm):
             'box_type',
         ]
 
+    box_number = forms.CharField(
+        max_length=Box.box_number_max_length,
+        min_length=Box.box_number_min_length,
+        required=False,
+        disabled=True
+    )
+
     def save(self, commit=True):
         if self.instance and not self.instance.pk:
             if self.instance.box_type:

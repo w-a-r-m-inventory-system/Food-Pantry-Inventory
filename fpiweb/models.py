@@ -3,7 +3,11 @@ models.py - Define the database tables using ORM models.
 """
 from enum import Enum, unique
 
+# import as to avoid conflict with built-in function compile
+from re import compile as re_compile
+
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
 from django.urls import reverse
 
@@ -149,6 +153,29 @@ class Product(models.Model):
         return display
 
 
+class BoxNumber:
+
+    box_number_regex = re_compile(r'^BOX\d{5}$')
+
+    @staticmethod
+    def format_box_number(int_box_number):
+        return "BOX{:05}".format(int_box_number)
+
+    @staticmethod
+    def get_next_box_number():
+        max_box_number = Box.objects.aggregate(max_box_number=Max('box_number'))
+        max_box_number = max_box_number.get('max_box_number')
+        if max_box_number is None:
+            return BoxNumber.format_box_number(1)
+        max_box_number = int(max_box_number[3:])
+
+        return BoxNumber.format_box_number(max_box_number + 1)
+
+    @staticmethod
+    def validate(box_number):
+        return bool(BoxNumber.box_number_regex.match(box_number))
+
+
 class Box(models.Model):
     """
     Box or container for product.
@@ -168,9 +195,11 @@ class Box(models.Model):
     """ Internal record identifier for box. """
 
     box_number_help_text = "Number printed in the label on the box."
+    box_number_max_length = 8
+    box_number_min_length = box_number_max_length
     box_number = models.CharField(
         'Visible Box Number',
-        max_length=8,
+        max_length=box_number_max_length,
         unique=True,
         help_text=box_number_help_text,
     )

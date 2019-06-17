@@ -45,8 +45,11 @@ Box Details
     {% endif %}
 </div>
 <div class="row">
-    <a class="btn btn-primary" href="{% url 'fpiweb:box_fill' box.pk %}">Fill</a>&nbsp;
+{% if box.product %}
     <a class="btn btn-primary" href="{% url 'fpiweb:box_empty' box.pk %}">Empty</a>
+{% else %}
+    <a class="btn btn-primary" href="{% url 'fpiweb:box_fill' box.pk %}">Fill</a>
+{% endif %}
 </div>
 
 {% endblock %}
