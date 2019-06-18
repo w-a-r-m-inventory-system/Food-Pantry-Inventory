@@ -13,7 +13,7 @@ from fpiweb.views import \
     BoxScannedView, \
     IndexView, LoginView, ConstraintsListView, \
     ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView, \
-    LogoutView, BoxAddView, BoxDetailsView, \
+    LogoutView, BoxNewView, BoxDetailsView, \
     TestScanView
 
 # from fpiweb.views import ConstraintDetailView
@@ -66,7 +66,7 @@ urlpatterns = [
         name='constraint_delete', ),
 
     # e.g.  /fpiweb/box/add/ = add a box to inventory
-    path('box/add/', BoxAddView.as_view(), name='box_add'),
+    path('box/new/<str:box_number>/', BoxNewView.as_view(), name='box_new'),
 
     # e.g. /fpiweb/box/<pk>/edit = edit a box in inventory
     path('box/<int:pk>/edit/', BoxEditView.as_view(), name='box_edit'),
@@ -82,5 +82,11 @@ urlpatterns = [
          name='box_empty_move'),
 
     # e.g. /fpiweb/test_scan/ = ???
+    path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
+
+    path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
+
+    path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
+
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
 ]
