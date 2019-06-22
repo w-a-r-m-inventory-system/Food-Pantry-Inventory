@@ -227,13 +227,13 @@ what is found or not found in the database, switch to an appropriate screen.
     :widths: auto
     :align: left
 
-=================  ============
-Box Record Status  Action Taken
-=================  ============
-No box record      Present new box screen
-Box record empty   Present new box screen
-Box record filled  Present empty or move box screen
-=================  ============
+    =================  ============
+    Box Record Status  Action Taken
+    =================  ============
+    No box record      Present new box screen
+    Box record empty   Present new box screen
+    Box record filled  Present empty or move box screen
+    =================  ============
 
 .. _t10:
 

@@ -441,8 +441,9 @@ class Activity(models.Model):
     )
     """ Year product would have expired. """
 
-    exp_month_start_help_text = \
+    exp_month_start_help_text = (
         'Optional starting month product would have expired.'
+    )
     exp_month_start = models.IntegerField(
         'Start Expiration Month',
         null=True,
@@ -451,8 +452,9 @@ class Activity(models.Model):
     )
     """ Optional starting month product would have expired. """
 
-    exp_month_end_help_text = \
+    exp_month_end_help_text = (
         'Optional ending month product would have expired.'
+    )
     exp_month_end = models.IntegerField(
         'End Expiration Month',
         null=True,
@@ -474,17 +476,19 @@ class Activity(models.Model):
     def __str__(self):
         """ Default way to display this activity record. """
         if self.date_filled:
-            display = f'{self.box_number} ({self.box_type}) ' \
-                f'{self.prod_name} ({self.prod_cat_name}) ' \
-                f'{self.quantity} ' \
-                f'{self.exp_year}' \
-                f'({self.exp_month_start}-' \
-                f'{self.exp_month_end})' \
-                f'{self.date_filled} - {self.date_consumed}' \
-                f'({self.duration}) at ' \
-                f'{self.loc_row} / ' \
-                f'{self.loc_bin} / ' \
+            display = (
+                f'{self.box_number} ({self.box_type}) ' 
+                f'{self.prod_name} ({self.prod_cat_name}) ' 
+                f'{self.quantity} ' 
+                f'{self.exp_year}' 
+                f'({self.exp_month_start}-' 
+                f'{self.exp_month_end})' 
+                f'{self.date_filled} - {self.date_consumed}' 
+                f'({self.duration}) at ' 
+                f'{self.loc_row} / ' 
+                f'{self.loc_bin} / ' 
                 f'{self.loc_tier}'
+            )
         else:
             display = f'{self.box_number} ({self.box_type}) - Empty'
         return display
