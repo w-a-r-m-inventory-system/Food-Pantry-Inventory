@@ -10,12 +10,16 @@ Welcome to Food Pantry Inventory System
     <h3>Links to other parts of the system:</h3>
     <br/>
 
-    <br/>
-    <a href="{% url 'fpiweb:about' %}">
-        About
-    </a>
 
-    <br/>
+
+    <div>
+        <a href="{% url 'fpiweb:about' %}">About</a>
+    </div>
+
+    <div>
+        <a href="/admin/">Admin</a>
+    </div>
+
     <a href="{% url 'fpiweb:login' %}">
         Login
     </a>
@@ -30,14 +34,15 @@ Welcome to Food Pantry Inventory System
     Constraints List
     </a>
 
-    <br/>
-    <a href="{% url 'fpiweb:box_add' %}">
-    Add Box
-    </a>
+
 
     <div>
         <a href="{% url 'fpiweb:test_scan' %}">Test Scan</a>
     </div>
+
+
+
+
 
 
 {% endblock %}
