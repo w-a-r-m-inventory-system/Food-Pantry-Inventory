@@ -6,14 +6,13 @@ from logging import getLogger, debug
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Max
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-from fpiweb.models import Box, Constraints
-from fpiweb.forms import BoxForm, LoginForm, ConstraintsForm, LogoutForm
+from fpiweb.models import Box, BoxNumber, Constraints
+from fpiweb.forms import NewBoxForm, LoginForm, ConstraintsForm, LogoutForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -205,22 +204,72 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
         return results
 
 
-class BoxAddView(LoginRequiredMixin, CreateView):
-    model = Box
-    template_name = 'fpiweb/box_edit.html'
-    context_object_name = 'box'
-    form_class = BoxForm
+class BoxNewView(LoginRequiredMixin, View):
+    # model = Box
+    template_name = 'fpiweb/box_new.html'
+    # context_object_name = 'box'
+    # form_class = NewBoxForm
 
-    # CreateView has a get_success_url, but it's returning None so override it.
-    def get_success_url(self):
-        return reverse('fpiweb:index')
+    # def get_success_url(self):
+    #     return reverse(
+    #         'fpiweb:box_details',
+    #         args=(self.object.pk,)
+    #     )
+
+    def get(self, request, *args, **kwargs):
+        box_number = kwargs.get('box_number')
+        if not box_number:
+            return error_page(request, 'missing box_number')
+
+        if not BoxNumber.validate(box_number):
+            return error_page(
+                request,
+                "Invalid box_number '{}'".format(box_number),
+            )
+
+        new_box_form = NewBoxForm(initial={'box_number': box_number})
+        return render(
+            request,
+            self.template_name,
+            {
+                'form': new_box_form,
+            }
+        )
+
+    def post(self, request, *args, **kwargs):
+        box_number = kwargs.get('box_number')
+        if not box_number:
+            return error_page(request, 'missing box_number')
+
+        if not BoxNumber.validate(box_number):
+            return error_page(
+                request,
+                "Invalid box_number '{}'".format(box_number),
+            )
+
+        new_box_form = NewBoxForm(
+            request.POST,
+            initial={'box_number': box_number},
+        )
+
+        if not new_box_form.is_valid():
+            return render(
+                request,
+                self.template_name,
+                {
+                    'form': new_box_form,
+                },
+            )
+
+        box = new_box_form.save()
+        return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
 class BoxEditView(LoginRequiredMixin, UpdateView):
     model = Box
     template_name = 'fpiweb/box_edit.html'
     context_object_name = 'box'
-    form_class = BoxForm
+    form_class = NewBoxForm
     success_url = reverse_lazy('fpiweb:index')
 
 
@@ -243,22 +292,30 @@ class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
         return {}
 
 
+class BoxMoveView(LoginRequiredMixin, TemplateView):
+    template_name = 'fpiweb/box_empty_move.html'
+
+    def get_context_data(self, **kwargs):
+        return {}
+
+
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
-        pk = kwargs.get('number')
-        if pk is None:
+        box_number = kwargs.get('number')
+        if box_number is None:
             return error_page(request, "missing kwargs['number']")
+        box_number = BoxNumber.format_box_number(box_number)
 
         try:
-            box = Box.objects.get(pk=pk)
+            box = Box.objects.get(box_number=box_number)
         except Box.DoesNotExist:
-            return redirect('fpiweb:box_add')
+            return redirect('fpiweb:box_new', box_number=box_number)
 
         if not box.product:
-            return redirect('fpiweb:box_edit', pk=pk)
+            return redirect('fpiweb:box_edit', pk=box.pk)
 
-        return redirect('fpiweb:box_empty_move', pk=pk)
+        return redirect('fpiweb:box_empty_move', pk=box.pk)
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -266,33 +323,41 @@ class TestScanView(LoginRequiredMixin, TemplateView):
     template_name = 'fpiweb/test_scan.html'
 
     @staticmethod
-    def get_box_scanned_url(box_pk):
 
-        # raise Exception('have this use Box.box_number!!!')
-        return reverse('fpiweb:box_scanned', args=(box_pk,))
+    def get_box_scanned_url(box_number):
+        if box_number.lower().startswith('box'):
+            box_number = box_number[3:]
+        return reverse('fpiweb:box_scanned', args=(box_number,))
 
     @staticmethod
     def get_box_url_by_filters(**filters):
-        box_pk = Box.objects \
+        box_number = Box.objects \
             .filter(**filters) \
-            .values_list('pk', flat=True) \
+            .values_list('box_number', flat=True) \
             .first()
-        if box_pk is None:
+        if box_number is None:
             return ""
-        return TestScanView.get_box_scanned_url(box_pk)
+        return TestScanView.get_box_scanned_url(box_number)
 
     def get_context_data(self, **kwargs):
 
         full_box_url = self.get_box_url_by_filters(product__isnull=False)
         empty_box_url = self.get_box_url_by_filters(product__isnull=True)
 
-        max_pk = Box.objects.aggregate(max_pk=Max('pk'))['max_pk']
-        nonexistent_box_url = self.get_box_scanned_url(max_pk + 10)
+        new_box_url = self.get_box_scanned_url(
+            BoxNumber.get_next_box_number()
+        )
+
+        empty_box = Box.objects.filter(product__isnull=True).first()
+        full_box = Box.objects.filter(product__isnull=False).first()
 
         return {
             'full_box_url': full_box_url,
             'empty_box_url': empty_box_url,
-            'nonexistent_box_url': nonexistent_box_url,
+            'new_box_url': new_box_url,
+            'empty_box': empty_box,
+            'full_box': full_box,
+            'next_box_number': BoxNumber.get_next_box_number()
         }
 
 

@@ -3,15 +3,16 @@ __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
+from bs4 import BeautifulSoup
 
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from fpiweb.models import BoxType
+from fpiweb.models import Box, BoxNumber, BoxType
 
 
-class BoxAddViewTest(TestCase):
+class BoxNewViewTest(TestCase):
 
     # The second time I ran this test I got the following error:
     #
@@ -49,17 +50,14 @@ class BoxAddViewTest(TestCase):
         # to make Django act like we've gone through the login page
         client.force_login(user)
 
-        url = reverse('fpiweb:box_add')
+        box_number = BoxNumber.format_box_number(1)
+        url = reverse('fpiweb:box_new', args=(box_number,))
 
         box_type = BoxType.objects.get(box_type_code='Evans')
 
         post_data = {
-            'box_number': 'box0001',
+            'box_number': box_number,
             'box_type': box_type.pk,
-            'loc_row': '1',
-            'loc_bin': '1',
-            'loc_tier': 'A1',
-            'exp_year': 2019,
         }
 
         response = client.post(url, post_data)
@@ -76,6 +74,86 @@ class BoxAddViewTest(TestCase):
         #     https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
         #
         # Status code 418 is my favorite!
-        self.assertEqual(302, response.status_code, response.content)
+        self.assertEqual(302, response.status_code, str(response.content))
+
+        box = Box.objects.order_by('-pk').first()
+        self.assertEqual(
+            reverse('fpiweb:box_details', args=(box.pk,)),
+            response.url
+        )
+
+        box = Box.objects.get(box_number=box_number)
+
+        self.assertEqual(box_type, box.box_type)
+        self.assertEqual(box_type.box_type_qty, box.quantity)
+
+
+class IndexViewTest(TestCase):
+
+    def test_get(self):
+        client = Client()
+        response = client.get(reverse('fpiweb:index'))
+        self.assertEqual(200, response.status_code)
+
+
+class AboutView(TestCase):
+
+    def test_get(self):
+        client = Client()
+        response = client.get(reverse('fpiweb:about'))
+        self.assertEqual(200, response.status_code)
+
+
+class LoginView(TestCase):
+
+    def test_get(self):
+        client = Client()
+        response = client.get(reverse('fpiweb:login'))
+        self.assertEqual(200, response.status_code)
+
+    def test_post(self):
+        username = 'jdoe'
+        password = 'abc123'
+        User.objects.create_user(username, 'jdoe@example.com', password)
+
+        client = Client()
+        url = reverse('fpiweb:login')
+
+        response = client.post(
+            url,
+            {
+                'username': username,
+                'password': password,
+            },
+        )
+
+        self.assertEqual(302, response.status_code)
         self.assertEqual(reverse('fpiweb:index'), response.url)
 
+        response = client.post(
+            url,
+            {
+                'username': username,
+                'password': 'NARF!!',
+            },
+        )
+
+        # yeah, FormViews like this one return 200 status code if form
+        # fails validation
+        self.assertEqual(200, response.status_code)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        error_list = soup.find('ul', class_='errorlist')
+        self.assertIsNotNone(error_list)
+        self.assertIn(
+            "Invalid username and/or password",
+            error_list.get_text(),
+        )
+
+
+class LogoutViewTest(TestCase):
+
+    def test_get(self):
+        client = Client()
+        response = client.get(reverse('fpiweb:logout'))
+        self.assertEqual(200, response.status_code)

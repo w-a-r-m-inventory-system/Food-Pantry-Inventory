@@ -1,24 +1,12 @@
 {% extends 'fpiweb/base.html' %}
 {% load bootstrap4 %}
 
-{% block title %}
-    {% if box.id %}
-        Edit Box
-    {% else %}
-        Add Box
-    {% endif %}
-{% endblock %}
+{% block title %}New Box{% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-4 text-center">
-            <h1 class="h1">
-                {% if box.id %}
-                    Edit Box
-                {% else %}
-                    Add Box
-                {% endif %}
-            </h1>
+            <h1 class="h1">Add Box</h1>
         </div>
     </div>
 
@@ -37,6 +25,7 @@
         {% csrf_token %}
         {% bootstrap_field form.box_number %}
         {% bootstrap_field form.box_type %}
+        {% comment %}
         {% bootstrap_field form.loc_row %}
         {% bootstrap_field form.loc_bin %}
         {% bootstrap_field form.loc_tier %}
@@ -45,6 +34,7 @@
         {% bootstrap_field form.exp_month_start %}
         {% bootstrap_field form.exp_month_end %}
         {% bootstrap_field form.date_filled %}
+        {% endcomment %}
         <input type="submit" value="Submit"/>
     </form>
 
@@ -54,6 +44,7 @@
         Return to main page
     </a>
 
+    {% comment %}
     <hr class="style-one"/>
 
     <h6>
@@ -71,5 +62,6 @@
     <h6>
         Delete URL: (undefined)
     </h6>
+    {% endcomment %}
 
 {% endblock %}
