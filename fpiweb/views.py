@@ -23,19 +23,11 @@ __creation_date__ = "04/01/2019"
 logger = getLogger('fpiweb')
 
 
-class IndexView(TemplateView):
-    """
-    Default web page (/index)
-    """
-    template_name = 'fpiweb/index.html'
-
-
 def error_page(
         request,
         message=None,
         message_list=tuple(),
         status=400):
-
     return render(
         request,
         'fpiweb/error.html',
@@ -45,6 +37,13 @@ def error_page(
         },
         status=status
     )
+
+
+class IndexView(TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/index.html'
 
 
 class AboutView(TemplateView):
