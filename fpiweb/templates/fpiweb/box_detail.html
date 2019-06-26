@@ -5,5 +5,51 @@ Box Details
 {% endblock %}
 
 {% block content %}
-The box is {{ box }}
+
+
+<div>
+    <a class="btn btn-primary" href="{% url 'fpiweb:index' %}">Home</a>
+</div>
+
+<div>{{ box.box_number }}</div>
+
+<div class="row"><span>Box Type:</span>&nbsp; {{ box.box_type.box_type_descr }}</div>
+<div class="row">Location</div>
+<div class="row">
+    <div class="col-md-2">
+        <table>
+            <tr>
+                <th>Row</th>
+                <th>Bin</th>
+                <th>Tier</th>
+            </tr>
+            <tr>
+                <td>{{ box.loc_row|default_if_none:"&nbsp;" }}</td>
+                <td>{{ box.loc_bin|default_if_none:"&nbsp;" }}</td>
+                <td>{{ box.loc_tier|default_if_none:"&nbsp;" }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-1">
+        <a class="btn btn-primary" href="{% url 'fpiweb:box_move' box.pk %}">Move</a>
+    </div>
+</div>
+<div class="row">Contents</div>
+<div class="row"><span>Product:</span> {{ box.product.name }}</div>
+<div class="row">Expiration</div>
+<div class="row"><span>Year:</span> {{ box.exp_year|default_if_none:"" }}</div>
+<div class="row">
+    <span>Month:</span>
+    {% if box.exp_month_start %}
+        {{ box.exp_month_start }} - {{ box.exp_month_end }}
+    {% endif %}
+</div>
+<div class="row">
+{% if box.product %}
+    <a class="btn btn-primary" href="{% url 'fpiweb:box_empty' box.pk %}">Empty</a>
+{% else %}
+    <a class="btn btn-primary" href="{% url 'fpiweb:box_fill' box.pk %}">Fill</a>
+{% endif %}
+</div>
+
 {% endblock %}

@@ -5,6 +5,9 @@
 
 {% block content %}
 
+    {# creates <ul> with classes errorlist nonfield #}
+    {{ form.non_field_errors }}
+
     <form action="" method="post">
         {% csrf_token %}
         {% bootstrap_field form.username %}
