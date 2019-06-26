@@ -297,6 +297,7 @@ class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
 
 
 class BoxMoveView(LoginRequiredMixin, TemplateView):
+
     template_name = 'fpiweb/box_move.html'
 
     def get_context_data(self, **kwargs):

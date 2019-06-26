@@ -58,7 +58,7 @@ urlpatterns = [
 
     # e.g. /fpiweb/constraints/add/ = add a constraint
     path('constraint/add/', ConstraintCreateView.as_view(),
-      name='constraint_new', ),
+        name='constraint_new', ),
 
     # e.g. /fpiweb/constraints/edit/4/ = edit constraint # 4
     path('constraint/edit/<int:pk>/', ConstraintUpdateView.as_view(),
@@ -91,5 +91,15 @@ urlpatterns = [
 
     path('box/<int:pk>/empty/', BoxEmptyView.as_view(), name='box_empty'),
 
+    # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
+    path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
+
+    # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
+    path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
+
+    # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
+    path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
+
+    # e.g. /fpiweb/test_scan/ = ???
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
 ]
