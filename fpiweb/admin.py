@@ -14,7 +14,6 @@ __creation_date__ = "04/01/2019"
 # Register the models for which we want default admin pages to be built.
 admin.site.register(BoxType)
 admin.site.register(ProductCategory)
-admin.site.register(Product)
 admin.site.register(ProductExample)
 admin.site.register(Activity)
 
@@ -41,6 +40,14 @@ class ConstraintsAdmin(admin.ModelAdmin):
         'constraint_min',
         'constraint_max',
         'constraint_list',
+    )
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = (
+        'prod_name',
+        'prod_cat',
     )
 
 

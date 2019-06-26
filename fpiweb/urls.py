@@ -9,7 +9,10 @@ from django.views.generic import TemplateView
 from fpiweb.views import \
     AboutView, \
     BoxEditView, \
+    BoxEmptyView, \
     BoxEmptyMoveView, \
+    BoxFillView, \
+    BoxMoveView, \
     BoxScannedView, \
     IndexView, LoginView, ConstraintsListView, \
     ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView, \
@@ -82,11 +85,11 @@ urlpatterns = [
          name='box_empty_move'),
 
     # e.g. /fpiweb/test_scan/ = ???
-    path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
+    path('box/<int:pk>/move/', BoxMoveView.as_view(), name='box_move'),
 
-    path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
+    path('box/<int:pk>/fill/', BoxFillView.as_view(), name='box_fill'),
 
-    path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
+    path('box/<int:pk>/empty/', BoxEmptyView.as_view(), name='box_empty'),
 
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
 ]
