@@ -1,91 +1,48 @@
 {% extends 'fpiweb/base.html' %}
 
 {% block title %}
-    Welcome to Food Pantry Inventory System
+Welcome to Food Pantry Inventory System
 {% endblock %}
 
 {% block content %}
-
     <h1>Welcome to the Food Pantry Inventory System</h1>
+    <br/>
+    <h3>Links to other parts of the system:</h3>
+    <br/>
+
+
 
     <div>
-        <strong><a href="{% url 'fpiweb:about' %}">About</a></strong>
+        <a href="{% url 'fpiweb:about' %}">About</a>
     </div>
 
-    <br/>
-
-    <div class="text-center">
-        <strong>{{ first_name }} {{ last_name }} ({{ title }})</strong>
-        <br/>
-        <strong>{{ email }}</strong>
+    <div>
+        <a href="/admin/">Admin</a>
     </div>
 
-    <hr/>
+    <a href="{% url 'fpiweb:login' %}">
+        Login
+    </a>
 
-    <h2>User Management</h2>
+    <br/>
+    <a href="{% url 'fpiweb:logout' %}">
+        Logout
+    </a>
 
-    <div class="row">
-        <a class="btn btn-primary" href="{% url 'fpiweb:login' %}">Login</a>
+    <br/>
+    <a href="{% url 'fpiweb:constraints_view' %}">
+    Constraints List
+    </a>
+
+
+
+    <div>
+        <a href="{% url 'fpiweb:test_scan' %}">Test Scan</a>
     </div>
 
-    <br/>
 
-    <div class="row">
-        <a class="btn btn-primary" href="{% url 'fpiweb:logout' %}">Logout</a>
-    </div>
 
-    <hr/>
 
-    <h2>Inventory Management</h2>
 
-    <div class="row">
-        <a class="btn btn-primary" href="
-            {% url 'fpiweb:build_pallet' %}">Build a Pallet
-        </a>
-    </div>
-
-    <br/>
-    {#    <div class="row">#}
-    {#        <a class="btn btn-primary" href="">Move Box</a>#}
-    {#    </div>#}
-    <div class="row">
-        <a class="btn btn-primary" href="">Move a Pallet</a>
-    </div>
-
-    <br/>
-
-    <div class="row">
-        <a class="btn btn-primary" href="{% url 'fpiweb:manual_menu' %}">
-            Manual Box and Pallet Maintenance
-        </a>
-    </div>
-
-    <hr/>
-
-    <h2>System Management</h2>
-
-    <strong>
-        <a href='/warmadmin/'>(Admin)</a>
-    </strong>
-
-    <br/>
-
-    <strong>
-        <a href="{% url 'fpiweb:maintenance' %}">System Maintenance</a>
-    </strong>
-
-    <br/>
-
-    <strong>
-        <a href="{% url 'fpiweb:print_labels' %}">Print Labels</a>
-    </strong>
-
-    <br/>
-
-    <strong>
-        <a href="{% url 'fpiweb:download_activities' %}">
-            Download Activity Log
-        </a>
-    </strong>
 
 {% endblock %}
