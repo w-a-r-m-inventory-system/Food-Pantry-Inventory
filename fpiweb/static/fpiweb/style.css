@@ -8,10 +8,6 @@ h2 {
     text-align: center;
 }
 
-label{
-    font-weight: bold;
-}
-
 table {
     /*display: table;*/
     /*text-align: center;*/
@@ -22,16 +18,10 @@ table {
     /*border-spacing: 3px;*/
 }
 
-th {
-    border: 0.125rem solid;
-    padding: 0.5rem;
-    text-align: center;
-}
-
 td {
-    border: 0.125rem solid;
+    border: 1px solid;
     background: #c0ffc0;
-    padding: 0.5rem;
+    padding: 5px;
     text-align: center;
 }
 
@@ -136,29 +126,3 @@ hr.style-one {
 
 .nonfield{
 }
-
-div#scannerModal video{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-div#scannerModal>div.modal-dialog{
-    width: 90%;
-    max-width: 90%;
-}
-
-div#scannerModal div.controls{
-    margin-top: 0.5rem;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-}
-
-button.remove{
-    font-weight: bold;
-    /* order is top, right, bottom left */
-    padding: 0.125rem 0.375rem 0.125rem 0.375rem;
-    color: white;
-}
-
