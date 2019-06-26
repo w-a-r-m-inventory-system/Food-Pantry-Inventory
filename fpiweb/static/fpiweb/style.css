@@ -43,6 +43,7 @@ table.subtable{
     margin-right: auto;
     padding: 5px 0;
 }
+
 table.subcell{
     /*border-style: none;*/
     border-collapse: collapse;
@@ -114,4 +115,14 @@ hr.style-one {
     border: 0;
     height: 1px;
     background: #333 linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+/* if you drop a {{ form.non_field_errors }} in your template.  The resulting
+    list has errorlist and nonfield classes */
+.errorlist {
+    color: red;
+    font-weight: bold;
+}
+
+.nonfield{
 }
