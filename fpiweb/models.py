@@ -691,4 +691,12 @@ class ProductExample(models.Model):
         display = f'{self.prod_example_name} ({self.prod_id})'
         return display
 
+
+class Action:
+    ACTION_BUILD_PALLET = 'build_pallet'
+    ACTIONS = {
+        ACTION_BUILD_PALLET,
+    }
+
+
 # EOF

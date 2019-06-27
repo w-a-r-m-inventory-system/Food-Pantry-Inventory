@@ -11,6 +11,7 @@ from fpiweb.views import \
     BoxEditView, \
     BoxEmptyMoveView, \
     BoxScannedView, \
+    BuildPalletView, \
     IndexView, LoginView, ConstraintsListView, \
     ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView, \
     LogoutView, BoxNewView, BoxDetailsView, \
@@ -92,4 +93,11 @@ urlpatterns = [
 
     # e.g. /fpiweb/test_scan/ = ???
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
+
+    path('build_pallet/', BuildPalletView.as_view(), name='build_pallet'),
+
+    path(
+        'build_pallet/<int:box_pk>/',
+        BuildPalletView.as_view(),
+        name='build_pallet_add_box')
 ]

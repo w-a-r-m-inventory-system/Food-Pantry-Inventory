@@ -3,16 +3,26 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 from logging import getLogger, debug
 
-from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms import modelformset_factory
+from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-from fpiweb.models import Box, BoxNumber, Constraints
-from fpiweb.forms import NewBoxForm, LoginForm, ConstraintsForm, LogoutForm
+from fpiweb.models import \
+    Action, \
+    Box, \
+    BoxNumber, \
+    Constraints
+from fpiweb.forms import \
+    BoxItemForm, \
+    BuildPalletForm, \
+    ConstraintsForm, \
+    LoginForm, \
+    NewBoxForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -262,6 +272,16 @@ class BoxNewView(LoginRequiredMixin, View):
             )
 
         box = new_box_form.save()
+
+        action = request.session.get('action')
+        if action == Action.ACTION_BUILD_PALLET:
+            return redirect(
+                reverse(
+                    'fpiweb:build_pallet_add_box',
+                    args=(box.pk,)
+                )
+            )
+
         return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
@@ -358,6 +378,56 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             'full_box': full_box,
             'next_box_number': BoxNumber.get_next_box_number()
         }
+
+
+class BuildPalletView(View):
+    """Set action in view"""
+    template_name = 'fpiweb/build_pallet.html'
+
+    BoxFormFactory = modelformset_factory(
+        Box,
+        form=BoxItemForm,
+        extra=0,
+    )
+
+    def get(self, request, *args, **kwargs):
+
+        request.session['action'] = Action.ACTION_BUILD_PALLET
+
+        box_pk = kwargs.get('box_pk')
+
+        form = BuildPalletForm()
+
+        kwargs = {
+            'prefix': 'box_forms',
+        }
+        if box_pk:
+            kwargs['queryset'] = Box.objects.filter(pk=box_pk)
+
+        box_forms = self.BoxFormFactory(**kwargs)
+
+        context = {
+            'form': form,
+            'box_forms': box_forms,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = BuildPalletForm(request.POST)
+        box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
+
+        if not form.is_valid() or not box_forms.is_valid():
+            return render(
+                request,
+                self.template_name,
+                {
+                    'form': form,
+                    'box_forms': box_forms,
+                }
+            )
+
+        return error_page(request, "forms are valid")
 
 
 # EOF

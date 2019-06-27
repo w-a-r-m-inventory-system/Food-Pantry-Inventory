@@ -18,9 +18,17 @@ __creation_date__ = "04/01/2019"
 # "${CopyRight.py}"
 
 
-month_choices = [(None, '--')] + [(str(i), str(i)) for i in range(1, 13)]
-
 logger = getLogger('fpiweb')
+
+
+def add_no_selection_choice(other_choices, dash_count=2):
+    return [(None, '-' * dash_count)] + list(other_choices)
+
+
+def month_choices():
+    return add_no_selection_choice(
+        [(str(i), str(i)) for i in range(1, 13)]
+    )
 
 
 def expire_year_choices():
@@ -43,15 +51,15 @@ def char_list_choices(constraint_name):
 
 
 def row_choices():
-    return min_max_choices('Row')
+    return add_no_selection_choice(min_max_choices('Row'))
 
 
 def bin_choices():
-    return min_max_choices('Bin')
+    return add_no_selection_choice(min_max_choices('Bin'))
 
 
 def tier_choices():
-    return char_list_choices('Tier')
+    return add_no_selection_choice(char_list_choices('Tier'))
 
 
 def none_or_int(text):
@@ -198,6 +206,57 @@ class MoveBoxForm(forms.ModelForm):
         choices=tier_choices,
         help_text=Box.loc_tier_help_text,
     )
+
+
+class BuildPalletForm(forms.Form):
+    # This may be changed to a Model form for the Location Table
+
+    loc_row = forms.ChoiceField(
+        choices=row_choices,
+        help_text=Box.loc_row_help_text,
+    )
+
+    loc_bin = forms.ChoiceField(
+        choices=bin_choices,
+        help_text=Box.loc_bin_help_text,
+    )
+
+    loc_tier = forms.ChoiceField(
+        choices=tier_choices,
+        help_text=Box.loc_tier_help_text,
+    )
+
+
+class BoxItemForm(forms.ModelForm):
+    """Form for the Box as it appears as part of a formset on the Build Pallet
+    page"""
+
+    class Meta:
+        model = Box
+        fields = [
+            'box_number',
+            'product',
+            'exp_year',
+        ]
+
+    box_number = forms.CharField(
+        max_length=Box.box_number_max_length,
+        min_length=Box.box_number_min_length,
+        disabled=True,
+        required=True,
+    )
+
+    product = forms.ModelChoiceField(
+        Product.objects.all(),
+        required=True,
+    )
+
+    exp_year = forms.TypedChoiceField(
+        choices=expire_year_choices,
+        coerce=int,
+        help_text=Box.exp_year_help_text,
+    )
+
 
 
 # EOF

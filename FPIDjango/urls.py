@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from fpiweb.views import LoginView
+
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
 urlpatterns = [
+    path('', LoginView.as_view()),
     path('fpiweb/', include('fpiweb.urls')),
     path('admin/', admin.site.urls),
 ]
