@@ -24,7 +24,7 @@ class LocRow(models.Model):
 
     class Meta:
         ordering = ['loc_row']
-        app_label = 'fpiweb',
+        app_label = 'fpiweb'
         verbose_name_plural = 'Loc Rows'
 
     id_help_text = 'Internal record id for location row.'
@@ -70,7 +70,7 @@ class LocBin(models.Model):
 
     class Meta:
         ordering = ['loc_bin']
-        app_label = 'fpiweb',
+        app_label = 'fpiweb'
         verbose_name_plural = 'Loc Bins'
 
     id_help_text = 'Internal record id for location bin.'
@@ -116,7 +116,7 @@ class LocTier(models.Model):
 
     class Meta:
         ordering = ['loc_tier']
-        app_label = 'fpiweb',
+        app_label = 'fpiweb'
         verbose_name_plural = 'Loc Tiers'
 
     id_help_text = 'Internal record id for location tier.'
