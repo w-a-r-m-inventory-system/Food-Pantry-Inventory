@@ -24,7 +24,7 @@ class LocRow(models.Model):
 
     class Meta:
         ordering = ['loc_row']
-        app_label = 'fpiweb',
+        app_label = 'fpiweb'
         verbose_name_plural = 'Loc Rows'
 
     id_help_text = 'Internal record id for location row.'
@@ -47,7 +47,7 @@ class LocRow(models.Model):
     """ Location Row Designation """
 
     loc_row_descr_help_text = 'Locationn row description'
-    loc_row_descr_max_length = 12  # e.g. "Row 01"
+    loc_row_descr_max_length = 20  # e.g. "Row 01"
     loc_row_descr = models.CharField(
         'Loc Description',
         max_length=loc_row_descr_max_length,
@@ -70,7 +70,7 @@ class LocBin(models.Model):
 
     class Meta:
         ordering = ['loc_bin']
-        app_label = 'fpiweb',
+        app_label = 'fpiweb'
         verbose_name_plural = 'Loc Bins'
 
     id_help_text = 'Internal record id for location bin.'
@@ -93,7 +93,7 @@ class LocBin(models.Model):
     """ Location Bin Designation """
 
     loc_bin_descr_help_text = 'Locationn bin description'
-    loc_bin_descr_max_length = 12  # e.g. "Bin 01"
+    loc_bin_descr_max_length = 20  # e.g. "Bin 01"
     loc_bin_descr = models.CharField(
         'Loc Description',
         max_length=loc_bin_descr_max_length,
@@ -116,7 +116,7 @@ class LocTier(models.Model):
 
     class Meta:
         ordering = ['loc_tier']
-        app_label = 'fpiweb',
+        app_label = 'fpiweb'
         verbose_name_plural = 'Loc Tiers'
 
     id_help_text = 'Internal record id for location tier.'
@@ -139,7 +139,7 @@ class LocTier(models.Model):
     """ Location Tier Designation """
 
     loc_tier_descr_help_text = 'Locationn tier description'
-    loc_tier_descr_max_length = 12  # e.g. "Tier 01"
+    loc_tier_descr_max_length = 20  # e.g. "Tier 01"
     loc_tier_descr = models.CharField(
         'Loc Tier Description',
         max_length=loc_tier_descr_max_length,
