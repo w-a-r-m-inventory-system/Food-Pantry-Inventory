@@ -5,8 +5,11 @@ from logging import getLogger, debug
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.db.models import Max
 from django.forms import modelformset_factory
 from django.shortcuts import redirect, render
+
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
@@ -32,19 +35,11 @@ __creation_date__ = "04/01/2019"
 logger = getLogger('fpiweb')
 
 
-class IndexView(TemplateView):
-    """
-    Default web page (/index)
-    """
-    template_name = 'fpiweb/index.html'
-
-
 def error_page(
         request,
         message=None,
         message_list=tuple(),
         status=400):
-
     return render(
         request,
         'fpiweb/error.html',
@@ -54,6 +49,13 @@ def error_page(
         },
         status=status
     )
+
+
+class IndexView(TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/index.html'
 
 
 class AboutView(TemplateView):
