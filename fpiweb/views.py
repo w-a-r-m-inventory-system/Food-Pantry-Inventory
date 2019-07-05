@@ -3,6 +3,7 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 from logging import getLogger, debug
 
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -329,15 +330,22 @@ class BoxScannedView(LoginRequiredMixin, View):
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
 
+        action = request.session.get('action')
+
+        if action != Action.ACTION_BUILD_PALLET:
+            return error_page(
+                request,
+                "What to do when action is {}?".format(action)
+            )
+
         try:
             box = Box.objects.get(box_number=box_number)
         except Box.DoesNotExist:
             return redirect('fpiweb:box_new', box_number=box_number)
 
-        if not box.product:
-            return redirect('fpiweb:box_edit', pk=box.pk)
+        return redirect('fpiweb:build_pallet', args=(box.pk,))
 
-        return redirect('fpiweb:box_empty_move', pk=box.pk)
+
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -369,6 +377,20 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             BoxNumber.get_next_box_number()
         )
 
+        # schema http or https
+        schema = 'http'
+        if settings.DEBUG == False and hasattr(self.request, 'schema'):
+            schema = self.request.schema
+
+        protocol_and_host = "{}://{}".format(
+            schema,
+            self.request.META.get('HTTP_HOST', '')
+        )
+
+        full_box_url = protocol_and_host + full_box_url
+        empty_box_url = protocol_and_host + empty_box_url
+        new_box_url = protocol_and_host + new_box_url
+
         empty_box = Box.objects.filter(product__isnull=True).first()
         full_box = Box.objects.filter(product__isnull=False).first()
 
@@ -398,18 +420,20 @@ class BuildPalletView(View):
 
         box_pk = kwargs.get('box_pk')
 
-        form = BuildPalletForm()
+        build_pallet_form = BuildPalletForm()
 
         kwargs = {
             'prefix': 'box_forms',
         }
         if box_pk:
             kwargs['queryset'] = Box.objects.filter(pk=box_pk)
+        else:
+            kwargs['queryset'] = Box.objects.none()
 
         box_forms = self.BoxFormFactory(**kwargs)
 
         context = {
-            'form': form,
+            'form': build_pallet_form,
             'box_forms': box_forms,
         }
         return render(request, self.template_name, context)
@@ -418,6 +442,10 @@ class BuildPalletView(View):
 
         form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
+
+        if box_forms:
+            box_form = box_forms[0]
+            print(dir(box_form))
 
         if not form.is_valid() or not box_forms.is_valid():
             return render(

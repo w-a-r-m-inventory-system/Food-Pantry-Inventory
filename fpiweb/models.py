@@ -56,6 +56,9 @@ class LocRow(models.Model):
     """ Location Row Description """
 
     def __str__(self) -> str:
+        return str(self.loc_row)
+
+    def __repr__(self) -> str:
         """ Default way  to display a location row record. """
         display = (
             f'Row {self.loc_row} ({self.loc_row_descr})'
@@ -102,9 +105,12 @@ class LocBin(models.Model):
     """ Location Bin Description """
 
     def __str__(self) -> str:
+        return str(self.loc_bin)
+
+    def __repr__(self) -> str:
         """ Default way  to display a location bin record. """
         display = (
-            f'Row {self.loc_bin} ({self.loc_bin_descr})'
+            f'Bin {self.loc_bin} ({self.loc_bin_descr})'
         )
         return display
 
@@ -148,9 +154,12 @@ class LocTier(models.Model):
     """ Location Tier Description """
 
     def __str__(self) -> str:
+        return str(self.loc_tier)
+
+    def __repr__(self) -> str:
         """ Default way  to display a location tier record. """
         display = (
-            f'Row {self.loc_tier} ({self.loc_tier_descr})'
+            f'Tier {self.loc_tier} ({self.loc_tier_descr})'
         )
         return display
 
@@ -426,6 +435,20 @@ class Box(models.Model):
         help_text=box_number_help_text,
     )
     """ Number printed in the label on the box. """
+
+    @staticmethod
+    def box_type_default():
+        box_type = BoxType.objects \
+            .filter(box_type_code__istartswith='ev') \
+            .first()
+        if box_type:
+            print("Found box_type starting with ev")
+            return box_type
+        box_type = BoxType.objects.first()
+        if box_type:
+            print("Grabbing the first box")
+            return box_type
+        return None
 
     box_type_help_text = 'Type of box with this number.'
     box_type = models.ForeignKey(
@@ -936,6 +959,15 @@ class Profile(models.Model):
         null=True,
         blank=True,
         help_text=title_help_text,
+    )
+
+    active_location_help_text = "The active location for when user is building a pallet (Location)"
+    active_location = models.ForeignKey(
+        Location,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=active_location_help_text,
     )
 
 

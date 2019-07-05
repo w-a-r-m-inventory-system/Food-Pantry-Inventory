@@ -1,5 +1,6 @@
 {% extends 'fpiweb/base.html' %}
 {% load bootstrap4 %}
+{% load qr_codes %}
 {% comment %}
 
 CONTEXT VARIABLES
@@ -39,7 +40,7 @@ screens.</p>
             <div>
                 <a href="{{ full_box_url }}">{{ full_box_url }}</a>
             </div>
-            <div>QR Code goes here</div>
+            <div>{% qr_code full_box_url %}</div>
         </td>
         <td>
             <div>A new box (box type hasn't been entered)</div>
@@ -47,7 +48,7 @@ screens.</p>
             <div>
                 <a href="{{ new_box_url }}">{{ new_box_url }}</a>
             </div>
-            <div>QR Code goes here</div>
+            <div>{% qr_code new_box_url %}</div>
         </td>
     </tr>
     <tr>
@@ -62,7 +63,7 @@ screens.</p>
             <div>
                 <a href="{{ empty_box_url }}">{{ empty_box_url }}</a>
             </div>
-            <div>QR Code goes here</div>
+            <div>{% qr_code empty_box_url %}</div>
         </td>
     </tr>
 </table>

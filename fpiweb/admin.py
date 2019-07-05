@@ -4,19 +4,28 @@ Admin.py - Identify what can be mangaged by administrators.
 
 from django.contrib import admin
 
-from .models import BoxType, Box, Activity, Product, ProductCategory, \
-    Constraints, ProductExample
+from .models import \
+    Activity, \
+    Box, \
+    BoxType, \
+    Constraints,  \
+    LocBin, \
+    LocRow, \
+    LocTier, \
+    Product, \
+    ProductCategory, \
+    ProductExample
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
 # Register the models for which we want default admin pages to be built.
-admin.site.register(BoxType)
-admin.site.register(ProductCategory)
-admin.site.register(Product)
-admin.site.register(ProductExample)
 admin.site.register(Activity)
+admin.site.register(BoxType)
+admin.site.register(Product)
+admin.site.register(ProductCategory)
+admin.site.register(ProductExample)
 
 
 @admin.register(Box)
@@ -42,6 +51,21 @@ class ConstraintsAdmin(admin.ModelAdmin):
         'constraint_max',
         'constraint_list',
     )
+
+
+@admin.register(LocBin)
+class LocBinAdmin(admin.ModelAdmin):
+    list_display = ('loc_bin', 'loc_bin_descr')
+
+
+@admin.register(LocRow)
+class LocRowAdmin(admin.ModelAdmin):
+    list_display = ('loc_row', 'loc_row_descr')
+
+
+@admin.register(LocTier)
+class LocTierAdmin(admin.ModelAdmin):
+    list_display = ('loc_tier', 'loc_tier_descr')
 
 
 # EOF

@@ -31,20 +31,23 @@ div.coordinate_label{
 </style>
 
 <h1>Build Pallet</h1>
+<div class="row">
+  <a href="{% url 'fpiweb:test_scan' %}">Back to test_scan page</a>
+</div>
 
 <form action="{% url 'fpiweb:build_pallet' %}" method="post">
   {% csrf_token %}
   {{ box_forms.management_form }}
   <div class="row">
-    <div class="col-md-1">
+    <div class="col-md-2">
       <div class="coordinate_label">Row</div>
       {% bootstrap_field form.loc_row  show_help=False show_label=False %}
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2">
       <div class="coordinate_label">Bin</div>
       {% bootstrap_field form.loc_bin  show_help=False show_label=False %}
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2">
       <div class="coordinate_label">Tier</div>
       {% bootstrap_field form.loc_tier show_help=False show_label=False %}
     </div>
@@ -62,9 +65,16 @@ div.coordinate_label{
       <tbody>
         {% for box_form in box_forms %}
           <tr>
-            <td>{% bootstrap_field box_form.box_number show_help=False show_label=False %}</td>
+            <td>
+              {% bootstrap_field box_form.box_number show_help=False show_label=False %}
+              {{ box_form.box_id }}
+            </td>
             <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
             <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3">Scan a box</td>
           </tr>
         {% endfor %}
       </tbody>

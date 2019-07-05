@@ -9,7 +9,15 @@ from django.forms import CharField, DateInput, Form, PasswordInput, ValidationEr
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from fpiweb.models import Box, BoxType, Constraints, Product, ProductCategory
+from fpiweb.models import \
+    Box, \
+    BoxType, \
+    Constraints, \
+    LocRow, \
+    LocBin, \
+    LocTier, \
+    Product, \
+    ProductCategory
 
 
 __author__ = '(Multiple)'
@@ -211,19 +219,19 @@ class MoveBoxForm(forms.ModelForm):
 class BuildPalletForm(forms.Form):
     # This may be changed to a Model form for the Location Table
 
-    loc_row = forms.ChoiceField(
-        choices=row_choices,
-        help_text=Box.loc_row_help_text,
+    loc_row = forms.ModelChoiceField(
+        LocRow.objects.all(),
+        required=True,
     )
 
-    loc_bin = forms.ChoiceField(
-        choices=bin_choices,
-        help_text=Box.loc_bin_help_text,
+    loc_bin = forms.ModelChoiceField(
+        LocBin.objects.all(),
+        required=True,
     )
 
-    loc_tier = forms.ChoiceField(
-        choices=tier_choices,
-        help_text=Box.loc_tier_help_text,
+    loc_tier = forms.ModelChoiceField(
+        LocTier.objects.all(),
+        required=True,
     )
 
 
@@ -234,16 +242,21 @@ class BoxItemForm(forms.ModelForm):
     class Meta:
         model = Box
         fields = [
+            'box_id',
             'box_number',
             'product',
             'exp_year',
         ]
 
+    box_id = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput
+    )
+
     box_number = forms.CharField(
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
         disabled=True,
-        required=True,
     )
 
     product = forms.ModelChoiceField(
