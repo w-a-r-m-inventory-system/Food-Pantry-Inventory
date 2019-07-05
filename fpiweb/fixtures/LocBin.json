@@ -1,0 +1,74 @@
+[
+  {
+    "model": "fpiweb.locbin",
+    "pk": 1,
+    "fields": {
+      "loc_bin": "01",
+      "loc_bin_descr": "Bin 01"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 2,
+    "fields": {
+      "loc_bin": "02",
+      "loc_bin_descr": "Bin 02"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 3,
+    "fields": {
+      "loc_bin": "03",
+      "loc_bin_descr": "Bin 03"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 4,
+    "fields": {
+      "loc_bin": "04",
+      "loc_bin_descr": "Bin 04"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 5,
+    "fields": {
+      "loc_bin": "05",
+      "loc_bin_descr": "Bin 05"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 6,
+    "fields": {
+      "loc_bin": "06",
+      "loc_bin_descr": "Bin 06"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 7,
+    "fields": {
+      "loc_bin": "07",
+      "loc_bin_descr": "Bin 07"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 8,
+    "fields": {
+      "loc_bin": "08",
+      "loc_bin_descr": "Bin 08"
+    }
+  },
+  {
+    "model": "fpiweb.locbin",
+    "pk": 9,
+    "fields": {
+      "loc_bin": "09",
+      "loc_bin_descr": "Bin 09"
+    }
+  }
+]
