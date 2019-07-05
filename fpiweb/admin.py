@@ -23,7 +23,6 @@ __creation_date__ = "04/01/2019"
 # Register the models for which we want default admin pages to be built.
 admin.site.register(Activity)
 admin.site.register(BoxType)
-admin.site.register(Product)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
 
@@ -66,6 +65,14 @@ class LocRowAdmin(admin.ModelAdmin):
 @admin.register(LocTier)
 class LocTierAdmin(admin.ModelAdmin):
     list_display = ('loc_tier', 'loc_tier_descr')
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = (
+        'prod_name',
+        'prod_cat',
+    )
 
 
 # EOF

@@ -322,6 +322,10 @@ class BoxMoveView(LoginRequiredMixin, TemplateView):
         return {}
 
 
+class BoxEmptyView(LoginRequiredMixin, View):
+    pass
+
+
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
@@ -344,8 +348,6 @@ class BoxScannedView(LoginRequiredMixin, View):
             return redirect('fpiweb:box_new', box_number=box_number)
 
         return redirect('fpiweb:build_pallet', args=(box.pk,))
-
-
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -400,7 +402,7 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             'new_box_url': new_box_url,
             'empty_box': empty_box,
             'full_box': full_box,
-            'next_box_number': BoxNumber.get_next_box_number()
+            'next_box_number': BoxNumber.get_next_box_number(),
         }
 
 

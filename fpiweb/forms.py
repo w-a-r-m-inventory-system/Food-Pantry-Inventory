@@ -140,11 +140,15 @@ class FillBoxForm(forms.ModelForm):
             'exp_year',
             'exp_month_start',
             'exp_month_end',
-            'date_filled',
+            # 'date_filled',
         ]
-        widgets = {
-            'date_filled': Html5DateInput
-        }
+        # widgets = {
+        #     'date_filled': Html5DateInput
+        # }
+
+    # product = forms.ModelChoiceField(
+    #
+    # )
 
     exp_year = forms.TypedChoiceField(
         choices=expire_year_choices,
@@ -269,7 +273,6 @@ class BoxItemForm(forms.ModelForm):
         coerce=int,
         help_text=Box.exp_year_help_text,
     )
-
 
 
 # EOF

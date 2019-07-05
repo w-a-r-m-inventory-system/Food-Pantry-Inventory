@@ -47,7 +47,7 @@ class LocRow(models.Model):
     """ Location Row Designation """
 
     loc_row_descr_help_text = 'Locationn row description'
-    loc_row_descr_max_length = 12  # e.g. "Row 01"
+    loc_row_descr_max_length = 20  # e.g. "Row 01"
     loc_row_descr = models.CharField(
         'Loc Description',
         max_length=loc_row_descr_max_length,
@@ -96,7 +96,7 @@ class LocBin(models.Model):
     """ Location Bin Designation """
 
     loc_bin_descr_help_text = 'Locationn bin description'
-    loc_bin_descr_max_length = 12  # e.g. "Bin 01"
+    loc_bin_descr_max_length = 20  # e.g. "Bin 01"
     loc_bin_descr = models.CharField(
         'Loc Description',
         max_length=loc_bin_descr_max_length,
@@ -145,7 +145,7 @@ class LocTier(models.Model):
     """ Location Tier Designation """
 
     loc_tier_descr_help_text = 'Locationn tier description'
-    loc_tier_descr_max_length = 12  # e.g. "Tier 01"
+    loc_tier_descr_max_length = 20  # e.g. "Tier 01"
     loc_tier_descr = models.CharField(
         'Loc Tier Description',
         max_length=loc_tier_descr_max_length,

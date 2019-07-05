@@ -10,7 +10,7 @@ certifi==2019.6.16
 chardet==3.0.4
 Click==7.0
 colorama==0.4.1
-Django==2.2.2
+Django==2.2.3
 django-bootstrap4==0.0.8
 docopt==0.6.2
 docutils==0.14
@@ -21,9 +21,9 @@ Jinja2==2.10.1
 lazy-object-proxy==1.4.1
 Markdown==3.1.1
 MarkupSafe==1.1.1
-more-itertools==7.0.0
+more-itertools==7.1.0
 packaging==19.0
-Pillow==6.0.0
+Pillow==6.1.0
 pluggy==0.12.0
 psycopg2==2.8.3
 psycopg2-binary==2.8.3
@@ -32,7 +32,7 @@ Pygments==2.4.2
 pyparsing==2.4.0
 pypng==0.0.19
 PyQRCode==1.2.1
-pytest==4.6.3
+pytest==5.0.0
 pytz==2019.1
 PyYAML==5.1.1
 qrcode==6.1
