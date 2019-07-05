@@ -38,28 +38,22 @@ __creation_date__ = "06/28/2019"
 log = None
 
 """
-# # # # #
+#########
 Constants
-# # # # #
+#########
 """
 ROW_MIN = 1
-""" Minimum row number """
 ROW_MAX = 4
-""" Maximum row number """
 BIN_MIN = 1
-""" Minimum bin number """
 BIN_MAX = 9
-""" Maximum bin number """
 TIER_LIST = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
-""" List of valid tier names """
 
-ECHO_SQL_TO_LOG = True
-""" Indicator of if the SQL statements should be copied to the log """
+ECHO_SQL_TO_LOG = False
 
 """
-# # # # # # # # # # # #
+#######################
 SQLAlchemy Declarations
-# # # # # # # # # # # #
+#######################
 """
 Base = automap_base()
 
