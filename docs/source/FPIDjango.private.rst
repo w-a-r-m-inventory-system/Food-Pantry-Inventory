@@ -4,9 +4,14 @@ FPIDjango.private package
 Submodules
 ----------
 
-.. toctree::
+FPIDjango.private.settings\_private module
+------------------------------------------
 
-   FPIDjango.private.settings_private
+.. automodule:: FPIDjango.private.settings_private
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------
