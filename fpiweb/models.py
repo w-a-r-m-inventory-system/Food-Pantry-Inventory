@@ -376,6 +376,7 @@ class Product(models.Model):
 
 
 class BoxNumber:
+
     box_number_regex = re_compile(r'^BOX\d{5}$')
 
     @staticmethod
@@ -384,8 +385,7 @@ class BoxNumber:
 
     @staticmethod
     def get_next_box_number():
-        max_box_number = Box.objects.aggregate(
-            max_box_number=Max('box_number'))
+        max_box_number = Box.objects.aggregate(max_box_number=Max('box_number'))
         max_box_number = max_box_number.get('max_box_number')
         if max_box_number is None:
             return BoxNumber.format_box_number(1)

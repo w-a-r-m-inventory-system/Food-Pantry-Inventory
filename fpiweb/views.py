@@ -13,7 +13,11 @@ from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
 from fpiweb.models import Box, BoxNumber, Constraints
-from fpiweb.forms import NewBoxForm, LoginForm, ConstraintsForm, LogoutForm
+from fpiweb.forms import \
+    ConstraintsForm, \
+    FillBoxForm, \
+    LoginForm, \
+    NewBoxForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -23,11 +27,19 @@ __creation_date__ = "04/01/2019"
 logger = getLogger('fpiweb')
 
 
+class IndexView(TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/index.html'
+
+
 def error_page(
         request,
         message=None,
         message_list=tuple(),
         status=400):
+
     return render(
         request,
         'fpiweb/error.html',
@@ -37,13 +49,6 @@ def error_page(
         },
         status=status
     )
-
-
-class IndexView(TemplateView):
-    """
-    Default web page (/index)
-    """
-    template_name = 'fpiweb/index.html'
 
 
 class AboutView(TemplateView):
@@ -293,17 +298,35 @@ class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
 
 
 class BoxMoveView(LoginRequiredMixin, TemplateView):
-    template_name = 'fpiweb/box_empty_move.html'
+
+    template_name = 'fpiweb/box_move.html'
 
     def get_context_data(self, **kwargs):
         return {}
+
+
+class BoxEmptyView(LoginRequiredMixin, View):
+    pass
+
+
+class BoxFillView(LoginRequiredMixin, UpdateView):
+    model = Box
+    template_name = 'fpiweb/box_fill.html'
+    context_object_name = 'box'
+    form_class = FillBoxForm
+
+    def get_success_url(self):
+        return reverse(
+            'fpiweb:box_details',
+            args=(self.object.pk,)
+        )
 
 
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
         box_number = kwargs.get('number')
-        if box_number is None:
+        if pk is None:
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
 
@@ -313,9 +336,9 @@ class BoxScannedView(LoginRequiredMixin, View):
             return redirect('fpiweb:box_new', box_number=box_number)
 
         if not box.product:
-            return redirect('fpiweb:box_edit', pk=box.pk)
+            return redirect('fpiweb:box_fill', pk=box.pk)
 
-        return redirect('fpiweb:box_empty_move', pk=box.pk)
+        return redirect('fpiweb:box_details', pk=box.pk)
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -323,7 +346,6 @@ class TestScanView(LoginRequiredMixin, TemplateView):
     template_name = 'fpiweb/test_scan.html'
 
     @staticmethod
-
     def get_box_scanned_url(box_number):
         if box_number.lower().startswith('box'):
             box_number = box_number[3:]
