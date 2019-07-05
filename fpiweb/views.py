@@ -6,6 +6,7 @@ from logging import getLogger, debug
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Max
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
@@ -325,7 +326,7 @@ class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
         box_number = kwargs.get('number')
-        if box_number is None:
+        if pk is None:
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
 

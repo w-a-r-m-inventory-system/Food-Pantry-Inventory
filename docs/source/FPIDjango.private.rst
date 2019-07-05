@@ -1,11 +1,6 @@
 FPIDjango.private package
 =========================
 
-.. automodule:: FPIDjango.private
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -17,3 +12,11 @@ FPIDjango.private.settings\_private module
    :undoc-members:
    :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: FPIDjango.private
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,11 +1,6 @@
 fpiweb.migrations package
 =========================
 
-.. automodule:: fpiweb.migrations
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -121,107 +116,11 @@ fpiweb.migrations.0014\_auto\_20190523\_2043 module
    :undoc-members:
    :show-inheritance:
 
-fpiweb.migrations.0015\_box\_print\_box\_number\_label module
--------------------------------------------------------------
 
-.. automodule:: fpiweb.migrations.0015_box_print_box_number_label
+Module contents
+---------------
+
+.. automodule:: fpiweb.migrations
    :members:
    :undoc-members:
    :show-inheritance:
-
-fpiweb.migrations.0016\_remove\_box\_print\_box\_number\_label module
----------------------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0016_remove_box_print_box_number_label
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0017\_location\_locbin\_locrow\_loctier\_profile module
--------------------------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0017_location_locbin_locrow_loctier_profile
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0018\_profile\_active\_location module
---------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0018_profile_active_location
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0019\_pallet\_tables\_and\_tweaks module
-----------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0019_pallet_tables_and_tweaks
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0020\_auto\_20191021\_2016 module
----------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0020_auto_20191021_2016
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0021\_auto\_20191022\_2113 module
----------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0021_auto_20191022_2113
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0022\_consolidate\_location\_fields module
-------------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0022_consolidate_location_fields
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0023\_auto\_20200102\_2045 module
----------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0023_auto_20200102_2045
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0024\_change\_pallet\_handling module
--------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0024_change_pallet_handling
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0025\_restore\_pallet\_box\_number\_tweak\_activity module
-----------------------------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0025_restore_pallet_box_number_tweak_activity
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0026\_auto\_20200210\_2015 module
----------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0026_auto_20200210_2015
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.migrations.0027\_set\_constraint\_name\_choices module
--------------------------------------------------------------
-
-.. automodule:: fpiweb.migrations.0027_set_constraint_name_choices
-   :members:
-   :undoc-members:
-   :show-inheritance:
-

@@ -293,19 +293,19 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'standard',
         },
         'django': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'django.log',
             'mode': 'w',
             'formatter': 'standard',
         },
         'fpiweb': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'fpiweb.log',
             'mode': 'w',
@@ -313,7 +313,7 @@ LOGGING = {
         },
         'file': {
             'class': 'logging.FileHandler',
-            'level': 'DEBUG',
+            'level': 'INFO',
             'formatter': 'standard',
             'filename': 'root.log',
             'mode': 'w',
@@ -322,17 +322,17 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['django', 'console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
         'fpiweb': {
             'handlers': ['fpiweb', 'console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
     'root': {
-        'level': 'DEBUG',
+        'level': 'INFO',
         'handlers': ['file', 'console'],
     },
 }
