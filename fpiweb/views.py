@@ -13,7 +13,11 @@ from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
 from fpiweb.models import Box, BoxNumber, Constraints
-from fpiweb.forms import NewBoxForm, LoginForm, ConstraintsForm, LogoutForm
+from fpiweb.forms import \
+    ConstraintsForm, \
+    FillBoxForm, \
+    LoginForm, \
+    NewBoxForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -299,6 +303,23 @@ class BoxMoveView(LoginRequiredMixin, TemplateView):
         return {}
 
 
+class BoxEmptyView(LoginRequiredMixin, View):
+    pass
+
+
+class BoxFillView(LoginRequiredMixin, UpdateView):
+    model = Box
+    template_name = 'fpiweb/box_fill.html'
+    context_object_name = 'box'
+    form_class = FillBoxForm
+
+    def get_success_url(self):
+        return reverse(
+            'fpiweb:box_details',
+            args=(self.object.pk,)
+        )
+
+      
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
@@ -313,9 +334,9 @@ class BoxScannedView(LoginRequiredMixin, View):
             return redirect('fpiweb:box_new', box_number=box_number)
 
         if not box.product:
-            return redirect('fpiweb:box_edit', pk=box.pk)
+            return redirect('fpiweb:box_fill', pk=box.pk)
 
-        return redirect('fpiweb:box_empty_move', pk=box.pk)
+        return redirect('fpiweb:box_details', pk=box.pk)
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -323,7 +344,6 @@ class TestScanView(LoginRequiredMixin, TemplateView):
     template_name = 'fpiweb/test_scan.html'
 
     @staticmethod
-
     def get_box_scanned_url(box_number):
         if box_number.lower().startswith('box'):
             box_number = box_number[3:]

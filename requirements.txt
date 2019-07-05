@@ -39,7 +39,7 @@ qrcode==6.1
 reportlab==3.5.23
 requests==2.22.0
 six==1.12.0
-snowballstemmer==1.9.0
+snowballstemmer==1.2.1
 soupsieve==1.9.2
 Sphinx==2.1.2
 sphinx-autoapi==1.1.0
