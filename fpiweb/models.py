@@ -6,6 +6,7 @@ from enum import Enum, unique
 # import as to avoid conflict with built-in function compile
 from re import compile as re_compile
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
@@ -14,6 +15,227 @@ from django.urls import reverse
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
+
+
+class LocRow(models.Model):
+    """
+    Location Row in warehouse.
+    """
+
+    class Meta:
+        ordering = ['loc_row']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Loc Rows'
+
+    id_help_text = 'Internal record id for location row.'
+    id = models.AutoField(
+        'Internal Location Row ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for the location row. """
+
+    loc_row_help_text = 'Location row designation'
+    loc_row_max_length = 2  # e.g. "01"
+    loc_row_min_length = loc_row_max_length
+    loc_row = models.CharField(
+        'Loc Row',
+        max_length=loc_row_max_length,
+        unique=True,
+        help_text=loc_row_help_text,
+    )
+    """ Location Row Designation """
+
+    loc_row_descr_help_text = 'Locationn row description'
+    loc_row_descr_max_length = 20  # e.g. "Row 01"
+    loc_row_descr = models.CharField(
+        'Loc Description',
+        max_length=loc_row_descr_max_length,
+        help_text=loc_row_descr_help_text,
+    )
+    """ Location Row Description """
+
+    def __str__(self) -> str:
+        """ Default way  to display a location row record. """
+        display = (
+            f'Row {self.loc_row} ({self.loc_row_descr})'
+        )
+        return display
+
+
+class LocBin(models.Model):
+    """
+    Location Bin in warehouse.
+    """
+
+    class Meta:
+        ordering = ['loc_bin']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Loc Bins'
+
+    id_help_text = 'Internal record id for location bin.'
+    id = models.AutoField(
+        'Internal Location Bin ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for the location bin. """
+
+    loc_bin_help_text = 'Location bin designation'
+    loc_bin_max_length = 2
+    loc_bin_min_length = loc_bin_max_length
+    loc_bin = models.CharField(
+        'Loc Bin',
+        max_length=loc_bin_max_length,
+        unique=True,
+        help_text=loc_bin_help_text,
+    )
+    """ Location Bin Designation """
+
+    loc_bin_descr_help_text = 'Locationn bin description'
+    loc_bin_descr_max_length = 20  # e.g. "Bin 01"
+    loc_bin_descr = models.CharField(
+        'Loc Description',
+        max_length=loc_bin_descr_max_length,
+        help_text=loc_bin_descr_help_text,
+    )
+    """ Location Bin Description """
+
+    def __str__(self) -> str:
+        """ Default way  to display a location bin record. """
+        display = (
+            f'Row {self.loc_bin} ({self.loc_bin_descr})'
+        )
+        return display
+
+
+class LocTier(models.Model):
+    """
+    Location Tier in warehouse.
+    """
+
+    class Meta:
+        ordering = ['loc_tier']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Loc Tiers'
+
+    id_help_text = 'Internal record id for location tier.'
+    id = models.AutoField(
+        'Internal Location Tier ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for the location tier. """
+
+    loc_tier_help_text = 'Location tier designation'
+    loc_tier_max_length = 2
+    loc_tier_min_length = loc_tier_max_length
+    loc_tier = models.CharField(
+        'Loc Tier',
+        max_length=loc_tier_max_length,
+        unique=True,
+        help_text=loc_tier_help_text,
+    )
+    """ Location Tier Designation """
+
+    loc_tier_descr_help_text = 'Locationn tier description'
+    loc_tier_descr_max_length = 20  # e.g. "Tier 01"
+    loc_tier_descr = models.CharField(
+        'Loc Tier Description',
+        max_length=loc_tier_descr_max_length,
+        help_text=loc_tier_descr_help_text,
+    )
+    """ Location Tier Description """
+
+    def __str__(self) -> str:
+        """ Default way  to display a location tier record. """
+        display = (
+            f'Row {self.loc_tier} ({self.loc_tier_descr})'
+        )
+        return display
+
+
+class Location(models.Model):
+    """
+    Location for a filled box or other container.
+    """
+
+    class Meta:
+        ordering = ['loc_code']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Locations'
+
+    id_help_text = 'Internal record identifier for location.'
+    id = models.AutoField(
+        'Internal Location ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for location. """
+
+    loc_code_help_text = "Location code"
+    loc_code_max_length = 12
+    loc_code = models.CharField(
+        'Location Code',
+        max_length=loc_code_max_length,
+        unique=True,
+        help_text=loc_code_help_text,
+    )
+    """ Coded Location. """
+
+    loc_descr_help_text = 'Location description'
+    loc_descr_max_length = 25
+    loc_descr = models.CharField(
+        'Location Description',
+        max_length=loc_descr_max_length,
+        help_text=loc_descr_help_text,
+    )
+    """ Location description. """
+
+    loc_row_help_text = 'Loc row'
+    loc_row = models.ForeignKey(
+        LocRow,
+        on_delete=models.PROTECT,
+        verbose_name='Row',
+        help_text=loc_row_help_text,
+    )
+    """ Row indicator of this location. """
+
+    loc_bin_help_text = 'Loc bin'
+    loc_bin = models.ForeignKey(
+        LocBin,
+        on_delete=models.PROTECT,
+        verbose_name='Bin',
+        help_text=loc_bin_help_text,
+    )
+    """ Bin indicator of this location. """
+
+    loc_tier_help_text = 'Loc tier'
+    loc_tier = models.ForeignKey(
+        LocTier,
+        on_delete=models.PROTECT,
+        verbose_name='Tier',
+        help_text=loc_tier_help_text,
+    )
+    """ Tier indicator of this location. """
+
+    loc_in_warehouse_help_text = "In warehouse?"
+    loc_in_warehouse = models.BooleanField(
+        'In warehouse?',
+        default=True,
+        help_text=loc_in_warehouse_help_text,
+    )
+
+    def __str__(self) -> str:
+        """ Default way to display a location record. """
+        display = (
+            f'Location {self.loc_code} - {self.loc_descr}'
+        )
+        if self.loc_in_warehouse:
+            display += (
+                f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})'
+            )
+        return display
 
 
 class BoxType(models.Model):
@@ -154,7 +376,6 @@ class Product(models.Model):
 
 
 class BoxNumber:
-
     box_number_regex = re_compile(r'^BOX\d{5}$')
 
     @staticmethod
@@ -163,7 +384,8 @@ class BoxNumber:
 
     @staticmethod
     def get_next_box_number():
-        max_box_number = Box.objects.aggregate(max_box_number=Max('box_number'))
+        max_box_number = Box.objects.aggregate(
+            max_box_number=Max('box_number'))
         max_box_number = max_box_number.get('max_box_number')
         if max_box_number is None:
             return BoxNumber.format_box_number(1)
@@ -690,5 +912,30 @@ class ProductExample(models.Model):
         """ Default way to display this product example """
         display = f'{self.prod_example_name} ({self.prod_id})'
         return display
+
+
+class Profile(models.Model):
+    """
+    Track more information about the users of our system.
+    """
+
+    class Meta:
+        app_label = 'fpiweb'
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+    """ Internal link to the default Django User table. """
+
+    title_help_text = 'Job title'
+    title_max_length = 30
+    title = models.CharField(
+        'Title',
+        max_length=title_max_length,
+        null=True,
+        blank=True,
+        help_text=title_help_text,
+    )
 
 # EOF
