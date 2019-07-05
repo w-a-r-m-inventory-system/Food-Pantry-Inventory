@@ -27,19 +27,11 @@ __creation_date__ = "04/01/2019"
 logger = getLogger('fpiweb')
 
 
-class IndexView(TemplateView):
-    """
-    Default web page (/index)
-    """
-    template_name = 'fpiweb/index.html'
-
-
 def error_page(
         request,
         message=None,
         message_list=tuple(),
         status=400):
-
     return render(
         request,
         'fpiweb/error.html',
@@ -49,6 +41,13 @@ def error_page(
         },
         status=status
     )
+
+
+class IndexView(TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/index.html'
 
 
 class AboutView(TemplateView):
@@ -298,8 +297,7 @@ class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
 
 
 class BoxMoveView(LoginRequiredMixin, TemplateView):
-
-    template_name = 'fpiweb/box_move.html'
+    template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
         return {}
@@ -321,12 +319,12 @@ class BoxFillView(LoginRequiredMixin, UpdateView):
             args=(self.object.pk,)
         )
 
-
+      
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
         box_number = kwargs.get('number')
-        if pk is None:
+        if box_number is None:
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
 
