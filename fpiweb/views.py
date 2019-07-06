@@ -3,19 +3,29 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 from logging import getLogger, debug
 
-from django.shortcuts import redirect, render
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.db.models import Max
+from django.forms import modelformset_factory
+from django.shortcuts import redirect, render
+
 from django.db.models import Max
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-from fpiweb.models import Box, BoxNumber, Constraints
+from fpiweb.models import \
+    Action, \
+    Box, \
+    BoxNumber, \
+    Constraints
 from fpiweb.forms import \
+    BoxItemForm, \
+    BuildPalletForm, \
     ConstraintsForm, \
-    FillBoxForm, \
     LoginForm, \
     NewBoxForm
 
@@ -27,19 +37,11 @@ __creation_date__ = "04/01/2019"
 logger = getLogger('fpiweb')
 
 
-class IndexView(TemplateView):
-    """
-    Default web page (/index)
-    """
-    template_name = 'fpiweb/index.html'
-
-
 def error_page(
         request,
         message=None,
         message_list=tuple(),
         status=400):
-
     return render(
         request,
         'fpiweb/error.html',
@@ -49,6 +51,13 @@ def error_page(
         },
         status=status
     )
+
+
+class IndexView(TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/index.html'
 
 
 class AboutView(TemplateView):
@@ -267,6 +276,16 @@ class BoxNewView(LoginRequiredMixin, View):
             )
 
         box = new_box_form.save()
+
+        action = request.session.get('action')
+        if action == Action.ACTION_BUILD_PALLET:
+            return redirect(
+                reverse(
+                    'fpiweb:build_pallet_add_box',
+                    args=(box.pk,)
+                )
+            )
+
         return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
@@ -298,8 +317,7 @@ class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
 
 
 class BoxMoveView(LoginRequiredMixin, TemplateView):
-
-    template_name = 'fpiweb/box_move.html'
+    template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
         return {}
@@ -309,36 +327,28 @@ class BoxEmptyView(LoginRequiredMixin, View):
     pass
 
 
-class BoxFillView(LoginRequiredMixin, UpdateView):
-    model = Box
-    template_name = 'fpiweb/box_fill.html'
-    context_object_name = 'box'
-    form_class = FillBoxForm
-
-    def get_success_url(self):
-        return reverse(
-            'fpiweb:box_details',
-            args=(self.object.pk,)
-        )
-
-
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
         box_number = kwargs.get('number')
-        if pk is None:
+        if box_number is None:
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
+
+        action = request.session.get('action')
+
+        if action != Action.ACTION_BUILD_PALLET:
+            return error_page(
+                request,
+                "What to do when action is {}?".format(action)
+            )
 
         try:
             box = Box.objects.get(box_number=box_number)
         except Box.DoesNotExist:
             return redirect('fpiweb:box_new', box_number=box_number)
 
-        if not box.product:
-            return redirect('fpiweb:box_fill', pk=box.pk)
-
-        return redirect('fpiweb:box_details', pk=box.pk)
+        return redirect('fpiweb:build_pallet', args=(box.pk,))
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -370,6 +380,20 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             BoxNumber.get_next_box_number()
         )
 
+        # schema http or https
+        schema = 'http'
+        if settings.DEBUG == False and hasattr(self.request, 'schema'):
+            schema = self.request.schema
+
+        protocol_and_host = "{}://{}".format(
+            schema,
+            self.request.META.get('HTTP_HOST', '')
+        )
+
+        full_box_url = protocol_and_host + full_box_url
+        empty_box_url = protocol_and_host + empty_box_url
+        new_box_url = protocol_and_host + new_box_url
+
         empty_box = Box.objects.filter(product__isnull=True).first()
         full_box = Box.objects.filter(product__isnull=False).first()
 
@@ -379,8 +403,64 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             'new_box_url': new_box_url,
             'empty_box': empty_box,
             'full_box': full_box,
-            'next_box_number': BoxNumber.get_next_box_number()
+            'next_box_number': BoxNumber.get_next_box_number(),
         }
+
+
+class BuildPalletView(View):
+    """Set action in view"""
+    template_name = 'fpiweb/build_pallet.html'
+
+    BoxFormFactory = modelformset_factory(
+        Box,
+        form=BoxItemForm,
+        extra=0,
+    )
+
+    def get(self, request, *args, **kwargs):
+
+        request.session['action'] = Action.ACTION_BUILD_PALLET
+
+        box_pk = kwargs.get('box_pk')
+
+        build_pallet_form = BuildPalletForm()
+
+        kwargs = {
+            'prefix': 'box_forms',
+        }
+        if box_pk:
+            kwargs['queryset'] = Box.objects.filter(pk=box_pk)
+        else:
+            kwargs['queryset'] = Box.objects.none()
+
+        box_forms = self.BoxFormFactory(**kwargs)
+
+        context = {
+            'form': build_pallet_form,
+            'box_forms': box_forms,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = BuildPalletForm(request.POST)
+        box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
+
+        if box_forms:
+            box_form = box_forms[0]
+            print(dir(box_form))
+
+        if not form.is_valid() or not box_forms.is_valid():
+            return render(
+                request,
+                self.template_name,
+                {
+                    'form': form,
+                    'box_forms': box_forms,
+                }
+            )
+
+        return error_page(request, "forms are valid")
 
 
 # EOF
