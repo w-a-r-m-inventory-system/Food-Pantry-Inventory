@@ -5,7 +5,9 @@ __creation_date__ = "06/03/2019"
 
 from django.test import TestCase
 
-from fpiweb.forms import NewBoxForm
+from fpiweb.forms import \
+    BuildPalletForm,\
+    NewBoxForm
 from fpiweb.models import Box, BoxType
 
 
@@ -35,6 +37,11 @@ class NewBoxFormTest(TestCase):
         self.assertEqual(box_type.box_type_qty, box.quantity)
 
 
+class BuildPalletFormTest(TestCase):
+
+    def test_is_valid__location_not_specified(self):
+        form = BuildPalletForm()
+        self.assertFalse(form.is_valid())
 
 
 
