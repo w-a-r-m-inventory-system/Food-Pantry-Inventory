@@ -53,6 +53,11 @@ div.coordinate_label{
     </div>
   </div>
 
+  <div class="row" style="margin-bottom: 1rem;">
+    <a class="btn btn-primary" href="{% url 'fpiweb:scanner' %}">Scan a Box</a>&nbsp;
+    <button class="btn btn-primary">Pallet Complete</button>
+  </div>
+
   <div class="row">
     <table border="2">
       <thead>
@@ -81,8 +86,5 @@ div.coordinate_label{
     </table>
   </div>
 
-  <div class="row">
-    <button class="btn btn-primary">Done</button>
-  </div>
 </form>
 {% endblock %}

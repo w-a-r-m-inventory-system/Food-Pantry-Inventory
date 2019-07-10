@@ -8,15 +8,22 @@ from django.views.generic import TemplateView
 
 from fpiweb.views import \
     AboutView, \
+    BoxDetailsView, \
     BoxEditView, \
     BoxEmptyView, \
     BoxEmptyMoveView, \
     BoxMoveView, \
+    BoxNewView, \
     BoxScannedView, \
     BuildPalletView, \
-    IndexView, LoginView, ConstraintsListView, \
-    ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView, \
-    LogoutView, BoxNewView, BoxDetailsView, \
+    IndexView, LoginView, \
+    ConstraintCreateView, \
+    ConstraintDeleteView, \
+    ConstraintsListView, \
+    ConstraintUpdateView, \
+    LogoutView, \
+    ScannerView, \
+    ScannerView2, \
     TestScanView
 
 # from fpiweb.views import ConstraintDetailView
@@ -121,5 +128,9 @@ urlpatterns = [
     path(
         'build_pallet/<int:box_pk>/',
         BuildPalletView.as_view(),
-        name='build_pallet_add_box')
+        name='build_pallet_add_box'),
+
+    path('scanner/', ScannerView.as_view(), name='scanner'),
+
+    path('scanner2/', ScannerView2.as_view(), name='scanner2'),
 ]

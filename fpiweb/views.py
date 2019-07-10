@@ -462,4 +462,24 @@ class BuildPalletView(View):
         return error_page(request, "forms are valid")
 
 
+class ScannerView(View):
+
+    template_name = 'fpiweb/scanner.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+class ScannerView2(View):
+
+    template_name = 'fpiweb/scanner2.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+    def post(self, request, *args, **kwargs):
+        pass
+
 # EOF
