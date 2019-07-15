@@ -126,6 +126,27 @@ Setting Up Your Personal Repository
 #.  Use PyCharm to establish a virtual environment for your personal
     repository.
 
+    A.  Click on Preferences (Settings) -> Project: Food-Pantry-Inventory ->
+        Project Interpreter.
+
+    #.  It shows that this project is currently using the system Python
+        install.  We need to create a separate "virtual" environment to hold
+        the libraries needed for this project and to protect the system
+        Python from being "polluted" with these libraries.
+
+    #.  Click on the gear icon in the upper right corner.
+
+    #.  Click on Add in the dropdown.
+
+    #.  Verify that "Virtual Environmemt" is highlighted on the far left of
+        the dialog the comes up, and that the "New Environment" radio button
+        has been selected.
+
+    #.  Choose Python 3.7 as the base interpreter.  (If 3.7 is not
+        available, use 3.6 instead.)
+
+    #.  Click on OK, then OK again.
+
 #.  Add these libraries/packages to the virtual environment.
 
     A.  Sphinx - used for documentation

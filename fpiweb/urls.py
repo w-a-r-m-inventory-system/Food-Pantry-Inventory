@@ -52,19 +52,19 @@ urlpatterns = [
     path('constraints/', ConstraintsListView.as_view(),
          name='constraints_view'),
 
-    # # e.g. /fpiweb/constraints/4/ = show constraint # 4
+    # # e.g. /fpiweb/constraint/4/ = show constraint # 4
     # path('constraint/<int:constraint>', ConstraintDetailView.as_view(),
     #      name='constraint_detail', ),
 
-    # e.g. /fpiweb/constraints/add/ = add a constraint
+    # e.g. /fpiweb/constraint/add/ = add a constraint
     path('constraint/add/', ConstraintCreateView.as_view(),
         name='constraint_new', ),
 
-    # e.g. /fpiweb/constraints/edit/4/ = edit constraint # 4
+    # e.g. /fpiweb/constraint/edit/4/ = edit constraint # 4
     path('constraint/edit/<int:pk>/', ConstraintUpdateView.as_view(),
         name='constraint_update', ),
 
-    # e.g. /fpiweb/constraints/delete/4/ = delete constraint # 4
+    # e.g. /fpiweb/constraint/delete/4/ = delete constraint # 4
     path('constraint/delete/<int:pk>/', ConstraintDeleteView.as_view(),
         name='constraint_delete', ),
 
