@@ -1,0 +1,17 @@
+@startuml
+(Warehouse\nInventory\nSystem) as (Use)
+
+User -> (Move box)
+User --> (Use)
+
+note right of (Use)
+See the Move box sequence diagram for
+the steps for checking in a box of inventory.
+end note
+
+note "User has new location information ready" as N2
+(Move box) .. N2
+
+
+N2 ..(Use)
+@enduml

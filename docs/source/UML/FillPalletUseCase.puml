@@ -1,0 +1,27 @@
+@startuml
+(Warehouse\nInventory\nSystem) as (Use)
+
+User -> (Checkin)
+User --> (Use)
+
+note right of (Use)
+See the Fill Pallet Sequence
+Diagram for the steps for
+checking a pallet into inventory.
+end note
+
+note as N2
+User has filled, sealed\n and labeled a number
+of boxes and wants to put them all on a pallet.
+end note
+(Checkin) .. N2
+
+note as N3
+User has also decided what location in the warehouse
+that the palled will be placed once the boxes have
+been loaded on the pallet and checked into inventory.
+end note
+N2 .. N3
+
+N3 ..(Use)
+@enduml
