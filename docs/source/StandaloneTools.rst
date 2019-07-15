@@ -4,11 +4,14 @@ StandaloneTools package
 Submodules
 ----------
 
-.. toctree::
+StandaloneTools.QRCodePrinter module
+------------------------------------
 
-   StandaloneTools.GenerateSecretKey
-   StandaloneTools.LoadLocationData
-   StandaloneTools.QRCodePrinter
+.. automodule:: StandaloneTools.QRCodePrinter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------

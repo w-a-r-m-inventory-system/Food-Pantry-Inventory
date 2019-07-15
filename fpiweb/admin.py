@@ -9,6 +9,7 @@ from .models import \
     Box, \
     BoxType, \
     Constraints,  \
+    Location,  \
     LocBin, \
     LocRow, \
     LocTier, \
@@ -25,6 +26,7 @@ admin.site.register(Activity)
 admin.site.register(BoxType)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
+admin.site.register(Location)
 
 
 @admin.register(Box)
@@ -52,14 +54,14 @@ class ConstraintsAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(LocBin)
-class LocBinAdmin(admin.ModelAdmin):
-    list_display = ('loc_bin', 'loc_bin_descr')
-
-
 @admin.register(LocRow)
 class LocRowAdmin(admin.ModelAdmin):
     list_display = ('loc_row', 'loc_row_descr')
+
+
+@admin.register(LocBin)
+class LocBinAdmin(admin.ModelAdmin):
+    list_display = ('loc_bin', 'loc_bin_descr')
 
 
 @admin.register(LocTier)

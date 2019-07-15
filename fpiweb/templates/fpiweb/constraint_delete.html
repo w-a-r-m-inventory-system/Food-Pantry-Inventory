@@ -27,7 +27,7 @@
             <div class="col-md-12 text-center">
                 <strong>
                     Are you sure you want to delete the Constraint
-                    {{ constraint_delete_context }}?
+                    {{ constraints }}?
                 </strong>
             </div>
     </div>
@@ -37,7 +37,7 @@
     </div>
 
     <form action="
-            {%  url 'fpiweb:constraint_delete' pk=constraint_delete_context.id %}"
+            {%  url 'fpiweb:constraint_delete' pk=constraints.id %}"
           method="POST">
         {% csrf_token %}
 
