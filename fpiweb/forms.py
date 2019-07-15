@@ -3,9 +3,15 @@ forms.py - provide validation of a forms.
 """
 
 from logging import getLogger, debug, error
+from typing import Union, Optional
 
 from django import forms
-from django.forms import CharField, DateInput, Form, PasswordInput, ValidationError
+from django.forms import \
+    CharField, \
+    DateInput, \
+    Form, \
+    PasswordInput, \
+    ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -18,7 +24,6 @@ from fpiweb.models import \
     LocTier, \
     Product, \
     ProductCategory
-
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -70,10 +75,80 @@ def tier_choices():
     return add_no_selection_choice(char_list_choices('Tier'))
 
 
-def none_or_int(text):
+def none_or_int(text: str) -> Optional[int]:
+    """
+    Convert test to a valid integer or None.
+
+    :param text:
+    :return:
+    """
     if text is None or text.strip() == '':
-        return None
-    return int(text)
+        result = None
+    elif text.isnumeric():
+        result = int(text)
+    else:
+        result = None
+    return result
+
+
+def none_or_str(text: str) -> Optional[str]:
+    """
+    Convert text to non-empty string or None.
+
+    :param text:
+    :return:
+    """
+    if text is None or text.strip() == '':
+        result = None
+    else:
+        result = text
+    return result
+
+
+def none_or_list(text: str) -> Optional[list]:
+    """
+    Convert text to list or None.
+
+    :param text:
+    :return:
+    """
+    if text is None or text.strip() == '':
+        result = None
+    else:
+        valid_list = True
+        result = list()
+        text_parts = text.split()
+        for pos, part in enumerate(text_parts):
+            element = part.strip()
+            if element.endswith(','):
+                value = element[:-1]
+            elif pos + 1 == len(text_parts):
+                value = element
+            else:
+                valid_list = False
+                break
+            if not value.isalnum():
+                valid_list = False
+                break
+            result.append(value)
+        if not valid_list:
+            result = None
+    return result
+
+
+def validate_int_list(char_list: list) -> bool:
+    """
+    Verify that all values in the list are integers.
+
+    :param text:
+    :return:
+    """
+    valid_int_list = True
+    for element in char_list:
+        if not element.isnumeric():
+            valid_int_list = False
+            break
+    return valid_int_list
 
 
 class Html5DateInput(DateInput):
@@ -107,6 +182,102 @@ class ConstraintsForm(forms.ModelForm):
         fields = ['id', 'constraint_name', 'constraint_descr',
                   'constraint_type', 'constraint_min', 'constraint_max',
                   'constraint_list']
+
+    constraint_type = forms.ChoiceField(
+        choices=Constraints.CONSTRAINT_TYPE_CHOICES,
+        help_text=Constraints.constraint_type_help_text,
+    )
+
+    constraint_min = forms.CharField(required=False,
+                                     help_text=Constraints.constraint_min_help_text,
+                                     )
+
+    constraint_max = forms.CharField(required=False,
+                                     help_text=Constraints.constraint_max_help_text,
+                                     )
+
+    constraint_list = forms.CharField(required=False,
+                                      help_text=Constraints.constraint_list_help_text,
+                                      )
+
+    @staticmethod
+    def validate_constraint_fields(
+            con_type: Constraints.CONSTRAINT_TYPE_CHOICES,
+            con_min: Union[str, int],
+            con_max: Union[str, int],
+            con_list: str
+    ):
+        """
+        Validate the various constraint record fields.
+
+        :param con_name: name of constraint
+        :param con_type: type of constraint
+        :param con_min: minimum value, if given
+        :param con_max: maximum value, if given
+        :param con_list: list of values, if given
+        :return:
+        """
+        max_val = none_or_str(con_max)
+        min_val = none_or_str(con_min)
+        list_val = none_or_list(con_list)
+        valid: bool = False
+        if con_type == Constraints.INT_RANGE:
+            if max_val and min_val and (not list_val):
+                max_int = none_or_int(max_val)
+                min_int = none_or_int(min_val)
+                if min_int and max_int and min_int < max_int:
+                    valid = True
+            if not valid:
+                raise ValidationError(
+                    'Integer range requires that the min and max be integers '
+                    'and that max must be greater than min (and no list)'
+                )
+        elif con_type == Constraints.CHAR_RANGE:
+            if max_val and min_val and (not list_val):
+                if min_val < max_val:
+                    valid = True
+            if not valid:
+                raise ValidationError(
+                    'Character range requires that the min and max be '
+                    'characters and that max must be greater than min '
+                    '(and no list)'
+                )
+        elif con_type == Constraints.CHAR_LIST:
+            if max_val or min_val or (not list_val):
+                raise ValidationError(
+                    'Character list requires that min and max be empty and '
+                    'that the list contain only alphanumeric characters '
+                    'separated with commas'
+                )
+        elif con_type == Constraints.INT_LIST:
+            if max_val or min_val or (not list_val):
+                raise ValidationError(
+                    'Integer list requires that min and max be empty and '
+                    'that the list contain only numbers separated with commas'
+                )
+        return
+
+    def clean(self):
+        """
+        Clean and validate the data given for the constraint record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        con_name = cleaned_data.get('constraint_name')
+        if not con_name or not (len(con_name) > 0):
+            raise ValidationError('Constraint name must be specified')
+        con_descr = cleaned_data.get('constraint_descr')
+        if not con_descr or not (len(con_descr) > 0):
+            raise ValidationError(
+                'A description of this constraint must be provided'
+            )
+        con_type = cleaned_data.get('constraint_type')
+        con_min = cleaned_data.get('constraint_min')
+        con_max = cleaned_data.get('constraint_max')
+        con_list = cleaned_data.get('constraint_list')
+        self.validate_constraint_fields(con_type, con_min, con_max, con_list)
+        return
 
 
 class NewBoxForm(forms.ModelForm):
@@ -142,13 +313,6 @@ class FillBoxForm(forms.ModelForm):
             'exp_month_end',
             # 'date_filled',
         ]
-        # widgets = {
-        #     'date_filled': Html5DateInput
-        # }
-
-    # product = forms.ModelChoiceField(
-    #
-    # )
 
     exp_year = forms.TypedChoiceField(
         choices=expire_year_choices,
@@ -174,10 +338,18 @@ class FillBoxForm(forms.ModelForm):
 
     @staticmethod
     def validate_exp_month_start_end(exp_month_start, exp_month_end):
+        """
+        Validate the start and end month, if given.
+
+        :param exp_month_start:
+        :param exp_month_end:
+        :return:
+        """
         if exp_month_start is None and exp_month_end is None:
             return
 
-        error_msg = "If Exp {} month is specified, Exp {} month must be specified"
+        error_msg =
+        	"If Exp {} month is specified, Exp {} month must be specified"
 
         if exp_month_start is not None and exp_month_end is None:
             raise ValidationError(error_msg.format('start', 'end'))
@@ -186,9 +358,16 @@ class FillBoxForm(forms.ModelForm):
             raise ValidationError(error_msg.format('end', 'start'))
 
         if exp_month_end <= exp_month_start:
-            raise ValidationError('Exp month end must be after Exp month start')
+            raise ValidationError(
+                'Exp month end must be after Exp month start'
+            )
 
     def clean(self):
+        """
+        Clean and validate the data in this box record.
+
+        :return:
+        """
         cleaned_data = super().clean()
         exp_month_start = cleaned_data.get('exp_month_start')
         exp_month_end = cleaned_data.get('exp_month_end')
@@ -273,6 +452,5 @@ class BoxItemForm(forms.ModelForm):
         coerce=int,
         help_text=Box.exp_year_help_text,
     )
-
 
 # EOF

@@ -224,7 +224,8 @@ BOOTSTRAP4 = {
         "integrity":
             "sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH"
             "+8abtTE1Pi6jizo",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+    },
 
     # The URL to the Popper.js JavaScript file (slim)
     "popper_url": {

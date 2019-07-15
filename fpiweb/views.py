@@ -1,20 +1,25 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
-from logging import getLogger, debug
+from logging import getLogger, debug, info
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.db.models import Max
 from django.forms import modelformset_factory
 from django.shortcuts import redirect, render
 
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, \
-    CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import \
+    TemplateView, \
+    ListView, \
+    DetailView, \
+    CreateView, \
+    UpdateView, \
+    DeleteView, \
+    FormView
 
 from fpiweb.models import \
     Action, \
@@ -41,6 +46,7 @@ def error_page(
         message=None,
         message_list=tuple(),
         status=400):
+
     return render(
         request,
         'fpiweb/error.html',
@@ -63,10 +69,8 @@ class AboutView(TemplateView):
     """
     The About View for this application.
     """
+
     template_name = 'fpiweb/about.html'
-    mycontext = dict()
-    mycontext['project_type'] = 'open source'
-    extra_context = mycontext
 
 
 class LoginView(FormView):
@@ -102,6 +106,7 @@ class ConstraintsListView(LoginRequiredMixin, ListView):
     """
     List of existing constraints.
     """
+
     model = Constraints
     template_name = 'fpiweb/constraints_list.html'
     context_object_name = 'constraints_list_content'
@@ -121,6 +126,8 @@ class ConstraintsListView(LoginRequiredMixin, ListView):
         CHAR_RANGE = Constraints.CHAR_RANGE
         range_list = [INT_RANGE, CHAR_RANGE]
         context['range_list'] = range_list
+        info(f'Constraint extra info: INT_RANGE: {INT_RANGE}, CHAR__RANGE: '
+             f'{CHAR_RANGE}, range_list: {range_list}')
 
         return context
 
@@ -129,9 +136,10 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
     """
     Create an animal or daily quest using a generic CreateView.
     """
+
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
-    context_object_name = 'constraint_edit_context'
+    context_object_name = 'constraints'
 
     formClass = ConstraintsForm
 
@@ -168,13 +176,9 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
-    context_object_name = 'constraint_edit_context/'
+    context_object_name = 'constraints'
 
     form_class = ConstraintsForm
-
-    # TODO Why are fields forbidden here in the update - 1/18/17
-    # fields = ['category', 'constraints_order', 'constraints_name',
-    # 'date_started', ]
 
     def get_context_data(self, **kwargs):
         """
@@ -203,9 +207,25 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
     """
     Delete an animal or daily quest using a generic DeleteView.
     """
+
     model = Constraints
     template_name = 'fpiweb/constraint_delete.html'
-    context_object_name = 'constraint_delete_context'
+    context_object_name = 'constraints'
+
+    form_class = ConstraintsForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(ConstraintDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:constraint_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
 
     def get_success_url(self):
         """
@@ -220,6 +240,7 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
 class BoxNewView(LoginRequiredMixin, View):
     # model = Box
     template_name = 'fpiweb/box_new.html'
+
     # context_object_name = 'box'
     # form_class = NewBoxForm
 
@@ -445,7 +466,7 @@ class BuildPalletView(View):
         form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
 
-        if box_forms:
+        if box_forms and len(box_forms) > 0:
             box_form = box_forms[0]
             print(dir(box_form))
 
@@ -460,6 +481,5 @@ class BuildPalletView(View):
             )
 
         return error_page(request, "forms are valid")
-
 
 # EOF
