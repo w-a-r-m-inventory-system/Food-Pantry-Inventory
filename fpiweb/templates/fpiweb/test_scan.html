@@ -1,5 +1,21 @@
 {% extends 'fpiweb/base.html' %}
 {% load bootstrap4 %}
+{% load qr_codes %}
+{% comment %}
+
+CONTEXT VARIABLES
+-------------------------------------------------------------------------------
+full_box_url     Scanned url for full box
+empty_box_url    Scanned url for empty box
+new_box_url      Scanned url for new box
+empty_box        Box object of empty Box, used to build url to box details
+                    page.
+full_box         Box object of full Box, used to build url to box details
+                    page.
+next_box_number  Used to build url to new box page
+
+
+{% endcomment %}
 
 {% block title %}Test Scan{% endblock %}
 
@@ -14,43 +30,67 @@ intended for use during development & testing</p>
 <p>May want to have box details page redirect to either enter box or fill box
 screens.</p>
 
-<div>
-    <a href="{% url 'fpiweb:index' %}">Index</a>
-</div>
+<p>request.session['action'] = {{ request.session.action }}</p>
 
 <table border="2">
     <tr>
         <td>
             <div>A box that is in the system and is full [Box.product is not None]</div>
+            <div>Action: Present empty or move box screen</div>
             <div>
                 <a href="{{ full_box_url }}">{{ full_box_url }}</a>
             </div>
-            <div>QR Code goes here</div>
+            <div>{% qr_code full_box_url %}</div>
         </td>
         <td>
-            <div>A box that is NOT in the system</div>
+            <div>A new box (box type hasn't been entered)</div>
+            <div>Action: Present new box screen</div>
             <div>
-                <a href="{{ nonexistent_box_url }}">{{ nonexistent_box_url }}</a>
+                <a href="{{ new_box_url }}">{{ new_box_url }}</a>
             </div>
-            <div>QR Code goes here</div>
+            <div>{% qr_code new_box_url %}</div>
         </td>
     </tr>
+    <tr>
     <td>
-        <div>
             <div>A box w/out a label</div>
-            <div>
-                <a href="{% url 'fpiweb:box_add' %}">Add Box</a>
-            </div>
+            <div>A number of box number labels will be pre-printed.&nbsp; Add
+                one of these labels then scan.</div>
         </td>
         <td>
             <div>A box that is in the system and is empty [Box.product is None]</div>
+            <div>Action: Present new box screen (should this be a fill box screen?)</div>
             <div>
                 <a href="{{ empty_box_url }}">{{ empty_box_url }}</a>
             </div>
-            <div>QR Code goes here</div>
+            <div>{% qr_code empty_box_url %}</div>
         </td>
     </tr>
 </table>
+<br/>
 
+<div>
+    <a href="{% url 'fpiweb:index' %}">Index</a>
+</div>
+
+<div>
+{% if empty_box %}
+    <a href="{% url 'fpiweb:box_details' empty_box.pk %}">Box Details (empty box)</a>
+{% else %}
+    Box Details (empty box)
+{% endif %}
+</div>
+
+<div>
+{% if full_box %}
+    <a href="{% url 'fpiweb:box_details' full_box.pk %}">Box Details (full box)</a>
+{% else %}
+    Box Details (full box)
+{% endif %}
+</div>
+
+<div>
+    <a href="{% url 'fpiweb:box_new' next_box_number %}">New Box</a>
+</div>
 
 {% endblock %}

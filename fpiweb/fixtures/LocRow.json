@@ -1,0 +1,34 @@
+[
+  {
+    "model": "fpiweb.locrow",
+    "pk": 1,
+    "fields": {
+      "loc_row": "01",
+      "loc_row_descr": "Row 01"
+    }
+  },
+  {
+    "model": "fpiweb.locrow",
+    "pk": 8,
+    "fields": {
+      "loc_row": "02",
+      "loc_row_descr": "Row 02"
+    }
+  },
+  {
+    "model": "fpiweb.locrow",
+    "pk": 9,
+    "fields": {
+      "loc_row": "03",
+      "loc_row_descr": "Row 03"
+    }
+  },
+  {
+    "model": "fpiweb.locrow",
+    "pk": 10,
+    "fields": {
+      "loc_row": "04",
+      "loc_row_descr": "Row 04"
+    }
+  }
+]

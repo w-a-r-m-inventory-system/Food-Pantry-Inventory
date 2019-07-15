@@ -2,8 +2,8 @@
 
 # delete the pdf before rerunning the QR code printer program.
 
-# switch to expected directory
-cd /Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/work
+# Assume that PyCharm has set the working directory
+
 
 # set default file name
 pdffile='qr.pdf'

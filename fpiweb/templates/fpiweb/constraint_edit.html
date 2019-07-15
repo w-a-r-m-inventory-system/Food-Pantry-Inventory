@@ -1,13 +1,8 @@
 {% extends 'fpiweb/base.html' %}
-
-{# Purpose - Add or edit a constraint. #}
-{# URL Name - constraint_new, constraint_update #}
-{# URL Response - POST #}
-{# Table - Animal #}
-{# Form - AnimalDQForm #}
+{% load bootstrap4 %}
 
 {% block title %}
-    {% if constraint_edit_context.id %}
+    {% if constraints.id %}
         Edit Constraint
     {% else %}
         Add Constraint
@@ -18,8 +13,8 @@
     <div class="row">
         <div class="col-md-4 text-center">
             <h1 class="h1">
-                {% if constraint_edit_context.id %}
-                    Edit Constraint #{{ constraint_edit_context.id }}
+                {% if constraints.id %}
+                    Edit Constraint
                 {% else %}
                 Add Constraint
                 {% endif %}
@@ -27,67 +22,32 @@
         </div>
     </div>
 
-    <form action="{{ action }}" method="POST">
-        {% csrf_token %}
-
-        {{ form.management_form }}
-
-        {# Non-field error messages appear here #}
         {% if form.non_field_errors %}
-            <div class="row">
-                <ul class="col-md-6">
+        <div class="alert alert-danger">
+            <ul>
                     {% for error in form.non_field_errors %}
-                        <li class="lead alert-danger bg-danger">
-                            <strong>{{ error }}</strong>
-                        </li>
+                    <li>{{ error }}</li>
                     {% endfor %}
                 </ul>
             </div>
         {% endif %}
 
-        {# form body appears here #}
-        <table class="form-group">
-            {% for field in form %}
-                <tr id="{{ field.auto_id }}_container">
-                    <div class="alert-info">
-                        {{ field.label_tag }}
-                    </div>
-                    <div>
-                        {{ field.help_text|safe }}
-                    </div>
-                    <div class="form-control">
-                        {{ field }}
-                    </div>
-                    <div id="{{ field.auto_id }}_errors"
-                         class="alert-warning">
-                        {{ field.errors }}
-                    </div>
-                </tr>
-            {% endfor %}
-        </table>
-
-        {# save button as default #}
-        <div class="row">
-            <div class="col-md-3 text-center">
-                <button id="save_animal"
-                        type="submit"
-                        class="btn btn-default alert-success">
-                    Save
-                </button>
-            </div>
-        </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_field form.constraint_name %}
+        {% bootstrap_field form.constraint_descr %}
+        {% bootstrap_field form.constraint_type %}
+        {% bootstrap_field form.constraint_min %}
+        {% bootstrap_field form.constraint_max %}
+        {% bootstrap_field form.constraint_list %}
+        <input type="submit" value="Submit"/>
     </form>
 
 
-    <div class="row">
-        <div class="col-md-3 text-center">
-           <a class="btn alert-info"
-              role="button"
-              href="{% url 'fpiweb:constraints_view' %}">
-                back to constraint list
+    <br/>
+    <a href="{% url 'fpiweb:constraints_view' %}">
+        Back to constraint list
            </a>
-       </div>
-    </div>
 
     <hr class="style-one">
 
@@ -98,7 +58,10 @@
         View: ConstraintCreateView and ConstraintUpdateView
     </h6>
     <h6>
-         Save URL: {{ action }}
+        Add URL: {% url 'fpiweb:constraint_new' %}
+    </h6>
+    <h6>
+         Save URL: {% url 'fpiweb:constraints_view' %}
     </h6>
     <h6>
         Return URL: {% url 'fpiweb:constraints_view' %}

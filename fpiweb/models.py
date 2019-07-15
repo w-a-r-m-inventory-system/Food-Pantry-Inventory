@@ -3,12 +3,251 @@ models.py - Define the database tables using ORM models.
 """
 from enum import Enum, unique
 
+# import as to avoid conflict with built-in function compile
+from re import compile as re_compile
+
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
+from django.urls import reverse
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
+
+
+class LocRow(models.Model):
+    """
+    Location Row in warehouse.
+    """
+
+    class Meta:
+        ordering = ['loc_row']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Loc Rows'
+
+    id_help_text = 'Internal record id for location row.'
+    id = models.AutoField(
+        'Internal Location Row ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for the location row. """
+
+    loc_row_help_text = 'Location row designation'
+    loc_row_max_length = 2  # e.g. "01"
+    loc_row_min_length = loc_row_max_length
+    loc_row = models.CharField(
+        'Loc Row',
+        max_length=loc_row_max_length,
+        unique=True,
+        help_text=loc_row_help_text,
+    )
+    """ Location Row Designation """
+
+    loc_row_descr_help_text = 'Locationn row description'
+    loc_row_descr_max_length = 20  # e.g. "Row 01"
+    loc_row_descr = models.CharField(
+        'Loc Description',
+        max_length=loc_row_descr_max_length,
+        help_text=loc_row_descr_help_text,
+    )
+    """ Location Row Description """
+
+    def __str__(self) -> str:
+        """ Return just the row for a special form need. """
+        return str(self.loc_row)
+
+    def __repr__(self) -> str:
+        """ Default way  to display a location row record. """
+        display = (
+            f'Row {self.loc_row} ({self.loc_row_descr})'
+        )
+        return display
+
+
+class LocBin(models.Model):
+    """
+    Location Bin in warehouse.
+    """
+
+    class Meta:
+        ordering = ['loc_bin']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Loc Bins'
+
+    id_help_text = 'Internal record id for location bin.'
+    id = models.AutoField(
+        'Internal Location Bin ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for the location bin. """
+
+    loc_bin_help_text = 'Location bin designation'
+    loc_bin_max_length = 2
+    loc_bin_min_length = loc_bin_max_length
+    loc_bin = models.CharField(
+        'Loc Bin',
+        max_length=loc_bin_max_length,
+        unique=True,
+        help_text=loc_bin_help_text,
+    )
+    """ Location Bin Designation """
+
+    loc_bin_descr_help_text = 'Locationn bin description'
+    loc_bin_descr_max_length = 20  # e.g. "Bin 01"
+    loc_bin_descr = models.CharField(
+        'Loc Description',
+        max_length=loc_bin_descr_max_length,
+        help_text=loc_bin_descr_help_text,
+    )
+    """ Location Bin Description """
+
+    def __str__(self) -> str:
+        """ Return just the bin for a special form need. """
+        return str(self.loc_bin)
+
+    def __repr__(self) -> str:
+        """ Default way  to display a location bin record. """
+        display = (
+            f'Bin {self.loc_bin} ({self.loc_bin_descr})'
+        )
+        return display
+
+
+class LocTier(models.Model):
+    """
+    Location Tier in warehouse.
+    """
+
+    class Meta:
+        ordering = ['loc_tier']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Loc Tiers'
+
+    id_help_text = 'Internal record id for location tier.'
+    id = models.AutoField(
+        'Internal Location Tier ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for the location tier. """
+
+    loc_tier_help_text = 'Location tier designation'
+    loc_tier_max_length = 2
+    loc_tier_min_length = loc_tier_max_length
+    loc_tier = models.CharField(
+        'Loc Tier',
+        max_length=loc_tier_max_length,
+        unique=True,
+        help_text=loc_tier_help_text,
+    )
+    """ Location Tier Designation """
+
+    loc_tier_descr_help_text = 'Locationn tier description'
+    loc_tier_descr_max_length = 20  # e.g. "Tier 01"
+    loc_tier_descr = models.CharField(
+        'Loc Tier Description',
+        max_length=loc_tier_descr_max_length,
+        help_text=loc_tier_descr_help_text,
+    )
+    """ Location Tier Description """
+
+    def __str__(self) -> str:
+        """ Return just the tier for a special form need. """
+        return str(self.loc_tier)
+
+    def __repr__(self) -> str:
+        """ Default way  to display a location tier record. """
+        display = (
+            f'Tier {self.loc_tier} ({self.loc_tier_descr})'
+        )
+        return display
+
+
+class Location(models.Model):
+    """
+    Location for a filled box or other container.
+    """
+
+    class Meta:
+        ordering = ['loc_code']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Locations'
+
+    id_help_text = 'Internal record identifier for location.'
+    id = models.AutoField(
+        'Internal Location ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for location. """
+
+    loc_code_help_text = "Location code"
+    loc_code_max_length = 12
+    loc_code = models.CharField(
+        'Location Code',
+        max_length=loc_code_max_length,
+        unique=True,
+        help_text=loc_code_help_text,
+    )
+    """ Coded Location. """
+
+    loc_descr_help_text = 'Location description'
+    loc_descr_max_length = 25
+    loc_descr = models.CharField(
+        'Location Description',
+        max_length=loc_descr_max_length,
+        help_text=loc_descr_help_text,
+    )
+    """ Location description. """
+
+    loc_row_help_text = 'Loc row'
+    loc_row = models.ForeignKey(
+        LocRow,
+        on_delete=models.PROTECT,
+        verbose_name='Row',
+        help_text=loc_row_help_text,
+    )
+    """ Row indicator of this location. """
+
+    loc_bin_help_text = 'Loc bin'
+    loc_bin = models.ForeignKey(
+        LocBin,
+        on_delete=models.PROTECT,
+        verbose_name='Bin',
+        help_text=loc_bin_help_text,
+    )
+    """ Bin indicator of this location. """
+
+    loc_tier_help_text = 'Loc tier'
+    loc_tier = models.ForeignKey(
+        LocTier,
+        on_delete=models.PROTECT,
+        verbose_name='Tier',
+        help_text=loc_tier_help_text,
+    )
+    """ Tier indicator of this location. """
+
+    loc_in_warehouse_help_text = "In warehouse?"
+    loc_in_warehouse = models.BooleanField(
+        'In warehouse?',
+        default=True,
+        help_text=loc_in_warehouse_help_text,
+    )
+
+    def __str__(self) -> str:
+        """ Default way to display a location record. """
+        display = (
+            f'Location {self.loc_code} - {self.loc_descr}'
+        )
+        if self.loc_in_warehouse:
+            display += (
+                f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})'
+            )
+        return display
 
 
 class BoxType(models.Model):
@@ -149,6 +388,30 @@ class Product(models.Model):
         return display
 
 
+class BoxNumber:
+
+    box_number_regex = re_compile(r'^BOX\d{5}$')
+
+    @staticmethod
+    def format_box_number(int_box_number):
+        return "BOX{:05}".format(int_box_number)
+
+    @staticmethod
+    def get_next_box_number():
+        max_box_number = Box.objects.aggregate(
+            max_box_number=Max('box_number'))
+        max_box_number = max_box_number.get('max_box_number')
+        if max_box_number is None:
+            return BoxNumber.format_box_number(1)
+        max_box_number = int(max_box_number[3:])
+
+        return BoxNumber.format_box_number(max_box_number + 1)
+
+    @staticmethod
+    def validate(box_number):
+        return bool(BoxNumber.box_number_regex.match(box_number))
+
+
 class Box(models.Model):
     """
     Box or container for product.
@@ -168,13 +431,29 @@ class Box(models.Model):
     """ Internal record identifier for box. """
 
     box_number_help_text = "Number printed in the label on the box."
+    box_number_max_length = 8
+    box_number_min_length = box_number_max_length
     box_number = models.CharField(
         'Visible Box Number',
-        max_length=8,
+        max_length=box_number_max_length,
         unique=True,
         help_text=box_number_help_text,
     )
     """ Number printed in the label on the box. """
+
+    @staticmethod
+    def box_type_default():
+        box_type = BoxType.objects \
+            .filter(box_type_code__istartswith='ev') \
+            .first()
+        if box_type:
+            print("Found box_type starting with ev")
+            return box_type
+        box_type = BoxType.objects.first()
+        if box_type:
+            print("Grabbing the first box")
+            return box_type
+        return None
 
     box_type_help_text = 'Type of box with this number.'
     box_type = models.ForeignKey(
@@ -244,8 +523,8 @@ class Box(models.Model):
         blank=True,
         help_text=exp_month_start_help_text
     )
-    """ 
-    Optional starting month range of when the product expires, if filled. 
+    """
+    Optional starting month range of when the product expires, if filled.
     """
 
     exp_month_end_help_text = (
@@ -284,18 +563,18 @@ class Box(models.Model):
         """ Default way to display this box record. """
         if self.exp_month_start or self.exp_month_end:
             display = (
-                f'{self.box_number} ({self.box_type}) ' 
+                f'{self.box_number} ({self.box_type}) '
                 f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
-                f'{self.product} {self.quantity}' 
-                f'{self.exp_year} ' 
-                f'({self.exp_month_start}-{self.exp_month_end})' 
+                f'{self.product} {self.quantity}'
+                f'{self.exp_year} '
+                f'({self.exp_month_start}-{self.exp_month_end})'
                 f'{self.date_filled}'
             )
         else:
             display = (
-                f'{self.box_number} ({self.box_type}) ' 
-                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} ' 
-                f'{self.product} {self.quantity}' 
+                f'{self.box_number} ({self.box_type}) '
+                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
+                f'{self.product} {self.quantity}'
                 f'{self.exp_year} {self.date_filled}'
             )
         return display
@@ -310,6 +589,12 @@ class Box(models.Model):
         )
 
         # TODO: clear out location and product info
+
+    def get_absolute_url(self):
+        return reverse(
+            'fpiweb:box_details',
+            kwargs={'pk': self.pk},
+        )
 
 
 class Activity(models.Model):
@@ -638,6 +923,7 @@ class ProductExample(models.Model):
     class Meta:
         ordering = ['prod_example_name']
         app_label = 'fpiweb'
+        verbose_name_plural = 'Product Examples'
 
     id_help_text = 'Internal reccord identifier for product example'
     id = models.AutoField(
@@ -669,5 +955,47 @@ class ProductExample(models.Model):
         """ Default way to display this product example """
         display = f'{self.prod_example_name} ({self.prod_id})'
         return display
+
+
+class Profile(models.Model):
+    """
+    Track more information about the users of our system.
+    """
+
+    class Meta:
+        app_label = 'fpiweb'
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+    """ Internal link to the default Django User table. """
+
+    title_help_text = 'Job title'
+    title_max_length = 30
+    title = models.CharField(
+        'Title',
+        max_length=title_max_length,
+        null=True,
+        blank=True,
+        help_text=title_help_text,
+    )
+
+    active_location_help_text = "The active location for when user is building a pallet (Location)"
+    active_location = models.ForeignKey(
+        Location,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=active_location_help_text,
+    )
+
+
+class Action:
+    ACTION_BUILD_PALLET = 'build_pallet'
+    ACTIONS = {
+        ACTION_BUILD_PALLET,
+    }
+
 
 # EOF

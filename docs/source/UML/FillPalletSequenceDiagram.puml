@@ -1,0 +1,17 @@
+@startuml
+User -> Smartphone: Enter URL for Inventory System
+Smartphone -> User: Show initial Inventory System screen
+User -> Website: Bring up Fill Pallet screen
+User -> Website: Identify the location to hold the pallet
+User -> Smartphone: Scan QR code of a box
+Smartphone -> Website: Send box number to website
+Website -> User: Present information about box
+User -> Website: Enter product and expiration info
+User -> Website: Indicate that box will go on pallet
+Website -> Database: Add this box's info to temporary table
+User -> Website: Repeat scanning QR codes until done
+User -> Website: Go to Pallet Done screen and confirm
+Website -> Database: Transfer info from temp table to box table
+Database -> Website: Db confirms all boxes updated
+Website -> User: Confirm that all boxes have been updated.
+@enduml

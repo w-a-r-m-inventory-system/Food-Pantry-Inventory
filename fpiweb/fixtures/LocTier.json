@@ -1,0 +1,50 @@
+[
+  {
+    "model": "fpiweb.loctier",
+    "pk": 1,
+    "fields": {
+      "loc_tier": "A1",
+      "loc_tier_descr": "Tier A1"
+    }
+  },
+  {
+    "model": "fpiweb.loctier",
+    "pk": 2,
+    "fields": {
+      "loc_tier": "A2",
+      "loc_tier_descr": "Tier A2"
+    }
+  },
+  {
+    "model": "fpiweb.loctier",
+    "pk": 3,
+    "fields": {
+      "loc_tier": "B1",
+      "loc_tier_descr": "Tier B1"
+    }
+  },
+  {
+    "model": "fpiweb.loctier",
+    "pk": 4,
+    "fields": {
+      "loc_tier": "B2",
+      "loc_tier_descr": "Tier B2"
+    }
+  },
+  {
+    "model": "fpiweb.loctier",
+    "pk": 5,
+    "fields": {
+      "loc_tier": "C1",
+      "loc_tier_descr": "Tier C1"
+    }
+  },
+  {
+    "model": "fpiweb.loctier",
+    "pk": 6,
+    "fields": {
+      "loc_tier": "C2",
+      "loc_tier_descr": "Tier C2"
+    }
+  }
+]

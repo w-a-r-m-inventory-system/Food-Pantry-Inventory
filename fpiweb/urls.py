@@ -9,11 +9,14 @@ from django.views.generic import TemplateView
 from fpiweb.views import \
     AboutView, \
     BoxEditView, \
+    BoxEmptyView, \
     BoxEmptyMoveView, \
+    BoxMoveView, \
     BoxScannedView, \
+    BuildPalletView, \
     IndexView, LoginView, ConstraintsListView, \
     ConstraintCreateView, ConstraintUpdateView, ConstraintDeleteView, \
-    LogoutView, BoxAddView, BoxDetailsView, \
+    LogoutView, BoxNewView, BoxDetailsView, \
     TestScanView
 
 # from fpiweb.views import ConstraintDetailView
@@ -49,24 +52,24 @@ urlpatterns = [
     path('constraints/', ConstraintsListView.as_view(),
          name='constraints_view'),
 
-    # # e.g. /fpiweb/constraints/4/ = show constraint # 4
+    # # e.g. /fpiweb/constraint/4/ = show constraint # 4
     # path('constraint/<int:constraint>', ConstraintDetailView.as_view(),
     #      name='constraint_detail', ),
 
-    # e.g. /fpiweb/constraints/add/ = add a constraint
+    # e.g. /fpiweb/constraint/add/ = add a constraint
     path('constraint/add/', ConstraintCreateView.as_view(),
       name='constraint_new', ),
 
-    # e.g. /fpiweb/constraints/edit/4/ = edit constraint # 4
+    # e.g. /fpiweb/constraint/edit/4/ = edit constraint # 4
     path('constraint/edit/<int:pk>/', ConstraintUpdateView.as_view(),
         name='constraint_update', ),
 
-    # e.g. /fpiweb/constraints/delete/4/ = delete constraint # 4
+    # e.g. /fpiweb/constraint/delete/4/ = delete constraint # 4
     path('constraint/delete/<int:pk>/', ConstraintDeleteView.as_view(),
         name='constraint_delete', ),
 
     # e.g.  /fpiweb/box/add/ = add a box to inventory
-    path('box/add/', BoxAddView.as_view(), name='box_add'),
+    path('box/new/<str:box_number>/', BoxNewView.as_view(), name='box_new'),
 
     # e.g. /fpiweb/box/<pk>/edit = edit a box in inventory
     path('box/<int:pk>/edit/', BoxEditView.as_view(), name='box_edit'),
@@ -81,6 +84,42 @@ urlpatterns = [
     path('box/<int:pk>/empty_move/', BoxEmptyMoveView.as_view(),
          name='box_empty_move'),
 
+    # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
+    path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
+    # e.g. /fpiweb/box/<pk>/empty_move = consume or move a box
+    path('box/<int:pk>/empty_move/', BoxEmptyMoveView.as_view(),
+         name='box_empty_move'),
+
+    # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
+    path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
+
+    # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
+    path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
+
+    # e.g. /fpiweb/test_scan/ = ???
+    path('box/<int:pk>/move/', BoxMoveView.as_view(), name='box_move'),
+
+    path('box/<int:pk>/empty/', BoxEmptyView.as_view(), name='box_empty'),
+
+    # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
+    path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
+    # e.g. /fpiweb/box/<pk>/empty_move = consume or move a box
+    path('box/<int:pk>/empty_move/', BoxEmptyMoveView.as_view(),
+         name='box_empty_move'),
+
+    # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
+    path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
+
+    # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
+    path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
+
     # e.g. /fpiweb/test_scan/ = ???
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
+
+    path('build_pallet/', BuildPalletView.as_view(), name='build_pallet'),
+
+    path(
+        'build_pallet/<int:box_pk>/',
+        BuildPalletView.as_view(),
+        name='build_pallet_add_box')
 ]
