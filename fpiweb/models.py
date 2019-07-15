@@ -56,6 +56,7 @@ class LocRow(models.Model):
     """ Location Row Description """
 
     def __str__(self) -> str:
+        """ Return just the row for a special form need. """
         return str(self.loc_row)
 
     def __repr__(self) -> str:
@@ -105,6 +106,7 @@ class LocBin(models.Model):
     """ Location Bin Description """
 
     def __str__(self) -> str:
+        """ Return just the bin for a special form need. """
         return str(self.loc_bin)
 
     def __repr__(self) -> str:
@@ -154,6 +156,7 @@ class LocTier(models.Model):
     """ Location Tier Description """
 
     def __str__(self) -> str:
+        """ Return just the tier for a special form need. """
         return str(self.loc_tier)
 
     def __repr__(self) -> str:
@@ -281,8 +284,9 @@ class BoxType(models.Model):
     )
     """ Type of box (description). """
 
-    box_type_qty_help_text = 'Number of items (usually cans) that can ' \
-                             'typically fix in this box.'
+    box_type_qty_help_text = (
+        'Number of items (usually cans) that can typically fix in this box.'
+    )
     box_type_qty = models.IntegerField(
         'Default Box Type Quantity',
         help_text=box_type_qty_help_text,
@@ -385,6 +389,7 @@ class Product(models.Model):
 
 
 class BoxNumber:
+
     box_number_regex = re_compile(r'^BOX\d{5}$')
 
     @staticmethod
@@ -509,24 +514,28 @@ class Box(models.Model):
     )
     """ Year the product expires, if filled. """
 
-    exp_month_start_help_text = 'Optional starting month range of when the ' \
-                                'product expires, if filled.'
+    exp_month_start_help_text = (
+        'Optional starting month range of when the product expires, if filled.'
+    )
     exp_month_start = models.IntegerField(
         'Expiration Start Month (Optional)',
         null=True,
         blank=True,
-        help_text=exp_month_start_help_text)
-    """ 
-    Optional starting month range of when the product expires, if filled. 
+        help_text=exp_month_start_help_text
+    )
+    """
+    Optional starting month range of when the product expires, if filled.
     """
 
-    exp_month_end_help_text = 'Optional ending month range of when the ' \
-                              'product expires, if filled.'
+    exp_month_end_help_text = (
+        'Optional ending month range of when the product expires, if filled.'
+    )
     exp_month_end = models.IntegerField(
         'Expiration End Month (Optional)',
         null=True,
         blank=True,
-        help_text=exp_month_end_help_text)
+        help_text=exp_month_end_help_text,
+    )
     """ Optional emding month range of when the product expires, if filled. """
 
     date_filled_help_text = 'Approximate date box was filled, if filled.'
@@ -538,8 +547,9 @@ class Box(models.Model):
     )
     """ Approximate date box was filled, if filled. """
 
-    quantity_help_text = 'Approximate or default number of items in the ' \
-                         'box, if filled.'
+    quantity_help_text = (
+        'Approximate or default number of items in the box, if filled.'
+    )
     quantity = models.IntegerField(
         'Quantity in Box',
         null=True,
@@ -552,17 +562,21 @@ class Box(models.Model):
     def __str__(self):
         """ Default way to display this box record. """
         if self.exp_month_start or self.exp_month_end:
-            display = f'{self.box_number} ({self.box_type}) ' \
-                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} ' \
-                f'{self.product} {self.quantity}' \
-                f'{self.exp_year} ' \
-                f'({self.exp_month_start}-{self.exp_month_end})' \
+            display = (
+                f'{self.box_number} ({self.box_type}) '
+                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
+                f'{self.product} {self.quantity}'
+                f'{self.exp_year} '
+                f'({self.exp_month_start}-{self.exp_month_end})'
                 f'{self.date_filled}'
+            )
         else:
-            display = f'{self.box_number} ({self.box_type}) ' \
-                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} ' \
-                f'{self.product} {self.quantity}' \
+            display = (
+                f'{self.box_number} ({self.box_type}) '
+                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
+                f'{self.product} {self.quantity}'
                 f'{self.exp_year} {self.date_filled}'
+            )
         return display
 
     def empty(self):
@@ -671,8 +685,9 @@ class Activity(models.Model):
     )
     """ Date product was consumed. """
 
-    duration_help_text = 'Number of days between date box was filled and ' \
-                         'consumed.'
+    duration_help_text = (
+        'Number of days between date box was filled and consumed.'
+    )
     duration = models.IntegerField(
         'Duration',
         help_text=duration_help_text,
@@ -722,16 +737,16 @@ class Activity(models.Model):
         """ Default way to display this activity record. """
         if self.date_filled:
             display = (
-                f'{self.box_number} ({self.box_type}) ' 
-                f'{self.prod_name} ({self.prod_cat_name}) ' 
-                f'{self.quantity} ' 
-                f'{self.exp_year}' 
-                f'({self.exp_month_start}-' 
-                f'{self.exp_month_end})' 
-                f'{self.date_filled} - {self.date_consumed}' 
-                f'({self.duration}) at ' 
-                f'{self.loc_row} / ' 
-                f'{self.loc_bin} / ' 
+                f'{self.box_number} ({self.box_type_code}) '
+                f'{self.prod_name} ({self.prod_cat_name}) '
+                f'{self.quantity} '
+                f'{self.exp_year}'
+                f'({self.exp_month_start}-'
+                f'{self.exp_month_end})'
+                f'{self.date_filled} - {self.date_consumed}'
+                f'({self.duration}) at '
+                f'{self.loc_row} / '
+                f'{self.loc_bin} / '
                 f'{self.loc_tier}'
             )
         else:
@@ -843,11 +858,15 @@ class Constraints(models.Model):
     def __str__(self):
         """ Default way to display this constraint record. """
         if self.constraint_type in [self.INT_RANGE, self.CHAR_RANGE]:
-            display = f'{self.constraint_name} - {self.constraint_min} to ' \
+            display = (
+                f'{self.constraint_name} - {self.constraint_min} to '
                 f'{self.constraint_max} ({self.constraint_type})'
+            )
         else:
-            display = f'{self.constraint_name} - {self.constraint_list} ' \
+            display = (
+                f'{self.constraint_name} - {self.constraint_list} '
                 f'({self.constraint_type})'
+            )
         if self.constraint_descr:
             display += f' -- {self.constraint_descr[:50]}'
         return display
@@ -904,6 +923,7 @@ class ProductExample(models.Model):
     class Meta:
         ordering = ['prod_example_name']
         app_label = 'fpiweb'
+        verbose_name_plural = 'Product Examples'
 
     id_help_text = 'Internal reccord identifier for product example'
     id = models.AutoField(

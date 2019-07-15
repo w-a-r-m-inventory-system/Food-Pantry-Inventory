@@ -10,7 +10,8 @@ else
     exit 1
 fi
 
-
+# add root directory to PYTHONPATH so Sphinx will find all the modules
+export PYTHONPATH=`pwd`:$PTHONPATH
 # bash script to run the new Sphinx build
 pushd .
 cd docs
