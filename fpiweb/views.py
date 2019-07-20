@@ -25,12 +25,14 @@ from fpiweb.models import \
     Action, \
     Box, \
     BoxNumber, \
-    Constraints
+    Constraints, \
+    LocBin
 from fpiweb.forms import \
     BoxItemForm, \
     BuildPalletForm, \
     ConstraintsForm, \
     LoginForm, \
+    LocBinForm, \
     NewBoxForm
 
 __author__ = '(Multiple)'
@@ -102,6 +104,114 @@ class LogoutView(TemplateView):
         return nothing
 
 
+class MaintenanceView(LoginRequiredMixin, TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/maintenance.html'
+
+
+class LocBinListView(LoginRequiredMixin, ListView):
+    """
+    List of existing bins using a generic ListView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_list.html'
+    context_object_name = 'loc_bin_list_content'
+
+
+class LocBinCreateView(LoginRequiredMixin, CreateView):
+    """
+    Create a bin using a generic CreateView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_edit.html'
+    context_object_name = 'loc_bin'
+
+    formClass = LocBinForm
+
+    fields = ['loc_bin', 'loc_bin_descr', ]
+
+    def get_success_url(self):
+        """
+        Run once form is successfully validated.
+
+        :return:
+        """
+        results = reverse('fpiweb:loc_bin_view')
+        return results
+
+
+class LocBinUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Update a bin using a generic UpdateView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_edit.html'
+    context_object_name = 'loc_bin'
+
+    form_class = LocBinForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(LocBinUpdateView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:loc_bin_update',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+    def get_success_url(self):
+        """
+        Set the next URL to use once the edit is successful.
+        :return:
+        """
+
+        results = reverse('fpiweb:loc_bin_view')
+        return results
+
+
+class LocBinDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Delete a bin using a generic DeleteView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_delete.html'
+    context_object_name = 'loc_bin'
+
+    form_class = LocBinForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(LocBinDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:loc_bin_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+    def get_success_url(self):
+        """
+        Set the next URL to use once the delete is successful.
+        :return:
+        """
+
+        results = reverse('fpiweb:loc_bin_view')
+        return results
+
+
 class ConstraintsListView(LoginRequiredMixin, ListView):
     """
     List of existing constraints.
@@ -126,15 +236,18 @@ class ConstraintsListView(LoginRequiredMixin, ListView):
         CHAR_RANGE = Constraints.CHAR_RANGE
         range_list = [INT_RANGE, CHAR_RANGE]
         context['range_list'] = range_list
-        info(f'Constraint extra info: INT_RANGE: {INT_RANGE}, CHAR__RANGE: '
-             f'{CHAR_RANGE}, range_list: {range_list}')
+        info(
+            f'Constraint extra info: INT_RANGE: {INT_RANGE}, '
+            f'CHAR__RANGE: '
+            f'{CHAR_RANGE}, range_list: {range_list}'
+        )
 
         return context
 
 
 class ConstraintCreateView(LoginRequiredMixin, CreateView):
     """
-    Create an animal or daily quest using a generic CreateView.
+    Create a constraint using a generic CreateView.
     """
 
     model = Constraints
@@ -146,18 +259,6 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
     # TODO Why are fields required here in the create - 1/18/17
     fields = ['constraint_name', 'constraint_descr', 'constraint_type',
               'constraint_min', 'constraint_max', 'constraint_list', ]
-
-    def get_context_data(self, **kwargs):
-        """
-        Modify the context before rendering the template.
-
-        :param kwargs:
-        :return:
-        """
-
-        context = super(ConstraintCreateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_new')
-        return context
 
     def get_success_url(self):
         """
@@ -171,7 +272,7 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
 
 class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
     """
-    Update an animal or daily quest using a generic UpdateView.
+    Update a constraint using a generic UpdateView.
     """
 
     model = Constraints
@@ -205,7 +306,7 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
 
 class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
     """
-    Delete an animal or daily quest using a generic DeleteView.
+    Delete a constraint using a generic DeleteView.
     """
 
     model = Constraints
