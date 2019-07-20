@@ -125,26 +125,6 @@ urlpatterns = [
 
     # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
     path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
-    # e.g. /fpiweb/box/<pk>/empty_move = consume or move a box
-    path('box/<int:pk>/empty_move/', BoxEmptyMoveView.as_view(),
-         name='box_empty_move'),
-
-    # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
-    path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
-
-    # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
-    path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
-
-    # e.g. /fpiweb/test_scan/ = ???
-    path('box/<int:pk>/move/', BoxMoveView.as_view(), name='box_move'),
-
-    path('box/<int:pk>/empty/', BoxEmptyView.as_view(), name='box_empty'),
-
-    # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
-    path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
-    # e.g. /fpiweb/box/<pk>/empty_move = consume or move a box
-    path('box/<int:pk>/empty_move/', BoxEmptyMoveView.as_view(),
-         name='box_empty_move'),
 
     # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
     path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
@@ -162,7 +142,8 @@ urlpatterns = [
     ),
 
     path(
-        'build_pallet/<int:box_pk>/',
+        'build_pallet/',
         BuildPalletView.as_view(),
-        name='build_pallet_add_box')
+        name='build_pallet'
+    ),
 ]

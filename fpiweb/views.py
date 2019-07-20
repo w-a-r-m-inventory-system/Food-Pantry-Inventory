@@ -469,7 +469,7 @@ class BoxScannedView(LoginRequiredMixin, View):
         except Box.DoesNotExist:
             return redirect('fpiweb:box_new', box_number=box_number)
 
-        return redirect('fpiweb:build_pallet', args=(box.pk,))
+        return redirect('fpiweb:build_pallet_add_box', args=(box.pk,))
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
