@@ -166,7 +166,79 @@ class LoginForm(Form):
     username = CharField(label='Username', max_length=100, )
 
     password = CharField(label='Password', max_length=100,
-        widget=PasswordInput)
+                         widget=PasswordInput)
+
+
+class LocBinForm(forms.ModelForm):
+    """
+    Manage Loction bin details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = LocBin
+        fields = ['id', 'loc_bin', 'loc_bin_descr', ]
+
+    loc_bin = forms.CharField(
+        help_text=LocBin.loc_bin_help_text,
+        required=True,
+    )
+
+    constraint_max = forms.CharField(
+        help_text=LocBin.loc_bin_descr_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_loc_bin_fields(
+            loc_bin_name: str,
+            loc_bin_descr: str,
+    ):
+        """
+        Validate the various location bin record fields.
+
+        :param loc_bin_name: name of bin
+        :param loc_bin_descr: description of bin
+        :return: True if valid
+        """
+        max_len: int = LocBin.loc_bin_max_length
+        min_len: int = LocBin.loc_bin_min_length
+        valid: bool = False
+        if (len(loc_bin_name) <= max_len) \
+                and \
+                (len(loc_bin_name) >= min_len) \
+                and \
+                (loc_bin_name.isdigit()):
+            valid = True
+        if not valid:
+            raise ValidationError(
+                'A bin must be two digits (with a leading zero if needed)'
+            )
+
+        return
+
+
+def clean(self):
+    """
+    Clean and validate the data given for the constraint record.
+
+    :return:
+    """
+    cleaned_data = super().clean()
+    loc_bin_name = cleaned_data.get('loc_bin')
+    if not loc_bin_name or not (len(loc_bin_name) > 0):
+        raise ValidationError(
+            'The bin must be specified'
+        )
+    loc_bin_descr = cleaned_data.get('loc_bin_descr')
+    if not loc_bin_descr or not (len(loc_bin_descr) > 0):
+        raise ValidationError(
+            'A description of this bin must be provided'
+        )
+    self.validate_loc_bin_fields(loc_bin_name, loc_bin_descr)
+    return
 
 
 class ConstraintsForm(forms.ModelForm):
@@ -188,17 +260,20 @@ class ConstraintsForm(forms.ModelForm):
         help_text=Constraints.constraint_type_help_text,
     )
 
-    constraint_min = forms.CharField(required=False,
-                                     help_text=Constraints.constraint_min_help_text,
-                                     )
+    constraint_min = forms.CharField(
+        required=False,
+        help_text=Constraints.constraint_min_help_text,
+    )
 
-    constraint_max = forms.CharField(required=False,
-                                     help_text=Constraints.constraint_max_help_text,
-                                     )
+    constraint_max = forms.CharField(
+        required=False,
+        help_text=Constraints.constraint_max_help_text,
+    )
 
-    constraint_list = forms.CharField(required=False,
-                                      help_text=Constraints.constraint_list_help_text,
-                                      )
+    constraint_list = forms.CharField(
+        required=False,
+        help_text=Constraints.constraint_list_help_text,
+    )
 
     @staticmethod
     def validate_constraint_fields(
@@ -348,8 +423,9 @@ class FillBoxForm(forms.ModelForm):
         if exp_month_start is None and exp_month_end is None:
             return
 
-        error_msg =
-        	"If Exp {} month is specified, Exp {} month must be specified"
+        error_msg = (
+            "If Exp {} month is specified, Exp {} month must be specified"
+        )
 
         if exp_month_start is not None and exp_month_end is None:
             raise ValidationError(error_msg.format('start', 'end'))

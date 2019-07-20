@@ -1,0 +1,66 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+    {% if loc_bin.id %}
+        Edit Bin
+    {% else %}
+        Add Bin
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+     <div class="row">
+         <div class="col-md-4 text-center">
+            <h1 class="h1">
+                {% if loc_bin.id %}
+                    Edit Bin
+                {% else %}
+                    Add Bin
+                {% endif %}
+            </h1>
+         </div>
+     </div>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_field form.loc_bin %}
+        {% bootstrap_field form.loc_bin_descr %}
+        <input type="submit" value="Submit"/>
+    </form>
+
+
+    <br/>
+    <a href="{% url 'fpiweb:loc_bin_view' %}">
+        Back to bin list
+    </a>
+
+    <hr class="style-one">
+
+    <h6>
+        Template: loc_bin_edit.html
+    </h6>
+    <h6>
+        View: LocBinCreateView and LocBinUpdateView
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:loc_bin_new' %}
+    </h6>
+    <h6>
+         Save URL: {% url 'fpiweb:loc_bin_view' %}
+    </h6>
+    <h6>
+        Return URL: {% url 'fpiweb:loc_bin_view' %}
+    </h6>
+
+{% endblock %}
