@@ -31,6 +31,6 @@ N3 ..(Use)
 
 (Existing Filled Box) .. (Move Box)
 
-(Existing Filled Box) .. (Empty Box)
+(Existing Filled Box) .. (Consume Box)
 
 @enduml

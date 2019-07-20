@@ -4,11 +4,25 @@ User -> SmartPhone: Scan QR Code on box
 SmartPhone -> Website: Lookup the QR Code URL
 Website -> Database: Request box information
 Website <- Database: No box record
-Website -> SmartPhone: Present add box screen
+Website -> User: Present fill box screen
 Website <- Database: Empty box record
-Website -> SmartPhone: Present add box screen
+Website -> User: Present fill box screen
+User -> Website: Choose location, product and expiration
+User -> Website: Submit choices for validation
+Website -> Database: If valid choices, update db
+Database -> Website: Confirm update
+Website -> User: Confirm success
 Website <- Database: Filled box record
-Website -> SmartPhone: Empty or move box screen
-User -> SmartPhone: Enters appropriate information
+Website -> User: Present consume or move box choices
+User -> Website: If choice is to consume box
+Website -> Database: Update db to empty box
+Database -> Website: Confirm change to box
+Website -> User: Confirm box was consumed
+User -> Website: If choice is to move box
+Website -> User: Present location choices
+User -> Website: Make new location choices and submit
+Website -> Database: Update location information for box
+Database -> Website: Confirm change to box
+Website -> User: Confirm box was moved
 
 @enduml

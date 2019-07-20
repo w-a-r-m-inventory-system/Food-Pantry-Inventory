@@ -1,0 +1,2594 @@
+[
+  {
+    "model": "fpiweb.location",
+    "pk": 1,
+    "fields": {
+      "loc_code": "0101A1",
+      "loc_descr": "Row 01 Bin 01 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 1,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 2,
+    "fields": {
+      "loc_code": "0101A2",
+      "loc_descr": "Row 01 Bin 01 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 1,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 3,
+    "fields": {
+      "loc_code": "0101B1",
+      "loc_descr": "Row 01 Bin 01 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 1,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 4,
+    "fields": {
+      "loc_code": "0101B2",
+      "loc_descr": "Row 01 Bin 01 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 1,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 5,
+    "fields": {
+      "loc_code": "0101C1",
+      "loc_descr": "Row 01 Bin 01 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 1,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 6,
+    "fields": {
+      "loc_code": "0101C2",
+      "loc_descr": "Row 01 Bin 01 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 1,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 7,
+    "fields": {
+      "loc_code": "0102A1",
+      "loc_descr": "Row 01 Bin 02 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 2,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 8,
+    "fields": {
+      "loc_code": "0102A2",
+      "loc_descr": "Row 01 Bin 02 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 2,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 9,
+    "fields": {
+      "loc_code": "0102B1",
+      "loc_descr": "Row 01 Bin 02 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 2,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 10,
+    "fields": {
+      "loc_code": "0102B2",
+      "loc_descr": "Row 01 Bin 02 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 2,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 11,
+    "fields": {
+      "loc_code": "0102C1",
+      "loc_descr": "Row 01 Bin 02 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 2,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 12,
+    "fields": {
+      "loc_code": "0102C2",
+      "loc_descr": "Row 01 Bin 02 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 2,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 13,
+    "fields": {
+      "loc_code": "0103A1",
+      "loc_descr": "Row 01 Bin 03 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 3,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 14,
+    "fields": {
+      "loc_code": "0103A2",
+      "loc_descr": "Row 01 Bin 03 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 3,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 15,
+    "fields": {
+      "loc_code": "0103B1",
+      "loc_descr": "Row 01 Bin 03 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 3,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 16,
+    "fields": {
+      "loc_code": "0103B2",
+      "loc_descr": "Row 01 Bin 03 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 3,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 17,
+    "fields": {
+      "loc_code": "0103C1",
+      "loc_descr": "Row 01 Bin 03 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 3,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 18,
+    "fields": {
+      "loc_code": "0103C2",
+      "loc_descr": "Row 01 Bin 03 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 3,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 19,
+    "fields": {
+      "loc_code": "0104A1",
+      "loc_descr": "Row 01 Bin 04 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 4,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 20,
+    "fields": {
+      "loc_code": "0104A2",
+      "loc_descr": "Row 01 Bin 04 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 4,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 21,
+    "fields": {
+      "loc_code": "0104B1",
+      "loc_descr": "Row 01 Bin 04 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 4,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 22,
+    "fields": {
+      "loc_code": "0104B2",
+      "loc_descr": "Row 01 Bin 04 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 4,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 23,
+    "fields": {
+      "loc_code": "0104C1",
+      "loc_descr": "Row 01 Bin 04 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 4,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 24,
+    "fields": {
+      "loc_code": "0104C2",
+      "loc_descr": "Row 01 Bin 04 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 4,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 25,
+    "fields": {
+      "loc_code": "0105A1",
+      "loc_descr": "Row 01 Bin 05 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 5,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 26,
+    "fields": {
+      "loc_code": "0105A2",
+      "loc_descr": "Row 01 Bin 05 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 5,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 27,
+    "fields": {
+      "loc_code": "0105B1",
+      "loc_descr": "Row 01 Bin 05 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 5,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 28,
+    "fields": {
+      "loc_code": "0105B2",
+      "loc_descr": "Row 01 Bin 05 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 5,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 29,
+    "fields": {
+      "loc_code": "0105C1",
+      "loc_descr": "Row 01 Bin 05 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 5,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 30,
+    "fields": {
+      "loc_code": "0105C2",
+      "loc_descr": "Row 01 Bin 05 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 5,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 31,
+    "fields": {
+      "loc_code": "0106A1",
+      "loc_descr": "Row 01 Bin 06 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 6,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 32,
+    "fields": {
+      "loc_code": "0106A2",
+      "loc_descr": "Row 01 Bin 06 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 6,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 33,
+    "fields": {
+      "loc_code": "0106B1",
+      "loc_descr": "Row 01 Bin 06 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 6,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 34,
+    "fields": {
+      "loc_code": "0106B2",
+      "loc_descr": "Row 01 Bin 06 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 6,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 35,
+    "fields": {
+      "loc_code": "0106C1",
+      "loc_descr": "Row 01 Bin 06 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 6,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 36,
+    "fields": {
+      "loc_code": "0106C2",
+      "loc_descr": "Row 01 Bin 06 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 6,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 37,
+    "fields": {
+      "loc_code": "0107A1",
+      "loc_descr": "Row 01 Bin 07 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 7,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 38,
+    "fields": {
+      "loc_code": "0107A2",
+      "loc_descr": "Row 01 Bin 07 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 7,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 39,
+    "fields": {
+      "loc_code": "0107B1",
+      "loc_descr": "Row 01 Bin 07 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 7,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 40,
+    "fields": {
+      "loc_code": "0107B2",
+      "loc_descr": "Row 01 Bin 07 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 7,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 41,
+    "fields": {
+      "loc_code": "0107C1",
+      "loc_descr": "Row 01 Bin 07 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 7,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 42,
+    "fields": {
+      "loc_code": "0107C2",
+      "loc_descr": "Row 01 Bin 07 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 7,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 43,
+    "fields": {
+      "loc_code": "0108A1",
+      "loc_descr": "Row 01 Bin 08 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 8,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 44,
+    "fields": {
+      "loc_code": "0108A2",
+      "loc_descr": "Row 01 Bin 08 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 8,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 45,
+    "fields": {
+      "loc_code": "0108B1",
+      "loc_descr": "Row 01 Bin 08 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 8,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 46,
+    "fields": {
+      "loc_code": "0108B2",
+      "loc_descr": "Row 01 Bin 08 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 8,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 47,
+    "fields": {
+      "loc_code": "0108C1",
+      "loc_descr": "Row 01 Bin 08 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 8,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 48,
+    "fields": {
+      "loc_code": "0108C2",
+      "loc_descr": "Row 01 Bin 08 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 8,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 49,
+    "fields": {
+      "loc_code": "0109A1",
+      "loc_descr": "Row 01 Bin 09 Tier A1",
+      "loc_row": 1,
+      "loc_bin": 9,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 50,
+    "fields": {
+      "loc_code": "0109A2",
+      "loc_descr": "Row 01 Bin 09 Tier A2",
+      "loc_row": 1,
+      "loc_bin": 9,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 51,
+    "fields": {
+      "loc_code": "0109B1",
+      "loc_descr": "Row 01 Bin 09 Tier B1",
+      "loc_row": 1,
+      "loc_bin": 9,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 52,
+    "fields": {
+      "loc_code": "0109B2",
+      "loc_descr": "Row 01 Bin 09 Tier B2",
+      "loc_row": 1,
+      "loc_bin": 9,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 53,
+    "fields": {
+      "loc_code": "0109C1",
+      "loc_descr": "Row 01 Bin 09 Tier C1",
+      "loc_row": 1,
+      "loc_bin": 9,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 54,
+    "fields": {
+      "loc_code": "0109C2",
+      "loc_descr": "Row 01 Bin 09 Tier C2",
+      "loc_row": 1,
+      "loc_bin": 9,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 55,
+    "fields": {
+      "loc_code": "0201A1",
+      "loc_descr": "Row 02 Bin 01 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 1,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 56,
+    "fields": {
+      "loc_code": "0201A2",
+      "loc_descr": "Row 02 Bin 01 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 1,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 57,
+    "fields": {
+      "loc_code": "0201B1",
+      "loc_descr": "Row 02 Bin 01 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 1,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 58,
+    "fields": {
+      "loc_code": "0201B2",
+      "loc_descr": "Row 02 Bin 01 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 1,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 59,
+    "fields": {
+      "loc_code": "0201C1",
+      "loc_descr": "Row 02 Bin 01 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 1,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 60,
+    "fields": {
+      "loc_code": "0201C2",
+      "loc_descr": "Row 02 Bin 01 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 1,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 61,
+    "fields": {
+      "loc_code": "0202A1",
+      "loc_descr": "Row 02 Bin 02 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 2,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 62,
+    "fields": {
+      "loc_code": "0202A2",
+      "loc_descr": "Row 02 Bin 02 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 2,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 63,
+    "fields": {
+      "loc_code": "0202B1",
+      "loc_descr": "Row 02 Bin 02 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 2,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 64,
+    "fields": {
+      "loc_code": "0202B2",
+      "loc_descr": "Row 02 Bin 02 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 2,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 65,
+    "fields": {
+      "loc_code": "0202C1",
+      "loc_descr": "Row 02 Bin 02 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 2,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 66,
+    "fields": {
+      "loc_code": "0202C2",
+      "loc_descr": "Row 02 Bin 02 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 2,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 67,
+    "fields": {
+      "loc_code": "0203A1",
+      "loc_descr": "Row 02 Bin 03 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 3,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 68,
+    "fields": {
+      "loc_code": "0203A2",
+      "loc_descr": "Row 02 Bin 03 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 3,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 69,
+    "fields": {
+      "loc_code": "0203B1",
+      "loc_descr": "Row 02 Bin 03 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 3,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 70,
+    "fields": {
+      "loc_code": "0203B2",
+      "loc_descr": "Row 02 Bin 03 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 3,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 71,
+    "fields": {
+      "loc_code": "0203C1",
+      "loc_descr": "Row 02 Bin 03 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 3,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 72,
+    "fields": {
+      "loc_code": "0203C2",
+      "loc_descr": "Row 02 Bin 03 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 3,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 73,
+    "fields": {
+      "loc_code": "0204A1",
+      "loc_descr": "Row 02 Bin 04 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 4,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 74,
+    "fields": {
+      "loc_code": "0204A2",
+      "loc_descr": "Row 02 Bin 04 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 4,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 75,
+    "fields": {
+      "loc_code": "0204B1",
+      "loc_descr": "Row 02 Bin 04 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 4,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 76,
+    "fields": {
+      "loc_code": "0204B2",
+      "loc_descr": "Row 02 Bin 04 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 4,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 77,
+    "fields": {
+      "loc_code": "0204C1",
+      "loc_descr": "Row 02 Bin 04 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 4,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 78,
+    "fields": {
+      "loc_code": "0204C2",
+      "loc_descr": "Row 02 Bin 04 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 4,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 79,
+    "fields": {
+      "loc_code": "0205A1",
+      "loc_descr": "Row 02 Bin 05 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 5,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 80,
+    "fields": {
+      "loc_code": "0205A2",
+      "loc_descr": "Row 02 Bin 05 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 5,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 81,
+    "fields": {
+      "loc_code": "0205B1",
+      "loc_descr": "Row 02 Bin 05 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 5,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 82,
+    "fields": {
+      "loc_code": "0205B2",
+      "loc_descr": "Row 02 Bin 05 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 5,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 83,
+    "fields": {
+      "loc_code": "0205C1",
+      "loc_descr": "Row 02 Bin 05 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 5,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 84,
+    "fields": {
+      "loc_code": "0205C2",
+      "loc_descr": "Row 02 Bin 05 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 5,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 85,
+    "fields": {
+      "loc_code": "0206A1",
+      "loc_descr": "Row 02 Bin 06 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 6,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 86,
+    "fields": {
+      "loc_code": "0206A2",
+      "loc_descr": "Row 02 Bin 06 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 6,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 87,
+    "fields": {
+      "loc_code": "0206B1",
+      "loc_descr": "Row 02 Bin 06 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 6,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 88,
+    "fields": {
+      "loc_code": "0206B2",
+      "loc_descr": "Row 02 Bin 06 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 6,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 89,
+    "fields": {
+      "loc_code": "0206C1",
+      "loc_descr": "Row 02 Bin 06 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 6,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 90,
+    "fields": {
+      "loc_code": "0206C2",
+      "loc_descr": "Row 02 Bin 06 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 6,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 91,
+    "fields": {
+      "loc_code": "0207A1",
+      "loc_descr": "Row 02 Bin 07 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 7,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 92,
+    "fields": {
+      "loc_code": "0207A2",
+      "loc_descr": "Row 02 Bin 07 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 7,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 93,
+    "fields": {
+      "loc_code": "0207B1",
+      "loc_descr": "Row 02 Bin 07 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 7,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 94,
+    "fields": {
+      "loc_code": "0207B2",
+      "loc_descr": "Row 02 Bin 07 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 7,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 95,
+    "fields": {
+      "loc_code": "0207C1",
+      "loc_descr": "Row 02 Bin 07 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 7,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 96,
+    "fields": {
+      "loc_code": "0207C2",
+      "loc_descr": "Row 02 Bin 07 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 7,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 97,
+    "fields": {
+      "loc_code": "0208A1",
+      "loc_descr": "Row 02 Bin 08 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 8,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 98,
+    "fields": {
+      "loc_code": "0208A2",
+      "loc_descr": "Row 02 Bin 08 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 8,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 99,
+    "fields": {
+      "loc_code": "0208B1",
+      "loc_descr": "Row 02 Bin 08 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 8,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 100,
+    "fields": {
+      "loc_code": "0208B2",
+      "loc_descr": "Row 02 Bin 08 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 8,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 101,
+    "fields": {
+      "loc_code": "0208C1",
+      "loc_descr": "Row 02 Bin 08 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 8,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 102,
+    "fields": {
+      "loc_code": "0208C2",
+      "loc_descr": "Row 02 Bin 08 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 8,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 103,
+    "fields": {
+      "loc_code": "0209A1",
+      "loc_descr": "Row 02 Bin 09 Tier A1",
+      "loc_row": 8,
+      "loc_bin": 9,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 104,
+    "fields": {
+      "loc_code": "0209A2",
+      "loc_descr": "Row 02 Bin 09 Tier A2",
+      "loc_row": 8,
+      "loc_bin": 9,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 105,
+    "fields": {
+      "loc_code": "0209B1",
+      "loc_descr": "Row 02 Bin 09 Tier B1",
+      "loc_row": 8,
+      "loc_bin": 9,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 106,
+    "fields": {
+      "loc_code": "0209B2",
+      "loc_descr": "Row 02 Bin 09 Tier B2",
+      "loc_row": 8,
+      "loc_bin": 9,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 107,
+    "fields": {
+      "loc_code": "0209C1",
+      "loc_descr": "Row 02 Bin 09 Tier C1",
+      "loc_row": 8,
+      "loc_bin": 9,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 108,
+    "fields": {
+      "loc_code": "0209C2",
+      "loc_descr": "Row 02 Bin 09 Tier C2",
+      "loc_row": 8,
+      "loc_bin": 9,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 109,
+    "fields": {
+      "loc_code": "0301A1",
+      "loc_descr": "Row 03 Bin 01 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 1,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 110,
+    "fields": {
+      "loc_code": "0301A2",
+      "loc_descr": "Row 03 Bin 01 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 1,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 111,
+    "fields": {
+      "loc_code": "0301B1",
+      "loc_descr": "Row 03 Bin 01 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 1,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 112,
+    "fields": {
+      "loc_code": "0301B2",
+      "loc_descr": "Row 03 Bin 01 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 1,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 113,
+    "fields": {
+      "loc_code": "0301C1",
+      "loc_descr": "Row 03 Bin 01 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 1,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 114,
+    "fields": {
+      "loc_code": "0301C2",
+      "loc_descr": "Row 03 Bin 01 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 1,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 115,
+    "fields": {
+      "loc_code": "0302A1",
+      "loc_descr": "Row 03 Bin 02 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 2,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 116,
+    "fields": {
+      "loc_code": "0302A2",
+      "loc_descr": "Row 03 Bin 02 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 2,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 117,
+    "fields": {
+      "loc_code": "0302B1",
+      "loc_descr": "Row 03 Bin 02 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 2,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 118,
+    "fields": {
+      "loc_code": "0302B2",
+      "loc_descr": "Row 03 Bin 02 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 2,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 119,
+    "fields": {
+      "loc_code": "0302C1",
+      "loc_descr": "Row 03 Bin 02 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 2,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 120,
+    "fields": {
+      "loc_code": "0302C2",
+      "loc_descr": "Row 03 Bin 02 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 2,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 121,
+    "fields": {
+      "loc_code": "0303A1",
+      "loc_descr": "Row 03 Bin 03 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 3,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 122,
+    "fields": {
+      "loc_code": "0303A2",
+      "loc_descr": "Row 03 Bin 03 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 3,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 123,
+    "fields": {
+      "loc_code": "0303B1",
+      "loc_descr": "Row 03 Bin 03 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 3,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 124,
+    "fields": {
+      "loc_code": "0303B2",
+      "loc_descr": "Row 03 Bin 03 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 3,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 125,
+    "fields": {
+      "loc_code": "0303C1",
+      "loc_descr": "Row 03 Bin 03 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 3,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 126,
+    "fields": {
+      "loc_code": "0303C2",
+      "loc_descr": "Row 03 Bin 03 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 3,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 127,
+    "fields": {
+      "loc_code": "0304A1",
+      "loc_descr": "Row 03 Bin 04 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 4,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 128,
+    "fields": {
+      "loc_code": "0304A2",
+      "loc_descr": "Row 03 Bin 04 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 4,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 129,
+    "fields": {
+      "loc_code": "0304B1",
+      "loc_descr": "Row 03 Bin 04 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 4,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 130,
+    "fields": {
+      "loc_code": "0304B2",
+      "loc_descr": "Row 03 Bin 04 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 4,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 131,
+    "fields": {
+      "loc_code": "0304C1",
+      "loc_descr": "Row 03 Bin 04 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 4,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 132,
+    "fields": {
+      "loc_code": "0304C2",
+      "loc_descr": "Row 03 Bin 04 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 4,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 133,
+    "fields": {
+      "loc_code": "0305A1",
+      "loc_descr": "Row 03 Bin 05 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 5,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 134,
+    "fields": {
+      "loc_code": "0305A2",
+      "loc_descr": "Row 03 Bin 05 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 5,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 135,
+    "fields": {
+      "loc_code": "0305B1",
+      "loc_descr": "Row 03 Bin 05 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 5,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 136,
+    "fields": {
+      "loc_code": "0305B2",
+      "loc_descr": "Row 03 Bin 05 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 5,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 137,
+    "fields": {
+      "loc_code": "0305C1",
+      "loc_descr": "Row 03 Bin 05 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 5,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 138,
+    "fields": {
+      "loc_code": "0305C2",
+      "loc_descr": "Row 03 Bin 05 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 5,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 139,
+    "fields": {
+      "loc_code": "0306A1",
+      "loc_descr": "Row 03 Bin 06 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 6,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 140,
+    "fields": {
+      "loc_code": "0306A2",
+      "loc_descr": "Row 03 Bin 06 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 6,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 141,
+    "fields": {
+      "loc_code": "0306B1",
+      "loc_descr": "Row 03 Bin 06 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 6,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 142,
+    "fields": {
+      "loc_code": "0306B2",
+      "loc_descr": "Row 03 Bin 06 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 6,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 143,
+    "fields": {
+      "loc_code": "0306C1",
+      "loc_descr": "Row 03 Bin 06 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 6,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 144,
+    "fields": {
+      "loc_code": "0306C2",
+      "loc_descr": "Row 03 Bin 06 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 6,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 145,
+    "fields": {
+      "loc_code": "0307A1",
+      "loc_descr": "Row 03 Bin 07 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 7,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 146,
+    "fields": {
+      "loc_code": "0307A2",
+      "loc_descr": "Row 03 Bin 07 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 7,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 147,
+    "fields": {
+      "loc_code": "0307B1",
+      "loc_descr": "Row 03 Bin 07 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 7,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 148,
+    "fields": {
+      "loc_code": "0307B2",
+      "loc_descr": "Row 03 Bin 07 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 7,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 149,
+    "fields": {
+      "loc_code": "0307C1",
+      "loc_descr": "Row 03 Bin 07 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 7,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 150,
+    "fields": {
+      "loc_code": "0307C2",
+      "loc_descr": "Row 03 Bin 07 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 7,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 151,
+    "fields": {
+      "loc_code": "0308A1",
+      "loc_descr": "Row 03 Bin 08 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 8,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 152,
+    "fields": {
+      "loc_code": "0308A2",
+      "loc_descr": "Row 03 Bin 08 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 8,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 153,
+    "fields": {
+      "loc_code": "0308B1",
+      "loc_descr": "Row 03 Bin 08 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 8,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 154,
+    "fields": {
+      "loc_code": "0308B2",
+      "loc_descr": "Row 03 Bin 08 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 8,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 155,
+    "fields": {
+      "loc_code": "0308C1",
+      "loc_descr": "Row 03 Bin 08 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 8,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 156,
+    "fields": {
+      "loc_code": "0308C2",
+      "loc_descr": "Row 03 Bin 08 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 8,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 157,
+    "fields": {
+      "loc_code": "0309A1",
+      "loc_descr": "Row 03 Bin 09 Tier A1",
+      "loc_row": 9,
+      "loc_bin": 9,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 158,
+    "fields": {
+      "loc_code": "0309A2",
+      "loc_descr": "Row 03 Bin 09 Tier A2",
+      "loc_row": 9,
+      "loc_bin": 9,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 159,
+    "fields": {
+      "loc_code": "0309B1",
+      "loc_descr": "Row 03 Bin 09 Tier B1",
+      "loc_row": 9,
+      "loc_bin": 9,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 160,
+    "fields": {
+      "loc_code": "0309B2",
+      "loc_descr": "Row 03 Bin 09 Tier B2",
+      "loc_row": 9,
+      "loc_bin": 9,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 161,
+    "fields": {
+      "loc_code": "0309C1",
+      "loc_descr": "Row 03 Bin 09 Tier C1",
+      "loc_row": 9,
+      "loc_bin": 9,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 162,
+    "fields": {
+      "loc_code": "0309C2",
+      "loc_descr": "Row 03 Bin 09 Tier C2",
+      "loc_row": 9,
+      "loc_bin": 9,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 163,
+    "fields": {
+      "loc_code": "0401A1",
+      "loc_descr": "Row 04 Bin 01 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 1,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 164,
+    "fields": {
+      "loc_code": "0401A2",
+      "loc_descr": "Row 04 Bin 01 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 1,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 165,
+    "fields": {
+      "loc_code": "0401B1",
+      "loc_descr": "Row 04 Bin 01 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 1,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 166,
+    "fields": {
+      "loc_code": "0401B2",
+      "loc_descr": "Row 04 Bin 01 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 1,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 167,
+    "fields": {
+      "loc_code": "0401C1",
+      "loc_descr": "Row 04 Bin 01 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 1,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 168,
+    "fields": {
+      "loc_code": "0401C2",
+      "loc_descr": "Row 04 Bin 01 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 1,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 169,
+    "fields": {
+      "loc_code": "0402A1",
+      "loc_descr": "Row 04 Bin 02 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 2,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 170,
+    "fields": {
+      "loc_code": "0402A2",
+      "loc_descr": "Row 04 Bin 02 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 2,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 171,
+    "fields": {
+      "loc_code": "0402B1",
+      "loc_descr": "Row 04 Bin 02 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 2,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 172,
+    "fields": {
+      "loc_code": "0402B2",
+      "loc_descr": "Row 04 Bin 02 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 2,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 173,
+    "fields": {
+      "loc_code": "0402C1",
+      "loc_descr": "Row 04 Bin 02 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 2,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 174,
+    "fields": {
+      "loc_code": "0402C2",
+      "loc_descr": "Row 04 Bin 02 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 2,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 175,
+    "fields": {
+      "loc_code": "0403A1",
+      "loc_descr": "Row 04 Bin 03 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 3,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 176,
+    "fields": {
+      "loc_code": "0403A2",
+      "loc_descr": "Row 04 Bin 03 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 3,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 177,
+    "fields": {
+      "loc_code": "0403B1",
+      "loc_descr": "Row 04 Bin 03 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 3,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 178,
+    "fields": {
+      "loc_code": "0403B2",
+      "loc_descr": "Row 04 Bin 03 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 3,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 179,
+    "fields": {
+      "loc_code": "0403C1",
+      "loc_descr": "Row 04 Bin 03 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 3,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 180,
+    "fields": {
+      "loc_code": "0403C2",
+      "loc_descr": "Row 04 Bin 03 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 3,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 181,
+    "fields": {
+      "loc_code": "0404A1",
+      "loc_descr": "Row 04 Bin 04 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 4,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 182,
+    "fields": {
+      "loc_code": "0404A2",
+      "loc_descr": "Row 04 Bin 04 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 4,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 183,
+    "fields": {
+      "loc_code": "0404B1",
+      "loc_descr": "Row 04 Bin 04 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 4,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 184,
+    "fields": {
+      "loc_code": "0404B2",
+      "loc_descr": "Row 04 Bin 04 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 4,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 185,
+    "fields": {
+      "loc_code": "0404C1",
+      "loc_descr": "Row 04 Bin 04 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 4,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 186,
+    "fields": {
+      "loc_code": "0404C2",
+      "loc_descr": "Row 04 Bin 04 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 4,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 187,
+    "fields": {
+      "loc_code": "0405A1",
+      "loc_descr": "Row 04 Bin 05 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 5,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 188,
+    "fields": {
+      "loc_code": "0405A2",
+      "loc_descr": "Row 04 Bin 05 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 5,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 189,
+    "fields": {
+      "loc_code": "0405B1",
+      "loc_descr": "Row 04 Bin 05 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 5,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 190,
+    "fields": {
+      "loc_code": "0405B2",
+      "loc_descr": "Row 04 Bin 05 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 5,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 191,
+    "fields": {
+      "loc_code": "0405C1",
+      "loc_descr": "Row 04 Bin 05 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 5,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 192,
+    "fields": {
+      "loc_code": "0405C2",
+      "loc_descr": "Row 04 Bin 05 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 5,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 193,
+    "fields": {
+      "loc_code": "0406A1",
+      "loc_descr": "Row 04 Bin 06 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 6,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 194,
+    "fields": {
+      "loc_code": "0406A2",
+      "loc_descr": "Row 04 Bin 06 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 6,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 195,
+    "fields": {
+      "loc_code": "0406B1",
+      "loc_descr": "Row 04 Bin 06 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 6,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 196,
+    "fields": {
+      "loc_code": "0406B2",
+      "loc_descr": "Row 04 Bin 06 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 6,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 197,
+    "fields": {
+      "loc_code": "0406C1",
+      "loc_descr": "Row 04 Bin 06 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 6,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 198,
+    "fields": {
+      "loc_code": "0406C2",
+      "loc_descr": "Row 04 Bin 06 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 6,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 199,
+    "fields": {
+      "loc_code": "0407A1",
+      "loc_descr": "Row 04 Bin 07 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 7,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 200,
+    "fields": {
+      "loc_code": "0407A2",
+      "loc_descr": "Row 04 Bin 07 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 7,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 201,
+    "fields": {
+      "loc_code": "0407B1",
+      "loc_descr": "Row 04 Bin 07 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 7,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 202,
+    "fields": {
+      "loc_code": "0407B2",
+      "loc_descr": "Row 04 Bin 07 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 7,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 203,
+    "fields": {
+      "loc_code": "0407C1",
+      "loc_descr": "Row 04 Bin 07 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 7,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 204,
+    "fields": {
+      "loc_code": "0407C2",
+      "loc_descr": "Row 04 Bin 07 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 7,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 205,
+    "fields": {
+      "loc_code": "0408A1",
+      "loc_descr": "Row 04 Bin 08 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 8,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 206,
+    "fields": {
+      "loc_code": "0408A2",
+      "loc_descr": "Row 04 Bin 08 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 8,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 207,
+    "fields": {
+      "loc_code": "0408B1",
+      "loc_descr": "Row 04 Bin 08 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 8,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 208,
+    "fields": {
+      "loc_code": "0408B2",
+      "loc_descr": "Row 04 Bin 08 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 8,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 209,
+    "fields": {
+      "loc_code": "0408C1",
+      "loc_descr": "Row 04 Bin 08 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 8,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 210,
+    "fields": {
+      "loc_code": "0408C2",
+      "loc_descr": "Row 04 Bin 08 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 8,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 211,
+    "fields": {
+      "loc_code": "0409A1",
+      "loc_descr": "Row 04 Bin 09 Tier A1",
+      "loc_row": 10,
+      "loc_bin": 9,
+      "loc_tier": 1,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 212,
+    "fields": {
+      "loc_code": "0409A2",
+      "loc_descr": "Row 04 Bin 09 Tier A2",
+      "loc_row": 10,
+      "loc_bin": 9,
+      "loc_tier": 2,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 213,
+    "fields": {
+      "loc_code": "0409B1",
+      "loc_descr": "Row 04 Bin 09 Tier B1",
+      "loc_row": 10,
+      "loc_bin": 9,
+      "loc_tier": 3,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 214,
+    "fields": {
+      "loc_code": "0409B2",
+      "loc_descr": "Row 04 Bin 09 Tier B2",
+      "loc_row": 10,
+      "loc_bin": 9,
+      "loc_tier": 4,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 215,
+    "fields": {
+      "loc_code": "0409C1",
+      "loc_descr": "Row 04 Bin 09 Tier C1",
+      "loc_row": 10,
+      "loc_bin": 9,
+      "loc_tier": 5,
+      "loc_in_warehouse": true
+    }
+  },
+  {
+    "model": "fpiweb.location",
+    "pk": 216,
+    "fields": {
+      "loc_code": "0409C2",
+      "loc_descr": "Row 04 Bin 09 Tier C2",
+      "loc_row": 10,
+      "loc_bin": 9,
+      "loc_tier": 6,
+      "loc_in_warehouse": true
+    }
+  }
+]

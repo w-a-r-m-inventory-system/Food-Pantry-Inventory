@@ -1,0 +1,306 @@
+[
+{
+    "model": "fpiweb.productexample",
+    "pk": 1,
+    "fields": {
+        "prod_example_name": "Flour",
+        "prod_id": 90
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 2,
+    "fields": {
+        "prod_example_name": "Sugar",
+        "prod_id": 90
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 3,
+    "fields": {
+        "prod_example_name": "Muffin Mix",
+        "prod_id": 90
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 4,
+    "fields": {
+        "prod_example_name": "Baking Powder",
+        "prod_id": 97
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 5,
+    "fields": {
+        "prod_example_name": "Baking Soda",
+        "prod_id": 97
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 6,
+    "fields": {
+        "prod_example_name": "Salt",
+        "prod_id": 97
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 7,
+    "fields": {
+        "prod_example_name": "Pepper",
+        "prod_id": 97
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 8,
+    "fields": {
+        "prod_example_name": "Hot Cereal",
+        "prod_id": 75
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 9,
+    "fields": {
+        "prod_example_name": "Cold Cereal",
+        "prod_id": 75
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 10,
+    "fields": {
+        "prod_example_name": "Oatmeal",
+        "prod_id": 76
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 11,
+    "fields": {
+        "prod_example_name": "Quinoa",
+        "prod_id": 48
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 12,
+    "fields": {
+        "prod_example_name": "Barbeque Sauce",
+        "prod_id": 66
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 13,
+    "fields": {
+        "prod_example_name": "Black-eyed Peas",
+        "prod_id": 84
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 14,
+    "fields": {
+        "prod_example_name": "Baby Diapers",
+        "prod_id": 5
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 15,
+    "fields": {
+        "prod_example_name": "Adult Diapers",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 16,
+    "fields": {
+        "prod_example_name": "Toothbrush",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 17,
+    "fields": {
+        "prod_example_name": "Tootpaste",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 18,
+    "fields": {
+        "prod_example_name": "Floss",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 19,
+    "fields": {
+        "prod_example_name": "Soap",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 20,
+    "fields": {
+        "prod_example_name": "Detergent",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 21,
+    "fields": {
+        "prod_example_name": "Chili",
+        "prod_id": 54
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 22,
+    "fields": {
+        "prod_example_name": "Chili Beans",
+        "prod_id": 88
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 23,
+    "fields": {
+        "prod_example_name": "Clothes",
+        "prod_id": 104
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 24,
+    "fields": {
+        "prod_example_name": "Toys",
+        "prod_id": 104
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 25,
+    "fields": {
+        "prod_example_name": "Pudding",
+        "prod_id": 94
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 26,
+    "fields": {
+        "prod_example_name": "Wet Wipes",
+        "prod_id": 5
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 27,
+    "fields": {
+        "prod_example_name": "Chick Peas",
+        "prod_id": 86
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 28,
+    "fields": {
+        "prod_example_name": "Great Northern Beans",
+        "prod_id": 88
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 29,
+    "fields": {
+        "prod_example_name": "Lima Beans",
+        "prod_id": 88
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 30,
+    "fields": {
+        "prod_example_name": "Butter Beans",
+        "prod_id": 88
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 31,
+    "fields": {
+        "prod_example_name": "Bottled Water",
+        "prod_id": 81
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 32,
+    "fields": {
+        "prod_example_name": "Paper Towels",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 33,
+    "fields": {
+        "prod_example_name": "Bleach",
+        "prod_id": 8
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 34,
+    "fields": {
+        "prod_example_name": "Cider",
+        "prod_id": 81
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 35,
+    "fields": {
+        "prod_example_name": "Cocoa",
+        "prod_id": 81
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 36,
+    "fields": {
+        "prod_example_name": "Toaster Pastries",
+        "prod_id": 76
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 37,
+    "fields": {
+        "prod_example_name": "Spice",
+        "prod_id": 90
+    }
+},
+{
+    "model": "fpiweb.productexample",
+    "pk": 38,
+    "fields": {
+        "prod_example_name": "Cinnamon",
+        "prod_id": 90
+    }
+}
+]

@@ -1,19 +1,39 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
-from logging import getLogger, debug
+from logging import getLogger, debug, info
 
-from django.shortcuts import redirect, render
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Max
+
+from django.forms import modelformset_factory
+from django.shortcuts import redirect, render
+
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, \
-    CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import \
+    TemplateView, \
+    ListView, \
+    DetailView, \
+    CreateView, \
+    UpdateView, \
+    DeleteView, \
+    FormView
 
-from fpiweb.models import Box, BoxNumber, Constraints
-from fpiweb.forms import NewBoxForm, LoginForm, ConstraintsForm, LogoutForm
+from fpiweb.models import \
+    Action, \
+    Box, \
+    BoxNumber, \
+    Constraints, \
+    LocBin
+from fpiweb.forms import \
+    BoxItemForm, \
+    BuildPalletForm, \
+    ConstraintsForm, \
+    LoginForm, \
+    LocBinForm, \
+    NewBoxForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -28,6 +48,7 @@ def error_page(
         message=None,
         message_list=tuple(),
         status=400):
+
     return render(
         request,
         'fpiweb/error.html',
@@ -50,10 +71,8 @@ class AboutView(TemplateView):
     """
     The About View for this application.
     """
+
     template_name = 'fpiweb/about.html'
-    mycontext = dict()
-    mycontext['project_type'] = 'open source'
-    extra_context = mycontext
 
 
 class LoginView(FormView):
@@ -85,10 +104,119 @@ class LogoutView(TemplateView):
         return nothing
 
 
+class MaintenanceView(LoginRequiredMixin, TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/maintenance.html'
+
+
+class LocBinListView(LoginRequiredMixin, ListView):
+    """
+    List of existing bins using a generic ListView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_list.html'
+    context_object_name = 'loc_bin_list_content'
+
+
+class LocBinCreateView(LoginRequiredMixin, CreateView):
+    """
+    Create a bin using a generic CreateView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_edit.html'
+    context_object_name = 'loc_bin'
+
+    formClass = LocBinForm
+
+    fields = ['loc_bin', 'loc_bin_descr', ]
+
+    def get_success_url(self):
+        """
+        Run once form is successfully validated.
+
+        :return:
+        """
+        results = reverse('fpiweb:loc_bin_view')
+        return results
+
+
+class LocBinUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Update a bin using a generic UpdateView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_edit.html'
+    context_object_name = 'loc_bin'
+
+    form_class = LocBinForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(LocBinUpdateView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:loc_bin_update',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+    def get_success_url(self):
+        """
+        Set the next URL to use once the edit is successful.
+        :return:
+        """
+
+        results = reverse('fpiweb:loc_bin_view')
+        return results
+
+
+class LocBinDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Delete a bin using a generic DeleteView.
+    """
+
+    model = LocBin
+    template_name = 'fpiweb/loc_bin_delete.html'
+    context_object_name = 'loc_bin'
+
+    form_class = LocBinForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(LocBinDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:loc_bin_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+    def get_success_url(self):
+        """
+        Set the next URL to use once the delete is successful.
+        :return:
+        """
+
+        results = reverse('fpiweb:loc_bin_view')
+        return results
+
+
 class ConstraintsListView(LoginRequiredMixin, ListView):
     """
     List of existing constraints.
     """
+
     model = Constraints
     template_name = 'fpiweb/constraints_list.html'
     context_object_name = 'constraints_list_content'
@@ -108,35 +236,29 @@ class ConstraintsListView(LoginRequiredMixin, ListView):
         CHAR_RANGE = Constraints.CHAR_RANGE
         range_list = [INT_RANGE, CHAR_RANGE]
         context['range_list'] = range_list
+        info(
+            f'Constraint extra info: INT_RANGE: {INT_RANGE}, '
+            f'CHAR__RANGE: '
+            f'{CHAR_RANGE}, range_list: {range_list}'
+        )
 
         return context
 
 
 class ConstraintCreateView(LoginRequiredMixin, CreateView):
     """
-    Create an animal or daily quest using a generic CreateView.
+    Create a constraint using a generic CreateView.
     """
+
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
-    context_object_name = 'constraint_edit_context'
+    context_object_name = 'constraints'
 
     formClass = ConstraintsForm
 
     # TODO Why are fields required here in the create - 1/18/17
     fields = ['constraint_name', 'constraint_descr', 'constraint_type',
               'constraint_min', 'constraint_max', 'constraint_list', ]
-
-    def get_context_data(self, **kwargs):
-        """
-        Modify the context before rendering the template.
-
-        :param kwargs:
-        :return:
-        """
-
-        context = super(ConstraintCreateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_new')
-        return context
 
     def get_success_url(self):
         """
@@ -150,18 +272,14 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
 
 class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
     """
-    Update an animal or daily quest using a generic UpdateView.
+    Update a constraint using a generic UpdateView.
     """
 
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
-    context_object_name = 'constraint_edit_context/'
+    context_object_name = 'constraints'
 
     form_class = ConstraintsForm
-
-    # TODO Why are fields forbidden here in the update - 1/18/17
-    # fields = ['category', 'constraints_order', 'constraints_name',
-    # 'date_started', ]
 
     def get_context_data(self, **kwargs):
         """
@@ -188,11 +306,27 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
 
 class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
     """
-    Delete an animal or daily quest using a generic DeleteView.
+    Delete a constraint using a generic DeleteView.
     """
+
     model = Constraints
     template_name = 'fpiweb/constraint_delete.html'
-    context_object_name = 'constraint_delete_context'
+    context_object_name = 'constraints'
+
+    form_class = ConstraintsForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(ConstraintDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:constraint_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
 
     def get_success_url(self):
         """
@@ -207,6 +341,7 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
 class BoxNewView(LoginRequiredMixin, View):
     # model = Box
     template_name = 'fpiweb/box_new.html'
+
     # context_object_name = 'box'
     # form_class = NewBoxForm
 
@@ -262,6 +397,16 @@ class BoxNewView(LoginRequiredMixin, View):
             )
 
         box = new_box_form.save()
+
+        action = request.session.get('action')
+        if action == Action.ACTION_BUILD_PALLET:
+            return redirect(
+                reverse(
+                    'fpiweb:build_pallet_add_box',
+                    args=(box.pk,)
+                )
+            )
+
         return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
@@ -299,6 +444,10 @@ class BoxMoveView(LoginRequiredMixin, TemplateView):
         return {}
 
 
+class BoxEmptyView(LoginRequiredMixin, View):
+    pass
+
+
 class BoxScannedView(LoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
@@ -307,15 +456,20 @@ class BoxScannedView(LoginRequiredMixin, View):
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
 
+        action = request.session.get('action')
+
+        if action != Action.ACTION_BUILD_PALLET:
+            return error_page(
+                request,
+                "What to do when action is {}?".format(action)
+            )
+
         try:
             box = Box.objects.get(box_number=box_number)
         except Box.DoesNotExist:
             return redirect('fpiweb:box_new', box_number=box_number)
 
-        if not box.product:
-            return redirect('fpiweb:box_edit', pk=box.pk)
-
-        return redirect('fpiweb:box_empty_move', pk=box.pk)
+        return redirect('fpiweb:build_pallet', args=(box.pk,))
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -323,7 +477,6 @@ class TestScanView(LoginRequiredMixin, TemplateView):
     template_name = 'fpiweb/test_scan.html'
 
     @staticmethod
-
     def get_box_scanned_url(box_number):
         if box_number.lower().startswith('box'):
             box_number = box_number[3:]
@@ -348,6 +501,20 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             BoxNumber.get_next_box_number()
         )
 
+        # schema http or https
+        schema = 'http'
+        if settings.DEBUG == False and hasattr(self.request, 'schema'):
+            schema = self.request.schema
+
+        protocol_and_host = "{}://{}".format(
+            schema,
+            self.request.META.get('HTTP_HOST', '')
+        )
+
+        full_box_url = protocol_and_host + full_box_url
+        empty_box_url = protocol_and_host + empty_box_url
+        new_box_url = protocol_and_host + new_box_url
+
         empty_box = Box.objects.filter(product__isnull=True).first()
         full_box = Box.objects.filter(product__isnull=False).first()
 
@@ -357,8 +524,63 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             'new_box_url': new_box_url,
             'empty_box': empty_box,
             'full_box': full_box,
-            'next_box_number': BoxNumber.get_next_box_number()
+            'next_box_number': BoxNumber.get_next_box_number(),
         }
 
+
+class BuildPalletView(View):
+    """Set action in view"""
+    template_name = 'fpiweb/build_pallet.html'
+
+    BoxFormFactory = modelformset_factory(
+        Box,
+        form=BoxItemForm,
+        extra=0,
+    )
+
+    def get(self, request, *args, **kwargs):
+
+        request.session['action'] = Action.ACTION_BUILD_PALLET
+
+        box_pk = kwargs.get('box_pk')
+
+        build_pallet_form = BuildPalletForm()
+
+        kwargs = {
+            'prefix': 'box_forms',
+        }
+        if box_pk:
+            kwargs['queryset'] = Box.objects.filter(pk=box_pk)
+        else:
+            kwargs['queryset'] = Box.objects.none()
+
+        box_forms = self.BoxFormFactory(**kwargs)
+
+        context = {
+            'form': build_pallet_form,
+            'box_forms': box_forms,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = BuildPalletForm(request.POST)
+        box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
+
+        if box_forms and len(box_forms) > 0:
+            box_form = box_forms[0]
+            print(dir(box_form))
+
+        if not form.is_valid() or not box_forms.is_valid():
+            return render(
+                request,
+                self.template_name,
+                {
+                    'form': form,
+                    'box_forms': box_forms,
+                }
+            )
+
+        return error_page(request, "forms are valid")
 
 # EOF
