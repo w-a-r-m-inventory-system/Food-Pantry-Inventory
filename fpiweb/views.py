@@ -73,6 +73,29 @@ class AboutView(TemplateView):
     """
 
     template_name = 'fpiweb/about.html'
+    context_object_name = 'about_context'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add Site Information to About page.
+
+        :param kwargs:
+        :return:
+        """
+
+        # get this information from the database later
+        context = super(AboutView, self).get_context_data(**kwargs)
+        site_name = 'WARM (Westerville Area Resource Ministries)'
+        site_address = '150 Heatherdown Dr.'
+        site_csz = 'Westerville Ohio 43081'
+        site_phone = '614-899-0196'
+        site_url = 'http://www.warmwesterville.org'
+        context['site_name'] = site_name
+        context['site_address'] = site_address
+        context['site_csz'] = site_csz
+        context['site_phone'] = site_phone
+        context['site_url'] = site_url
+        return context
 
 
 class LoginView(FormView):

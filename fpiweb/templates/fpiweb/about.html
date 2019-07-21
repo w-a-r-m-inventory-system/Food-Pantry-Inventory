@@ -1,7 +1,7 @@
 {% extends 'fpiweb/base.html' %}
 
 {% block title %}
-About Food Pantry Inventory
+    About Food Pantry Inventory
 {% endblock %}
 
 {% block content %}
@@ -11,6 +11,24 @@ About Food Pantry Inventory
         </h1>
     </div>
     <br/>
+
+    <div class="col-md-11">
+        <div class="text-center">
+            <h2>
+                {{ site_name }}
+            </h2>
+        </div>
+        <h3>
+            {{ site_address }}
+            <br/>
+            {{ site_csz }}
+            <br/>
+            {{ site_phone }}
+            <br/>
+            <a href="{{ site_url }}">{{ site_url }}</a>
+
+        </h3>
+    </div>
 
     <div>
         <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
