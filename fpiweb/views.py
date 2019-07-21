@@ -39,7 +39,6 @@ __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
-
 logger = getLogger('fpiweb')
 
 
@@ -121,7 +120,6 @@ class LogoutView(TemplateView):
     template_name = 'fpiweb/logout.html'
 
     def get_context_data(self, **kwargs):
-
         logout(self.request)
         nothing = dict()
         return nothing
@@ -442,7 +440,6 @@ class BoxEditView(LoginRequiredMixin, UpdateView):
 
 
 class BoxDetailsView(LoginRequiredMixin, DetailView):
-
     model = Box
     template_name = 'fpiweb/box_detail.html'
     context_object_name = 'box'
@@ -496,7 +493,6 @@ class BoxScannedView(LoginRequiredMixin, View):
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
-
     template_name = 'fpiweb/test_scan.html'
 
     @staticmethod
