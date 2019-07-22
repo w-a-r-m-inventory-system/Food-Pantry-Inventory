@@ -26,13 +26,17 @@ from fpiweb.models import \
     Box, \
     BoxNumber, \
     Constraints, \
-    LocBin
+    LocRow, \
+    LocBin, \
+    LocTier
 from fpiweb.forms import \
     BoxItemForm, \
     BuildPalletForm, \
     ConstraintsForm, \
     LoginForm, \
+    LocRowForm, \
     LocBinForm, \
+    LocTierForm, \
     NewBoxForm
 
 __author__ = '(Multiple)'
@@ -132,6 +136,69 @@ class MaintenanceView(LoginRequiredMixin, TemplateView):
     template_name = 'fpiweb/maintenance.html'
 
 
+class LocRowListView(LoginRequiredMixin, ListView):
+    """
+    List of existing rows using a generic ListView.
+    """
+
+    model = LocRow
+    template_name = 'fpiweb/loc_row_list.html'
+    context_object_name = 'loc_row_list_content'
+
+
+class LocRowCreateView(LoginRequiredMixin, CreateView):
+    """
+    Create a row using a generic CreateView.
+    """
+
+    model = LocRow
+    template_name = 'fpiweb/loc_row_edit.html'
+    context_object_name = 'loc_row'
+    success_url = reverse_lazy('fpiweb:loc_row_view')
+
+    formClass = LocRowForm
+
+    fields = ['loc_row', 'loc_row_descr', ]
+
+
+class LocRowUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Update a row using a generic UpdateView.
+    """
+
+    model = LocRow
+    template_name = 'fpiweb/loc_row_edit.html'
+    context_object_name = 'loc_row'
+    form_class = LocRowForm
+    success_url = reverse_lazy('fpiweb:loc_row_view')
+
+
+class LocRowDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Delete a row using a generic DeleteView.
+    """
+
+    model = LocRow
+    template_name = 'fpiweb/loc_row_delete.html'
+    context_object_name = 'loc_row'
+    success_url = reverse_lazy('fpiweb:loc_row_view')
+
+    form_class = LocRowForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(LocRowDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:loc_row_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+
 class LocBinListView(LoginRequiredMixin, ListView):
     """
     List of existing bins using a generic ListView.
@@ -150,19 +217,11 @@ class LocBinCreateView(LoginRequiredMixin, CreateView):
     model = LocBin
     template_name = 'fpiweb/loc_bin_edit.html'
     context_object_name = 'loc_bin'
+    success_url = reverse_lazy('fpiweb:loc_bin_view')
 
     formClass = LocBinForm
 
     fields = ['loc_bin', 'loc_bin_descr', ]
-
-    def get_success_url(self):
-        """
-        Run once form is successfully validated.
-
-        :return:
-        """
-        results = reverse('fpiweb:loc_bin_view')
-        return results
 
 
 class LocBinUpdateView(LoginRequiredMixin, UpdateView):
@@ -173,6 +232,7 @@ class LocBinUpdateView(LoginRequiredMixin, UpdateView):
     model = LocBin
     template_name = 'fpiweb/loc_bin_edit.html'
     context_object_name = 'loc_bin'
+    success_url = reverse_lazy('fpiweb:loc_bin_view')
 
     form_class = LocBinForm
 
@@ -189,15 +249,6 @@ class LocBinUpdateView(LoginRequiredMixin, UpdateView):
                                     kwargs={'pk': self.get_object().id})
         return context
 
-    def get_success_url(self):
-        """
-        Set the next URL to use once the edit is successful.
-        :return:
-        """
-
-        results = reverse('fpiweb:loc_bin_view')
-        return results
-
 
 class LocBinDeleteView(LoginRequiredMixin, DeleteView):
     """
@@ -207,6 +258,7 @@ class LocBinDeleteView(LoginRequiredMixin, DeleteView):
     model = LocBin
     template_name = 'fpiweb/loc_bin_delete.html'
     context_object_name = 'loc_bin'
+    success_url = reverse_lazy('fpiweb:loc_bin_view')
 
     form_class = LocBinForm
 
@@ -223,14 +275,82 @@ class LocBinDeleteView(LoginRequiredMixin, DeleteView):
                                     kwargs={'pk': self.get_object().id})
         return context
 
-    def get_success_url(self):
+
+class LocTierListView(LoginRequiredMixin, ListView):
+    """
+    List of existing tiers using a generic ListView.
+    """
+
+    model = LocTier
+    template_name = 'fpiweb/loc_tier_list.html'
+    context_object_name = 'loc_tier_list_content'
+
+
+class LocTierCreateView(LoginRequiredMixin, CreateView):
+    """
+    Create a tier using a generic CreateView.
+    """
+
+    model = LocTier
+    template_name = 'fpiweb/loc_tier_edit.html'
+    context_object_name = 'loc_tier'
+    success_url = reverse_lazy('fpiweb:loc_tier_view')
+
+    formClass = LocTierForm
+
+    fields = ['loc_tier', 'loc_tier_descr', ]
+
+
+class LocTierUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Update a tier using a generic UpdateView.
+    """
+
+    model = LocTier
+    template_name = 'fpiweb/loc_tier_edit.html'
+    context_object_name = 'loc_tier'
+    success_url = reverse_lazy('fpiweb:loc_tier_view')
+
+    form_class = LocTierForm
+
+    def get_context_data(self, **kwargs):
         """
-        Set the next URL to use once the delete is successful.
+        Modify the context before rendering the template.
+
+        :param kwargs:
         :return:
         """
 
-        results = reverse('fpiweb:loc_bin_view')
-        return results
+        context = super(LocTierUpdateView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:loc_tier_update',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+
+class LocTierDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Delete a tier using a generic DeleteView.
+    """
+
+    model = LocTier
+    template_name = 'fpiweb/loc_tier_delete.html'
+    context_object_name = 'loc_tier'
+    success_url = reverse_lazy('fpiweb:loc_tier_view')
+
+    form_class = LocTierForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(LocTierDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:loc_tier_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
 
 
 class ConstraintsListView(LoginRequiredMixin, ListView):
