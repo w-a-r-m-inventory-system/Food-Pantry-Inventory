@@ -1,18 +1,18 @@
 {% extends 'fpiweb/base.html' %}
 
-{# Purpose: List all constraints #}
-{# URL Name constraints_view #}
+{# Purpose: List all location tiers #}
+{# URL Name loc_tier_view #}
 {# URL response: GET #}
-{# Table: Constraints #}
+{# Table: LocTier #}
 {# form: none #}
 
-{% block title %}Constraint List{% endblock %}
+{% block title %}Location Tier List{% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12 text-center">
             <h1 class="h1">
-                Constraints List
+                Location Tier List
             </h1>
         </div>
     </div>
@@ -27,8 +27,8 @@
         <div class="col-md-12 text-center">
             <a class="btn alert-info"
                role="button"
-               href="{% url 'fpiweb:constraint_new' %}">
-                Add a Constraint
+               href="{% url 'fpiweb:loc_tier_new' %}">
+                Add a Tier
             </a>
         </div>
     </div>
@@ -38,43 +38,29 @@
     </div>
 
     <div class="row text-center">
-        <div class="col-md-3"><strong>Name</strong></div>
-        <div class="col-md-2"><strong>Type</strong></div>
-        <div class="col-md-3"><strong>Valid Values</strong></div>
+        <div class="col-md-3"><strong>Tier</strong></div>
+{#        <div class="col-md-4"><strong>Description</strong></div>#}
         <div class="col-md-2 text-center">
-            <strong>Edit this constraint</strong>
+            <strong>Edit this tier</strong>
         </div>
         <div class="col-md-2 text-center">
-            <strong>Delete this constraint</strong>
+            <strong>Delete this tier</strong>
         </div>
     </div>
 
 
     {% if object_list %}
-        {% for constraint in object_list %}
-            <div class="row text-left">
+        {% for row in object_list %}
+            <div class="row text-center">
                 <div class="col-md-3">
-                    {{ constraint.constraint_name|safe }}
+                    {{ row.loc_tier|safe }}
                 </div>
-                <div class="col-md-2">
-                    {{ constraint.constraint_type }}
-                </div>
-                {% if constraint.constraint_type  in range_list %}
-                    <div class="col-md-3">
-                        Range: {{ constraint.constraint_min | safe }}
-                        through {{ constraint.constraint_max | safe }}
-                    </div>
-                {% else %}
-                    <div class="col-md-3">
-                        Valid List: {{ constraint.constraint_list | safe }}
-                    </div>
-                {% endif %}
                 <div class="col-md-2">
                     <div class="text-center">
                         <a class="btn alert-info"
                            role="button"
                            href="
-                            {% url 'fpiweb:constraint_update' pk=constraint.id %}">
+                            {% url 'fpiweb:loc_tier_update' pk=row.id %}">
                             Edit
                         </a>
                     </div>
@@ -84,7 +70,7 @@
                         <a class="btn alert-info"
                            role="button"
                            href="
-                            {% url 'fpiweb:constraint_delete' pk=constraint.id %}">
+                            {% url 'fpiweb:loc_tier_delete' pk=row.id %}">
                             Delete
                         </a>
                     </div>
@@ -95,13 +81,13 @@
                     &nbsp;
                 </div>
                 <div class="col-md-11">
-                    {{ constraint.constraint_descr }}
+                    {{ row.loc_tier_descr }}
                     <hr class="style-one"/>
                 </div>
             </div>
         {% endfor %}
     {% else %}
-        <p>No constraints are available.</p>
+        <p>No location tiers are available.</p>
     {% endif %}
     <div class='row'>
         <a href="{% url 'fpiweb:maintenance' %}">
@@ -113,19 +99,19 @@
     <hr class="style-one"/>
 
     <h6>
-        Template: constraint_list.html
+        Template: loc_tier_list.html
     </h6>
     <h6>
-        View: ConstraintsListView
+        View: LocTierListView
     </h6>
     <h6>
-        Add URL: {% url 'fpiweb:constraint_new' %}
+        Add URL: {% url 'fpiweb:loc_tier_new' %}
     </h6>
     <h6>
-        Edit URL: {% url 'fpiweb:constraint_update' pk=1 %}
+        Edit URL: {% url 'fpiweb:loc_tier_update' pk=1 %}
     </h6>
     <h6>
-        Delete URL: {% url 'fpiweb:constraint_delete' pk=1 %}
+        Delete URL: {% url 'fpiweb:loc_tier_delete' pk=1 %}
     </h6>
 
 {% endblock %}

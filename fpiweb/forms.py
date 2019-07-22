@@ -169,6 +169,71 @@ class LoginForm(Form):
                          widget=PasswordInput)
 
 
+class LocRowForm(forms.ModelForm):
+    """
+    Manage Loction row details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = LocRow
+        fields = ['id', 'loc_row', 'loc_row_descr', ]
+
+    loc_row = forms.CharField(
+        help_text=LocRow.loc_row_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_loc_row_fields(
+            loc_row_name: str,
+            loc_row_descr: str,
+    ):
+        """
+        Validate the various location row record fields.
+
+        :param loc_row_name: name of row
+        :param loc_row_descr: description of row
+        :return: True if valid
+        """
+        max_len: int = LocRow.loc_row_max_length
+        min_len: int = LocRow.loc_row_min_length
+        if not loc_row_name or not (len(loc_row_name) > 0):
+            raise ValidationError(
+                'The row must be specified'
+            )
+        if (len(loc_row_name) <= max_len) \
+                and \
+                (len(loc_row_name) >= min_len) \
+                and \
+                (loc_row_name.isdigit()):
+            ...
+        else:
+            raise ValidationError(
+                'A row must be two digits (with a leading zero if needed)'
+            )
+        if not loc_row_descr or not (len(loc_row_descr) > 0):
+            raise ValidationError(
+                'A description of this row must be provided'
+            )
+
+        return
+
+    def clean(self):
+        """
+        Clean and validate the data given for the constraint record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        loc_row_name = cleaned_data.get('loc_row')
+        loc_row_descr = cleaned_data.get('loc_row_descr')
+        self.validate_loc_row_fields(loc_row_name, loc_row_descr)
+        return
+
+
 class LocBinForm(forms.ModelForm):
     """
     Manage Loction bin details with a generic form.
@@ -186,11 +251,6 @@ class LocBinForm(forms.ModelForm):
         required=True,
     )
 
-    constraint_max = forms.CharField(
-        help_text=LocBin.loc_bin_descr_help_text,
-        required=True,
-    )
-
     @staticmethod
     def validate_loc_bin_fields(
             loc_bin_name: str,
@@ -205,40 +265,107 @@ class LocBinForm(forms.ModelForm):
         """
         max_len: int = LocBin.loc_bin_max_length
         min_len: int = LocBin.loc_bin_min_length
-        valid: bool = False
+        # valid: bool = False
+        if not loc_bin_name or not (len(loc_bin_name) > 0):
+            raise ValidationError(
+                'The bin must be specified'
+            )
         if (len(loc_bin_name) <= max_len) \
                 and \
                 (len(loc_bin_name) >= min_len) \
                 and \
                 (loc_bin_name.isdigit()):
-            valid = True
-        if not valid:
+            ...
+        else:
             raise ValidationError(
                 'A bin must be two digits (with a leading zero if needed)'
             )
-
+        if not loc_bin_descr or not (len(loc_bin_descr) > 0):
+            raise ValidationError(
+                'A description of this bin must be provided'
+            )
         return
 
 
-def clean(self):
-    """
-    Clean and validate the data given for the constraint record.
+    def clean(self):
+        """
+        Clean and validate the data given for the bin record.
 
-    :return:
+        :return:
+        """
+        cleaned_data = super().clean()
+        loc_bin_name = cleaned_data.get('loc_bin')
+        loc_bin_descr = cleaned_data.get('loc_bin_descr')
+        self.validate_loc_bin_fields(loc_bin_name, loc_bin_descr)
+        return
+
+
+class LocTierForm(forms.ModelForm):
     """
-    cleaned_data = super().clean()
-    loc_bin_name = cleaned_data.get('loc_bin')
-    if not loc_bin_name or not (len(loc_bin_name) > 0):
-        raise ValidationError(
-            'The bin must be specified'
-        )
-    loc_bin_descr = cleaned_data.get('loc_bin_descr')
-    if not loc_bin_descr or not (len(loc_bin_descr) > 0):
-        raise ValidationError(
-            'A description of this bin must be provided'
-        )
-    self.validate_loc_bin_fields(loc_bin_name, loc_bin_descr)
-    return
+    Manage Loction tier details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = LocTier
+        fields = ['id', 'loc_tier', 'loc_tier_descr', ]
+
+    loc_tier = forms.CharField(
+        help_text=LocTier.loc_tier_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_loc_tier_fields(
+            loc_tier_name: str,
+            loc_tier_descr: str,
+    ):
+        """
+        Validate the various location tier record fields.
+
+        :param loc_tier_name: name of tier
+        :param loc_tier_descr: description of tier
+        :return: True if valid
+        """
+        max_len: int = LocTier.loc_tier_max_length
+        min_len: int = LocTier.loc_tier_min_length
+        if not loc_tier_name or not (len(loc_tier_name) > 0):
+            raise ValidationError(
+                'The tier must be specified'
+            )
+        if (len(loc_tier_name) <= max_len) \
+                and \
+                (len(loc_tier_name) >= min_len) \
+                and \
+                (loc_tier_name[0].isalpha())\
+                and \
+                (loc_tier_name[1].isdigit())\
+                :
+            ...
+        else:
+            raise ValidationError(
+                'A tier must be a character followed by a digit'
+            )
+        if not loc_tier_descr or not (len(loc_tier_descr) > 0):
+            raise ValidationError(
+                'A description of this tier must be provided'
+            )
+        return
+
+
+    def clean(self):
+        """
+        Clean and validate the data given for the tier record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        loc_tier_name = cleaned_data.get('loc_tier')
+        loc_tier_descr = cleaned_data.get('loc_tier_descr')
+        self.validate_loc_tier_fields(loc_tier_name, loc_tier_descr)
+        return
 
 
 class ConstraintsForm(forms.ModelForm):
@@ -277,6 +404,8 @@ class ConstraintsForm(forms.ModelForm):
 
     @staticmethod
     def validate_constraint_fields(
+            con_name: str,
+            con_descr: str,
             con_type: Constraints.CONSTRAINT_TYPE_CHOICES,
             con_min: Union[str, int],
             con_max: Union[str, int],
@@ -296,6 +425,12 @@ class ConstraintsForm(forms.ModelForm):
         min_val = none_or_str(con_min)
         list_val = none_or_list(con_list)
         valid: bool = False
+        if not con_name or not (len(con_name) > 0):
+            raise ValidationError('Constraint name must be specified')
+        if not con_descr or not (len(con_descr) > 0):
+            raise ValidationError(
+                'A description of this constraint must be provided'
+            )
         if con_type == Constraints.INT_RANGE:
             if max_val and min_val and (not list_val):
                 max_int = none_or_int(max_val)
@@ -340,18 +475,19 @@ class ConstraintsForm(forms.ModelForm):
         """
         cleaned_data = super().clean()
         con_name = cleaned_data.get('constraint_name')
-        if not con_name or not (len(con_name) > 0):
-            raise ValidationError('Constraint name must be specified')
         con_descr = cleaned_data.get('constraint_descr')
-        if not con_descr or not (len(con_descr) > 0):
-            raise ValidationError(
-                'A description of this constraint must be provided'
-            )
         con_type = cleaned_data.get('constraint_type')
         con_min = cleaned_data.get('constraint_min')
         con_max = cleaned_data.get('constraint_max')
         con_list = cleaned_data.get('constraint_list')
-        self.validate_constraint_fields(con_type, con_min, con_max, con_list)
+        self.validate_constraint_fields(
+            con_name,
+            con_descr,
+            con_type,
+            con_min,
+            con_max,
+            con_list
+        )
         return
 
 
