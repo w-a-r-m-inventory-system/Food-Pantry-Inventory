@@ -150,6 +150,12 @@ class LoginView(TestCase):
             error_list.get_text(),
         )
 
+    def test_login_required_redirects_to_login_view(self):
+        client = Client()
+        response = client.get(reverse('fpiweb:maintenance'))
+        self.assertEqual(302, response.status_code)
+        self.assertTrue(response.url.startswith(reverse('fpiweb:login')))
+
 
 class LogoutViewTest(TestCase):
 

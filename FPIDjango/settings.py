@@ -160,7 +160,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # URL to allow a user to authenticate herself.  This becomes the default
 # used whenever Django detects someone trying to do something requiring
 # authentication.
-LOGIN_URL = 'fpiweb:login/'
+LOGIN_URL = 'fpiweb:login'
 
 
 # Internationalization
