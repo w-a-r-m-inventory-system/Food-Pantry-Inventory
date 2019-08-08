@@ -1,6 +1,7 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+from base64 import b64decode
 from logging import getLogger, debug
 
 from django.conf import settings
@@ -15,6 +16,8 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
+
+from PIL import Image
 
 from fpiweb.models import \
     Action, \
@@ -464,22 +467,47 @@ class BuildPalletView(View):
 
 class ScannerView(View):
 
-    template_name = 'fpiweb/scanner.html'
-
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
 
     def post(self, request, *args, **kwargs):
-        pass
 
-class ScannerView2(View):
+        print("request.FILES", request.FILES)
 
-    template_name = 'fpiweb/scanner2.html'
+        scan_data = request.POST.get('scan_data')
+        if not scan_data:
+            error = 'scan data missing from POST request'
+            logger.error(error)
+            return render(
+                request,
+                self.template_name,
+                {'error': error},
+            )
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {})
+        data_url_prefix = 'data:image/png;base64,'
+        if not scan_data.startswith(data_url_prefix):
+            error = 'Invalid data format'
+            logger.error(error)
+            return render(
+                request,
+                self.template_name,
+                {'error': error},
+            )
 
-    def post(self, request, *args, **kwargs):
-        pass
+        scan_data_bytes = b64decode(
+            scan_data[len(data_url_prefix):]
+        )
+        logger.debug(f"decoded {len(scan_data_bytes)} bytes of scan data")
+
+        with open('bar.png', 'wb') as img_out:
+            img_out.write(scan_data_bytes)
+
+
+        # img = Image.frombuffer('RGB', (4, 1), scan_data_bytes)
+        # img.save("foo.png")
+
+
+
+
 
 # EOF

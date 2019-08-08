@@ -126,3 +126,31 @@ hr.style-one {
 
 .nonfield{
 }
+
+div.scanner{
+    z-index: 1;
+    position: fixed;
+    border: solid black 0.0625rem;
+    border-radius: 2rem;
+    background: #c0ffc0;
+    margin-top: 1rem;
+    margin-left: 10%;
+    width: 80%;
+    max-width: 80%;
+}
+
+
+div.scanner video{
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    margin-right: auto;
+    margin-left: auto;
+    display: block;
+}
+
+div.scanner > div.controls{
+    border: solid darkslateblue 0.0625rem;
+    margin-bottom: 2rem;
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+}

@@ -23,7 +23,6 @@ from fpiweb.views import \
     ConstraintUpdateView, \
     LogoutView, \
     ScannerView, \
-    ScannerView2, \
     TestScanView
 
 # from fpiweb.views import ConstraintDetailView
@@ -131,6 +130,4 @@ urlpatterns = [
         name='build_pallet_add_box'),
 
     path('scanner/', ScannerView.as_view(), name='scanner'),
-
-    path('scanner2/', ScannerView2.as_view(), name='scanner2'),
 ]
