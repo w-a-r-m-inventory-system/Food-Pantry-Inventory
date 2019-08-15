@@ -33,7 +33,7 @@ div.coordinate_label{
 
 <div>{# root div of page #}
 
-  {% include 'fpiweb/scanner2.html' %}
+  {% include 'fpiweb/scanner.html' %}
 
   <h1>Build Pallet</h1>
   <div class="row">
@@ -104,10 +104,19 @@ div.coordinate_label{
 {% block footer_javascript %}
 
   <!-- boilerplate code for scannning functionality -->
-  <script src="{% static '/fpiweb/adapter-1.0.2.js' %}"></script>
-  <script src="{% static '/fpiweb/scanner2.js' %}"></script>
+  <script src="{% static '/fpiweb/webrtc-adapter-1.0.2.js' %}"></script>
+  <script src="{% static '/fpiweb/js.cookie.js' %}"></script>
+  <script src="{% static '/fpiweb/scanner.js' %}"></script>
   <script>
-    setup_scanner();
+
+    function handle_document_ready()
+    {
+        setup_scanner();
+    }
+
+    // Using JQuery, add event handler for when the DOM is loaded (images,
+    // etc may still be downloading)
+    $(document).ready(handle_document_ready);
   </script>
 
 {% endblock %}

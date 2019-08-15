@@ -1,34 +1,20 @@
-{% extends 'fpiweb/base.html' %}
-{% load static %}
 {% comment %}
 
 CONTEXT VARIABLES
 -----------------
 
+
+Some elements will be sized using JavaScript so I'm not using the standard
+base.html template.
+
 {% endcomment %}
 
-{% block title %}
-Scan QR Code
-{% endblock %}
 
-{% block content %}
-
-
-<div class="camera">
-  <video id="video">Video stream not available.</video>
-  <button id="startButton">Take photo</button>
+<div class="scanner" style="">
+  <video id="video">
+    <p>Video stream not available.</p>
+  </video>
+  <div class="controls">
+      <button class="btn btn-primary" id="scanButton">Scan</button>
+  </div>
 </div>
-
-<canvas id="canvas">
-</canvas>
-<div class="output">
-  <img id="photo" alt="The screen capture will appear in this box.">
-</div>
-
-
-{% endblock %}
-
-{% block footer_javascript %}
-<script src="{% static '/fpiweb/adapter-1.0.2.js' %}"></script>
-<script src="{% static '/fpiweb/scanner.js' %}"></script>
-{% endblock %}

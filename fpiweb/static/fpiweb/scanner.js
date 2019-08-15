@@ -1,109 +1,173 @@
 
-function onLoad() {
 
-    // The width and height of the captured photo. We will set the
-    // width to the value defined here, but the height will be
-    // calculated based on the aspect ratio of the input stream.
-    var width = 320;    // We will scale the photo width to this
-    var height = 0;     // This will be computed based on the input stream
+var scanner = {
+    video: document.getElementById('video'),
+    scanButton: document.getElementById('scanButton'),
+};
 
-    // |streaming| indicates whether or not we're currently streaming
-    // video from the camera. Obviously, we start at false.
-    var streaming = false;
-
-    // The various HTML elements we need to configure or control. These
-    // will be set by the startup() function.
-    var video = null;
-    var canvas = null;
-    var photo = null;
-    var startButton = null;
-
-
-    function startup() {
-        video = document.getElementById('video');
-        canvas = document.getElementById('canvas');
-        photo = document.getElementById('photo');
-        startButton = document.getElementById('startButton');
-
-        navigator.mediaDevices
-            .getUserMedia({video: true, audio: false})
-            .then(
-                function(stream) {
-                    video.srcObject = stream;
-                    video.play();
-                }
-            )
-            .catch(
-                function(err) {
-                    console.log("An error occurred: " + err);
-                }
-            );
-        video.addEventListener(
-            'canplay',
-            function(ev){
-                if (!streaming) {
-                    height = video.videoHeight / (video.videoWidth/width);
-                    // Firefox currently has a bug where the height can't be read from
-                    // the video, so we will make assumptions if this happens.
-                    if (isNaN(height)) {
-                        height = width / (4/3);
-                    }
-                    video.setAttribute('width', width);
-                    video.setAttribute('height', height);
-                    canvas.setAttribute('width', width);
-                    canvas.setAttribute('height', height);
-                    streaming = true;
-                }
-            },
-            false
-        );
-        startButton.addEventListener(
-            'click',
-            function(ev){
-                takepicture();
-                ev.preventDefault();
-            },
-            false
-        );
-        clearphoto();
-  } // end startup
-
-
-  // Fill the photo with an indication that none has been
-  // captured.
-  function clearphoto() {
-    var context = canvas.getContext('2d');
-    context.fillStyle = "#AAA";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    var data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
-  }
-
-  // Capture a photo by fetching the current contents of the video
-  // and drawing it into a canvas, then converting that to a PNG
-  // format data URL. By drawing it on an offscreen canvas and then
-  // drawing that to the screen, we can change its size and/or apply
-  // other changes before drawing it.
-  function takepicture() {
-    var context = canvas.getContext('2d');
-    if (width && height) {
-      // Copy image from video to a Canvas
-      canvas.width = width;
-      canvas.height = height;
-      context.drawImage(video, 0, 0, width, height);
-
-      // Copy image from canvas into img
-      var data = canvas.toDataURL('image/png');
-      photo.setAttribute('src', data);
-    } else {
-      clearphoto();
-    }
-  }
-
-
-  // Set up our event listener to run the startup process
-  // once loading is complete.
-  window.addEventListener('load', startup, false);
+function streamToVideoElement(stream)
+{
+    scanner.video.srcObject = stream;
+    scanner.video.play();
 }
 
-onLoad();
+function logError(err)
+{
+    console.log(err);
+}
+
+
+function dataURLtoBlob(dataurl)
+{
+    var arr = dataurl.split(',');
+    var mime = arr[0].match(/:(.*?);/)[1];
+    var bstr = atob(arr[1]);
+    var n = bstr.length;
+    var u8arr = new Uint8Array(n);
+
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type:mime});
+}
+
+
+function processScanResponse(){
+
+    // XMLHttpRequest
+    var xhr = this;
+
+    console.log("this.responseText is " + this.responseText);
+    console.log("this.responseType is '" + this.responseType + "'");
+
+
+    console.log("members of this are:");
+    for(var symbol in this)
+    // for(var symbol in e)
+    {
+        console.log(symbol);
+    }
+
+}
+
+
+function scan(event)
+{
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+
+    context.drawImage(
+        scanner.video,
+        0,
+        0,
+        scanner.video.clientWidth,
+        scanner.video.clientHeight
+    );
+    var scanData = canvas.toDataURL('image/png');
+    console.log(scanData);
+
+    // This block and dataURLtoBlob taken from:
+    // https://stackoverflow.com/questions/6850276/how-to-convert-dataurl-to-file-object-in-javascript
+    // var blob = dataURLtoBlob(scanData);
+
+    // Using js.cookie.js Cookies class to get csrftoken as per:
+    // https://docs.djangoproject.com/en/2.2/ref/csrf/
+    // var csrftoken = Cookies.get('csrftoken');
+
+    console.log("scanData is " + Number(scanData.length).toLocaleString() + " characters in length");
+
+    console.log("sending AJAX request");
+    $.ajax({
+        url: '/fpiweb/scanner/',
+        method: 'post',
+        data: {
+            'scanData': scanData
+        }
+    });
+
+
+    // var formData = new FormData();
+    // formData.append("csrfmiddlewaretoken", csrftoken);
+    // formData.append("file", blob, "hello.txt");
+
+
+    // var xhr = new XMLHttpRequest();
+    // var async = true;
+    // xhr.addEventListener('load', processScanResponse);
+    // xhr.open('POST', , async);
+    // // xhr.onload = processScanResponse;
+    // xhr.send(formData);
+    // // end of block
+
+    event.preventDefault();
+}
+
+/*
+    https://docs.djangoproject.com/en/2.2/ref/csrf/#setting-the-token-on-the-ajax-request
+*/
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function beforeSend(xml_http_request, settings)
+{
+    if(csrfSafeMethod(settings.type))
+        return;
+
+    if(this.crossDomain)
+        return;
+
+    var csrftoken = Cookies.get('csrftoken');
+    xml_http_request.setRequestHeader("X-CSRFToken", csrftoken);
+}
+
+
+function setup_scanner()
+{
+    navigator.mediaDevices
+        .getUserMedia({video: true, audio: false})
+        .then(streamToVideoElement)
+        .catch(logError);
+
+    $.ajaxSetup({beforeSend: beforeSend});
+
+    $('#scanButton').click(scan);
+}
+
+
+
+
+
+
+/*
+* function setup()
+{
+    scanner.width = window.innerWidth || document.body.clientWidth;
+    scanner.height = window.innerHeight || document.body.clientHeight;
+
+    if(scanner.width > scanner.height)
+    {
+        // landscape
+        scanner.height = scanner.height / 2.0;
+        scanner.width = 4 * scanner.height / 3.0;
+    }
+    else
+    {
+        // portrait
+        scanner.height = scanner.width * 0.75;
+    }
+
+    scanner.video.setAttribute('width', scanner.width);
+    scanner.video.setAttribute('height', scanner.height);
+
+    navigator.mediaDevices
+        .getUserMedia({video: true, audio: false})
+        .then(streamToVideoElement)
+        .catch(logError);
+
+    scanner.scanButton.addEventListener('click', scan);
+}
+
+* */

@@ -2,7 +2,11 @@
 views.py - establish the views (pages) for the F. P. I. web application.
 """
 from base64 import b64decode
+from binascii import Error as BinasciiError
+from datetime import datetime
 from logging import getLogger, debug
+from random import seed, randint
+from time import time
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
@@ -10,6 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.db.models import Max
 from django.forms import modelformset_factory
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from django.urls import reverse, reverse_lazy
@@ -37,6 +42,8 @@ __creation_date__ = "04/01/2019"
 
 
 logger = getLogger('fpiweb')
+
+seed(time())
 
 
 def error_page(
@@ -467,44 +474,54 @@ class BuildPalletView(View):
 
 class ScannerView(View):
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {})
+    @staticmethod
+    def error_response(errors, status=400):
+        return JsonResponse({'errors': errors}, status=status)
+
+    @staticmethod
+    def get_scan_file_path():
+        filename = "{}_{:>5}.png".format(
+            datetime.now().strftime(),
+            randint(0, 9999),
+        )
+        print("filename is", filename)
+
 
     def post(self, request, *args, **kwargs):
+        scan_data_prefix = 'data:image/png;base64,'
+        scan_data = request.POST.get('scanData')
 
-        print("request.FILES", request.FILES)
-
-        scan_data = request.POST.get('scan_data')
         if not scan_data:
-            error = 'scan data missing from POST request'
-            logger.error(error)
-            return render(
-                request,
-                self.template_name,
-                {'error': error},
+            return self.error_response(['missing scan_data'])
+
+        if not scan_data.startswith(scan_data_prefix):
+            return self.error_response(['Invalid scan data'])
+
+        logger.info("scan_data is {:,} characters in length".format(len(scan_data)))
+
+        try:
+            scan_data_bytes = b64decode(
+                scan_data[len(scan_data_prefix):]
             )
+        except BinasciiError as e:
+            return self.error_response([str(e)])
 
-        data_url_prefix = 'data:image/png;base64,'
-        if not scan_data.startswith(data_url_prefix):
-            error = 'Invalid data format'
-            logger.error(error)
-            return render(
-                request,
-                self.template_name,
-                {'error': error},
-            )
+        image_file_path = self.get_scan_file_path()
 
-        scan_data_bytes = b64decode(
-            scan_data[len(data_url_prefix):]
-        )
-        logger.debug(f"decoded {len(scan_data_bytes)} bytes of scan data")
 
-        with open('bar.png', 'wb') as img_out:
-            img_out.write(scan_data_bytes)
+
+
+
+
+        #
+        # with open('bar.png', 'wb') as img_out:
+        #     img_out.write(scan_data_bytes)
 
 
         # img = Image.frombuffer('RGB', (4, 1), scan_data_bytes)
         # img.save("foo.png")
+
+        return JsonResponse({'foo': 'bar'}, status=200)
 
 
 
