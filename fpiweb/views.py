@@ -5,14 +5,13 @@ from base64 import b64decode
 from binascii import Error as BinasciiError
 from datetime import datetime
 from logging import getLogger, debug
+from pathlib import Path
 from random import seed, randint
 from time import time
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.db.models import Max
 from django.forms import modelformset_factory
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -21,8 +20,6 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
-
-from PIL import Image
 
 from fpiweb.models import \
     Action, \
@@ -475,19 +472,44 @@ class BuildPalletView(View):
 class ScannerView(View):
 
     @staticmethod
+    def response(success, errors=None, status=200):
+        return JsonResponse(
+            {
+                'success': success,
+                'errors': errors if errors else [],
+            },
+            status=status
+        )
+
+    @staticmethod
     def error_response(errors, status=400):
-        return JsonResponse({'errors': errors}, status=status)
+        return ScannerView.response(
+            False,
+            errors,
+            status=status
+        )
 
     @staticmethod
     def get_scan_file_path():
-        filename = "{}_{:>5}.png".format(
-            datetime.now().strftime(),
-            randint(0, 9999),
-        )
-        print("filename is", filename)
+        scans_dir_path = Path(settings.SCANS_DIR)
+        if not scans_dir_path.exists():
+            raise OSError("{} doesn't exist".format(scans_dir_path))
 
+        attempts = 100
+        for i in range(attempts):
+            filename = "{}_{:0>4}.png".format(
+                datetime.now().strftime("%Y-%m-%d_%H:%M:%S"),
+                randint(0, 9999),
+            )
+            path = scans_dir_path / filename
+            if not path.exists():
+                return path
+        raise OSError(
+            "Unable to generate path after {} attempts".format(attempts)
+        )
 
     def post(self, request, *args, **kwargs):
+        print("ScannerView.post")
         scan_data_prefix = 'data:image/png;base64,'
         scan_data = request.POST.get('scanData')
 
@@ -506,22 +528,20 @@ class ScannerView(View):
         except BinasciiError as e:
             return self.error_response([str(e)])
 
-        image_file_path = self.get_scan_file_path()
+        try:
+            image_file_path = self.get_scan_file_path()
+        except OSError as e:
+            return self.error_response([str(e)])
+
+        with image_file_path.open('wb') as image_file:
+            image_file.write(scan_data_bytes)
+
+        # run zbarimg on the file see if can parse out any
+        # barcode data.
 
 
 
-
-
-
-        #
-        # with open('bar.png', 'wb') as img_out:
-        #     img_out.write(scan_data_bytes)
-
-
-        # img = Image.frombuffer('RGB', (4, 1), scan_data_bytes)
-        # img.save("foo.png")
-
-        return JsonResponse({'foo': 'bar'}, status=200)
+        return self.response(True, status=200)
 
 
 
