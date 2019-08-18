@@ -1,7 +1,7 @@
 {% extends 'fpiweb/base.html' %}
 
 {% block title %}
-Welcome to Food Pantry Inventory System
+    Welcome to Food Pantry Inventory System
 {% endblock %}
 
 {% block content %}
@@ -11,13 +11,16 @@ Welcome to Food Pantry Inventory System
     <br/>
 
 
-
     <div>
-        <a href="{% url 'fpiweb:about' %}">About</a>
+        <a href="{% url 'fpiweb:about' %}">
+            About
+        </a>
     </div>
 
     <div>
-        <a href="/admin/">Admin</a>
+        <a href="/admin/">
+            (Admin)
+        </a>
     </div>
 
     <a href="{% url 'fpiweb:login' %}">
@@ -30,19 +33,35 @@ Welcome to Food Pantry Inventory System
     </a>
 
     <br/>
-    <a href="{% url 'fpiweb:constraints_view' %}">
-    Constraints List
+    <a href="{% url 'fpiweb:maintenance' %}">
+        System Maintenance
     </a>
 
-
+    {#    <br/>#}
+    {#    <a href="{% url 'fpiweb:box_new' %}">#}
+    {#    Add Box#}
+    {#    </a>#}
 
     <div>
         <a href="{% url 'fpiweb:test_scan' %}">Test Scan</a>
     </div>
 
-
-
-
-
+    <hr/>
+    <h2>Actions</h2>
+    <div class="row">
+        <a class="btn btn-primary"
+           href="{% url 'fpiweb:build_pallet' %}">
+            Build Pallet
+        </a>
+    </div>
+    <div class="row">
+        <a class="btn btn-primary" href="">Move Box</a>
+    </div>
+    <div class="row">
+        <a class="btn btn-primary" href="">Move Pallet</a>
+    </div>
+    <div class="row">
+        <a class="btn btn-primary" href="">Combine Pallets</a>
+    </div>
 
 {% endblock %}
