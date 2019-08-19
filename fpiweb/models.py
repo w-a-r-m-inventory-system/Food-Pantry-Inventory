@@ -597,6 +597,26 @@ class Box(models.Model):
         )
 
 
+class ActivityAdjustmentType(Enum):
+        """
+        Adjustment types if record is an adjustment.
+        """
+        NO_ADJUSTMENT: str = ''
+        AUTO_EMPTY_BOX: str = 'Auto Emptied'
+        AUTO_FILL_BOX: str = 'Auto Filled'
+
+        # must be callable to set default
+
+
+def adjustment_type_default():
+    """
+    force a constant value for the default for the adjustment field
+    :return:
+    """
+    default = ActivityAdjustmentType.NO_ADJUSTMENT
+    return default
+
+
 class Activity(models.Model):
     """
     Activity (history) from the past.
@@ -606,6 +626,12 @@ class Activity(models.Model):
         ordering = ['-date_consumed', 'box_number']
         app_label = 'fpiweb'
         verbose_name_plural = 'Activities'
+
+    ADJUSTMENT_TYPE_CHOICES = (
+        (ActivityAdjustmentType.NO_ADJUSTMENT, 'Normal'),
+        (ActivityAdjustmentType.AUTO_EMPTY_BOX, 'Automatically Emptied Box'),
+        (ActivityAdjustmentType.AUTO_FILL_BOX, 'Automatically Filled Box'),
+    )
 
     id_help_text = 'Internal record identifier for an activity.'
     id = models.AutoField(
@@ -685,15 +711,6 @@ class Activity(models.Model):
     )
     """ Date product was consumed. """
 
-    duration_help_text = (
-        'Number of days between date box was filled and consumed.'
-    )
-    duration = models.IntegerField(
-        'Duration',
-        help_text=duration_help_text,
-    )
-    """ Number of days between date box was filled and consumed. """
-
     exp_year_help_text = 'Year product would have expired.'
     exp_year = models.IntegerField(
         'Year Expired',
@@ -723,8 +740,9 @@ class Activity(models.Model):
     )
     """ Optional ending month product would have expired. """
 
-    quantity_help_text = 'Approximate number of items in the box when it ' \
-                         'was filled.'
+    quantity_help_text = (
+        'Approximate number of items in the box when it was filled.'
+        )
     quantity = models.IntegerField(
         'Quantity in Box',
         default=0,
@@ -732,25 +750,53 @@ class Activity(models.Model):
     )
     """ Approximate number of items in the box when it was filled. """
 
+    duration_help_text = (
+        'Number of days between date box was filled and consumed.'
+    )
+    duration = models.IntegerField(
+        'Duration',
+        help_text=duration_help_text,
+    )
+    """ Number of days between date box was filled and consumed. """
+
+    adjustment_help_text = 'If this is an adjustment entry, what type?'
+    adjustment_max_length = 50
+    adjustment = models.CharField(
+        'Adjustment?',
+        choices=ADJUSTMENT_TYPE_CHOICES,
+        max_length=adjustment_max_length,
+        default=adjustment_type_default,
+        help_text=adjustment_help_text,
+    )
+    """ If this is an adjustment entry, what type? """
+
+    adjustment_code = models.CharField(
+        'Adjustment Code',
+        max_length=15,
+        null=True,
+        blank=True
+    )
     # define a default display of Activity
     def __str__(self):
         """ Default way to display this activity record. """
+        display = f'{self.box_number} ({self.box_type})'
         if self.date_filled:
-            display = (
-                f'{self.box_number} ({self.box_type_code}) '
+            display = display + (' '
                 f'{self.prod_name} ({self.prod_cat_name}) '
                 f'{self.quantity} '
                 f'{self.exp_year}'
                 f'({self.exp_month_start}-'
-                f'{self.exp_month_end})'
-                f'{self.date_filled} - {self.date_consumed}'
-                f'({self.duration}) at '
+                f'{self.exp_month_end}) at '
                 f'{self.loc_row} / '
                 f'{self.loc_bin} / '
-                f'{self.loc_tier}'
+                f'{self.loc_tier} '
+                f'{self.date_filled}'
             )
-        else:
-            display = f'{self.box_number} ({self.box_type}) - Empty'
+        if self.date_consumed:
+            display = display + (' '
+                f'{self.date_consumed}'
+                f'({self.duration} days) '
+            )
         return display
 
 
@@ -759,11 +805,11 @@ class CONSTRAINT_NAME_KEYS(Enum):
     """
     Valid constraint key values with associated names for each key.
     """
-    TIER: 'Tier'
-    ROW: 'Row'
-    BIN: 'Bin'
-    EXP_YEAR: 'Expiration Year'
-    QUANTITY: 'Quantity'
+    TIER: str = 'Tier'
+    ROW: str = 'Row'
+    BIN: str = 'Bin'
+    EXP_YEAR: str = 'Expiration Year'
+    QUANTITY: str = 'Quantity'
 
 
 class Constraints(models.Model):
