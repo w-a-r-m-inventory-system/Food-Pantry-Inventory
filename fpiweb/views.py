@@ -7,6 +7,7 @@ from datetime import datetime
 from logging import getLogger, debug
 from pathlib import Path
 from random import seed, randint
+from subprocess import CalledProcessError, run
 from time import time
 
 from django.conf import settings
@@ -514,7 +515,9 @@ class ScannerView(View):
         scan_data = request.POST.get('scanData')
 
         if not scan_data:
-            return self.error_response(['missing scan_data'])
+            error_message = 'missing scan_data'
+            logger.error(error_message)
+            return self.error_response([error_message])
 
         if not scan_data.startswith(scan_data_prefix):
             return self.error_response(['Invalid scan data'])
@@ -536,8 +539,34 @@ class ScannerView(View):
         with image_file_path.open('wb') as image_file:
             image_file.write(scan_data_bytes)
 
-        # run zbarimg on the file see if can parse out any
-        # barcode data.
+        program_name = 'zbarimg'
+        try:
+            completed_process = run(
+                [program_name, str(image_file_path) + 'foo'],
+                capture_output=True,
+            )
+        except FileNotFoundError as error:
+            error_message = str(error)
+            logger.error(error_message)
+            if program_name in error_message:
+                logger.error(
+                    error_message +
+                    ".  Is the zbar-tools package installed.  "
+                    "Use sudo apt-get install zbar-tools to install it.")
+            return self.error_response([error_message])
+        except RuntimeError as error:
+            logger.error(error)
+            return self.error_response([
+                str(error),
+                "error is a {}".format(type(error))
+            ])
+
+        print(dir(completed_process))
+        if completed_process.returncode != 0:
+            error_message = completed_process.stderr.decode()
+            logger.error(error_message)
+            return self.error_response([error_message])
+
 
 
 
