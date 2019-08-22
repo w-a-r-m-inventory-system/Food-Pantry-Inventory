@@ -10,7 +10,7 @@ from django.db import transaction, IntegrityError
 from django.utils.timezone import now
 
 from fpiweb.constants import InternalError
-from fpiweb.models import Box, Activity, ActivityAdjustmentType
+from fpiweb.models import Box, Activity
 
 __author__ = 'Travis Risner'
 __project__ = "Food-Pantry-Inventory"
@@ -28,6 +28,8 @@ __creation_date__ = "07/31/2019"
 #     FILL: str = 'fill'
 #     MOVE: str = 'move'
 #     EMPTY: str = 'empty'
+
+log = getLogger('fpiweb')
 
 
 class BoxActivityClass:
@@ -63,19 +65,21 @@ class BoxActivityClass:
 
         # determine if there is a prior open activity record
         try:
-            self.activity = Activity.objects.filter(
-                box_number__exact=self.box.box_number).get_latest_by(
+            activity_set = Activity.objects.filter(
+                box_number__exact=self.box.box_number).order_by(
                 'date_filled'
             )
-            if self.activity.date_consumed:
-                # box previously emptied - expected
-                self.activity = None
-            else:
-                # oops - empty box before filling it again
-                self._consume_activity(
-                    adjustment=ActivityAdjustmentType.AUTO_EMPTY_BOX
-                )
-                self.activity = None
+            for activity in activity_set:
+                if activity.date_consumed:
+                    # box previously emptied - expected
+                    self.activity = None
+                else:
+                    # oops - empty box before filling it again
+                    self.activity = activity
+                    self._consume_activity(
+                        adjustment=Activity.ADD_EMPTIED
+                    )
+                    self.activity = None
         except Activity.DoesNotExist:
             # expected - first time box number is used
             pass
@@ -116,7 +120,7 @@ class BoxActivityClass:
                 # oops - box has no open activity record so create one
                 self.activity = None
                 self._add_activity(
-                    adjustment=ActivityAdjustmentType.AUTO_FILL_BOX
+                    adjustment=Activity.MOVE_ADDED
                 )
             else:
                 # expected - has open activity record
@@ -125,7 +129,7 @@ class BoxActivityClass:
             # oops - box has no open activity record so create one
             self.activity = None
             self._add_activity(
-                adjustment=ActivityAdjustmentType.AUTO_FILL_BOX
+                adjustment=Activity.MOVE_ADDED
             )
 
         # back on happy path - update location
@@ -158,7 +162,7 @@ class BoxActivityClass:
                 # oops - this activity record already consumed, make another
                 self.activity = None
                 self._add_activity(
-                    adjustment=ActivityAdjustmentType.AUTO_FILL_BOX
+                    adjustment=Activity.CONSUME_ADDED
                 )
             else:
                 # expected
@@ -167,17 +171,14 @@ class BoxActivityClass:
             # oops - box has no open activity record so create one
             self.activity = None
             self._add_activity(
-                adjustment=ActivityAdjustmentType.AUTO_FILL_BOX
+                adjustment=Activity.CONSUME_ADDED
             )
 
         # back on happy path
         self._consume_activity()
         return
 
-    def _add_activity(
-            self, adjustment: ActivityAdjustmentType =
-            ActivityAdjustmentType.NO_ADJUSTMENT
-    ):
+    def _add_activity(self, adjustment: str = None):
         """
         Add a new activity record based on this box.
 
@@ -185,7 +186,7 @@ class BoxActivityClass:
         :return:
         """
         try:
-            with transaction.atomic:
+            # with transaction.atomic:
                 self.activity = Activity(
                     box_number=self.box.box_number,
                     box_type=self.box.box_type.box_type_code,
@@ -194,14 +195,14 @@ class BoxActivityClass:
                     loc_tier=self.box.loc_tier,
                     prod_name=self.box.product.prod_name,
                     prod_cat_name=self.box.product.prod_cat.prod_cat_name,
-                    date_filled=now,
+                    date_filled=date.today().isoformat(),
                     date_consumed=None,
                     duration=0,
                     exp_year=self.box.exp_year,
                     exp_month_start=self.box.exp_month_start,
                     exp_month_end=self.box.exp_month_end,
                     quantity=self.box.box_type.box_type_qty,
-                    adjustment=adjustment,
+                    adjustment_code=adjustment,
                 )
                 self.activity.save()
         except IntegrityError as exc:
@@ -235,10 +236,7 @@ class BoxActivityClass:
         self.activity = None
         return
 
-    def _consume_activity(
-            self, adjustment: ActivityAdjustmentType =
-            ActivityAdjustmentType.NO_ADJUSTMENT
-    ):
+    def _consume_activity(self, adjustment: str = None):
         """
         Mark this activity record consumed based on this box.
 
@@ -261,13 +259,13 @@ class BoxActivityClass:
                     duration=duration
                 )
                 # if this is not an adjustment, preserve previous entry
-                if adjustment != ActivityAdjustmentType.NO_ADJUSTMENT:
-                    self.activity = Activity(adjustment=adjustment)
+                if not self.activity.adjustment_code:
+                    self.activity = Activity(adjustment_code=adjustment)
                 self.activity.save()
         except IntegrityError as exc:
             # report an internal error
             self._report_internal_error(
-                exc, 'update a activity by consuming a box'
+                exc, 'update an activity by consuming a box'
             )
         self.activity = None
         return
