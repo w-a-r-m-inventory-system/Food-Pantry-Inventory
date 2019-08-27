@@ -844,14 +844,14 @@ class Activity(models.Model):
     """ Category of product consumed. """
 
     date_filled_help_text = 'Approximate date product was put in the box.'
-    date_filled = models.DateField(
+    date_filled = models.DateTimeField(
         'Date Box Filled',
         help_text=date_filled_help_text,
     )
     """ Approximate date product was put in the box. """
 
     date_consumed_help_text = 'Date product was consumed.'
-    date_consumed = models.DateField(
+    date_consumed = models.DateTimeField(
         'Date Box Emptied',
         null=True,
         blank=True,

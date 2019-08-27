@@ -64,25 +64,28 @@ class BoxActivityClass:
             'product__prod_cat').select_related('box_type').get(id=box_id)
 
         # determine if there is a prior open activity record
-        try:
-            activity_set = Activity.objects.filter(
-                box_number__exact=self.box.box_number).order_by(
-                'date_filled'
-            )
-            for activity in activity_set:
-                if activity.date_consumed:
-                    # box previously emptied - expected
-                    self.activity = None
-                else:
-                    # oops - empty box before filling it again
-                    self.activity = activity
-                    self._consume_activity(
-                        adjustment=Activity.ADD_EMPTIED
-                    )
-                    self.activity = None
-        except Activity.DoesNotExist:
-            # expected - first time box number is used
-            pass
+        # try:
+        activity_set = Activity.objects.filter(
+            box_number__exact=self.box.box_number).order_by(
+            'date_filled'
+        )
+        if len(activity_set) > 0:
+            activity = activity_set[0]
+            if activity.date_consumed:
+                # box previously emptied - expected
+                self.activity = None
+            else:
+                # oops - empty box before filling it again
+                self.activity = activity
+                self._consume_activity(
+                    adjustment=Activity.ADD_EMPTIED
+                )
+                self.activity = None
+        else:
+            self.activity = None
+        # except Activity.DoesNotExist:
+        #     # expected - first time box number is used
+        #     pass
 
         # back on happy path
         self._add_activity()
@@ -111,11 +114,13 @@ class BoxActivityClass:
         self.box = Box.objects.get(id=box_id)
 
         # find the prior open activity record
-        try:
-            self.activity = Activity.objects.filter(
-                box_number__exact=self.box.box_number).get_latest_by(
-                'date_filled'
-            )
+        # try:
+        self.activity = Activity.objects.get(
+            box_number=self.box.box_number,
+            date_filled=self.box.date_filled
+        )
+        if self.activity:
+            # found an activity record, check it out
             if self.activity.date_consumed:
                 # oops - box has no open activity record so create one
                 self.activity = None
@@ -125,12 +130,18 @@ class BoxActivityClass:
             else:
                 # expected - has open activity record
                 pass
-        except Activity.DoesNotExist:
+        else:
             # oops - box has no open activity record so create one
             self.activity = None
             self._add_activity(
                 adjustment=Activity.MOVE_ADDED
             )
+        # except Activity.DoesNotExist:
+        #     # oops - box has no open activity record so create one
+        #     self.activity = None
+        #     self._add_activity(
+        #         adjustment=Activity.MOVE_ADDED
+        #     )
 
         # back on happy path - update location
         self._update_activity_location()
@@ -195,7 +206,7 @@ class BoxActivityClass:
                     loc_tier=self.box.loc_tier,
                     prod_name=self.box.product.prod_name,
                     prod_cat_name=self.box.product.prod_cat.prod_cat_name,
-                    date_filled=date.today().isoformat(),
+                    date_filled=self.box.date_filled,
                     date_consumed=None,
                     duration=0,
                     exp_year=self.box.exp_year,
@@ -210,7 +221,7 @@ class BoxActivityClass:
             self._report_internal_error(
                 exc, 'adding an activity for a newly filled box'
             )
-        self.activity = None
+        # self.activity = None
         return
 
     def _update_activity_location(self):
@@ -221,12 +232,10 @@ class BoxActivityClass:
         :return:
         """
         try:
-            with transaction.atomic():
-                self.activity = Activity(
-                    loc_row=self.box.loc_row,
-                    loc_bin=self.box.loc_bin,
-                    loc_tier=self.box.loc_tier
-                )
+            # with transaction.atomic():
+                self.activity.loc_row=self.box.loc_row
+                self.activity.loc_bin=loc_bin=self.box.loc_bin
+                self.activity.loc_tier=loc_tier=self.box.loc_tier
                 self.activity.save()
         except IntegrityError as exc:
             # report an internal error
