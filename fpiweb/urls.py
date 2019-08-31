@@ -25,10 +25,18 @@ from fpiweb.views import \
     BoxDetailsView, \
     TestScanView, \
     MaintenanceView, \
+    LocRowListView, \
+    LocRowCreateView, \
+    LocRowUpdateView, \
+    LocRowDeleteView, \
     LocBinListView, \
     LocBinCreateView, \
     LocBinUpdateView, \
-    LocBinDeleteView
+    LocBinDeleteView, \
+    LocTierListView, \
+    LocTierCreateView, \
+    LocTierUpdateView, \
+    LocTierDeleteView
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -63,6 +71,26 @@ urlpatterns = [
     path('maintenance/', MaintenanceView.as_view(),
          name='maintenance'),
 
+    # LocRow List page
+    # e.g. /fpiweb/loc_rows/ = list of loc_rows
+    path('loc_row/', LocRowListView.as_view(),
+         name='loc_row_view'),
+
+    # LocRow Add page
+    # e.g. /fpiweb/loc_row/add/ = add a loc_row
+    path('loc_row/add/', LocRowCreateView.as_view(),
+         name='loc_row_new', ),
+
+    # LocRow Edit page
+    # e.g. /fpiweb/loc_row/edit/4/ = edit loc_row # 4
+    path('loc_row/edit/<int:pk>/', LocRowUpdateView.as_view(),
+         name='loc_row_update', ),
+
+    # LocRow Delete Page
+    # e.g. /fpiweb/loc_row/delete/4/ = delete loc_row # 4
+    path('loc_row/delete/<int:pk>/', LocRowDeleteView.as_view(),
+         name='loc_row_delete', ),
+
     # LocBin List page
     # e.g. /fpiweb/loc_bins/ = list of loc_bins
     path('loc_bin/', LocBinListView.as_view(),
@@ -82,6 +110,26 @@ urlpatterns = [
     # e.g. /fpiweb/loc_bin/delete/4/ = delete loc_bin # 4
     path('loc_bin/delete/<int:pk>/', LocBinDeleteView.as_view(),
          name='loc_bin_delete', ),
+
+    # LocTier List page
+    # e.g. /fpiweb/loc_tiers/ = list of loc_tiers
+    path('loc_tier/', LocTierListView.as_view(),
+         name='loc_tier_view'),
+
+    # LocTier Add page
+    # e.g. /fpiweb/loc_tier/add/ = add a loc_tier
+    path('loc_tier/add/', LocTierCreateView.as_view(),
+         name='loc_tier_new', ),
+
+    # LocTier Edit page
+    # e.g. /fpiweb/loc_tier/edit/4/ = edit loc_tier # 4
+    path('loc_tier/edit/<int:pk>/', LocTierUpdateView.as_view(),
+         name='loc_tier_update', ),
+
+    # LocTier Delete Page
+    # e.g. /fpiweb/loc_tier/delete/4/ = delete loc_tier # 4
+    path('loc_tier/delete/<int:pk>/', LocTierDeleteView.as_view(),
+         name='loc_tier_delete', ),
 
     # Constraint List page
     # e.g. /fpiweb/constraints/ = list of constraints
