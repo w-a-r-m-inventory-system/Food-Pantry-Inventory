@@ -22,8 +22,6 @@ lazy-object-proxy==1.4.1
 Markdown==3.1.1
 MarkupSafe==1.1.1
 more-itertools==7.2.0
-packaging==19.1
-more-itertools==7.2.0
 packaging==19.0
 Pillow==6.1.0
 pluggy==0.12.0
