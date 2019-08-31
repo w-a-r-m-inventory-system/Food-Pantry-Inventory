@@ -177,7 +177,7 @@ urlpatterns = [
     # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
     path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
 
-    # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
+  # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
     path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
 
     # e.g. /fpiweb/test_scan/ = ???
