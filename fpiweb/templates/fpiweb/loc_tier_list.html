@@ -1,0 +1,117 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: List all location tiers #}
+{# URL Name loc_tier_view #}
+{# URL response: GET #}
+{# Table: LocTier #}
+{# form: none #}
+
+{% block title %}Location Tier List{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Location Tier List
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one"/>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a class="btn alert-info"
+               role="button"
+               href="{% url 'fpiweb:loc_tier_new' %}">
+                Add a Tier
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-3"><strong>Tier</strong></div>
+{#        <div class="col-md-4"><strong>Description</strong></div>#}
+        <div class="col-md-2 text-center">
+            <strong>Edit this tier</strong>
+        </div>
+        <div class="col-md-2 text-center">
+            <strong>Delete this tier</strong>
+        </div>
+    </div>
+
+
+    {% if object_list %}
+        {% for row in object_list %}
+            <div class="row text-center">
+                <div class="col-md-3">
+                    {{ row.loc_tier|safe }}
+                </div>
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:loc_tier_update' pk=row.id %}">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:loc_tier_delete' pk=row.id %}">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-left">
+                <div class="col-md-1">
+                    &nbsp;
+                </div>
+                <div class="col-md-11">
+                    {{ row.loc_tier_descr }}
+                    <hr class="style-one"/>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No location tiers are available.</p>
+    {% endif %}
+    <div class='row'>
+        <a href="{% url 'fpiweb:maintenance' %}">
+            Return to system maintenance
+        </a>
+    </div>
+
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: loc_tier_list.html
+    </h6>
+    <h6>
+        View: LocTierListView
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:loc_tier_new' %}
+    </h6>
+    <h6>
+        Edit URL: {% url 'fpiweb:loc_tier_update' pk=1 %}
+    </h6>
+    <h6>
+        Delete URL: {% url 'fpiweb:loc_tier_delete' pk=1 %}
+    </h6>
+
+{% endblock %}

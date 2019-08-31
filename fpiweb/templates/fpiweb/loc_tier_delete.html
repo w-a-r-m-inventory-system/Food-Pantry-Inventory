@@ -1,0 +1,80 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose - Confirm delete of a tier. #}
+{# URL Name - loc_tier_delete #}
+{# URL Response - POST #}
+{# Table - LocTier #}
+{# Form - none #}
+
+{% block title %}
+    Delete Tier
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Delete Tier
+            </h1>
+         </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+            <div class="col-md-12 text-center">
+                <strong>
+                    Are you sure you want to delete this tier
+                    {{ loc_tier.loc_tier }} - {{ loc_tier.loc_tier_descr }}?
+                </strong>
+            </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <form action="
+            {%  url 'fpiweb:loc_tier_delete' pk=loc_tier.id %}"
+          method="POST">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button id="delete_tier"
+                        type="submit"
+                        class="btn btn-default alert-success">
+                    Confirm
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="btn alert-info"
+                   role="button"
+                   href="{% url 'fpiweb:loc_tier_view' %}">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <hr class="style-one">
+
+    <h6>
+        Template: loc_tier_delete.html
+    </h6>
+    <h6>
+        View: LocTierDelete
+    </h6>
+    <h6>
+        Delete URL: {%  url 'fpiweb:loc_tier_delete' pk=1 %}
+    </h6>
+    <h6>
+        Cancel URL: {% url 'fpiweb:loc_tier_view' %}
+    </h6>
+
+{% endblock %}
