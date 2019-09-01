@@ -352,7 +352,7 @@ class LocTierDeleteView(LoginRequiredMixin, DeleteView):
                                     kwargs={'pk': self.get_object().id})
         return context
 
-      
+
 class ConstraintsListView(LoginRequiredMixin, ListView):
     """
     List of existing constraints.
@@ -666,61 +666,6 @@ class TestScanView(LoginRequiredMixin, TemplateView):
             'next_box_number': BoxNumber.get_next_box_number(),
         }
 
-
-class BuildPalletView(View):
-    """Set action in view"""
-    template_name = 'fpiweb/build_pallet.html'
-
-    BoxFormFactory = modelformset_factory(
-        Box,
-        form=BoxItemForm,
-        extra=0,
-    )
-
-    def get(self, request, *args, **kwargs):
-
-        request.session['action'] = Action.ACTION_BUILD_PALLET
-
-        box_pk = kwargs.get('box_pk')
-
-        build_pallet_form = BuildPalletForm()
-
-        kwargs = {
-            'prefix': 'box_forms',
-        }
-        if box_pk:
-            kwargs['queryset'] = Box.objects.filter(pk=box_pk)
-        else:
-            kwargs['queryset'] = Box.objects.none()
-
-        box_forms = self.BoxFormFactory(**kwargs)
-
-        context = {
-            'form': build_pallet_form,
-            'box_forms': box_forms,
-        }
-        return render(request, self.template_name, context)
-
-    def post(self, request, *args, **kwargs):
-
-        form = BuildPalletForm(request.POST)
-        box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
-
-        if box_forms and len(box_forms) > 0:
-            box_form = box_forms[0]
-            print(dir(box_form))
-
-        if not form.is_valid() or not box_forms.is_valid():
-            return render(
-                request,
-                self.template_name,
-                {
-                    'form': form,
-                    'box_forms': box_forms,
-                }
-            )
-
-        return error_page(request, "forms are valid")
 
 class BuildPalletView(View):
     """Set action in view"""
