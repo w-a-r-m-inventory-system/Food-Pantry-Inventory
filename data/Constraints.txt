@@ -1,6 +1,0 @@
-3	Tier	Char-List	\N	\N	A1, A2, B1, B2, C1, C2	Third part of location identifier.  Indicates which of six locations in a bin contain the box.  The tier designator indicates where in the bin the pallet containing the box is located.\r\nThere are three levels with two positions in each level.\r\nB: left side of each level, A: right side of each level.\r\n1: ground level, 2: first rack above ground level, 3: second rack above ground level.
-2	Bin	Int-MM	01	09	\N	Second part of location identifier.  Indicates which of the consecutive bins in a row contain the box.\r\nBins are numbered within a row.  Odd numbered rows have bins that start with 01 being the end nearest the pantry.  Even numbered rows have bins that start with 01 being the farthest from the pantry (and count down toward the pantry).
-1	Row	Int-MM	01	04	\N	Rows are the first part of the location identifier.  Rows indicate which set of racks contain the box.  Rows are numbered on each side of an isle and start with 01 nearest the pantry.
-4	Expiration Year	Int-List	\N	\N	2019, 2020, 2021, 2022, 2023	List the valid years that can be assigned to a newly packed box
-5	Expiration Month	Int-MM	01	12	\N	List the range of valid month values for an expiration date.
-6	Quantity Limit	Int-MM	0	100	\N	Lists the valid range of quantity of a product that can go in a box.
