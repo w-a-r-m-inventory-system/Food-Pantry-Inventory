@@ -1,13 +1,20 @@
-{% load static %}{# django's static tag library #}
-{% load bootstrap4 %}{# bootstrap4 tag library #}
+{% load static %}
+
+{# Load the bootstrap4 tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"
-          name="viewport"
-          content="width-device-width"
-          initial-scale="1"
-          shrink-to-fit="no"/>
+    <meta charset="UTF-8" name="viewport" content="width-device-width"
+          initial-scale="1", shrink-to-fit=no">
 
 {#    <!-- Bootstrap CSS -->#}
 {#    <link rel="stylesheet"#}
@@ -22,29 +29,19 @@
     {# Form - (N/A) #}
 
     <title>
-      {% block title %}
-      {% endblock %}
+        {% block title %}
+        {% endblock %}
     </title>
-    {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-reboot.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
-
 </head>
 <body>
     <div class="container">
-      {# Display django.contrib.messages as Bootstrap alerts #}
-      {% bootstrap_messages %}
-      {% block content %}
-      {% endblock %}
+        {% block content %}
+        {% endblock %}
     </div>
-
-    <script src="{% static '/fpiweb/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static '/fpiweb/popper.min.js' %}"></script>
-    <script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-    {% block footer_javascript %}
-    {% endblock %}
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 </html>
-

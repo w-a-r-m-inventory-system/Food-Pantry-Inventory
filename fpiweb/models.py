@@ -737,7 +737,7 @@ class Activity(models.Model):
         """ Default way to display this activity record. """
         if self.date_filled:
             display = (
-                f'{self.box_number} ({self.box_type_code}) '
+                f'{self.box_number} ({self.box_type}) '
                 f'{self.prod_name} ({self.prod_cat_name}) '
                 f'{self.quantity} '
                 f'{self.exp_year}'
@@ -759,11 +759,11 @@ class CONSTRAINT_NAME_KEYS(Enum):
     """
     Valid constraint key values with associated names for each key.
     """
-    TIER: 'Tier'
-    ROW: 'Row'
-    BIN: 'Bin'
-    EXP_YEAR: 'Expiration Year'
-    QUANTITY: 'Quantity'
+    TIER: str = 'Tier'
+    ROW: str = 'Row'
+    BIN: str = 'Bin'
+    EXP_YEAR: str = 'Expiration Year'
+    QUANTITY: str = 'Quantity'
 
 
 class Constraints(models.Model):
