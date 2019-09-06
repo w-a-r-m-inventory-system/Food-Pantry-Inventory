@@ -1,0 +1,67 @@
+#!/bin/bash
+# bash (only) shell script to run the Django-based inventory system
+
+# General assumptions:
+# - The virtual environment is located in a subdirectory called "venv".
+# - This script is located at the root level of the inventory system directory.
+#- manage.py is also located at the root level of the inventory system.
+
+# Script Assumptions:
+ROOT=$(pwd)
+MANAGE_LOCATION=$ROOT
+MANAGE_CMD=$MANAGE_LOCATION/manage.py
+VIRTUAL_BIN_LOCATION=$ROOT/venv/bin
+PYTHON=$VIRTUAL_BIN_LOCATION/python
+HOST_IP=localhost
+SERVER_PORT=8765
+
+# Activate the virtual environment if needed
+if [ X = X"$(echo deactivate)" ]; then
+  # shellcheck disable=SC1090
+  source $VIRTUAL_BIN_LOCATION/activate
+fi
+
+# defins a task to run the Django server
+# task is needed so we can tell which process to kill when done
+run_server() {
+  # echo "My PID is $$ "
+  $PYTHON $MANAGE_CMD runserver $HOST_IP:$SERVER_PORT
+}
+
+# start Django server as a background task
+# Note that this task will also be killed if the terminal session is closed
+run_server &
+
+# capture pid of the background tasks
+ROOT_PID=$!
+SERVER_PID=$(ps -f | grep runserver | awk "\$3 = $ROOT_PID { print \$2 }")
+# echo "root: $ROOT_PID, task: $SERVER_PID"
+
+# wait a moment for the server to start up
+sleep 1s
+
+# build client URL
+CLIENT_URL=http://$HOST_IP:$SERVER_PORT
+# start a browser
+if [ "$(uname)" = 'Darwin' ]; then
+  # assume this is a Macintosh
+  open $CLIENT_URL
+elif [ "$X" = "Y" ]; then
+  # identify Windows Subsystem for Linux (WSL) and run command to start URL
+  : # (do nothing command)
+elif [ "$SHELL" = '/bin/bash' ]; then
+  # Assume some form of Linux with xdg-open command
+  xdg-open $CLIENT_URL
+else
+  echo -ne "\n\tUnable to open the URL $CLIENT_URL for you.  "
+  echo "Please open manually.\n"
+  echo -e "\tIf/when you get tired of opening this URL manually, Please "
+  echo -e "\tfix this script for your OS and submit a pull request.  :)"
+fi
+
+# tell user how to kill the server
+echo -e "\nInstead of typing a CONTROL-C to kill the server, type"
+echo -e "\tkill $SERVER_PID"
+echo -e "instead when you are done with the server."
+
+# EOF
