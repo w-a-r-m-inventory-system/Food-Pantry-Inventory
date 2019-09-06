@@ -381,12 +381,8 @@ fabric.properties
 # Ignore data for now
 work/
 data/
-
 # Ignore private settings
 /FPIDjango/private/
-
-# Ignore .png files in scans
-/scans/*.png
 
 # Travis personal ignore files
 #/fpiweb/templates/fpiweb/animal_edit.html
@@ -401,5 +397,3 @@ data/
 #/fpiweb/wordtrek_urls.py
 #/fpiweb/templates/fpiweb/wordtrek_base.html
 #/work/data/
-/fpiweb/templates/fpiweb/travistest.html
-
