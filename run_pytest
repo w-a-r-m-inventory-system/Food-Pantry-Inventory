@@ -1,0 +1,19 @@
+#!/bin/sh 
+
+# shell script to run pytest from the top of the inventory project
+
+# Activate the virtual environment if needed
+if [ X = X`echo deactivate` ]
+then
+    source VIRTUAL_BIN_LOCATION/activate
+fi
+
+# identify location of the setting file for Django
+export DJANGO_SETTINGS_MODULE=FPIDjango.settings
+
+# assume pytest is in the current path
+# add "-n 4" on the command line to use four cores for the tests 
+pytest "$@" --fail-on-template-vars
+
+# EOF
+
