@@ -1,0 +1,17 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Print Labels{% endblock %}
+
+{% block content %}
+
+<form action="{% url 'fpiweb:print_labels' %}" method="post">
+  {% csrf_token %}
+  {% bootstrap_field form.starting_number %}
+  {% bootstrap_field form.number_to_print %}
+  <input type="submit" value="Generate PDF"/>
+</form>
+
+
+
+{% endblock %}

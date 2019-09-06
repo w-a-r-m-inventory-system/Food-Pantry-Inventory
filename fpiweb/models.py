@@ -5,6 +5,7 @@ from enum import Enum, unique
 
 # import as to avoid conflict with built-in function compile
 from re import compile as re_compile
+from re import IGNORECASE
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -385,7 +386,14 @@ class Product(models.Model):
 
 
 class BoxNumber:
+
+    # This regex may be used to determine if string is a properly formatted
+    # box number.
     box_number_regex = re_compile(r'^BOX\d{5}$')
+
+    # This regex may be used to determine if a string contains a box number.
+    # Case is ignored.
+    box_number_search_regex = re_compile(r'box\d{5}', IGNORECASE)
 
     @staticmethod
     def format_box_number(int_box_number):

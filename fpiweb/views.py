@@ -4,6 +4,8 @@ views.py - establish the views (pages) for the F. P. I. web application.
 from base64 import b64decode
 from binascii import Error as BinasciiError
 from datetime import datetime
+from io import BytesIO
+from json import loads
 from logging import getLogger, debug
 from pathlib import Path
 from random import seed, randint
@@ -13,10 +15,11 @@ from time import time
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.serializers import serialize
+from django.db.models import Max
 from django.forms import modelformset_factory
-from django.http import JsonResponse
+from django.http import FileResponse, JsonResponse, StreamingHttpResponse
 from django.shortcuts import redirect, render
-
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
@@ -32,7 +35,9 @@ from fpiweb.forms import \
     BuildPalletForm, \
     ConstraintsForm, \
     LoginForm, \
-    NewBoxForm
+    NewBoxForm, \
+    PrintLabelsForm
+from fpiweb.qr_code_utilities import QRCodePrinter
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -473,10 +478,11 @@ class BuildPalletView(View):
 class ScannerView(View):
 
     @staticmethod
-    def response(success, errors=None, status=200):
+    def response(success, data=None, errors=None, status=200):
         return JsonResponse(
             {
                 'success': success,
+                'data': data if data else {},
                 'errors': errors if errors else [],
             },
             status=status
@@ -542,8 +548,9 @@ class ScannerView(View):
         program_name = 'zbarimg'
         try:
             completed_process = run(
-                [program_name, str(image_file_path) + 'foo'],
+                [program_name, str(image_file_path)],
                 capture_output=True,
+                timeout=5,  # 5 seconds to run
             )
         except FileNotFoundError as error:
             error_message = str(error)
@@ -561,19 +568,90 @@ class ScannerView(View):
                 "error is a {}".format(type(error))
             ])
 
-        print(dir(completed_process))
         if completed_process.returncode != 0:
             error_message = completed_process.stderr.decode()
             logger.error(error_message)
             return self.error_response([error_message])
 
+        qr_data = completed_process.stdout.decode()
+        match = BoxNumber.box_number_search_regex.search(qr_data)
+        if not match:
+            error_message = f"box number not found in {qr_data}"
+            logger.error(error_message)
+            return self.error_response([error_message])
+
+        box_number = match.group().upper()
+        logger.info(f"scanned box_number is {box_number}")
+
+        box, created = Box.objects.get_or_create(
+            box_number=box_number,
+            defaults={
+                'box_type': Box.box_type_default(),
+            }
+        )
+
+        # serialize works on an iterable of objects and returns a string
+        box_json = loads(serialize("json", [box]))
+
+        # pull dict from list
+        box_json = box_json[0]
+
+        data = {
+            'box': box_json,
+            'box_meta': {
+                'is_new': created,
+            }
+        }
+
+        return self.response(True, data=data, status=200)
 
 
+class PrintLabelsView(View):
 
-        return self.response(True, status=200)
+    template_name = 'fpiweb/print_labels.html'
 
+    @staticmethod
+    def get_base_url(meta):
+        protocol = meta.get('SERVER_PROTOCOL', 'HTTP/1.1')
+        protocol = protocol.split('/')[0].lower()
 
+        host = meta.get('HTTP_HOST')
+        return f"{protocol}://{host}/"
 
+    def get(self, request, *args, **kwargs):
+        max_box_number = Box.objects.aggregate(Max('box_number'))
+        print("max_box_number", max_box_number)
 
+        return render(
+            request,
+            self.template_name,
+            {'form': PrintLabelsForm()}
+        )
+
+    def post(self, request, *args, **kwargs):
+        base_url = self.get_base_url(request.META)
+
+        form = PrintLabelsForm(request.POST)
+        if not form.is_valid():
+            print("form invalid")
+            return render(
+                request,
+                self.template_name,
+                {'form': form},
+            )
+        print("form valid")
+
+        buffer = BytesIO()
+
+        QRCodePrinter().print(
+            form.cleaned_data.get('starting_number'),
+            form.cleaned_data.get('number_to_print'),
+            buffer,
+        )
+
+        # FileResponse sets the Content-Disposition header so that browsers
+        # present the option to save the file.
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
 
 # EOF
