@@ -642,7 +642,7 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
         # schema http or https
         schema = 'http'
-        if settings.DEBUG == False and hasattr(self.request, 'schema'):
+        if settings.DEBUG is False and hasattr(self.request, 'schema'):
             schema = self.request.schema
 
         protocol_and_host = "{}://{}".format(
