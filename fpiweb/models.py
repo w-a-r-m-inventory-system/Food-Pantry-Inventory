@@ -49,7 +49,7 @@ class LocRow(models.Model):
     loc_row_descr_help_text = 'Location row description'
     loc_row_descr_max_length = 20  # e.g. "Row 01"
     loc_row_descr = models.CharField(
-        'Loc Description',
+        'Loc Row Description',
         max_length=loc_row_descr_max_length,
         help_text=loc_row_descr_help_text,
     )
@@ -99,7 +99,7 @@ class LocBin(models.Model):
     loc_bin_descr_help_text = 'Location bin description'
     loc_bin_descr_max_length = 20  # e.g. "Bin 01"
     loc_bin_descr = models.CharField(
-        'Loc Description',
+        'Loc Bin Description',
         max_length=loc_bin_descr_max_length,
         help_text=loc_bin_descr_help_text,
     )
@@ -597,6 +597,167 @@ class Box(models.Model):
         )
 
 
+class Pallet(models.Model):
+    """
+    Temporary file to build up a list of boxes on a pallet.
+    """
+
+    class Meta:
+        ordering = ['user_id']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Pallets'
+
+    # Pallet Status Names
+    FILL: str = 'Fill'
+    MERGE: str = 'Merge'
+    MOVE: str = "Move"
+
+    PALLET_STATUS_CHOICES = (
+        (FILL, 'Fill pallet for new location'),
+        (MERGE, 'Merging boxes on pallet'),
+        (MOVE, 'Moving boxes to new location'),
+    )
+
+    id_help_text = 'Internal record identifier for a pallet.'
+    id = models.AutoField(
+        'Internal Pallet ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for a pallet. """
+
+    user_id = models.OneToOneField(
+        User,
+        on_delete=models.PROTECT
+    )
+
+    pallet_loc_row = models.ForeignKey(
+        LocRow,
+        on_delete=models.PROTECT,
+    )
+
+    pallet_loc_bin = models.ForeignKey(
+        LocBin,
+        on_delete=models.PROTECT,
+    )
+
+    pallet_loc_tier = models.ForeignKey(
+        LocTier,
+        on_delete=models.PROTECT,
+    )
+    """ ID of user building the pallet. """
+    pallet_status_help_text = "Current status of pallet."
+    pallet_status = models.CharField(
+        'Pallet Status',
+        max_length=15,
+        choices=PALLET_STATUS_CHOICES,
+        help_text=pallet_status_help_text,
+    )
+
+
+class PalletBox(models.Model):
+    """
+    Temporary file to hold the individual boxes for a pallet.
+    """
+
+    class Meta:
+        ordering = ''
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Pallet Boxes'
+
+    # Pallet Box Status Names
+    NEW: str = 'New'
+    ORIGINAL: str = 'Original'
+    MOVE: str = "Move"
+
+    PALLET_BOX_STATUS_CHOICES = (
+        (NEW, 'New box added'),
+        (ORIGINAL, 'Box already here'),
+        (MOVE, 'Box being moved'),
+    )
+
+    id_help_text = 'Internal record identifier for a pallet box.'
+    id = models.AutoField(
+        'Internal Pallet Box ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for a pallet box. """
+
+    pallet_id_help_text = 'Internal record identifier for a pallet.'
+    pallet_id = models.ForeignKey(
+        Pallet,
+        on_delete=models.PROTECT,
+        help_text=pallet_id_help_text,
+    )
+
+    box_id_help_text = 'Internal record ideentifier for a box.'
+    box_id = models.ForeignKey(
+        Box,
+        on_delete=models.PROTECT,
+        help_text=box_id_help_text,
+    )
+
+    box_number_help_text = "Number printed in the label on the box."
+    box_number_max_length = 8
+    box_number_min_length = box_number_max_length
+    box_number = models.CharField(
+        'Visible Box Number',
+        max_length=box_number_max_length,
+        unique=True,
+        help_text=box_number_help_text,
+    )
+    """ Number printed in the label on the box. """
+
+    product_help_text = 'Product contained in this box, if filled.'
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.PROTECT,
+        verbose_name='product',
+        help_text=product_help_text,
+    )
+    """ Product contained in this box, if filled. """
+
+    exp_year_help_text = 'Year the product expires, if filled.'
+    exp_year = models.IntegerField(
+        'Year Product Expires',
+        help_text=exp_year_help_text,
+    )
+    """ Year the product expires, if filled. """
+
+    exp_month_start_help_text = (
+        'Optional starting month range of when the product expires, if filled.'
+    )
+    exp_month_start = models.IntegerField(
+        'Expiration Start Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_start_help_text
+    )
+    """
+    Optional starting month range of when the product expires, if filled.
+    """
+
+    exp_month_end_help_text = (
+        'Optional ending month range of when the product expires, if filled.'
+    )
+    exp_month_end = models.IntegerField(
+        'Expiration End Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_end_help_text,
+    )
+    """ Optional emding month range of when the product expires, if filled. """
+
+    box_status_help_text = 'Box on pallet status.'
+    box_status = models.CharField(
+        'Box Status',
+        max_length=15,
+        choices=PALLET_BOX_STATUS_CHOICES,
+        help_text=box_status_help_text,
+    )
+
+
 class Activity(models.Model):
     """
     Activity (history) from the past.
@@ -606,6 +767,17 @@ class Activity(models.Model):
         ordering = ['-date_consumed', 'box_number']
         app_label = 'fpiweb'
         verbose_name_plural = 'Activities'
+
+    # Adjustment Reasons
+    ADD_EMPTIED: str = 'Add Emptied'
+    MOVE_ADDED: str = 'Move Added'
+    CONSUME_ADDED: str = 'Consume Added'
+
+    ADJUSTMENT_CODE_CHOICES: list = (
+        (ADD_EMPTIED, 'Add emptied previous contents'),
+        (MOVE_ADDED, 'Move added box'),
+        (CONSUME_ADDED, 'Consume added box'),
+    )
 
     id_help_text = 'Internal record identifier for an activity.'
     id = models.AutoField(
@@ -672,27 +844,20 @@ class Activity(models.Model):
     """ Category of product consumed. """
 
     date_filled_help_text = 'Approximate date product was put in the box.'
-    date_filled = models.DateField(
+    date_filled = models.DateTimeField(
         'Date Box Filled',
         help_text=date_filled_help_text,
     )
     """ Approximate date product was put in the box. """
 
     date_consumed_help_text = 'Date product was consumed.'
-    date_consumed = models.DateField(
+    date_consumed = models.DateTimeField(
         'Date Box Emptied',
+        null=True,
+        blank=True,
         help_text=date_consumed_help_text,
     )
     """ Date product was consumed. """
-
-    duration_help_text = (
-        'Number of days between date box was filled and consumed.'
-    )
-    duration = models.IntegerField(
-        'Duration',
-        help_text=duration_help_text,
-    )
-    """ Number of days between date box was filled and consumed. """
 
     exp_year_help_text = 'Year product would have expired.'
     exp_year = models.IntegerField(
@@ -723,8 +888,9 @@ class Activity(models.Model):
     )
     """ Optional ending month product would have expired. """
 
-    quantity_help_text = 'Approximate number of items in the box when it ' \
-                         'was filled.'
+    quantity_help_text = (
+        'Approximate number of items in the box when it was filled.'
+        )
     quantity = models.IntegerField(
         'Quantity in Box',
         default=0,
@@ -732,25 +898,52 @@ class Activity(models.Model):
     )
     """ Approximate number of items in the box when it was filled. """
 
+    duration_help_text = (
+        'Number of days between date box was filled and consumed.'
+    )
+    duration = models.IntegerField(
+        'Duration',
+        help_text=duration_help_text,
+    )
+    """ Number of days between date box was filled and consumed. """
+
+    adjustment_code_help_text = 'Coded reason if this entry was adjusted'
+    adjustment_code = models.CharField(
+        'Adjustment Code',
+        null=True,
+        blank=True,
+        max_length=15,
+        choices=ADJUSTMENT_CODE_CHOICES,
+        help_text=adjustment_code_help_text
+    )
+    """ Coded reason if this entry was adjusted """
+
     # define a default display of Activity
     def __str__(self):
         """ Default way to display this activity record. """
+        display = f'{self.box_number} ({self.box_type})'
         if self.date_filled:
-            display = (
-                f'{self.box_number} ({self.box_type}) '
+            display = display + (' '
                 f'{self.prod_name} ({self.prod_cat_name}) '
                 f'{self.quantity} '
                 f'{self.exp_year}'
                 f'({self.exp_month_start}-'
-                f'{self.exp_month_end})'
-                f'{self.date_filled} - {self.date_consumed}'
-                f'({self.duration}) at '
+                f'{self.exp_month_end}) at '
                 f'{self.loc_row} / '
                 f'{self.loc_bin} / '
-                f'{self.loc_tier}'
+                f'{self.loc_tier} '
+                f'{self.date_filled}'
             )
-        else:
-            display = f'{self.box_number} ({self.box_type}) - Empty'
+        if self.date_consumed:
+            display = display + (' '
+                f'{self.date_consumed}'
+                f'({self.duration} days) '
+            )
+        if self.adjustment_code:
+            display = display + (' '
+                f'{self.adjustment_code}'
+            )
+
         return display
 
 
