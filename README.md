@@ -80,7 +80,7 @@ main directory and running:
     If all went well, your database should now have a bunch of tables
     starting with auth*, django*, and fpiweb*.
     
-10. At this the inventory system is ready to use.
+10. At this time the inventory system is ready to use.
 
     a.  To start the inventory system, use "run_inv" to start running it.
         
