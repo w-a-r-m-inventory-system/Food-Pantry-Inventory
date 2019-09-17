@@ -56,7 +56,8 @@ function scan(event)
         url: '/fpiweb/scanner/',
         method: 'post',
         data: {
-            'scanData': scanData
+            'scanData': scanData,
+            'boxNumber': document.getElementById('boxNumber').value
         }
     });
 

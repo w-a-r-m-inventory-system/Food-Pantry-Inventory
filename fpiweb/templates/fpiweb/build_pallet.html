@@ -1,4 +1,4 @@
-{% extends 'fpiweb/root.html' %}
+{% extends 'fpiweb/base.html' %}
 {% load static %}
 {% load bootstrap4 %}
 {% comment %}
@@ -59,7 +59,7 @@ div.coordinate_label{
   </div>
 
   <div class="row" style="margin-bottom: 1rem;">
-    <button class="btn btn-primary" id="scanButton">Scan a Box</button>&nbsp;
+    <button class="btn btn-primary" data-toggle="modal" data-target="#scannerModal">Scan a Box</button>&nbsp;
     <button class="btn btn-primary">Pallet Complete</button>
   </div>
 

@@ -127,6 +127,7 @@ hr.style-one {
 .nonfield{
 }
 
+/*
 div.scanner{
     z-index: 1;
     position: fixed;
@@ -150,7 +151,18 @@ div.scanner video{
 
 div.scanner > div.controls{
     border: solid darkslateblue 0.0625rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2rem;*/
     /*margin-left: auto;*/
     /*margin-right: auto;*/
+/*
+}
+
+ */
+
+div#scannerModal>div.modal-dialog{
+    max-width: 90%;
+}
+
+div#scannerModal div.controls{
+    margin-top: 0.5rem;
 }

@@ -519,6 +519,8 @@ class ScannerView(View):
         print("ScannerView.post")
         scan_data_prefix = 'data:image/png;base64,'
         scan_data = request.POST.get('scanData')
+        box_number = request.POST.get('boxNumber')
+        print('box_number is', box_number)
 
         if not scan_data:
             error_message = 'missing scan_data'
