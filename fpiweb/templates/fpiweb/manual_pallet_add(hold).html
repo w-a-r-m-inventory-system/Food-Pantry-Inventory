@@ -1,0 +1,109 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+form   The PalletStatusForm
+
+{% endcomment %}
+
+{% block title %}
+    Pallet Status
+{% endblock %}
+
+{% block content %}
+    <style>
+
+        div.location {
+        }
+
+        div.coordinate {
+            float: left;
+            padding-left: 1rem;
+        }
+
+        div.coordinate_label {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+    </style>
+
+    <h1>Pallet Status</h1>
+    <div class="row">
+        <a href="{% url 'fpiweb:manual_menu' %}">
+            Back to Manual Box and Pallet Management Menu
+        </a>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:about' %}">
+            Change Location?
+        </a>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:about' %}">
+            Checkin a Box?
+        </a>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:about' %}">
+            Finished with Pallet?
+        </a>
+    </div>
+
+    <form action="{% url 'fpiweb:build_pallet' %}" method="post">
+        {% csrf_token %}
+        {{ box_forms.management_form }}
+        <div class="row">
+            <div class="col-md-2">
+                <div class="coordinate_label">Row</div>
+                {% bootstrap_field form.loc_row show_help=False show_label=False %}
+            </div>
+            <div class="col-md-2">
+                <div class="coordinate_label">Bin</div>
+                {% bootstrap_field form.loc_bin show_help=False show_label=False %}
+            </div>
+            <div class="col-md-2">
+                <div class="coordinate_label">Tier</div>
+                {% bootstrap_field form.loc_tier show_help=False show_label=False %}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <table border="2">
+                <thead>
+                <tr>
+                    <th>Box</th>
+                    <th>Product</th>
+                    <th>Expiration Year</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for box_form in box_forms %}
+                    <tr>
+                        <td>
+                            {% bootstrap_field box_form.box_number show_help=False show_label=False %}
+                            ({{ box_form.box_id }})
+                        </td>
+                        <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
+                        <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">Scan a box</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <button class="btn btn-primary">Done</button>
+        </div>
+    </form>
+{% endblock %}
