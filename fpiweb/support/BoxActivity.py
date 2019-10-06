@@ -20,14 +20,14 @@ __creation_date__ = "07/31/2019"
 # "${Copyright.py}"
 
 
-# @unique
-# class BOX_ACTION(Enum):
-#     """
-#     Actions to be applied to a box.
-#     """
-#     FILL: str = 'fill'
-#     MOVE: str = 'move'
-#     EMPTY: str = 'empty'
+@unique
+class BOX_ACTION(Enum):
+    """
+    Actions to be applied to a box.
+    """
+    FILL: str = 'fill'
+    MOVE: str = 'move'
+    EMPTY: str ='empty'
 
 log = getLogger('fpiweb')
 
