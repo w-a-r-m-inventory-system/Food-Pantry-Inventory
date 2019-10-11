@@ -1,0 +1,17 @@
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+form   The BoxItemForm
+
+{% endcomment %}
+
+<tr>
+  <td>
+    {% bootstrap_field form.box_number show_help=False show_label=False %}
+    {{ form.box_id }}
+  </td>
+  <td>{% bootstrap_field form.product show_help=False show_label=False %}</td>
+  <td>{% bootstrap_field form.exp_year show_help=False show_label=False %}</td>
+</tr>

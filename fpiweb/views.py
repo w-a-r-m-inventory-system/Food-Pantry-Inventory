@@ -1,16 +1,10 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
-from base64 import b64decode
-from binascii import Error as BinasciiError
-from datetime import datetime
 from io import BytesIO
 from json import loads
 from logging import getLogger, debug
-from pathlib import Path
-from random import seed, randint
-from subprocess import CalledProcessError, run
-from time import time
+from string import digits
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
@@ -25,11 +19,10 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView
 
-from fpiweb.models import \
-    Action, \
-    Box, \
-    BoxNumber, \
-    Constraints
+
+from fpiweb.code_reader import \
+    CodeReaderError, \
+    read_box_number
 from fpiweb.forms import \
     BoxItemForm, \
     BuildPalletForm, \
@@ -37,6 +30,11 @@ from fpiweb.forms import \
     LoginForm, \
     NewBoxForm, \
     PrintLabelsForm
+from fpiweb.models import \
+    Action, \
+    Box, \
+    BoxNumber, \
+    Constraints
 from fpiweb.qr_code_utilities import QRCodePrinter
 
 __author__ = '(Multiple)'
@@ -45,8 +43,6 @@ __creation_date__ = "04/01/2019"
 
 
 logger = getLogger('fpiweb')
-
-seed(time())
 
 
 def error_page(
@@ -426,7 +422,7 @@ class BuildPalletView(View):
     BoxFormFactory = modelformset_factory(
         Box,
         form=BoxItemForm,
-        extra=0,
+        extra=1,
     )
 
     def get(self, request, *args, **kwargs):
@@ -453,7 +449,7 @@ class BuildPalletView(View):
         }
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
 
         form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
@@ -473,6 +469,10 @@ class BuildPalletView(View):
             )
 
         return error_page(request, "forms are valid")
+
+
+class ScannerViewError(RuntimeError):
+    pass
 
 
 class ScannerView(View):
@@ -497,115 +497,76 @@ class ScannerView(View):
         )
 
     @staticmethod
-    def get_scan_file_path():
-        scans_dir_path = Path(settings.SCANS_DIR)
-        if not scans_dir_path.exists():
-            raise OSError("{} doesn't exist".format(scans_dir_path))
+    def get_keyed_in_box_number(box_number):
+        """
+        :param box_number: the box number (a string), may be None
+        :return:
+        """
+        box_number = box_number or ''
+        if not box_number:
+            return None
 
-        attempts = 100
-        for i in range(attempts):
-            filename = "{}_{:0>4}.png".format(
-                datetime.now().strftime("%Y-%m-%d_%H:%M:%S"),
-                randint(0, 9999),
-            )
-            path = scans_dir_path / filename
-            if not path.exists():
-                return path
-        raise OSError(
-            "Unable to generate path after {} attempts".format(attempts)
-        )
-
-    def post(self, request, *args, **kwargs):
-        print("ScannerView.post")
-        scan_data_prefix = 'data:image/png;base64,'
-        scan_data = request.POST.get('scanData')
-        box_number = request.POST.get('boxNumber')
-        print('box_number is', box_number)
-
-        if not scan_data:
-            error_message = 'missing scan_data'
-            logger.error(error_message)
-            return self.error_response([error_message])
-
-        if not scan_data.startswith(scan_data_prefix):
-            return self.error_response(['Invalid scan data'])
-
-        logger.info("scan_data is {:,} characters in length".format(len(scan_data)))
+        # strip out everything, but digits
+        box_number = "".join(c for c in box_number if c in digits)
+        if not box_number:
+            return None
 
         try:
-            scan_data_bytes = b64decode(
-                scan_data[len(scan_data_prefix):]
-            )
-        except BinasciiError as e:
-            return self.error_response([str(e)])
+            box_number = int(box_number)
+        except ValueError:
+            return None
 
-        try:
-            image_file_path = self.get_scan_file_path()
-        except OSError as e:
-            return self.error_response([str(e)])
+        return BoxNumber.format_box_number(box_number)
 
-        with image_file_path.open('wb') as image_file:
-            image_file.write(scan_data_bytes)
+    @staticmethod
+    def get_box_data(scan_data=None, box_number=None):
 
-        program_name = 'zbarimg'
-        try:
-            completed_process = run(
-                [program_name, str(image_file_path)],
-                capture_output=True,
-                timeout=5,  # 5 seconds to run
-            )
-        except FileNotFoundError as error:
-            error_message = str(error)
-            logger.error(error_message)
-            if program_name in error_message:
-                logger.error(
-                    error_message +
-                    ".  Is the zbar-tools package installed.  "
-                    "Use sudo apt-get install zbar-tools to install it.")
-            return self.error_response([error_message])
-        except RuntimeError as error:
-            logger.error(error)
-            return self.error_response([
-                str(error),
-                "error is a {}".format(type(error))
-            ])
+        if not scan_data and not box_number:
+            raise ScannerViewError('missing scan_data and box_number')
 
-        if completed_process.returncode != 0:
-            error_message = completed_process.stderr.decode()
-            logger.error(error_message)
-            return self.error_response([error_message])
+        if not box_number:
+            try:
+                box_number = read_box_number(scan_data)
+            except CodeReaderError as cre:
+                raise ScannerViewError(str(cre))
 
-        qr_data = completed_process.stdout.decode()
-        match = BoxNumber.box_number_search_regex.search(qr_data)
-        if not match:
-            error_message = f"box number not found in {qr_data}"
-            logger.error(error_message)
-            return self.error_response([error_message])
-
-        box_number = match.group().upper()
-        logger.info(f"scanned box_number is {box_number}")
+        default_box_type = Box.box_type_default()
 
         box, created = Box.objects.get_or_create(
             box_number=box_number,
             defaults={
-                'box_type': Box.box_type_default(),
+                'box_type': default_box_type,
+                'quantity': default_box_type.box_type_qty,
             }
         )
 
         # serialize works on an iterable of objects and returns a string
-        box_json = loads(serialize("json", [box]))
-
-        # pull dict from list
-        box_json = box_json[0]
+        # loads returns a list of dicts
+        box_dicts = loads(serialize("json", [box]))
 
         data = {
-            'box': box_json,
+            'box': box_dicts[0],
             'box_meta': {
                 'is_new': created,
             }
         }
+        return data
 
-        return self.response(True, data=data, status=200)
+    def post(self, request, *args, **kwargs):
+
+        scan_data = request.POST.get('scanData')
+        box_number = self.get_keyed_in_box_number(
+            request.POST.get('boxNumber'),
+        )
+
+        try:
+            box_data = self.get_box_data(scan_data, box_number)
+        except ScannerViewError as sve:
+            error_message = str(sve)
+            logger.error(error_message)
+            return self.error_response([error_message])
+
+        return self.response(True, data=box_data, status=200)
 
 
 class PrintLabelsView(View):
@@ -655,5 +616,31 @@ class PrintLabelsView(View):
         # present the option to save the file.
         buffer.seek(0)
         return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
+
+
+class BoxItemFormView(LoginRequiredMixin, TemplateView):
+
+    template_name = 'fpiweb/box_form.html'
+
+    @staticmethod
+    def get_form(box, prefix=None):
+        kwargs = {'instance': box}
+        if prefix:
+            kwargs['prefix'] = prefix
+        form = BoxItemForm(**kwargs)
+        return form
+
+    def get_context_data(self, **kwargs):
+        box_pk = kwargs.get('pk', 0)
+        try:
+            box = Box.objects.get(pk=box_pk)
+        except Box.DoesNotExist:
+            box = Box.objects.create()
+        prefix = self.request.GET('prefix')
+        form = self.get_form(box, prefix)
+        return {'form': form}
+
+
+
 
 # EOF

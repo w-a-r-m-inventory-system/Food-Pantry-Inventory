@@ -31,69 +31,74 @@ div.coordinate_label{
 
 </style>
 
+{% include 'fpiweb/scanner.html' %}
+
 <div>{# root div of page #}
-
-  {% include 'fpiweb/scanner.html' %}
-
-  <h1>Build Pallet</h1>
-  <div class="row">
-    <a href="{% url 'fpiweb:test_scan' %}">Back to test_scan page</a>
-  </div>
 
   <form action="{% url 'fpiweb:build_pallet' %}" method="post">
     {% csrf_token %}
     {{ box_forms.management_form }}
+
+    <h1>Build Pallet</h1>
+    <div class="row">
+      <a href="{% url 'fpiweb:test_scan' %}">Back to test_scan page</a>
+    </div>
+
     <div class="row">
       <div class="col-md-2">
-        <div class="coordinate_label">Row</div>
+        <div class="coordinate_label">
+          Row
+        </div>
         {% bootstrap_field form.loc_row  show_help=False show_label=False %}
       </div>
-    <div class="col-md-2">
-      <div class="coordinate_label">Bin</div>
-      {% bootstrap_field form.loc_bin  show_help=False show_label=False %}
+      <div class="col-md-2">
+        <div class="coordinate_label">
+          Bin
+        </div>
+        {% bootstrap_field form.loc_bin  show_help=False show_label=False %}
+      </div>
+      <div class="col-md-2">
+        <div class="coordinate_label">
+          Tier
+        </div>
+        {% bootstrap_field form.loc_tier show_help=False show_label=False %}
+      </div>
     </div>
-    <div class="col-md-2">
-      <div class="coordinate_label">Tier</div>
-      {% bootstrap_field form.loc_tier show_help=False show_label=False %}
+
+    <div class="row" style="margin-bottom: 1rem;">
+      <button class="btn btn-primary" data-toggle="modal" data-target="#scannerModal">Scan a Box</button>&nbsp;
+      <button class="btn btn-primary">Pallet Complete</button>
     </div>
-  </div>
 
-  <div class="row" style="margin-bottom: 1rem;">
-    <button class="btn btn-primary" data-toggle="modal" data-target="#scannerModal">Scan a Box</button>&nbsp;
-    <button class="btn btn-primary">Pallet Complete</button>
-  </div>
-
-  <div class="row">
-    <table border="2">
-      <thead>
-        <tr>
-          <th>Box</th>
-          <th>Product</th>
-          <th>Expiration Year</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for box_form in box_forms %}
+    <div class="row">
+      <table id="boxTable" border="2">
+        <thead>
           <tr>
-            <td>
-              {% bootstrap_field box_form.box_number show_help=False show_label=False %}
-              {{ box_form.box_id }}
-            </td>
-            <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
-            <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
+            <th>Box</th>
+            <th>Product</th>
+            <th>Expiration Year</th>
           </tr>
-        {% empty %}
-          <tr>
-            <td colspan="3">Scan a box</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          {% for box_form in box_forms %}
+            <tr>
+              <td>
+                {% bootstrap_field box_form.box_number show_help=False show_label=False %}
+                {{ box_form.box_id }}
+              </td>
+              <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
+              <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">Scan a box</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-</form>
-
-</div>
+  </form>
 </div>
 
 
@@ -106,17 +111,8 @@ div.coordinate_label{
   <!-- boilerplate code for scannning functionality -->
   <script src="{% static '/fpiweb/webrtc-adapter-1.0.2.js' %}"></script>
   <script src="{% static '/fpiweb/js.cookie.js' %}"></script>
+  <script src="{% static '/fpiweb/ajaxSetup.js' %}"></script>
   <script src="{% static '/fpiweb/scanner.js' %}"></script>
-  <script>
-
-    function handle_document_ready()
-    {
-        setup_scanner();
-    }
-
-    // Using JQuery, add event handler for when the DOM is loaded (images,
-    // etc may still be downloading)
-    $(document).ready(handle_document_ready);
-  </script>
+  <script src="{% static '/fpiweb/build_pallet.js' %}"></script>
 
 {% endblock %}

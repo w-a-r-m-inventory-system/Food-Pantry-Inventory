@@ -12,6 +12,7 @@ from fpiweb.views import \
     BoxEditView, \
     BoxEmptyView, \
     BoxEmptyMoveView, \
+    BoxItemFormView, \
     BoxMoveView, \
     BoxNewView, \
     BoxScannedView, \
@@ -110,6 +111,7 @@ urlpatterns = [
 
     # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
     path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
+
     # e.g. /fpiweb/box/<pk>/empty_move = consume or move a box
     path('box/<int:pk>/empty_move/', BoxEmptyMoveView.as_view(),
          name='box_empty_move'),
@@ -119,6 +121,8 @@ urlpatterns = [
 
     # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
     path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
+
+    path('box/<int:pk>/box_form/', BoxItemFormView.as_view(), name='box_form'),
 
     # e.g. /fpiweb/test_scan/ = ???
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
