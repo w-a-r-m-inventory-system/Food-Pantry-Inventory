@@ -122,7 +122,7 @@ urlpatterns = [
     # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
     path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
 
-    path('box/<int:pk>/box_form/', BoxItemFormView.as_view(), name='box_form'),
+    path('box/box_form/', BoxItemFormView.as_view(), name='box_form'),
 
     # e.g. /fpiweb/test_scan/ = ???
     path('test_scan/', TestScanView.as_view(), name='test_scan'),

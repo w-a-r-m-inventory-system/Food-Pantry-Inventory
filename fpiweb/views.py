@@ -519,8 +519,7 @@ class ScannerView(View):
         return BoxNumber.format_box_number(box_number)
 
     @staticmethod
-    def get_box_data(scan_data=None, box_number=None):
-
+    def get_box(scan_data=None, box_number=None):
         if not scan_data and not box_number:
             raise ScannerViewError('missing scan_data and box_number')
 
@@ -538,6 +537,15 @@ class ScannerView(View):
                 'box_type': default_box_type,
                 'quantity': default_box_type.box_type_qty,
             }
+        )
+        return box, created
+
+    @staticmethod
+    def get_box_data(scan_data=None, box_number=None):
+
+        box, created = ScannerView.get_box(
+            scan_data=scan_data,
+            box_number=box_number
         )
 
         # serialize works on an iterable of objects and returns a string
@@ -618,7 +626,7 @@ class PrintLabelsView(View):
         return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
 
 
-class BoxItemFormView(LoginRequiredMixin, TemplateView):
+class BoxItemFormView(LoginRequiredMixin, View):
 
     template_name = 'fpiweb/box_form.html'
 
@@ -630,17 +638,22 @@ class BoxItemFormView(LoginRequiredMixin, TemplateView):
         form = BoxItemForm(**kwargs)
         return form
 
-    def get_context_data(self, **kwargs):
-        box_pk = kwargs.get('pk', 0)
-        try:
-            box = Box.objects.get(pk=box_pk)
-        except Box.DoesNotExist:
-            box = Box.objects.create()
-        prefix = self.request.GET('prefix')
-        form = self.get_form(box, prefix)
-        return {'form': form}
+    def post(self, request):
 
+        scan_data = request.POST.get('scanData')
+        box_number = ScannerView.get_keyed_in_box_number(
+            request.POST.get('boxNumber'),
+        )
+        prefix = request.POST.get('prefix')
+        box, created = ScannerView.get_box(scan_data, box_number)
 
+        return render(
+            request,
+            self.template_name,
+            {
+                'form': self.get_form(box, prefix),
+            },
+        )
 
 
 # EOF

@@ -2,8 +2,7 @@
 let scanner = {
     video: document.getElementById('video'),
     callback: null,
-    defaultUrl: '/fpiweb/scanner/',
-    alternateUrl: null,
+    requestMethod: null,
 
     logError: function(err)
     {
@@ -16,7 +15,7 @@ let scanner = {
         scanner.video.play();
     },
 
-    setup: function(callback)
+    setup: function(callback, requestMethod=null)
     {
         navigator.mediaDevices
             .getUserMedia({video: true, audio: false})
@@ -26,8 +25,25 @@ let scanner = {
         $.ajaxSetup({beforeSend: beforeSend});
 
         scanner.callback = callback;
+        if(requestMethod){
+            scanner.requestMethod = requestMethod;
+        }else{
+            scanner.requestMethod = scanner.defaultRequestMethod;
+        }
 
         $('#scanButton').click(scanner.scan);
+    },
+
+    defaultRequestMethod: function(scanData, boxNumber, callback)
+    {
+        $.post(
+            '/fpiweb/scanner/',
+            {
+                'scanData': scanData,
+                'boxNumber': boxNumber,
+            },
+            callback,
+        );
     },
 
     scan: function(event)
@@ -52,35 +68,21 @@ let scanner = {
 
         let boxNumber = document.getElementById('boxNumber').value;
 
-        $.post(
-            scanner.defaultUrl,
-             {
-                'scanData': scanData,
-                'boxNumber': boxNumber,
-            },
-            scanner.callback,
-        );
+        scanner.requestMethod(scanData, boxNumber, scanner.callback);
 
         event.preventDefault();
+    },
+
+    hideModal: function()
+    {
+        let scannerModal = $('div#scannerModal');
+        scannerModal.modal('hide');
+
+        $('div.modal-backdrop').remove();
     }
 };
 
 
 
 
-
-
-
-
-
-
-
-
-function hideModal()
-{
-    let scannerModal = $('div#scannerModal');
-    scannerModal.modal('hide');
-
-    $('div.modal-backdrop').remove();
-}
 

@@ -1,90 +1,94 @@
 
-function getNextAvailableBoxFormId(tbody)
-{
-    // text input holds the box number
-    let textInputs = tbody.find("tr input[type='text']");
+let buildPallet = {
 
-    let idsInUse = new Set();
-    for(var i=0; i<textInputs.length; i++)
+    tbody: null,
+
+    getNextAvailableBoxFormId: function()
     {
-        let textInput = textInputs[i];
-        let id = textInput.id;
+        // text input holds the box number
+        let textInputs = buildPallet.tbody.find("tr input[type='text']");
 
-        // IDs are of the form id_box_forms-0-box_number
-        let pieces = id.split('-');
-        if(pieces.length !== 3)
+        let idsInUse = new Set();
+        for(var i=0; i<textInputs.length; i++)
         {
-            console.error(`id ${id} split into ${pieces.length} pieces`);
-            continue;
+            let textInput = textInputs[i];
+            let id = textInput.id;
+
+            // IDs are of the form id_box_forms-0-box_number
+            let pieces = id.split('-');
+            if(pieces.length !== 3)
+            {
+                console.error(`id ${id} split into ${pieces.length} pieces`);
+                continue;
+            }
+
+            let temp = pieces[1];
+            id = Number.parseInt(temp);
+            if(Number.isNaN(id))
+            {
+                console.error(`'${temp}' is not an integer`);
+                continue;
+            }
+
+            idsInUse.add(id);
         }
 
-        let temp = pieces[1];
-        id = Number.parseInt(temp);
-        if(Number.isNaN(id))
+        let j = 0;
+        while(idsInUse.has(j))
         {
-            console.error(`'${temp}' is not an integer`);
-            continue;
+            j++;
+        }
+        return j;
+    },
+
+    scanRequest: function(scanData, boxNumber, callback)
+    {
+        let nextFormId = buildPallet.getNextAvailableBoxFormId();
+        let prefix = `box_forms-${nextFormId}`;
+
+        $.post(
+            '/fpiweb/box/box_form/',
+            {
+                scanData: scanData,
+                boxNumber: boxNumber,
+                prefix: prefix,
+            },
+            callback,
+            'html'
+        )
+    },
+
+    scanCallback: function(data, textStatus, jqXHR)
+    {
+        console.log("buildPallet.scanCallback called");
+        if(jqXHR.status >= 400)
+        {
+            alert(jqXHR.responseText);
+            return;
         }
 
-        idsInUse.add(id);
-    }
+        buildPallet.tbody.prepend(data);
 
-    let j = 0;
-    while(idsInUse.has(j))
+        scanner.hideModal();
+    },
+
+    setup: function()
     {
-        j++;
+        buildPallet.tbody = $('table#boxTable>tbody');
+        scanner.setup(
+            buildPallet.scanCallback,
+            buildPallet.scanRequest
+        );
     }
-    return j;
-}
+};
 
-function addBoxForm(boxData)
-{
-    let tbody = $('table#boxTable>tbody');
 
-    let formId = getNextAvailableBoxFormId(tbody);
-    console.debug(`formId is ${formId}`);
 
-    tbody.prepend(
-        `<tr> \
-          <td> \ 
-            <div class="form-group"> \
-              <label class="sr-only" \
-                     for="id_box_forms-${formId}-box_number">Box number</label> \
-              <input type="text" \
-                     name="box_forms-${formId}-box_number" \ 
-                     maxlength="8" \
-                     minlength="8" \
-                     class="form-control" \
-                     placeholder="Box number" \ 
-                     title="" \ 
-                     disabled="" \
-                     id="id_box_forms-${formId}-box_number"> \
-            </div> \
-          </td> \
-          <td></td> \
-          <td></td> \
-        </tr>`
-    );
-}
 
-function buildPalletScanCallback(data)
-{
-    console.log("buildPalletScanCallback called");
-    if(!data.success)
-    {
-        alert('scan failed');
-        return;
-    }
 
-    hideModal();
-    addBoxForm(data.data);
-}
 
-function handle_document_ready()
-{
-    scanner.setup(buildPalletScanCallback);
-}
+
 
 // Using JQuery, add event handler for when the DOM is loaded (images,
 // etc may still be downloading)
-$(document).ready(handle_document_ready);
+$(document).ready(buildPallet.setup);
