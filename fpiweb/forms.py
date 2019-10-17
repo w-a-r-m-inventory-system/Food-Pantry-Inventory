@@ -261,6 +261,7 @@ class BoxItemForm(forms.ModelForm):
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
         disabled=True,
+        required=False,
     )
 
     product = forms.ModelChoiceField(

@@ -9,8 +9,11 @@ form   The BoxItemForm
 
 <tr>
   <td>
+    <button class="remove btn btn-danger">X</button>
+  </td>
+  <td>
     {% bootstrap_field form.box_number show_help=False show_label=False %}
-    {{ form.box_id }}
+    {{ form.box_id }}{# hidden input #}
   </td>
   <td>{% bootstrap_field form.product show_help=False show_label=False %}</td>
   <td>{% bootstrap_field form.exp_year show_help=False show_label=False %}</td>

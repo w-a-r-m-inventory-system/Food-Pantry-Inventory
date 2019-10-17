@@ -34,6 +34,13 @@ let scanner = {
         $('#scanButton').click(scanner.scan);
     },
 
+    defaultRequestFailed: function(jqXHR, textStatus, errorThrown)
+    {
+        let error = jqXHR.responseText;
+        console.error(error);
+        alert(error)
+    },
+
     defaultRequestMethod: function(scanData, boxNumber, callback)
     {
         $.post(
@@ -43,11 +50,14 @@ let scanner = {
                 'boxNumber': boxNumber,
             },
             callback,
-        );
+        ).fail(scanner.defaultRequestFailed);
     },
 
     scan: function(event)
     {
+        event.preventDefault();
+        event.stopPropagation();
+
         let canvas = document.createElement('canvas');
         canvas.width = scanner.video.clientWidth;
         canvas.height = scanner.video.clientHeight;
@@ -66,11 +76,11 @@ let scanner = {
         let dataLength = Number(scanData.length).toLocaleString();
         console.log(`scanData is ${dataLength} characters in length`);
 
-        let boxNumber = document.getElementById('boxNumber').value;
+        let boxNumberField = document.getElementById('boxNumber')
+        let boxNumber = boxNumberField.value;
+        boxNumberField.value = '';
 
         scanner.requestMethod(scanData, boxNumber, scanner.callback);
-
-        event.preventDefault();
     },
 
     hideModal: function()

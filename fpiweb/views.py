@@ -12,12 +12,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize
 from django.db.models import Max
 from django.forms import modelformset_factory
-from django.http import FileResponse, JsonResponse, StreamingHttpResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, \
-    CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import \
+    CreateView, \
+    DeleteView, \
+    DetailView, \
+    FormView, \
+    ListView, \
+    TemplateView, \
+    UpdateView
 
 
 from fpiweb.code_reader import \
@@ -422,7 +428,7 @@ class BuildPalletView(View):
     BoxFormFactory = modelformset_factory(
         Box,
         form=BoxItemForm,
-        extra=1,
+        extra=0,
     )
 
     def get(self, request, *args, **kwargs):
@@ -645,7 +651,13 @@ class BoxItemFormView(LoginRequiredMixin, View):
             request.POST.get('boxNumber'),
         )
         prefix = request.POST.get('prefix')
-        box, created = ScannerView.get_box(scan_data, box_number)
+
+        try:
+            box, created = ScannerView.get_box(scan_data, box_number)
+        except ScannerViewError as sve:
+            error = str(sve)
+            logger.error(error)
+            return HttpResponse("Scan failed.", status=404)
 
         return render(
             request,

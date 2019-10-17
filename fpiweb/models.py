@@ -450,11 +450,9 @@ class Box(models.Model):
             .filter(box_type_code__istartswith='ev') \
             .first()
         if box_type:
-            print("Found box_type starting with ev")
             return box_type
         box_type = BoxType.objects.first()
         if box_type:
-            print("Grabbing the first box")
             return box_type
         return None
 

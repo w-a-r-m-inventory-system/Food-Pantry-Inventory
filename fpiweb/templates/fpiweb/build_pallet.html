@@ -66,7 +66,12 @@ div.coordinate_label{
     </div>
 
     <div class="row" style="margin-bottom: 1rem;">
-      <button class="btn btn-primary" data-toggle="modal" data-target="#scannerModal">Scan a Box</button>&nbsp;
+      {# by default a button acts like <input type="submit"> type="button" disables this behavior #}
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#scannerModal">Scan a Box</button>&nbsp;
       <button class="btn btn-primary">Pallet Complete</button>
     </div>
 
@@ -74,6 +79,7 @@ div.coordinate_label{
       <table id="boxTable" border="2">
         <thead>
           <tr>
+            <th>Remove</th>
             <th>Box</th>
             <th>Product</th>
             <th>Expiration Year</th>
@@ -83,6 +89,9 @@ div.coordinate_label{
           {% for box_form in box_forms %}
             <tr>
               <td>
+                <button class="btn btn-danger remove">X</button>
+              </td>
+              <td>
                 {% bootstrap_field box_form.box_number show_help=False show_label=False %}
                 {{ box_form.box_id }}
               </td>
@@ -90,8 +99,8 @@ div.coordinate_label{
               <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
             </tr>
           {% empty %}
-            <tr>
-              <td colspan="3">Scan a box</td>
+            <tr id="scanABoxRow">
+              <td colspan="4">Scan a box</td>
             </tr>
           {% endfor %}
         </tbody>
