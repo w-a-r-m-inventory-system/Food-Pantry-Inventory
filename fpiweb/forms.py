@@ -246,13 +246,13 @@ class BoxItemForm(forms.ModelForm):
     class Meta:
         model = Box
         fields = [
-            'box_id',
+            'id',
             'box_number',
             'product',
             'exp_year',
         ]
 
-    box_id = forms.IntegerField(
+    id = forms.IntegerField(
         required=True,
         widget=forms.HiddenInput
     )

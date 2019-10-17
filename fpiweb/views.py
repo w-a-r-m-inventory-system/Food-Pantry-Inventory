@@ -460,10 +460,6 @@ class BuildPalletView(View):
         form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
 
-        if box_forms:
-            box_form = box_forms[0]
-            print(dir(box_form))
-
         if not form.is_valid() or not box_forms.is_valid():
             return render(
                 request,
