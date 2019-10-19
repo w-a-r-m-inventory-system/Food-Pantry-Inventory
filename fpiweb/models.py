@@ -446,7 +446,7 @@ class Pallet(models.Model):
     """
 
     class Meta:
-        ordering = ['user_id']
+        ordering = ['user']
         app_label = 'fpiweb'
         verbose_name_plural = 'Pallets'
 
@@ -464,7 +464,7 @@ class Pallet(models.Model):
         help_text=id_help_text, )
     """ Internal record identifier for a pallet. """
 
-    user_id = models.OneToOneField(User, on_delete=models.PROTECT)
+    user = models.OneToOneField(User, on_delete=models.PROTECT)
 
     pallet_loc_row = models.ForeignKey(LocRow, on_delete=models.PROTECT, )
 
@@ -509,13 +509,13 @@ class PalletBox(models.Model):
         help_text=id_help_text, )
     """ Internal record identifier for a pallet box. """
 
-    pallet_id_help_text = 'Internal record identifier for a pallet.'
-    pallet_id = models.ForeignKey(Pallet, on_delete=models.PROTECT,
-        help_text=pallet_id_help_text, )
+    pallet_help_text = 'Internal record identifier for a pallet.'
+    pallet = models.ForeignKey(Pallet, on_delete=models.PROTECT,
+                               help_text=pallet_help_text, )
 
-    box_id_help_text = 'Internal record identifier for a box.'
-    box_id = models.ForeignKey(Box, on_delete=models.PROTECT,
-        help_text=box_id_help_text, )
+    box_help_text = 'Internal record identifier for a box.'
+    box = models.ForeignKey(Box, on_delete=models.PROTECT,
+                            help_text=box_help_text, )
 
     box_number_help_text = "Number printed in the label on the box."
     box_number_max_length = 8
@@ -556,7 +556,8 @@ class PalletBox(models.Model):
 
     def __str__(self) -> str:
         """ default way to display a pallet box """
-        display = f'{self.box_number} contains {self.product} ' \
+        display = f'{self.box_number} ({self.pallet_id})' \
+                  f'contains {self.product_id} ' \
                   f'({self.exp_year}'
         if self.exp_month_start or self.exp_month_end:
             display += f'/{self.exp_month_start}/{self.exp_month_end}'
@@ -833,14 +834,14 @@ class ProductExample(models.Model):
         unique=True, help_text=prod_example_name_help_text, )
     """Name of example product."""
 
-    prod_id_help_text = 'Product with which this product name is associated.'
-    prod_id = models.ForeignKey(Product, on_delete=models.PROTECT,
-        verbose_name='Product', help_text=prod_id_help_text, )
+    prod_help_text = 'Product with which this product name is associated.'
+    product = models.ForeignKey(Product, on_delete=models.PROTECT,
+                                verbose_name='Product', help_text=prod_help_text, )
     """ Product with which this product name is associated. """
 
     def __str__(self):
         """ Default way to display this product example """
-        display = f'{self.prod_example_name} ({self.prod_id})'
+        display = f'{self.prod_example_name} ({self.product_id})'
         return display
 
 
