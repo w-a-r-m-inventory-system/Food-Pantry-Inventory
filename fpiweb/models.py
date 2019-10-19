@@ -467,7 +467,7 @@ class Pallet(models.Model):
 
     user_help_text = "User managing this pallet"
     user = models.OneToOneField(User, on_delete=models.PROTECT,
-        verbose_name="User", help_text=user_help_text),
+        verbose_name="User", help_text=user_help_text)
     """ ID of user building the pallet. """
 
     pallet_loc_row_help_text = "Target row for this pallet"
