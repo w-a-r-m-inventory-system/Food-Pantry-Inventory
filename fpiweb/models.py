@@ -165,6 +165,7 @@ class Location(models.Model):
     loc_in_warehouse_help_text = "In warehouse?"
     loc_in_warehouse = models.BooleanField('In warehouse?', default=True,
         help_text=loc_in_warehouse_help_text, )
+    """ Is this location inside the warehouse? """
 
     def __str__(self) -> str:
         """ Default way to display a location record. """
@@ -207,8 +208,8 @@ class BoxType(models.Model):
     # define a default display of box_type
     def __str__(self) -> str:
         """ Default way to display this box type record. """
-        display = f'{self.box_type_code} - {self.box_type_descr} ' \
-                  f'({self.box_type_qty})'
+        display = (f'{self.box_type_code} - {self.box_type_descr} '
+                  f'({self.box_type_qty})')
         return display
 
 
@@ -335,6 +336,7 @@ class Box(models.Model):
 
     @staticmethod
     def box_type_default():
+        """ select the default box type for later display """
         box_type = BoxType.objects.filter(
             box_type_code__istartswith='ev').first()
         if box_type:
@@ -431,7 +433,6 @@ class Box(models.Model):
         # TODO: finish creating activity record
         Activity.objects.create(box_number=self.box_number,
             box_type=self.box_type,
-
         )
 
         # TODO: clear out location and product info
@@ -464,23 +465,36 @@ class Pallet(models.Model):
         help_text=id_help_text, )
     """ Internal record identifier for a pallet. """
 
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
-
-    pallet_loc_row = models.ForeignKey(LocRow, on_delete=models.PROTECT, )
-
-    pallet_loc_bin = models.ForeignKey(LocBin, on_delete=models.PROTECT, )
-
-    pallet_loc_tier = models.ForeignKey(LocTier, on_delete=models.PROTECT, )
+    user_help_text = "User managing this pallet"
+    user = models.OneToOneField(User, on_delete=models.PROTECT,
+        verbose_name="User", help_text=user_help_text),
     """ ID of user building the pallet. """
+
+    pallet_loc_row_help_text = "Target row for this pallet"
+    pallet_loc_row = models.ForeignKey(LocRow, on_delete=models.PROTECT,
+        verbose_name="Row", help_text=pallet_loc_row_help_text)
+    """ Target row for this pallet """
+
+    pallet_loc_bin_help_text = "Target bin for this pallet"
+    pallet_loc_bin = models.ForeignKey(LocBin, on_delete=models.PROTECT,
+        verbose_name="Bin", help_text=pallet_loc_bin_help_text)
+    """ Target bin for this pallet """
+
+    pallet_loc_tier_help_text = "Target bin for this pallet"
+    pallet_loc_tier = models.ForeignKey(LocTier, on_delete=models.PROTECT,
+        verbose_name="Tier", help_text=pallet_loc_tier_help_text)
+    """ Target tier for this pallet """
+
     pallet_status_help_text = "Current status of pallet."
     pallet_status = models.CharField('Pallet Status', max_length=15,
         choices=PALLET_STATUS_CHOICES, help_text=pallet_status_help_text, )
+    """ Current status of pallet """
 
     def __str__(self) -> str:
         """ Display the information about this pallet. """
         display = f'Pallet at {self.pallet_loc_row}/' \
                   f'{self.pallet_loc_bin}/' \
-                  f'{self.pallet_loc_tier} for {self.user_id} - ' \
+                  f'{self.pallet_loc_tier} for {self.user} - ' \
                   f'status: {self.pallet_status}'
         return display
 
@@ -512,10 +526,12 @@ class PalletBox(models.Model):
     pallet_help_text = 'Internal record identifier for a pallet.'
     pallet = models.ForeignKey(Pallet, on_delete=models.PROTECT,
                                help_text=pallet_help_text, )
+    """ Internal record identifier for a pallet """
 
     box_help_text = 'Internal record identifier for a box.'
     box = models.ForeignKey(Box, on_delete=models.PROTECT,
                             help_text=box_help_text, )
+    """ Internal record identifier for a box """
 
     box_number_help_text = "Number printed in the label on the box."
     box_number_max_length = 8
@@ -553,11 +569,12 @@ class PalletBox(models.Model):
     box_status_help_text = 'Box on pallet status.'
     box_status = models.CharField('Box Status', max_length=15,
         choices=PALLET_BOX_STATUS_CHOICES, help_text=box_status_help_text, )
+    """ Box on pallet status """
 
     def __str__(self) -> str:
         """ default way to display a pallet box """
-        display = f'{self.box_number} ({self.pallet_id})' \
-                  f'contains {self.product_id} ' \
+        display = f'{self.box_number} ({self.pallet})' \
+                  f'contains {self.product} ' \
                   f'({self.exp_year}'
         if self.exp_month_start or self.exp_month_end:
             display += f'/{self.exp_month_start}/{self.exp_month_end}'
@@ -824,7 +841,7 @@ class ProductExample(models.Model):
         app_label = 'fpiweb'
         verbose_name_plural = 'Product Examples'
 
-    id_help_text = 'Internal reccord identifier for product example'
+    id_help_text = 'Internal record identifier for product example'
     id = models.AutoField('Internal Product Example ID', primary_key=True,
         help_text=id_help_text, )
     """ Internal reccord identifier for product example"""
@@ -837,11 +854,11 @@ class ProductExample(models.Model):
     prod_help_text = 'Product with which this product name is associated.'
     product = models.ForeignKey(Product, on_delete=models.PROTECT,
                                 verbose_name='Product', help_text=prod_help_text, )
-    """ Product with which this product name is associated. """
+    """ Product with which this product example is associated. """
 
     def __str__(self):
         """ Default way to display this product example """
-        display = f'{self.prod_example_name} ({self.product_id})'
+        display = f'{self.prod_example_name} ({self.product})'
         return display
 
 
@@ -860,17 +877,19 @@ class Profile(models.Model):
     title_max_length = 30
     title = models.CharField('Title', max_length=title_max_length, null=True,
         blank=True, help_text=title_help_text, )
+    """ Job title """
 
     active_location_help_text = (
         "The active location for when user is building a pallet (Location)")
     active_location = models.ForeignKey(Location, null=True, blank=True,
         on_delete=models.SET_NULL, help_text=active_location_help_text, )
+    """ Target location of pallet if user is actively building one """
 
     def __str__(self) -> str:
         """ display profile information """
-        display = f'User: {self.user_id} - {self.title}'
+        display = f'User: {self.user} - {self.title}'
         if self.active_location:
-            display += f' pallet for {self.active_location_id}'
+            display += f' pallet for {self.active_location}'
         return display
 
 """
