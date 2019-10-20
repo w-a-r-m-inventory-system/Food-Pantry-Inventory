@@ -86,6 +86,12 @@ main directory and running:
         
     b.  To test the inventory system, use "run_pytest" to run all the django
         unit tests and the pytests contained in the "tests" subdirectory.
+        
+    c.  An alternate way to run the tests is to run the following commands.
+    
+        source venv/bin/activate            (if this has not already been run)
+        
+        ./manage.py test
 
 ## How to Get Started Contrubuting
 
