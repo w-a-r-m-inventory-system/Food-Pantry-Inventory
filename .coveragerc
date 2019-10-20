@@ -1,0 +1,8 @@
+[run]
+omit =
+    manage.py
+    FPIDjango/settings_private.py
+    FPIDjango/wsgi.py
+
+[report]
+skip_covered = True
