@@ -7,8 +7,6 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    replaces = [('fpiweb', '0019_pallet_tables'), ('fpiweb', '0020_pallet_table_tweaks')]
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('fpiweb', '0018_profile_active_location'),
