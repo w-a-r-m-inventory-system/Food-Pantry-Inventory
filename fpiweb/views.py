@@ -1,7 +1,9 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+from enum import Enum, auto
 from logging import getLogger, debug, info
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
@@ -20,6 +22,7 @@ from django.views.generic import \
     UpdateView, \
     DeleteView, \
     FormView
+from sqlalchemy.engine.url import URL
 
 from fpiweb.models import \
     Action, \
@@ -28,7 +31,10 @@ from fpiweb.models import \
     Constraints, \
     LocRow, \
     LocBin, \
-    LocTier
+    LocTier, \
+    Pallet, \
+    Profile, \
+    Location, PalletBox
 from fpiweb.forms import \
     BoxItemForm, \
     BuildPalletForm, \
@@ -38,6 +44,8 @@ from fpiweb.forms import \
     LocBinForm, \
     LocTierForm, \
     NewBoxForm
+    # , \
+    # ManualPalletNewForm
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -394,21 +402,13 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
     context_object_name = 'constraints'
+    success_url = reverse_lazy('fpiweb:constraints_view')
 
     formClass = ConstraintsForm
 
     # TODO Why are fields required here in the create - 1/18/17
     fields = ['constraint_name', 'constraint_descr', 'constraint_type',
               'constraint_min', 'constraint_max', 'constraint_list', ]
-
-    def get_success_url(self):
-        """
-        Run once form is successfully validated.
-
-        :return:
-        """
-        results = reverse('fpiweb:constraints_view')
-        return results
 
 
 class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
@@ -453,6 +453,7 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
     model = Constraints
     template_name = 'fpiweb/constraint_delete.html'
     context_object_name = 'constraints'
+    success_url = reverse_lazy('fpiweb:constraints_view')
 
     form_class = ConstraintsForm
 
@@ -468,15 +469,6 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
         context['action'] = reverse('fpiweb:constraint_delete',
                                     kwargs={'pk': self.get_object().id})
         return context
-
-    def get_success_url(self):
-        """
-        Set the next URL to use once the delete is successful.
-        :return:
-        """
-
-        results = reverse('fpiweb:constraints_view')
-        return results
 
 
 class BoxNewView(LoginRequiredMixin, View):
@@ -609,7 +601,8 @@ class BoxScannedView(LoginRequiredMixin, View):
         except Box.DoesNotExist:
             return redirect('fpiweb:box_new', box_number=box_number)
 
-        return redirect('fpiweb:build_pallet_add_box', args=(box.pk,))
+        new_url = redirect('fpiweb:build_pallet_add_box', args=(box.pk,))
+        return new_url
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -721,5 +714,246 @@ class BuildPalletView(View):
             )
 
         return error_page(request, "forms are valid")
+
+
+class ManualMenuView(TemplateView):
+    """
+    Default web page (/index)
+    """
+    template_name = 'fpiweb/manual_menu.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add User Information to Manual Menu page.
+
+        :param kwargs:
+        :return:
+        """
+
+        # get information from the database
+        context = super(ManualMenuView, self).get_context_data(**kwargs)
+
+        # get the current user and related profile
+        current_user = self.request.user
+        user_profile = Profile.objects.select_related().get(
+            user_id=current_user.id)
+
+        # does user have active pallet?  if so get info
+        active_pallet = user_profile.active_location_id
+        if active_pallet:
+            new_target = None
+            pallet_rec = Pallet.objects.select_related().get(
+                user_id_id=current_user.id)
+            pallet_id = pallet_rec.id
+            pallet_target = reverse_lazy(
+                'fpiweb:manual_pallet_status', args=[pallet_id]
+            )
+        else:
+            new_target = reverse_lazy('fpiweb:manual_pallet_new')
+            pallet_target = None
+
+        # load up  the context for the template
+        context['current_user'] = current_user
+        context['user_profile'] = user_profile
+        context['active_pallet'] = active_pallet
+        context['new_target'] = new_target
+        context['pallet_target'] = pallet_target
+        return context
+
+    def get_success_url(self, **kwargs):
+        """
+        Construct success url.
+
+        :param kwargs:
+        :return:
+        """
+        current_user = self.request.user
+        user_profile = Profile.objects.select_related().get(id=current_user.id)
+        pallet_rec = Pallet.objects.select_related().get(
+            user_id_id=current_user.id)
+        pallet_id = pallet_rec.id
+        target = reverse_lazy('fpiweb:manual_pallet_status', args=[pallet_id])
+        return target
+
+
+# class ManualNotification(LoginRequiredMixin, TemplateView):
+#     """
+#     Ask a question or notify the user of something.
+#     """
+#     template_name = 'fpiweb/manual_generic_notification.html'
+#
+#     def get_context_data(self, **kwargs):
+#         """
+#         Get info from reqest and populate context from it.
+#
+#         :param kwargs:
+#         :return:
+#         """
+#         context = super(ManualNotification, self.get_context_data(**kwargs))
+#         request = context.get_request()
+#         title = request.
+
+
+class MANUAL_NOTICE_TYPE(Enum):
+    """
+    Manual generic notice type.
+    """
+    NOTICE:str = 'NOTICE'
+    QUESTION:str = 'QUESTION'
+
+
+def manual_generic_notification(
+        request,
+        note_type: MANUAL_NOTICE_TYPE,
+        title: str = None,
+        message_list: tuple = tuple(),
+        action_message: str = '',
+        yes_url: str = 'fpiweb:about',
+        no_url: str = 'fpiweb:about',
+        return_url: str = 'fpiweb:about',
+        status: int = 200):
+    """
+    Provide a generic notification screen for the manual box subsystem.
+
+    :param request: request info from calling view
+    :param note_type: type of notice (error or note)
+    :param title: title to use for notification
+    :param message_list: List of lines to display in notification
+    :param action_message: final message or question
+    :param yes_url: if question, url for yes action
+    :param no_url: if question, url for no action
+    :param return_url: if notice, url to go to after notification
+    :param status: status code to flag notification if needed
+    :return:
+    """
+    # request simply passed on to render
+    # template name set to fpiweb:manual_generic_notification
+
+    # context: build contest for template
+    context = dict()
+    context['type'] = note_type
+    context['title'] = title
+    context['message_list'] = message_list
+    context['action_message'] = action_message
+    context['yes_url'] = yes_url
+    context['no_url'] = no_url
+    context['return_url'] = return_url
+
+    # content_type: use default
+    # status: 200 = OK, 400 = Bad Request, 418 = I am a teapot
+    template_info = render(
+        request,
+        'fpiweb/manual_generic_notification.html',
+        context=context,
+        status=status,
+    )
+    return template_info
+
+
+class ManualPalletNew(LoginRequiredMixin, TemplateView):
+    """
+    Establish a new pallet for this user.
+    """
+    # use CreateView later
+
+    model = Profile
+    template_name = 'fpiweb/manual_pallet_add.html'
+    context_object_name = 'manual_pallet'
+
+    # success_url = reverse_lazy('fpiweb:manual_pallet_status')
+
+    def get_context_data(self, **kwargs):
+        """
+        Add Site Information to About page.
+
+        :param kwargs:
+        :return:
+        """
+
+        # get information from the database
+        context = super(ManualPalletNew, self).get_context_data(**kwargs)
+        current_user = self.request.user
+        user_profile = Profile.objects.select_related().get(
+            user_id=current_user.id)
+
+        # check if new pallet or other status
+        if user_profile.active_location_id:
+            # check status
+            ...
+        else:
+            # find new location
+            ...
+
+        # load up  the context for the template
+        context['current_user'] = current_user
+        context['user_profile'] = user_profile
+        return context
+
+    def get_success_url(self, **kwargs) -> URL:
+        """
+
+        :param kwargs:
+        :return:
+        """
+
+        current_user = self.request.user
+        user_profile = Profile.objects.select_related().get(id=current_user.id)
+        pallet_rec = Pallet.objects.select_related().get(
+            user_id_id=current_user.id)
+        pallet_id = pallet_rec.id
+        target = reverse_lazy('fpiweb:manual_pallet_status', args=[pallet_id])
+        return target
+
+
+class ManualPalletStatus(LoginRequiredMixin, ListView):
+    """
+    Establish a new pallet for this user.
+    """
+
+    model = Pallet
+    template_name = 'fpiweb/manual_pallet_status.html'
+    context_object_name = 'manual_pallet_status'
+    success_url = reverse_lazy('fpiweb:manual_menu')
+
+    def get_context_data(self, **kwargs):
+        """
+        Add Site Information to About page.
+
+        :param kwargs:
+        :return:
+        """
+
+        # get stuff from the request
+        context = super(ManualPalletStatus, self).get_context_data(**kwargs)
+
+        # get related stuff from the database
+        pallet_rec = context['manual_pallet_status'].get()
+        pallet_user_id = pallet_rec.user_id_id
+        profile_rec = Profile.objects.get(user_id=pallet_user_id)
+        active_location_id = profile_rec.active_location_id
+        location_rec = Location.objects.get(id=active_location_id)
+        location_row_id = location_rec.loc_row.id
+        row_descr = location_rec.loc_row.loc_row_descr
+        location_bin_id = location_rec.loc_bin.id
+        bin_descr = location_rec.loc_bin.loc_bin_descr
+        location_tier_id = location_rec.loc_tier.id
+        tier_descr = location_rec.loc_tier.loc_tier_descr
+        box_set = PalletBox.objects.filter(
+            pallet_id_id=pallet_rec.id).order_by('box_number')
+
+        # pallet_context = context['manual_pallet_status']
+        # pallet_query = pallet_context.query
+        warehouse_flag = location_rec.loc_in_warehouse
+        # remove entires below before production
+        context['warehouse_flag'] = warehouse_flag
+        context['row_id'] = location_row_id
+        context['row_descr'] = row_descr
+        context['bin_id'] = location_bin_id
+        context['bin_descr'] = bin_descr
+        context['tier_id'] = location_tier_id
+        context['tier_descr'] = tier_descr
+        context['box_set'] = box_set
+        return context
+
 
 # EOF
