@@ -36,7 +36,10 @@ from fpiweb.views import \
     LocTierListView, \
     LocTierCreateView, \
     LocTierUpdateView, \
-    LocTierDeleteView
+    LocTierDeleteView, \
+    ManualMenuView, \
+    ManualPalletNew,  \
+    ManualPalletStatus
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -159,7 +162,7 @@ urlpatterns = [
     # e.g. /fpiweb/box/<pk>/edit = edit a box in inventory
     path('box/<int:pk>/edit/', BoxEditView.as_view(), name='box_edit'),
 
-    #Box Detail page
+    # Box Detail page
     # e.g. /fpiweb/box/<pk>/ = view the information about a box
     path('box/<int:pk>/', BoxDetailsView.as_view(), name='box_details'),
 
@@ -167,31 +170,73 @@ urlpatterns = [
     # e.g. /fpiweb/box/box12345/ = view the information about a box
     path('box/box<int:number>/', BoxScannedView.as_view(), name='box_scanned'),
 
+    # Move or empty a box
     # e.g. /fpiweb/box/<pk>/empty_move = consume or move a box
     path('box/<int:pk>/empty_move/', BoxEmptyMoveView.as_view(),
          name='box_empty_move'),
 
+    # Move a box
     # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
     path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
 
+    # fill a box
     # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
     path('box/<int:pk>/fill/', BoxEmptyMoveView.as_view(), name='box_fill'),
 
-  # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
+    # Empty a box
+    # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
     path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
 
+    # Test scan page (dev only)
     # e.g. /fpiweb/test_scan/ = ???
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
 
+    # Add a box to a pallet view
+    # e.g. /fpiweb/build_pallet/box/box12345/ = add a box to existing pallet
     path(
-        'build_pallet/<int:box_pk>/',
+        'build_pallet/<str:box_number>/',
         BuildPalletView.as_view(),
+        {'box_pk': 'pk'},
         name='build_pallet_add_box'
     ),
 
+    # Start a new pallet view
+    # e.g. /fpiweb/build_pallet/ = start a new pallet
     path(
         'build_pallet/',
         BuildPalletView.as_view(),
         name='build_pallet'
     ),
+
+    # Manual box management menu
+    # e.g. /fpiweb/manualmenu/ = show manual box management menu
+    path(
+        'manualmenu/',
+        ManualMenuView.as_view(),
+        name='manual_menu'
+    ),
+
+    # Manually start a new pallet
+    # e.g. /fpiweb/manualpalletnew = manually starting a new pallet
+    path(
+        'manual_pallet_new/',
+        ManualPalletNew.as_view(),
+        name='manual_pallet_new'
+    ) ,
+
+    # Manually show the current pallet status
+    # e.g. /fpiweb/manualpalletstatus/5/ = current pallet status
+    path(
+        'manual_pallet_status/<int:pk>',
+        ManualPalletStatus.as_view(),
+        name='manual_pallet_status'
+    ),
+
+    # Manually ask a question or notify user
+    # e.g. /fpiweb/manual_note/ = Ask a question or post a note
+    # path(
+    #     'manual_question/',
+    #     ManualNotification.as_view(),
+    #     name='manual_question'
+    # ),
 ]
