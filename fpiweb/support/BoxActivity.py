@@ -136,12 +136,6 @@ class BoxActivityClass:
             self._add_activity(
                 adjustment=Activity.MOVE_ADDED
             )
-        # except Activity.DoesNotExist:
-        #     # oops - box has no open activity record so create one
-        #     self.activity = None
-        #     self._add_activity(
-        #         adjustment=Activity.MOVE_ADDED
-        #     )
 
         # back on happy path - update location
         self._update_activity_location()
@@ -228,7 +222,6 @@ class BoxActivityClass:
         """
         Update the location in the activity record.
 
-        :param box_id:
         :return:
         """
         try:
@@ -249,7 +242,7 @@ class BoxActivityClass:
         """
         Mark this activity record consumed based on this box.
 
-        :param box_id:
+        :param adjustment:
         :return:
         """
         try:
