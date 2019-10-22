@@ -2,26 +2,30 @@
 views.py - establish the views (pages) for the F. P. I. web application.
 """
 from enum import Enum, auto
+from io import BytesIO
+from json import loads
 from logging import getLogger, debug, info
+from string import digits
 from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.core.serializers import serialize
+from django.db.models import Max
 from django.forms import modelformset_factory
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import \
-    TemplateView, \
-    ListView, \
-    DetailView, \
     CreateView, \
-    UpdateView, \
     DeleteView, \
-    FormView
+    DetailView, \
+    FormView, \
+    ListView, \
+    TemplateView, \
+    UpdateView
 from sqlalchemy.engine.url import URL
 
 from fpiweb.models import \
@@ -34,18 +38,22 @@ from fpiweb.models import \
     LocTier, \
     Pallet, \
     Profile, \
-    Location, PalletBox
+    Location, \
+    PalletBox
+from fpiweb.code_reader import \
+    CodeReaderError, \
+    read_box_number
 from fpiweb.forms import \
     BoxItemForm, \
     BuildPalletForm, \
     ConstraintsForm, \
-    LoginForm, \
     LocRowForm, \
     LocBinForm, \
     LocTierForm, \
-    NewBoxForm
-    # , \
-    # ManualPalletNewForm
+    LoginForm, \
+    NewBoxForm, \
+    PrintLabelsForm
+from fpiweb.qr_code_utilities import QRCodePrinter
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -601,8 +609,7 @@ class BoxScannedView(LoginRequiredMixin, View):
         except Box.DoesNotExist:
             return redirect('fpiweb:box_new', box_number=box_number)
 
-        new_url = redirect('fpiweb:build_pallet_add_box', args=(box.pk,))
-        return new_url
+        return redirect('fpiweb:build_pallet', args=(box.pk,))
 
 
 class TestScanView(LoginRequiredMixin, TemplateView):
@@ -635,7 +642,7 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
         # schema http or https
         schema = 'http'
-        if settings.DEBUG is False and hasattr(self.request, 'schema'):
+        if settings.DEBUG == False and hasattr(self.request, 'schema'):
             schema = self.request.schema
 
         protocol_and_host = "{}://{}".format(
@@ -694,14 +701,10 @@ class BuildPalletView(View):
         }
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
 
         form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
-
-        if box_forms and len(box_forms) > 0:
-            box_form = box_forms[0]
-            print(dir(box_form))
 
         if not form.is_valid() or not box_forms.is_valid():
             return render(
@@ -714,6 +717,197 @@ class BuildPalletView(View):
             )
 
         return error_page(request, "forms are valid")
+
+
+class ScannerViewError(RuntimeError):
+    pass
+
+
+class ScannerView(View):
+
+    @staticmethod
+    def response(success, data=None, errors=None, status=200):
+        return JsonResponse(
+            {
+                'success': success,
+                'data': data if data else {},
+                'errors': errors if errors else [],
+            },
+            status=status
+        )
+
+    @staticmethod
+    def error_response(errors, status=400):
+        return ScannerView.response(
+            False,
+            errors,
+            status=status
+        )
+
+    @staticmethod
+    def get_keyed_in_box_number(box_number):
+        """
+        :param box_number: the box number (a string), may be None
+        :return:
+        """
+        box_number = box_number or ''
+        if not box_number:
+            return None
+
+        # strip out everything, but digits
+        box_number = "".join(c for c in box_number if c in digits)
+        if not box_number:
+            return None
+
+        try:
+            box_number = int(box_number)
+        except ValueError:
+            return None
+
+        return BoxNumber.format_box_number(box_number)
+
+    @staticmethod
+    def get_box(scan_data=None, box_number=None):
+        if not scan_data and not box_number:
+            raise ScannerViewError('missing scan_data and box_number')
+
+        if not box_number:
+            try:
+                box_number = read_box_number(scan_data)
+            except CodeReaderError as cre:
+                raise ScannerViewError(str(cre))
+
+        default_box_type = Box.box_type_default()
+
+        box, created = Box.objects.get_or_create(
+            box_number=box_number,
+            defaults={
+                'box_type': default_box_type,
+                'quantity': default_box_type.box_type_qty,
+            }
+        )
+        return box, created
+
+    @staticmethod
+    def get_box_data(scan_data=None, box_number=None):
+
+        box, created = ScannerView.get_box(
+            scan_data=scan_data,
+            box_number=box_number
+        )
+
+        # serialize works on an iterable of objects and returns a string
+        # loads returns a list of dicts
+        box_dicts = loads(serialize("json", [box]))
+
+        data = {
+            'box': box_dicts[0],
+            'box_meta': {
+                'is_new': created,
+            }
+        }
+        return data
+
+    def post(self, request, *args, **kwargs):
+
+        scan_data = request.POST.get('scanData')
+        box_number = self.get_keyed_in_box_number(
+            request.POST.get('boxNumber'),
+        )
+
+        try:
+            box_data = self.get_box_data(scan_data, box_number)
+        except ScannerViewError as sve:
+            error_message = str(sve)
+            logger.error(error_message)
+            return self.error_response([error_message])
+
+        return self.response(True, data=box_data, status=200)
+
+
+class PrintLabelsView(View):
+
+    template_name = 'fpiweb/print_labels.html'
+
+    @staticmethod
+    def get_base_url(meta):
+        protocol = meta.get('SERVER_PROTOCOL', 'HTTP/1.1')
+        protocol = protocol.split('/')[0].lower()
+
+        host = meta.get('HTTP_HOST')
+        return f"{protocol}://{host}/"
+
+    def get(self, request, *args, **kwargs):
+        max_box_number = Box.objects.aggregate(Max('box_number'))
+        print("max_box_number", max_box_number)
+
+        return render(
+            request,
+            self.template_name,
+            {'form': PrintLabelsForm()}
+        )
+
+    def post(self, request, *args, **kwargs):
+        base_url = self.get_base_url(request.META)
+
+        form = PrintLabelsForm(request.POST)
+        if not form.is_valid():
+            print("form invalid")
+            return render(
+                request,
+                self.template_name,
+                {'form': form},
+            )
+        print("form valid")
+
+        buffer = BytesIO()
+
+        QRCodePrinter().print(
+            form.cleaned_data.get('starting_number'),
+            form.cleaned_data.get('number_to_print'),
+            buffer,
+        )
+
+        # FileResponse sets the Content-Disposition header so that browsers
+        # present the option to save the file.
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
+
+
+class BoxItemFormView(LoginRequiredMixin, View):
+
+    template_name = 'fpiweb/box_form.html'
+
+    @staticmethod
+    def get_form(box, prefix=None):
+        kwargs = {'instance': box}
+        if prefix:
+            kwargs['prefix'] = prefix
+        form = BoxItemForm(**kwargs)
+        return form
+
+    def post(self, request):
+
+        scan_data = request.POST.get('scanData')
+        box_number = ScannerView.get_keyed_in_box_number(
+            request.POST.get('boxNumber'),
+        )
+        prefix = request.POST.get('prefix')
+
+        try:
+            box, created = ScannerView.get_box(scan_data, box_number)
+        except ScannerViewError as sve:
+            error = str(sve)
+            logger.error(error)
+            return HttpResponse("Scan failed.", status=404)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                'form': self.get_form(box, prefix),
+            },
+        )
 
 
 class ManualMenuView(TemplateView):
@@ -774,7 +968,6 @@ class ManualMenuView(TemplateView):
         pallet_id = pallet_rec.id
         target = reverse_lazy('fpiweb:manual_pallet_status', args=[pallet_id])
         return target
-
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """

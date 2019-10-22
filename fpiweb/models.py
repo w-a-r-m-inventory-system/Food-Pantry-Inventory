@@ -5,6 +5,7 @@ from enum import Enum, unique
 
 # import as to avoid conflict with built-in function compile
 from re import compile as re_compile
+from re import IGNORECASE
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -28,22 +29,31 @@ class LocRow(models.Model):
         verbose_name_plural = 'Loc Rows'
 
     id_help_text = 'Internal record id for location row.'
-    id = models.AutoField('Internal Location Row ID', primary_key=True,
-        help_text=id_help_text, )
+    id = models.AutoField(
+        'Internal Location Row ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for the location row. """
 
     loc_row_help_text = 'Location row designation'
     loc_row_max_length = 2  # e.g. "01"
     loc_row_min_length = loc_row_max_length
-    loc_row = models.CharField('Loc Row', max_length=loc_row_max_length,
-        unique=True, help_text=loc_row_help_text, )
+    loc_row = models.CharField(
+        'Loc Row',
+        max_length=loc_row_max_length,
+        unique=True,
+        help_text=loc_row_help_text,
+    )
     """ Location Row Designation """
 
     loc_row_descr_help_text = 'Location row description'
     loc_row_descr_max_length = 20  # e.g. "Row 01"
-    loc_row_descr = models.CharField('Loc Row Description',
+    loc_row_descr = models.CharField(
+        'Loc Row Description',
         max_length=loc_row_descr_max_length,
-        help_text=loc_row_descr_help_text, )
+        help_text=loc_row_descr_help_text,
+    )
     """ Location Row Description """
 
     def __str__(self) -> str:
@@ -69,22 +79,30 @@ class LocBin(models.Model):
         verbose_name_plural = 'Loc Bins'
 
     id_help_text = 'Internal record id for location bin.'
-    id = models.AutoField('Internal Location Bin ID', primary_key=True,
-        help_text=id_help_text, )
+    id = models.AutoField(
+        'Internal Location Bin ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for the location bin. """
 
     loc_bin_help_text = 'Location bin designation'
     loc_bin_max_length = 2
     loc_bin_min_length = loc_bin_max_length
-    loc_bin = models.CharField('Loc Bin', max_length=loc_bin_max_length,
-        unique=True, help_text=loc_bin_help_text, )
+    loc_bin = models.CharField(
+        'Loc Bin',
+        max_length=loc_bin_max_length,
+        unique=True,
+        help_text=loc_bin_help_text,
+    )
     """ Location Bin Designation """
 
     loc_bin_descr_help_text = 'Location bin description'
     loc_bin_descr_max_length = 20  # e.g. "Bin 01"
     loc_bin_descr = models.CharField('Loc Bin Description',
         max_length=loc_bin_descr_max_length,
-        help_text=loc_bin_descr_help_text, )
+        help_text=loc_bin_descr_help_text,
+    )
     """ Location Bin Description """
 
     def __str__(self) -> str:
@@ -110,15 +128,22 @@ class LocTier(models.Model):
         verbose_name_plural = 'Loc Tiers'
 
     id_help_text = 'Internal record id for location tier.'
-    id = models.AutoField('Internal Location Tier ID', primary_key=True,
-        help_text=id_help_text, )
+    id = models.AutoField(
+        'Internal Location Tier ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for the location tier. """
 
     loc_tier_help_text = 'Location tier designation'
     loc_tier_max_length = 2
     loc_tier_min_length = loc_tier_max_length
-    loc_tier = models.CharField('Loc Tier', max_length=loc_tier_max_length,
-        unique=True, help_text=loc_tier_help_text, )
+    loc_tier = models.CharField(
+        'Loc Tier',
+        max_length=loc_tier_max_length,
+        unique=True,
+        help_text=loc_tier_help_text,
+    )
     """ Location Tier Designation """
 
     loc_tier_descr_help_text = 'Location tier description'
@@ -335,8 +360,14 @@ class Product(models.Model):
 
 
 class BoxNumber:
-    """ Manage box number (format, get next, validate) """
+
+    # This regex may be used to determine if string is a properly formatted
+    # box number.
     box_number_regex = re_compile(r'^BOX\d{5}$')
+
+    # This regex may be used to determine if a string contains a box number.
+    # Case is ignored.
+    box_number_search_regex = re_compile(r'box\d{5}', IGNORECASE)
 
     @staticmethod
     def format_box_number(int_box_number: int) -> str:
@@ -397,15 +428,13 @@ class Box(models.Model):
 
     @staticmethod
     def box_type_default():
-        """ select the default box type for later display """
-        box_type = BoxType.objects.filter(
-            box_type_code__istartswith='ev').first()
+        box_type = BoxType.objects \
+            .filter(box_type_code__istartswith='ev') \
+            .first()
         if box_type:
-            print("Found box_type starting with ev")
             return box_type
         box_type = BoxType.objects.first()
         if box_type:
-            print("Grabbing the first box")
             return box_type
         return None
 
