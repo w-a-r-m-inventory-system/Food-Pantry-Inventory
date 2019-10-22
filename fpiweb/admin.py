@@ -8,8 +8,8 @@ from .models import \
     Activity, \
     Box, \
     BoxType, \
-    Constraints,  \
-    Location,  \
+    Constraints, \
+    Location, \
     LocBin, \
     LocRow, \
     LocTier, \
@@ -54,14 +54,14 @@ class ConstraintsAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(LocRow)
-class LocRowAdmin(admin.ModelAdmin):
-    list_display = ('loc_row', 'loc_row_descr')
-
-
 @admin.register(LocBin)
 class LocBinAdmin(admin.ModelAdmin):
     list_display = ('loc_bin', 'loc_bin_descr')
+
+
+@admin.register(LocRow)
+class LocRowAdmin(admin.ModelAdmin):
+    list_display = ('loc_row', 'loc_row_descr')
 
 
 @admin.register(LocTier)
