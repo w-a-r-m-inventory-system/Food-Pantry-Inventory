@@ -381,8 +381,12 @@ fabric.properties
 # Ignore data for now
 work/
 data/
+
 # Ignore private settings
 /FPIDjango/private/
+
+# Ignore .png files in scans
+/scans/*.png
 
 # Travis personal ignore files
 #/fpiweb/templates/fpiweb/animal_edit.html

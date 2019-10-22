@@ -524,6 +524,13 @@ class FillBoxForm(forms.ModelForm):
             'exp_month_end',
             # 'date_filled',
         ]
+        # widgets = {
+        #     'date_filled': Html5DateInput
+        # }
+
+    # product = forms.ModelChoiceField(
+    #
+    # )
 
     exp_year = forms.TypedChoiceField(
         choices=expire_year_choices,
@@ -637,13 +644,13 @@ class BoxItemForm(forms.ModelForm):
     class Meta:
         model = Box
         fields = [
-            'box_id',
+            'id',
             'box_number',
             'product',
             'exp_year',
         ]
 
-    box_id = forms.IntegerField(
+    id = forms.IntegerField(
         required=True,
         widget=forms.HiddenInput
     )
@@ -652,6 +659,7 @@ class BoxItemForm(forms.ModelForm):
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
         disabled=True,
+        required=False,
     )
 
     product = forms.ModelChoiceField(
@@ -663,6 +671,15 @@ class BoxItemForm(forms.ModelForm):
         choices=expire_year_choices,
         coerce=int,
         help_text=Box.exp_year_help_text,
+    )
+
+
+class PrintLabelsForm(forms.Form):
+
+    starting_number = forms.IntegerField()
+
+    number_to_print = forms.IntegerField(
+        initial=10,
     )
 
 # EOF
