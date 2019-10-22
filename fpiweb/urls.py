@@ -8,21 +8,24 @@ from django.views.generic import TemplateView
 
 from fpiweb.views import \
     AboutView, \
+    BoxDetailsView, \
     BoxEditView, \
     BoxEmptyView, \
     BoxEmptyMoveView, \
+    BoxItemFormView, \
     BoxMoveView, \
+    BoxNewView, \
     BoxScannedView, \
     BuildPalletView, \
     IndexView, \
     LoginView, \
-    ConstraintsListView, \
     ConstraintCreateView, \
-    ConstraintUpdateView, \
     ConstraintDeleteView, \
+    ConstraintsListView, \
+    ConstraintUpdateView, \
     LogoutView, \
-    BoxNewView, \
-    BoxDetailsView, \
+    PrintLabelsView, \
+    ScannerView, \
     TestScanView, \
     MaintenanceView, \
     LocRowListView, \
@@ -188,6 +191,8 @@ urlpatterns = [
     path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
 
     # Test scan page (dev only)
+    path('box/box_form/', BoxItemFormView.as_view(), name='box_form'),
+
     # e.g. /fpiweb/test_scan/ = ???
     path('test_scan/', TestScanView.as_view(), name='test_scan'),
 
@@ -239,4 +244,15 @@ urlpatterns = [
     #     ManualNotification.as_view(),
     #     name='manual_question'
     # ),
+
+    path('build_pallet/', BuildPalletView.as_view(), name='build_pallet'),
+
+    path(
+        'build_pallet/<int:box_pk>/',
+        BuildPalletView.as_view(),
+        name='build_pallet_add_box'),
+
+    path('scanner/', ScannerView.as_view(), name='scanner'),
+
+    path('print_labels/', PrintLabelsView.as_view(), name='print_labels'),
 ]
