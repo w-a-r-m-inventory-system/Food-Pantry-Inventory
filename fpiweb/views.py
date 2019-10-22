@@ -47,11 +47,12 @@ from fpiweb.forms import \
     BoxItemForm, \
     BuildPalletForm, \
     ConstraintsForm, \
-    LoginForm, \
     LocRowForm, \
     LocBinForm, \
     LocTierForm, \
-    NewBoxForm
+    LoginForm, \
+    NewBoxForm, \
+    PrintLabelsForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 
 __author__ = '(Multiple)'
