@@ -37,13 +37,12 @@
       {% block title %}
       {% endblock %}
     </title>
-    {% bootstrap_css %}
-{#        <link rel="stylesheet" type="text/css" href=#}
-{#                "{% static 'bootstrap/css/bootstrap.min.css' %}"/>#}
-        <link rel="stylesheet" type="text/css" href=
-                "{% static 'fpiweb/style.css' %}"/>
+    {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-reboot.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
 
-  <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
   {% bootstrap_javascript jquery='full' %}
 </head>
 <body>

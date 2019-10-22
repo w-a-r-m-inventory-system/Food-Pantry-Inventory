@@ -1,0 +1,30 @@
+[
+  {
+    "model": "fpiweb.palletbox",
+    "pk": 3,
+    "fields": {
+      "pallet_id": 2,
+      "box_id": 16,
+      "box_number": "BOX12371",
+      "product": 1,
+      "exp_year": 2020,
+      "exp_month_start": null,
+      "exp_month_end": null,
+      "box_status": "New"
+    }
+  },
+  {
+    "model": "fpiweb.palletbox",
+    "pk": 4,
+    "fields": {
+      "pallet_id": 2,
+      "box_id": 19,
+      "box_number": "BOX12370",
+      "product": 5,
+      "exp_year": 2020,
+      "exp_month_start": 7,
+      "exp_month_end": 9,
+      "box_status": "New"
+    }
+  }
+]

@@ -47,16 +47,17 @@ class LocRow(models.Model):
     )
     """ Location Row Designation """
 
-    loc_row_descr_help_text = 'Locationn row description'
+    loc_row_descr_help_text = 'Location row description'
     loc_row_descr_max_length = 20  # e.g. "Row 01"
     loc_row_descr = models.CharField(
-        'Loc Description',
+        'Loc Row Description',
         max_length=loc_row_descr_max_length,
         help_text=loc_row_descr_help_text,
     )
     """ Location Row Description """
 
     def __str__(self) -> str:
+        """ Return just the row for a special form need. """
         return str(self.loc_row)
 
     def __repr__(self) -> str:
@@ -96,16 +97,16 @@ class LocBin(models.Model):
     )
     """ Location Bin Designation """
 
-    loc_bin_descr_help_text = 'Locationn bin description'
+    loc_bin_descr_help_text = 'Location bin description'
     loc_bin_descr_max_length = 20  # e.g. "Bin 01"
-    loc_bin_descr = models.CharField(
-        'Loc Description',
+    loc_bin_descr = models.CharField('Loc Bin Description',
         max_length=loc_bin_descr_max_length,
         help_text=loc_bin_descr_help_text,
     )
     """ Location Bin Description """
 
     def __str__(self) -> str:
+        """ Return just the bin for a special form need. """
         return str(self.loc_bin)
 
     def __repr__(self) -> str:
@@ -145,16 +146,15 @@ class LocTier(models.Model):
     )
     """ Location Tier Designation """
 
-    loc_tier_descr_help_text = 'Locationn tier description'
+    loc_tier_descr_help_text = 'Location tier description'
     loc_tier_descr_max_length = 20  # e.g. "Tier 01"
-    loc_tier_descr = models.CharField(
-        'Loc Tier Description',
+    loc_tier_descr = models.CharField('Loc Tier Description',
         max_length=loc_tier_descr_max_length,
-        help_text=loc_tier_descr_help_text,
-    )
+        help_text=loc_tier_descr_help_text, )
     """ Location Tier Description """
 
     def __str__(self) -> str:
+        """ Return just the tier for a special form need. """
         return str(self.loc_tier)
 
     def __repr__(self) -> str:
@@ -176,75 +176,48 @@ class Location(models.Model):
         verbose_name_plural = 'Locations'
 
     id_help_text = 'Internal record identifier for location.'
-    id = models.AutoField(
-        'Internal Location ID',
-        primary_key=True,
-        help_text=id_help_text,
-    )
+    id = models.AutoField('Internal Location ID', primary_key=True,
+        help_text=id_help_text, )
     """ Internal record identifier for location. """
 
     loc_code_help_text = "Location code"
     loc_code_max_length = 12
-    loc_code = models.CharField(
-        'Location Code',
-        max_length=loc_code_max_length,
-        unique=True,
-        help_text=loc_code_help_text,
-    )
+    loc_code = models.CharField('Location Code',
+        max_length=loc_code_max_length, unique=True,
+        help_text=loc_code_help_text, )
     """ Coded Location. """
 
     loc_descr_help_text = 'Location description'
     loc_descr_max_length = 25
-    loc_descr = models.CharField(
-        'Location Description',
-        max_length=loc_descr_max_length,
-        help_text=loc_descr_help_text,
-    )
+    loc_descr = models.CharField('Location Description',
+        max_length=loc_descr_max_length, help_text=loc_descr_help_text, )
     """ Location description. """
 
     loc_row_help_text = 'Loc row'
-    loc_row = models.ForeignKey(
-        LocRow,
-        on_delete=models.PROTECT,
-        verbose_name='Row',
-        help_text=loc_row_help_text,
-    )
+    loc_row = models.ForeignKey(LocRow, on_delete=models.PROTECT,
+        verbose_name='Row', help_text=loc_row_help_text, )
     """ Row indicator of this location. """
 
     loc_bin_help_text = 'Loc bin'
-    loc_bin = models.ForeignKey(
-        LocBin,
-        on_delete=models.PROTECT,
-        verbose_name='Bin',
-        help_text=loc_bin_help_text,
-    )
+    loc_bin = models.ForeignKey(LocBin, on_delete=models.PROTECT,
+        verbose_name='Bin', help_text=loc_bin_help_text, )
     """ Bin indicator of this location. """
 
     loc_tier_help_text = 'Loc tier'
-    loc_tier = models.ForeignKey(
-        LocTier,
-        on_delete=models.PROTECT,
-        verbose_name='Tier',
-        help_text=loc_tier_help_text,
-    )
+    loc_tier = models.ForeignKey(LocTier, on_delete=models.PROTECT,
+        verbose_name='Tier', help_text=loc_tier_help_text, )
     """ Tier indicator of this location. """
 
     loc_in_warehouse_help_text = "In warehouse?"
-    loc_in_warehouse = models.BooleanField(
-        'In warehouse?',
-        default=True,
-        help_text=loc_in_warehouse_help_text,
-    )
+    loc_in_warehouse = models.BooleanField('In warehouse?', default=True,
+        help_text=loc_in_warehouse_help_text, )
+    """ Is this location inside the warehouse? """
 
     def __str__(self) -> str:
         """ Default way to display a location record. """
-        display = (
-            f'Location {self.loc_code} - {self.loc_descr}'
-        )
+        display = (f'Location {self.loc_code} - {self.loc_descr}')
         if self.loc_in_warehouse:
-            display += (
-                f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})'
-            )
+            display += (f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})')
         return display
 
 
@@ -282,8 +255,9 @@ class BoxType(models.Model):
     )
     """ Type of box (description). """
 
-    box_type_qty_help_text = 'Number of items (usually cans) that can ' \
-                             'typically fix in this box.'
+    box_type_qty_help_text = (
+        'Number of items (usually cans) that can typically fix in this box.'
+    )
     box_type_qty = models.IntegerField(
         'Default Box Type Quantity',
         help_text=box_type_qty_help_text,
@@ -291,10 +265,10 @@ class BoxType(models.Model):
     """ Number of items (usually cans) that can typically fix in this box. """
 
     # define a default display of box_type
-    def __str__(self):
+    def __str__(self) -> str:
         """ Default way to display this box type record. """
-        display = f'{self.box_type_code} - {self.box_type_descr} ' \
-            f'({self.box_type_qty})'
+        display = (f'{self.box_type_code} - {self.box_type_descr} '
+                  f'({self.box_type_qty})')
         return display
 
 
@@ -396,23 +370,31 @@ class BoxNumber:
     box_number_search_regex = re_compile(r'box\d{5}', IGNORECASE)
 
     @staticmethod
-    def format_box_number(int_box_number):
-        return "BOX{:05}".format(int_box_number)
+    def format_box_number(int_box_number: int) -> str:
+        """ format an integer into a box number """
+        formatted_box_number = "BOX{:05}".format(int_box_number)
+        return formatted_box_number
 
     @staticmethod
-    def get_next_box_number():
+    def get_next_box_number() -> str:
+        """ get the next unused box number """
         max_box_number = Box.objects.aggregate(
             max_box_number=Max('box_number'))
         max_box_number = max_box_number.get('max_box_number')
         if max_box_number is None:
-            return BoxNumber.format_box_number(1)
-        max_box_number = int(max_box_number[3:])
-
-        return BoxNumber.format_box_number(max_box_number + 1)
+            max_formatted_box_number = BoxNumber.format_box_number(1)
+        else:
+            max_box_number = int(max_box_number[3:])
+            max_formatted_box_number = \
+                BoxNumber.format_box_number(max_box_number + 1)
+        return max_formatted_box_number
 
     @staticmethod
-    def validate(box_number):
-        return bool(BoxNumber.box_number_regex.match(box_number))
+    def validate(box_number: str) -> bool:
+        """ validate that a atring is of the form 'BOXnnnnn' """
+        is_valid_box_number = \
+            bool(BoxNumber.box_number_regex.match(box_number))
+        return is_valid_box_number
 
 
 class Box(models.Model):
@@ -515,24 +497,28 @@ class Box(models.Model):
     )
     """ Year the product expires, if filled. """
 
-    exp_month_start_help_text = 'Optional starting month range of when the ' \
-                                'product expires, if filled.'
+    exp_month_start_help_text = (
+        'Optional starting month range of when the product expires, if filled.'
+    )
     exp_month_start = models.IntegerField(
         'Expiration Start Month (Optional)',
         null=True,
         blank=True,
-        help_text=exp_month_start_help_text)
-    """ 
-    Optional starting month range of when the product expires, if filled. 
+        help_text=exp_month_start_help_text
+    )
+    """
+    Optional starting month range of when the product expires, if filled.
     """
 
-    exp_month_end_help_text = 'Optional ending month range of when the ' \
-                              'product expires, if filled.'
+    exp_month_end_help_text = (
+        'Optional ending month range of when the product expires, if filled.'
+    )
     exp_month_end = models.IntegerField(
         'Expiration End Month (Optional)',
         null=True,
         blank=True,
-        help_text=exp_month_end_help_text)
+        help_text=exp_month_end_help_text,
+    )
     """ Optional emding month range of when the product expires, if filled. """
 
     date_filled_help_text = 'Approximate date box was filled, if filled.'
@@ -544,8 +530,9 @@ class Box(models.Model):
     )
     """ Approximate date box was filled, if filled. """
 
-    quantity_help_text = 'Approximate or default number of items in the ' \
-                         'box, if filled.'
+    quantity_help_text = (
+        'Approximate or default number of items in the box, if filled.'
+    )
     quantity = models.IntegerField(
         'Quantity in Box',
         null=True,
@@ -558,26 +545,35 @@ class Box(models.Model):
     def __str__(self):
         """ Default way to display this box record. """
         if self.exp_month_start or self.exp_month_end:
-            display = f'{self.box_number} ({self.box_type}) ' \
-                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} ' \
-                f'{self.product} {self.quantity}' \
-                f'{self.exp_year} ' \
-                f'({self.exp_month_start}-{self.exp_month_end})' \
+            display = (
+                f'{self.box_number} ({self.box_type}) '
+                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
+                f'{self.product} {self.quantity}'
+                f'{self.exp_year} '
+                f'({self.exp_month_start}-{self.exp_month_end})'
                 f'{self.date_filled}'
+            )
         else:
-            display = f'{self.box_number} ({self.box_type}) ' \
-                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} ' \
-                f'{self.product} {self.quantity}' \
+            display = (
+                f'{self.box_number} ({self.box_type}) '
+                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
+                f'{self.product} {self.quantity}'
                 f'{self.exp_year} {self.date_filled}'
+            )
         return display
 
+    """
+    The following method was added by John C. as a stub.  Travis R. did not 
+    realize this when he wrote the support/BoxActivity.py module.  Later, 
+    that module could be inoorporated into (or called from this models.py 
+    module.  That appears to be the more common way to do it.
+    """
     def empty(self):
 
         # TODO: finish creating activity record
         Activity.objects.create(
             box_number=self.box_number,
             box_type=self.box_type,
-
         )
 
         # TODO: clear out location and product info
@@ -589,6 +585,202 @@ class Box(models.Model):
         )
 
 
+class Pallet(models.Model):
+    """
+    Temporary file to build up a list of boxes on a pallet.
+    """
+
+    class Meta:
+        ordering = ['user']
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Pallets'
+
+    # Pallet Status Names
+    FILL: str = 'Fill'
+    MERGE: str = 'Merge'
+    MOVE: str = "Move"
+
+    PALLET_STATUS_CHOICES = (
+        (FILL, 'Fill pallet for new location'),
+        (MERGE, 'Merging boxes on pallet'),
+        (MOVE, 'Moving boxes to new location'),
+    )
+
+    id_help_text = 'Internal record identifier for a pallet.'
+    id = models.AutoField(
+        'Internal Pallet ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for a pallet. """
+
+    user_help_text = "User managing this pallet"
+    user = models.OneToOneField(
+        User,
+        on_delete=models.PROTECT,
+        verbose_name="User",
+        help_text=user_help_text
+    )
+    """ ID of user building the pallet. """
+
+    pallet_loc_row_help_text = "Target row for this pallet"
+    pallet_loc_row = models.ForeignKey(
+        LocRow,
+        on_delete=models.PROTECT,
+        verbose_name="Row",
+        help_text=pallet_loc_row_help_text
+    )
+    """ Target row for this pallet """
+
+    pallet_loc_bin_help_text = "Target bin for this pallet"
+    pallet_loc_bin = models.ForeignKey(
+        LocBin,
+        on_delete=models.PROTECT,
+        verbose_name="Bin",
+        help_text=pallet_loc_bin_help_text
+    )
+    """ Target bin for this pallet """
+
+    pallet_loc_tier_help_text = "Target bin for this pallet"
+    pallet_loc_tier = models.ForeignKey(
+        LocTier,
+        on_delete=models.PROTECT,
+        verbose_name="Tier",
+        help_text=pallet_loc_tier_help_text)
+    """ Target tier for this pallet """
+
+    pallet_status_help_text = "Current status of pallet."
+    pallet_status = models.CharField(
+        'Pallet Status',
+        max_length=15,
+        choices=PALLET_STATUS_CHOICES,
+        help_text=pallet_status_help_text,
+    )
+    """ Current status of pallet """
+
+    def __str__(self) -> str:
+        """ Display the information about this pallet. """
+        display = f'Pallet at {self.pallet_loc_row}/' \
+                  f'{self.pallet_loc_bin}/' \
+                  f'{self.pallet_loc_tier} for {self.user} - ' \
+                  f'status: {self.pallet_status}'
+        return display
+
+
+class PalletBox(models.Model):
+    """
+    Temporary file to hold the individual boxes for a pallet.
+    """
+
+    class Meta:
+        ordering = ''
+        app_label = 'fpiweb'
+        verbose_name_plural = 'Pallet Boxes'
+
+    # Pallet Box Status Names
+    NEW: str = 'New'
+    ORIGINAL: str = 'Original'
+    MOVE: str = "Move"
+
+    PALLET_BOX_STATUS_CHOICES = (
+        (NEW, 'New box added'),
+        (ORIGINAL, 'Box already here'),
+        (MOVE, 'Box being moved'),
+    )
+
+    id_help_text = 'Internal record identifier for a pallet box.'
+    id = models.AutoField(
+        'Internal Pallet Box ID',
+        primary_key=True,
+        help_text=id_help_text,
+    )
+    """ Internal record identifier for a pallet box. """
+
+    pallet_help_text = 'Internal record identifier for a pallet.'
+    pallet = models.ForeignKey(
+        Pallet,
+        on_delete=models.PROTECT,
+        help_text=pallet_help_text,
+    )
+
+    box_help_text = 'Internal record ideentifier for a box.'
+    box = models.ForeignKey(
+        Box,
+        on_delete=models.PROTECT,
+        help_text=box_help_text,
+    )
+
+    box_number_help_text = "Number printed in the label on the box."
+    box_number_max_length = 8
+    box_number_min_length = box_number_max_length
+    box_number = models.CharField(
+        'Visible Box Number',
+        max_length=box_number_max_length,
+        unique=True,
+        help_text=box_number_help_text,
+    )
+    """ Number printed in the label on the box. """
+
+    product_help_text = 'Product contained in this box, if filled.'
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.PROTECT,
+        verbose_name='product',
+        help_text=product_help_text,
+    )
+    """ Product contained in this box, if filled. """
+
+    exp_year_help_text = 'Year the product expires, if filled.'
+    exp_year = models.IntegerField(
+        'Year Product Expires',
+        help_text=exp_year_help_text,
+    )
+    """ Year the product expires, if filled. """
+
+    exp_month_start_help_text = (
+        'Optional starting month range of when the product expires, if filled.'
+    )
+    exp_month_start = models.IntegerField(
+        'Expiration Start Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_start_help_text
+    )
+    """
+    Optional starting month range of when the product expires, if filled.
+    """
+
+    exp_month_end_help_text = (
+        'Optional ending month range of when the product expires, if filled.'
+    )
+    exp_month_end = models.IntegerField(
+        'Expiration End Month (Optional)',
+        null=True,
+        blank=True,
+        help_text=exp_month_end_help_text,
+    )
+    """ Optional emding month range of when the product expires, if filled. """
+
+    box_status_help_text = 'Box on pallet status.'
+    box_status = models.CharField(
+        'Box Status',
+        max_length=15,
+        choices=PALLET_BOX_STATUS_CHOICES,
+        help_text=box_status_help_text,
+    )
+    """ Box on pallet status """
+
+    def __str__(self) -> str:
+        """ default way to display a pallet box """
+        display = f'{self.box_number} ({self.pallet})' \
+                  f'contains {self.product} ' \
+                  f'({self.exp_year}'
+        if self.exp_month_start or self.exp_month_end:
+            display += f'/{self.exp_month_start}/{self.exp_month_end}'
+        display += f'), status: {self.box_status}'
+        return display
+
+
 class Activity(models.Model):
     """
     Activity (history) from the past.
@@ -598,6 +790,17 @@ class Activity(models.Model):
         ordering = ['-date_consumed', 'box_number']
         app_label = 'fpiweb'
         verbose_name_plural = 'Activities'
+
+    # Adjustment Reasons
+    ADD_EMPTIED: str = 'Add Emptied'
+    MOVE_ADDED: str = 'Move Added'
+    CONSUME_ADDED: str = 'Consume Added'
+
+    ADJUSTMENT_CODE_CHOICES: list = (
+        (ADD_EMPTIED, 'Add emptied previous contents'),
+        (MOVE_ADDED, 'Move added box'),
+        (CONSUME_ADDED, 'Consume added box'),
+    )
 
     id_help_text = 'Internal record identifier for an activity.'
     id = models.AutoField(
@@ -664,26 +867,20 @@ class Activity(models.Model):
     """ Category of product consumed. """
 
     date_filled_help_text = 'Approximate date product was put in the box.'
-    date_filled = models.DateField(
+    date_filled = models.DateTimeField(
         'Date Box Filled',
         help_text=date_filled_help_text,
     )
     """ Approximate date product was put in the box. """
 
     date_consumed_help_text = 'Date product was consumed.'
-    date_consumed = models.DateField(
+    date_consumed = models.DateTimeField(
         'Date Box Emptied',
+        null=True,
+        blank=True,
         help_text=date_consumed_help_text,
     )
     """ Date product was consumed. """
-
-    duration_help_text = 'Number of days between date box was filled and ' \
-                         'consumed.'
-    duration = models.IntegerField(
-        'Duration',
-        help_text=duration_help_text,
-    )
-    """ Number of days between date box was filled and consumed. """
 
     exp_year_help_text = 'Year product would have expired.'
     exp_year = models.IntegerField(
@@ -714,8 +911,9 @@ class Activity(models.Model):
     )
     """ Optional ending month product would have expired. """
 
-    quantity_help_text = 'Approximate number of items in the box when it ' \
-                         'was filled.'
+    quantity_help_text = (
+        'Approximate number of items in the box when it was filled.'
+        )
     quantity = models.IntegerField(
         'Quantity in Box',
         default=0,
@@ -723,25 +921,52 @@ class Activity(models.Model):
     )
     """ Approximate number of items in the box when it was filled. """
 
+    duration_help_text = (
+        'Number of days between date box was filled and consumed.'
+    )
+    duration = models.IntegerField(
+        'Duration',
+        help_text=duration_help_text,
+    )
+    """ Number of days between date box was filled and consumed. """
+
+    adjustment_code_help_text = 'Coded reason if this entry was adjusted'
+    adjustment_code = models.CharField(
+        'Adjustment Code',
+        null=True,
+        blank=True,
+        max_length=15,
+        choices=ADJUSTMENT_CODE_CHOICES,
+        help_text=adjustment_code_help_text
+    )
+    """ Coded reason if this entry was adjusted """
+
     # define a default display of Activity
     def __str__(self):
         """ Default way to display this activity record. """
+        display = f'{self.box_number} ({self.box_type})'
         if self.date_filled:
-            display = (
-                f'{self.box_number} ({self.box_type}) ' 
-                f'{self.prod_name} ({self.prod_cat_name}) ' 
-                f'{self.quantity} ' 
-                f'{self.exp_year}' 
-                f'({self.exp_month_start}-' 
-                f'{self.exp_month_end})' 
-                f'{self.date_filled} - {self.date_consumed}' 
-                f'({self.duration}) at ' 
-                f'{self.loc_row} / ' 
-                f'{self.loc_bin} / ' 
-                f'{self.loc_tier}'
+            display = display + (' '
+                f'{self.prod_name} ({self.prod_cat_name}) '
+                f'{self.quantity} '
+                f'{self.exp_year}'
+                f'({self.exp_month_start}-'
+                f'{self.exp_month_end}) at '
+                f'{self.loc_row} / '
+                f'{self.loc_bin} / '
+                f'{self.loc_tier} '
+                f'{self.date_filled}'
             )
-        else:
-            display = f'{self.box_number} ({self.box_type}) - Empty'
+        if self.date_consumed:
+            display = display + (' '
+                f'{self.date_consumed}'
+                f'({self.duration} days) '
+            )
+        if self.adjustment_code:
+            display = display + (' '
+                f'{self.adjustment_code}'
+            )
+
         return display
 
 
@@ -750,11 +975,11 @@ class CONSTRAINT_NAME_KEYS(Enum):
     """
     Valid constraint key values with associated names for each key.
     """
-    TIER: 'Tier'
-    ROW: 'Row'
-    BIN: 'Bin'
-    EXP_YEAR: 'Expiration Year'
-    QUANTITY: 'Quantity'
+    TIER: str = 'Tier'
+    ROW: str = 'Row'
+    BIN: str = 'Bin'
+    EXP_YEAR: str = 'Expiration Year'
+    QUANTITY: str = 'Quantity'
 
 
 class Constraints(models.Model):
@@ -849,11 +1074,15 @@ class Constraints(models.Model):
     def __str__(self):
         """ Default way to display this constraint record. """
         if self.constraint_type in [self.INT_RANGE, self.CHAR_RANGE]:
-            display = f'{self.constraint_name} - {self.constraint_min} to ' \
+            display = (
+                f'{self.constraint_name} - {self.constraint_min} to '
                 f'{self.constraint_max} ({self.constraint_type})'
+            )
         else:
-            display = f'{self.constraint_name} - {self.constraint_list} ' \
+            display = (
+                f'{self.constraint_name} - {self.constraint_list} '
                 f'({self.constraint_type})'
+            )
         if self.constraint_descr:
             display += f' -- {self.constraint_descr[:50]}'
         return display
@@ -910,8 +1139,9 @@ class ProductExample(models.Model):
     class Meta:
         ordering = ['prod_example_name']
         app_label = 'fpiweb'
+        verbose_name_plural = 'Product Examples'
 
-    id_help_text = 'Internal reccord identifier for product example'
+    id_help_text = 'Internal record identifier for product example'
     id = models.AutoField(
         'Internal Product Example ID',
         primary_key=True,
@@ -928,14 +1158,14 @@ class ProductExample(models.Model):
     )
     """Name of example product."""
 
-    prod_id_help_text = 'Product with which this product name is associated.'
-    prod_id = models.ForeignKey(
+    product_help_text = 'Product with which this product name is associated.'
+    product = models.ForeignKey(
         Product,
         on_delete=models.PROTECT,
         verbose_name='Product',
-        help_text=prod_id_help_text,
+        help_text=product_help_text,
     )
-    """ Product with which this product name is associated. """
+    """ Product with which this product example is associated. """
 
     def __str__(self):
         """ Default way to display this product example """
@@ -967,7 +1197,9 @@ class Profile(models.Model):
         help_text=title_help_text,
     )
 
-    active_location_help_text = "The active location for when user is building a pallet (Location)"
+    active_location_help_text = (
+        "The active location for when user is building a pallet (Location)"
+    )
     active_location = models.ForeignKey(
         Location,
         null=True,
@@ -976,7 +1208,16 @@ class Profile(models.Model):
         help_text=active_location_help_text,
     )
 
+    def __str__(self) -> str:
+        """ display profile information """
+        display = f'User: {self.user} - {self.title}'
+        if self.active_location:
+            display += f' pallet for {self.active_location}'
+        return display
 
+"""
+To be expanded or eliminated by John C.
+"""
 class Action:
     ACTION_BUILD_PALLET = 'build_pallet'
     ACTIONS = {

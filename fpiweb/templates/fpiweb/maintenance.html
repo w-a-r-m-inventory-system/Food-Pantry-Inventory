@@ -1,0 +1,100 @@
+{% extends 'fpiweb/base.html' %}
+
+{% block title %}
+    System File Maintenance
+{% endblock %}
+
+{% block content %}
+    <h1>System File Maintenance</h1>
+    <br/>
+    <h3>Manage the system files:</h3>
+    <br/>
+
+    <h6>Manage Users</h6>
+{#    <hr/>#}
+
+    <div>
+        <a href="{% url 'fpiweb:about' %}">
+            System User Maintainence
+        </a>
+    </div>
+
+    <hr/>
+    <h6>Manage Product Information</h6>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Product Category Maintainence
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Product Name Maintainence
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Product Example Maintainence
+    </a>
+
+    <hr/>
+    <h6>Manage Location Information</h6>
+
+    <br/>
+    <a href="{% url 'fpiweb:loc_row_view' %}">
+        Location Row Maintainence
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:loc_bin_view' %}">
+        Location Bin Maintainence
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:loc_tier_view' %}">
+        Location Tier Maintainence
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Rebuild Location Table
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Manual Location Table Maintenance
+    </a>
+
+    <hr/>
+    <h6>Manage Other Information</h6>
+
+    <br/>
+    <a href="{% url 'fpiweb:constraints_view' %}">
+        Constraints Maintenance
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Activity Maintenance
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Manual Box Maintenance
+    </a>
+
+    <hr/>
+    <div>
+        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

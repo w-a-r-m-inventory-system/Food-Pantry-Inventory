@@ -8,7 +8,8 @@ from .models import \
     Activity, \
     Box, \
     BoxType, \
-    Constraints,  \
+    Constraints, \
+    Location, \
     LocBin, \
     LocRow, \
     LocTier, \
@@ -25,6 +26,7 @@ admin.site.register(Activity)
 admin.site.register(BoxType)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
+admin.site.register(Location)
 
 
 @admin.register(Box)

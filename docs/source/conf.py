@@ -33,10 +33,13 @@ parent_directory = os.path.dirname(directory_containing_file)
 # directory containing docs directory ( = project directory)
 BASE_DIR = os.path.dirname(parent_directory)
 
-# Supposed to be: /Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory
+# Supposed to be: /.../Food-Pantry-Inventory
 
 # directory containing our Django application
 django_app_directory = os.path.join(BASE_DIR, 'fpiweb/')
+
+# Tell Sphinx to ignore Django imports
+# autodoc_mock_imports = ["django"]
 
 # now add both to the system PATH
 sys.path.insert(0, BASE_DIR)

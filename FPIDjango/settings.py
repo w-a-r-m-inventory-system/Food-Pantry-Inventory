@@ -159,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # URL to allow a user to authenticate herself.  This becomes the default
 # used whenever Django detects someone trying to do something requiring
 # authentication.
-LOGIN_URL = 'fpiweb:login/'
+LOGIN_URL = 'fpiweb:login'
 
 
 # Internationalization
@@ -223,7 +223,8 @@ BOOTSTRAP4 = {
         "integrity":
             "sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH"
             "+8abtTE1Pi6jizo",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+    },
 
     # The URL to the Popper.js JavaScript file (slim)
     "popper_url": {
