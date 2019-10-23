@@ -929,8 +929,7 @@ class ManualMenuView(TemplateView):
 
         # get the current user and related profile
         current_user = self.request.user
-        user_profile = Profile.objects.select_related().get(
-            user_id=current_user.id)
+        user_profile = Profile.get_profile_for_user(current_user)
 
         # does user have active pallet?  if so get info
         active_pallet = user_profile.active_location_id

@@ -1183,7 +1183,8 @@ class Profile(models.Model):
 
     user = models.OneToOneField(
         User,
-        on_delete=models.CASCADE
+        related_name='profile',
+        on_delete=models.CASCADE,
     )
     """ Internal link to the default Django User table. """
 
@@ -1207,6 +1208,11 @@ class Profile(models.Model):
         on_delete=models.SET_NULL,
         help_text=active_location_help_text,
     )
+
+    @staticmethod
+    def get_profile_for_user(user):
+        profile, created = Profile.objects.get_or_create(user=user)
+        return profile
 
     def __str__(self) -> str:
         """ display profile information """
