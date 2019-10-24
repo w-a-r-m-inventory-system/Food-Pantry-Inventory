@@ -1209,11 +1209,6 @@ class Profile(models.Model):
         help_text=active_location_help_text,
     )
 
-    @staticmethod
-    def get_profile_for_user(user):
-        profile, created = Profile.objects.get_or_create(user=user)
-        return profile
-
     def __str__(self) -> str:
         """ display profile information """
         display = f'User: {self.user} - {self.title}'

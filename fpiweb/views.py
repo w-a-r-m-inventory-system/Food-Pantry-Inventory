@@ -929,10 +929,13 @@ class ManualMenuView(TemplateView):
 
         # get the current user and related profile
         current_user = self.request.user
-        user_profile = Profile.get_profile_for_user(current_user)
+        profile = current_user.profile
+        if profile:
+            active_pallet = profile.active_location_id
+        else:
+            active_pallet = None
 
         # does user have active pallet?  if so get info
-        active_pallet = user_profile.active_location_id
         if active_pallet:
             new_target = None
             pallet_rec = Pallet.objects.select_related().get(
@@ -947,7 +950,7 @@ class ManualMenuView(TemplateView):
 
         # load up  the context for the template
         context['current_user'] = current_user
-        context['user_profile'] = user_profile
+        context['user_profile'] = profile
         context['active_pallet'] = active_pallet
         context['new_target'] = new_target
         context['pallet_target'] = pallet_target
