@@ -1183,7 +1183,8 @@ class Profile(models.Model):
 
     user = models.OneToOneField(
         User,
-        on_delete=models.CASCADE
+        related_name='profile',
+        on_delete=models.CASCADE,
     )
     """ Internal link to the default Django User table. """
 
