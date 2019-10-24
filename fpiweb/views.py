@@ -29,7 +29,6 @@ from django.views.generic import \
 from sqlalchemy.engine.url import URL
 
 from fpiweb.models import \
-    Action, \
     Box, \
     BoxNumber, \
     Constraints, \
@@ -539,15 +538,6 @@ class BoxNewView(LoginRequiredMixin, View):
 
         box = new_box_form.save()
 
-        action = request.session.get('action')
-        if action == Action.ACTION_BUILD_PALLET:
-            return redirect(
-                reverse(
-                    'fpiweb:build_pallet_add_box',
-                    args=(box.pk,)
-                )
-            )
-
         return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
@@ -595,14 +585,6 @@ class BoxScannedView(LoginRequiredMixin, View):
         if box_number is None:
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
-
-        action = request.session.get('action')
-
-        if action != Action.ACTION_BUILD_PALLET:
-            return error_page(
-                request,
-                "What to do when action is {}?".format(action)
-            )
 
         try:
             box = Box.objects.get(box_number=box_number)
@@ -678,8 +660,6 @@ class BuildPalletView(View):
     )
 
     def get(self, request, *args, **kwargs):
-
-        request.session['action'] = Action.ACTION_BUILD_PALLET
 
         box_pk = kwargs.get('box_pk')
 

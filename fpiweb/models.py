@@ -1215,14 +1215,4 @@ class Profile(models.Model):
             display += f' pallet for {self.active_location}'
         return display
 
-"""
-To be expanded or eliminated by John C.
-"""
-class Action:
-    ACTION_BUILD_PALLET = 'build_pallet'
-    ACTIONS = {
-        ACTION_BUILD_PALLET,
-    }
-
-
 # EOF
