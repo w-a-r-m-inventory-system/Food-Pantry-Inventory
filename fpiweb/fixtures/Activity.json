@@ -5,9 +5,7 @@
     "fields": {
       "box_number": "BOX12346",
       "box_type": "Evans",
-      "loc_row": "01",
-      "loc_bin": "01",
-      "loc_tier": "A1",
+      "location": null,
       "prod_name": "Oranges",
       "prod_cat_name": "Fruit",
       "date_filled": "2019-05-26T04:00:00Z",
@@ -26,9 +24,7 @@
     "fields": {
       "box_number": "BOX12355",
       "box_type": "Banana",
-      "loc_row": "01",
-      "loc_bin": "01",
-      "loc_tier": "A1",
+      "location": null,
       "prod_name": "Tea",
       "prod_cat_name": "Bevereges",
       "date_filled": "2019-05-29T04:00:00Z",
