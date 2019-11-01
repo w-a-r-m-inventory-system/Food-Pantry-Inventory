@@ -5,7 +5,7 @@
     "fields": {
       "box_number": "BOX12346",
       "box_type": "Evans",
-      "location": null,
+      "location": 2,
       "prod_name": "Oranges",
       "prod_cat_name": "Fruit",
       "date_filled": "2019-05-26T04:00:00Z",
@@ -24,7 +24,7 @@
     "fields": {
       "box_number": "BOX12355",
       "box_type": "Banana",
-      "location": null,
+      "location": 8,
       "prod_name": "Tea",
       "prod_cat_name": "Bevereges",
       "date_filled": "2019-05-29T04:00:00Z",

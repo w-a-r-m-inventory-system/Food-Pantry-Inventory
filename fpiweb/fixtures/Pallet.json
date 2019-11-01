@@ -4,7 +4,7 @@
     "pk": 2,
     "fields": {
       "user_id": 1,
-      "location": null,
+      "location": 1,
       "pallet_status": "Fill"
     }
   }

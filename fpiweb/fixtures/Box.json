@@ -5,7 +5,7 @@
     "fields": {
       "box_number": "BOX12345",
       "box_type": 1,
-      "location": null,
+      "location": 1,
       "product": 53,
       "exp_year": 2019,
       "exp_month_start": null,
@@ -20,7 +20,7 @@
     "fields": {
       "box_number": "BOX12346",
       "box_type": 1,
-      "location": null,
+      "location": 2,
       "product": 61,
       "exp_year": 2019,
       "exp_month_start": null,
@@ -35,7 +35,7 @@
     "fields": {
       "box_number": "BOX12347",
       "box_type": 1,
-      "location": null,
+      "location": 3,
       "product": 82,
       "exp_year": 2020,
       "exp_month_start": null,
@@ -50,7 +50,7 @@
     "fields": {
       "box_number": "BOX12348",
       "box_type": 1,
-      "location": null,
+      "location": 4,
       "product": 1,
       "exp_year": 2021,
       "exp_month_start": null,
@@ -65,7 +65,7 @@
     "fields": {
       "box_number": "BOX00001",
       "box_type": 1,
-      "location": null,
+      "location": 5,
       "product": 63,
       "exp_year": 2022,
       "exp_month_start": null,
@@ -80,7 +80,7 @@
     "fields": {
       "box_number": "BOX12349",
       "box_type": 1,
-      "location": null,
+      "location": 6,
       "product": 5,
       "exp_year": 2019,
       "exp_month_start": null,
@@ -95,7 +95,7 @@
     "fields": {
       "box_number": "BOX12360",
       "box_type": 1,
-      "location": null,
+      "location": 7,
       "product": 20,
       "exp_year": 2019,
       "exp_month_start": null,
@@ -110,7 +110,7 @@
     "fields": {
       "box_number": "BOX12355",
       "box_type": 2,
-      "location": null,
+      "location": 8,
       "product": 80,
       "exp_year": 2019,
       "exp_month_start": null,
@@ -125,7 +125,7 @@
     "fields": {
       "box_number": "BOX11223",
       "box_type": 1,
-      "location": null,
+      "location": 9,
       "product": 38,
       "exp_year": 2019,
       "exp_month_start": null,
@@ -140,7 +140,7 @@
     "fields": {
       "box_number": "12345",
       "box_type": 1,
-      "location": null,
+      "location": 10,
       "product": 1,
       "exp_year": 2020,
       "exp_month_start": null,
@@ -155,7 +155,7 @@
     "fields": {
       "box_number": "BOX12366",
       "box_type": 1,
-      "location": null,
+      "location": 11,
       "product": null,
       "exp_year": 2019,
       "exp_month_start": null,
@@ -170,7 +170,7 @@
     "fields": {
       "box_number": "BOX12367",
       "box_type": 1,
-      "location": null,
+      "location": 12,
       "product": 28,
       "exp_year": null,
       "exp_month_start": null,
@@ -185,7 +185,7 @@
     "fields": {
       "box_number": "BOX12368",
       "box_type": 1,
-      "location": null,
+      "location": 13,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -200,7 +200,7 @@
     "fields": {
       "box_number": "BOX12369",
       "box_type": 1,
-      "location": null,
+      "location": 14,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -215,7 +215,7 @@
     "fields": {
       "box_number": "BOX12370",
       "box_type": 1,
-      "location": null,
+      "location": 15,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -230,7 +230,7 @@
     "fields": {
       "box_number": "BOX12371",
       "box_type": 1,
-      "location": null,
+      "location": 16,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -245,7 +245,7 @@
     "fields": {
       "box_number": "BOX12372",
       "box_type": 1,
-      "location": null,
+      "location": 17,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -260,7 +260,7 @@
     "fields": {
       "box_number": "BOX12373",
       "box_type": 1,
-      "location": null,
+      "location": 17,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -275,7 +275,7 @@
     "fields": {
       "box_number": "BOX12374",
       "box_type": 1,
-      "location": null,
+      "location": 17,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -290,7 +290,7 @@
     "fields": {
       "box_number": "BOX12375",
       "box_type": 1,
-      "location": null,
+      "location": 18,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -305,7 +305,7 @@
     "fields": {
       "box_number": "BOX12376",
       "box_type": 1,
-      "location": null,
+      "location": 18,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
