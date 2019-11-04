@@ -821,13 +821,29 @@ class Activity(models.Model):
     )
     """ Box type holding consumed product. """
 
-    location = models.ForeignKey(
-        "Location",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        help_text="Location of Box",
+    loc_row_help_text = 'Row box was in at the time product was consumed.'
+    loc_row = models.CharField(
+        'Row Location',
+        max_length=2,
+        help_text=loc_row_help_text,
     )
+    """ Row box was in at the time product was consumed. """
+
+    loc_bin_help_text = 'Bin box was in at the time product was consumed.'
+    loc_bin = models.CharField(
+        'Bin Location',
+        max_length=2,
+        help_text=loc_bin_help_text,
+    )
+    """ Bin box was in at the time product was consumed. """
+
+    loc_tier_help_text = 'Tier box was in at the time product was consumed.'
+    loc_tier = models.CharField(
+        'Tier Location',
+        max_length=2,
+        help_text=loc_tier_help_text,
+    )
+    """ Tier box was in at the time product was consumed. """
 
     prod_name_help_text = 'Product contained in box at time of consumption.'
     prod_name = models.CharField(
