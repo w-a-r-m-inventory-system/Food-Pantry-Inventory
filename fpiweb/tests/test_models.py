@@ -40,6 +40,8 @@ class BoxTest(TestCase):
         activity = activities.first()
         box_type = BoxType.objects.get(box_type_code='Evans')
         assert box_type.box_type_code == activity.box_type
-        assert activity.location is None
+        assert activity.loc_row == ''
+        assert activity.loc_bin == ''
+        assert activity.loc_tier == ''
 
 

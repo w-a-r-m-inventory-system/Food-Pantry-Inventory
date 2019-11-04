@@ -195,7 +195,9 @@ class BoxActivityClass:
                 self.activity = Activity(
                     box_number=self.box.box_number,
                     box_type=self.box.box_type.box_type_code,
-                    location=self.box.location,
+                    loc_row=self.box.location.loc_row.loc_row,
+                    loc_bin=self.box.location.loc_bin.loc_bin,
+                    loc_tier=self.box.location.loc_tier.loc_tier,
                     prod_name=self.box.product.prod_name,
                     prod_cat_name=self.box.product.prod_cat.prod_cat_name,
                     date_filled=self.box.date_filled,
@@ -224,7 +226,9 @@ class BoxActivityClass:
         """
         try:
             # with transaction.atomic():
-                self.activity.location=self.box.location
+                self.activity.loc_row = self.box.location.loc_row.loc_row
+                self.activity.loc_bin = self.box.location.loc_bin.loc_bin
+                self.activity.loc_tier = self.box.location.loc_tier.loc_tier
                 self.activity.save()
         except IntegrityError as exc:
             # report an internal error

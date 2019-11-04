@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 
 from fpiweb.views import \
     AboutView, \
+    ActivityDownloadView, \
     BoxDetailsView, \
     BoxEditView, \
     BoxEmptyView, \
@@ -255,4 +256,9 @@ urlpatterns = [
     path('scanner/', ScannerView.as_view(), name='scanner'),
 
     path('print_labels/', PrintLabelsView.as_view(), name='print_labels'),
+
+    path(
+        'activity/download/',
+        ActivityDownloadView.as_view(),
+        name='download_activities'),
 ]

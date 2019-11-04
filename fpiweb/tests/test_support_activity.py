@@ -66,7 +66,9 @@ class ActivitySupportTestCase(TransactionTestCase):
             date_filled__exact=full_box.date_filled
         )
         assert full_activity.box_type == full_box.box_type.box_type_code
-        assert full_activity.location == full_box.location
+        assert full_activity.loc_row == full_box.location.loc_row.loc_row
+        assert full_activity.loc_bin == full_box.location.loc_bin.loc_bin
+        assert full_activity.loc_tier == full_box.location.loc_tier.loc_tier
         assert full_activity.prod_name == full_box.product.prod_name
         assert full_activity.prod_cat_name == \
                full_box.product.prod_cat.prod_cat_name
@@ -106,8 +108,11 @@ class ActivitySupportTestCase(TransactionTestCase):
             box_number=full_box.box_number,
             date_filled=full_box.date_filled
         )
+
         assert full_activity.box_type == full_box.box_type.box_type_code
-        assert full_activity.location == full_box.location
+        assert full_activity.loc_row == full_box.location.loc_row.loc_row
+        assert full_activity.loc_bin == full_box.location.loc_bin.loc_bin
+        assert full_activity.loc_tier == full_box.location.loc_tier.loc_tier
         assert full_activity.prod_name == full_box.product.prod_name
         assert full_activity.prod_cat_name == \
            full_box.product.prod_cat.prod_cat_name
