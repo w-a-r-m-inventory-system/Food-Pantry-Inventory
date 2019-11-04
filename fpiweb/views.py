@@ -29,7 +29,6 @@ from django.views.generic import \
 from sqlalchemy.engine.url import URL
 
 from fpiweb.models import \
-    Action, \
     Box, \
     BoxNumber, \
     Constraints, \
@@ -539,15 +538,6 @@ class BoxNewView(LoginRequiredMixin, View):
 
         box = new_box_form.save()
 
-        action = request.session.get('action')
-        if action == Action.ACTION_BUILD_PALLET:
-            return redirect(
-                reverse(
-                    'fpiweb:build_pallet_add_box',
-                    args=(box.pk,)
-                )
-            )
-
         return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
@@ -595,14 +585,6 @@ class BoxScannedView(LoginRequiredMixin, View):
         if box_number is None:
             return error_page(request, "missing kwargs['number']")
         box_number = BoxNumber.format_box_number(box_number)
-
-        action = request.session.get('action')
-
-        if action != Action.ACTION_BUILD_PALLET:
-            return error_page(
-                request,
-                "What to do when action is {}?".format(action)
-            )
 
         try:
             box = Box.objects.get(box_number=box_number)
@@ -678,8 +660,6 @@ class BuildPalletView(View):
     )
 
     def get(self, request, *args, **kwargs):
-
-        request.session['action'] = Action.ACTION_BUILD_PALLET
 
         box_pk = kwargs.get('box_pk')
 
@@ -929,11 +909,13 @@ class ManualMenuView(TemplateView):
 
         # get the current user and related profile
         current_user = self.request.user
-        user_profile = Profile.objects.select_related().get(
-            user_id=current_user.id)
+        profile = current_user.profile
+        if profile:
+            active_pallet = profile.active_location_id
+        else:
+            active_pallet = None
 
         # does user have active pallet?  if so get info
-        active_pallet = user_profile.active_location_id
         if active_pallet:
             new_target = None
             pallet_rec = Pallet.objects.select_related().get(
@@ -948,7 +930,7 @@ class ManualMenuView(TemplateView):
 
         # load up  the context for the template
         context['current_user'] = current_user
-        context['user_profile'] = user_profile
+        context['user_profile'] = profile
         context['active_pallet'] = active_pallet
         context['new_target'] = new_target
         context['pallet_target'] = pallet_target

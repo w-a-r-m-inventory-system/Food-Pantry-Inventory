@@ -1159,7 +1159,8 @@ class Profile(models.Model):
 
     user = models.OneToOneField(
         User,
-        on_delete=models.CASCADE
+        related_name='profile',
+        on_delete=models.CASCADE,
     )
     """ Internal link to the default Django User table. """
 
@@ -1190,15 +1191,5 @@ class Profile(models.Model):
         if self.active_location:
             display += f' pallet for {self.active_location}'
         return display
-
-"""
-To be expanded or eliminated by John C.
-"""
-class Action:
-    ACTION_BUILD_PALLET = 'build_pallet'
-    ACTIONS = {
-        ACTION_BUILD_PALLET,
-    }
-
 
 # EOF
