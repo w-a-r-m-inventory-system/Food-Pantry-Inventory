@@ -593,31 +593,6 @@ class FillBoxForm(forms.ModelForm):
         self.validate_exp_month_start_end(exp_month_start, exp_month_end)
 
 
-class MoveBoxForm(forms.ModelForm):
-    class Meta:
-        model = Box
-        fields = [
-            'loc_row',
-            'loc_bin',
-            'loc_tier',
-        ]
-
-    loc_row = forms.ChoiceField(
-        choices=row_choices,
-        help_text=Box.loc_row_help_text,
-    )
-
-    loc_bin = forms.ChoiceField(
-        choices=bin_choices,
-        help_text=Box.loc_bin_help_text,
-    )
-
-    loc_tier = forms.ChoiceField(
-        choices=tier_choices,
-        help_text=Box.loc_tier_help_text,
-    )
-
-
 class BuildPalletForm(forms.Form):
     # This may be changed to a Model form for the Location Table
 
