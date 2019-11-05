@@ -182,35 +182,56 @@ class Location(models.Model):
 
     loc_code_help_text = "Location code"
     loc_code_max_length = 12
-    loc_code = models.CharField('Location Code',
-        max_length=loc_code_max_length, unique=True,
-        help_text=loc_code_help_text, )
+    loc_code = models.CharField(
+        'Location Code',
+        max_length=loc_code_max_length,
+        unique=True,
+        help_text=loc_code_help_text,
+    )
     """ Coded Location. """
 
     loc_descr_help_text = 'Location description'
     loc_descr_max_length = 25
-    loc_descr = models.CharField('Location Description',
-        max_length=loc_descr_max_length, help_text=loc_descr_help_text, )
+    loc_descr = models.CharField(
+        'Location Description',
+        max_length=loc_descr_max_length,
+        help_text=loc_descr_help_text,
+    )
     """ Location description. """
 
     loc_row_help_text = 'Loc row'
-    loc_row = models.ForeignKey(LocRow, on_delete=models.PROTECT,
-        verbose_name='Row', help_text=loc_row_help_text, )
+    loc_row = models.ForeignKey(
+        LocRow,
+        on_delete=models.PROTECT,
+        verbose_name='Row',
+        help_text=loc_row_help_text,
+    )
     """ Row indicator of this location. """
 
     loc_bin_help_text = 'Loc bin'
-    loc_bin = models.ForeignKey(LocBin, on_delete=models.PROTECT,
-        verbose_name='Bin', help_text=loc_bin_help_text, )
+    loc_bin = models.ForeignKey(
+        LocBin,
+        on_delete=models.PROTECT,
+        verbose_name='Bin',
+        help_text=loc_bin_help_text,
+    )
     """ Bin indicator of this location. """
 
     loc_tier_help_text = 'Loc tier'
-    loc_tier = models.ForeignKey(LocTier, on_delete=models.PROTECT,
-        verbose_name='Tier', help_text=loc_tier_help_text, )
+    loc_tier = models.ForeignKey(
+        LocTier,
+        on_delete=models.PROTECT,
+        verbose_name='Tier',
+        help_text=loc_tier_help_text,
+    )
     """ Tier indicator of this location. """
 
     loc_in_warehouse_help_text = "In warehouse?"
-    loc_in_warehouse = models.BooleanField('In warehouse?', default=True,
-        help_text=loc_in_warehouse_help_text, )
+    loc_in_warehouse = models.BooleanField(
+        'In warehouse?',
+        default=True,
+        help_text=loc_in_warehouse_help_text,
+    )
     """ Is this location inside the warehouse? """
 
     def __str__(self) -> str:
@@ -397,6 +418,10 @@ class BoxNumber:
         return is_valid_box_number
 
 
+class BoxError(RuntimeError):
+    pass
+
+
 class Box(models.Model):
     """
     Box or container for product.
@@ -447,35 +472,13 @@ class Box(models.Model):
     )
     """ Type of box with this number. """
 
-    loc_row_help_text = 'Row containing this box, if filled.'
-    loc_row = models.CharField(
-        'Row Location',
-        max_length=2,
+    location = models.ForeignKey(
+        "Location",
         null=True,
         blank=True,
-        help_text=loc_row_help_text,
+        on_delete=models.SET_NULL,
+        help_text="Location of Box"
     )
-    """ Row containing this box, if filled. """
-
-    loc_bin_help_text = 'Bin containing this box, if filled.'
-    loc_bin = models.CharField(
-        'Bin Location',
-        max_length=2,
-        null=True,
-        blank=True,
-        help_text=loc_bin_help_text,
-    )
-    """ Bin containing this box, if filled. """
-
-    loc_tier_help_text = 'Tier containing this box, if filled.'
-    loc_tier = models.CharField(
-        'Tier Location',
-        max_length=2,
-        null=True,
-        blank=True,
-        help_text=loc_tier_help_text,
-    )
-    """ Tier containing this box, if filled. """
 
     product_help_text = 'Product contained in this box, if filled.'
     product = models.ForeignKey(
@@ -547,7 +550,6 @@ class Box(models.Model):
         if self.exp_month_start or self.exp_month_end:
             display = (
                 f'{self.box_number} ({self.box_type}) '
-                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
                 f'{self.product} {self.quantity}'
                 f'{self.exp_year} '
                 f'({self.exp_month_start}-{self.exp_month_end})'
@@ -556,16 +558,29 @@ class Box(models.Model):
         else:
             display = (
                 f'{self.box_number} ({self.box_type}) '
-                f'{self.loc_row}/{self.loc_bin}/{self.loc_tier} '
                 f'{self.product} {self.quantity}'
                 f'{self.exp_year} {self.date_filled}'
             )
         return display
 
+    def add(self, date_filled=None) -> None:
+        if not date_filled:
+            date_filled = timezone.now()
+        if not self.exp_year:
+            raise BoxError(f'exp_year must be set before Box.add is called')
+        Activity.objects.create(
+            box_number=self.box_number,
+            date_filled=date_filled,
+            exp_year=self.exp_year,
+            duration=0,
+            box_type=self.box_type.box_type_code,
+        )
+        return None
+
     """
     The following method was added by John C. as a stub.  Travis R. did not 
     realize this when he wrote the support/BoxActivity.py module.  Later, 
-    that module could be inoorporated into (or called from this models.py 
+    that module could be incorporated into (or called from this models.py 
     module.  That appears to be the more common way to do it.
     """
     def empty(self):
@@ -623,31 +638,13 @@ class Pallet(models.Model):
     )
     """ ID of user building the pallet. """
 
-    pallet_loc_row_help_text = "Target row for this pallet"
-    pallet_loc_row = models.ForeignKey(
-        LocRow,
-        on_delete=models.PROTECT,
-        verbose_name="Row",
-        help_text=pallet_loc_row_help_text
+    location = models.ForeignKey(
+        "Location",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text="Pallet Location",
     )
-    """ Target row for this pallet """
-
-    pallet_loc_bin_help_text = "Target bin for this pallet"
-    pallet_loc_bin = models.ForeignKey(
-        LocBin,
-        on_delete=models.PROTECT,
-        verbose_name="Bin",
-        help_text=pallet_loc_bin_help_text
-    )
-    """ Target bin for this pallet """
-
-    pallet_loc_tier_help_text = "Target bin for this pallet"
-    pallet_loc_tier = models.ForeignKey(
-        LocTier,
-        on_delete=models.PROTECT,
-        verbose_name="Tier",
-        help_text=pallet_loc_tier_help_text)
-    """ Target tier for this pallet """
 
     pallet_status_help_text = "Current status of pallet."
     pallet_status = models.CharField(
@@ -660,9 +657,7 @@ class Pallet(models.Model):
 
     def __str__(self) -> str:
         """ Display the information about this pallet. """
-        display = f'Pallet at {self.pallet_loc_row}/' \
-                  f'{self.pallet_loc_bin}/' \
-                  f'{self.pallet_loc_tier} for {self.user} - ' \
+        display = f'Pallet for {self.user} - ' \
                   f'status: {self.pallet_status}'
         return display
 
@@ -866,15 +861,17 @@ class Activity(models.Model):
     )
     """ Category of product consumed. """
 
+    # Do NOT make date_filed a DateTime
     date_filled_help_text = 'Approximate date product was put in the box.'
-    date_filled = models.DateTimeField(
+    date_filled = models.DateField(
         'Date Box Filled',
         help_text=date_filled_help_text,
     )
     """ Approximate date product was put in the box. """
 
+    # Do NOT make date_filed a DateTime
     date_consumed_help_text = 'Date product was consumed.'
-    date_consumed = models.DateTimeField(
+    date_consumed = models.DateField(
         'Date Box Emptied',
         null=True,
         blank=True,
@@ -952,9 +949,6 @@ class Activity(models.Model):
                 f'{self.exp_year}'
                 f'({self.exp_month_start}-'
                 f'{self.exp_month_end}) at '
-                f'{self.loc_row} / '
-                f'{self.loc_bin} / '
-                f'{self.loc_tier} '
                 f'{self.date_filled}'
             )
         if self.date_consumed:
