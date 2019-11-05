@@ -33,9 +33,7 @@ class BoxAdmin(admin.ModelAdmin):
     list_display = (
         'box_number',
         'box_type',
-        'loc_row',
-        'loc_bin',
-        'loc_tier',
+        'location',
         'quantity',
         'product',
     )
