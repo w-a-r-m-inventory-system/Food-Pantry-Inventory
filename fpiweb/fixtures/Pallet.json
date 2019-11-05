@@ -4,9 +4,7 @@
     "pk": 2,
     "fields": {
       "user_id": 1,
-      "pallet_loc_row": 1,
-      "pallet_loc_bin": 1,
-      "pallet_loc_tier": 1,
+      "location": 1,
       "pallet_status": "Fill"
     }
   }

@@ -1,6 +1,7 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+from csv import writer as csv_writer
 from enum import Enum, auto
 from io import BytesIO
 from json import loads
@@ -14,7 +15,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize
 from django.db.models import Max
 from django.forms import modelformset_factory
-from django.http import FileResponse, HttpResponse, JsonResponse
+from django.http import \
+    FileResponse, \
+    HttpResponse, \
+    JsonResponse, \
+    StreamingHttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
@@ -29,6 +34,7 @@ from django.views.generic import \
 from sqlalchemy.engine.url import URL
 
 from fpiweb.models import \
+    Activity, \
     Box, \
     BoxNumber, \
     Constraints, \
@@ -1129,6 +1135,75 @@ class ManualPalletStatus(LoginRequiredMixin, ListView):
         context['tier_descr'] = tier_descr
         context['box_set'] = box_set
         return context
+
+
+class ActivityDownloadView(LoginRequiredMixin, View):
+
+    date_format = '%m/%d/%Y'
+
+    class Echo:
+        """An object that implements just the write method of the file-like
+        interface.
+        """
+
+        @staticmethod
+        def write(value):
+            """Write the value by returning it, instead of storing in a buffer."""
+            return value
+
+    def write_rows(self):
+
+        yield [
+            'Box Number', 'Box Type',
+            'Row', 'Bin', 'Tier',
+            'Product', 'Product Category',
+            'Date Filled', 'Date Consumed',
+            'Exp Year', 'Exp Month Start', 'Exp Month End',
+            'Quantity', 'Duration', 'Adjustment Code',
+        ]
+
+        for activity in Activity.objects.all():
+
+            date_filled = activity.date_filled
+            if date_filled:
+                date_filled = date_filled.strftime(self.date_format)
+            else:
+                date_filled = ''
+
+            date_consumed = activity.date_consumed
+            if date_consumed:
+                date_consumed = date_consumed.strftime(self.date_format)
+            else:
+                date_consumed = ''
+
+            row = [
+                activity.box_number,
+                activity.box_type,
+                activity.loc_row,
+                activity.loc_bin,
+                activity.loc_tier,
+                activity.prod_name,
+                activity.prod_cat_name,
+                date_filled,
+                date_consumed,
+                activity.exp_year,
+                activity.exp_month_start,
+                activity.exp_month_end,
+                activity.quantity,
+                activity.duration,
+                activity.adjustment_code,
+            ]
+            yield row
+
+    def get(self, request, *args, **kwargs):
+        pseudo_buffer = self.Echo()
+        writer = csv_writer(pseudo_buffer)
+        response = StreamingHttpResponse(
+            (writer.writerow(row) for row in self.write_rows()),
+            content_type="text/csv"
+        )
+        response['Content-Disposition'] = 'attachment; filename="activities.csv"'
+        return response
 
 
 # EOF
