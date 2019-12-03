@@ -15,11 +15,13 @@ from .models import \
     LocTier, \
     Product, \
     ProductCategory, \
-    ProductExample
+    ProductExample, \
+    Profile
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
+
 
 # Register the models for which we want default admin pages to be built.
 admin.site.register(Activity)
@@ -82,5 +84,13 @@ class ProductAdmin(admin.ModelAdmin):
         'prod_cat',
     )
 
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'title',
+        'active_location',
+    )
 
 # EOF

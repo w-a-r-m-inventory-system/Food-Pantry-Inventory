@@ -7,9 +7,19 @@ from bs4 import BeautifulSoup
 
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 
-from fpiweb.models import Box, BoxNumber, BoxType
+from fpiweb.forms import \
+    ExtantBoxNumberForm, \
+    ExistingLocationForm
+from fpiweb.models import \
+    Box, \
+    BoxNumber, \
+    BoxType, \
+    Location, \
+    Product
+from fpiweb.views import ManualMoveBoxView
 
 
 class BoxNewViewTest(TestCase):
@@ -163,3 +173,131 @@ class LogoutViewTest(TestCase):
         client = Client()
         response = client.get(reverse('fpiweb:logout'))
         self.assertEqual(200, response.status_code)
+
+
+class ManualMoveBoxViewTest(TestCase):
+
+    fixtures = (
+        'BoxType',
+        'ProductCategory',
+        'Product',
+        'LocRow',
+        'LocBin',
+        'LocTier',
+        'Location',
+    )
+
+    url = reverse_lazy('fpiweb:manual_move_box')
+
+    def test_get(self):
+        user = User.objects.create_user('jdoe3', 'jdoe2@foo.com', 'abc123')
+
+        client = Client()
+        client.force_login(user)
+
+        response = client.get(self.url)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            ManualMoveBoxView.MODE_ENTER_BOX_NUMBER,
+            response.context.get('mode'),
+        )
+
+        box_number_form = response.context.get('box_number_form')
+        self.assertIsInstance(box_number_form, ExtantBoxNumberForm)
+        self.assertIsNone(response.context['box'])
+        self.assertIsNone(response.context['location_form'])
+        self.assertIsNone(response.context['errors'])
+
+    def test_post_box_number_form(self):
+        user = User.objects.create_user('jdoe4', 'jdoe4@foo.com', 'abc123')
+
+        client = Client()
+        client.force_login(user)
+
+        box_number = BoxNumber.get_next_box_number()
+
+        response = client.post(
+            self.url,
+            {
+                'mode': ManualMoveBoxView.MODE_ENTER_BOX_NUMBER,
+                'box_number': box_number
+            },
+        )
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(
+            ManualMoveBoxView.MODE_ENTER_BOX_NUMBER,
+            response.context['mode'],
+        )
+        self.assertIsInstance(
+            response.context['box_number_form'],
+            ExtantBoxNumberForm,
+        )
+
+        box = Box.objects.create(
+            box_number=box_number,
+            box_type=BoxType.objects.get(box_type_code='Evans'),
+            product=Product.objects.get(prod_name='Canned Potatoes'),
+        )
+
+        response = client.post(
+            self.url,
+            {
+                'mode': ManualMoveBoxView.MODE_ENTER_BOX_NUMBER,
+                'box_number': box_number
+            }
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            ManualMoveBoxView.MODE_ENTER_LOCATION,
+            response.context['mode'],
+        )
+        self.assertEqual(
+            response.context['box'].box_number,
+            box.box_number
+        )
+        self.assertIsInstance(
+            response.context['location_form'],
+            ExistingLocationForm,
+        )
+
+    def test_post_location_form(self):
+        user = User.objects.create_user('jdoe5', 'jdoe5@foo.com', 'abc123')
+
+        client = Client()
+        client.force_login(user)
+
+        box = Box.objects.create(
+            box_number=BoxNumber.get_next_box_number(),
+            box_type=BoxType.objects.get(box_type_code='Evans'),
+            product=Product.objects.get(prod_name='Canned Potatoes'),
+            date_filled=timezone.now(),
+            exp_year=2022,
+        )
+        self.assertIsNone(box.location)
+
+        location = Location.objects.first()
+
+        response = client.post(
+            self.url,
+            {
+                'mode': ManualMoveBoxView.MODE_ENTER_LOCATION,
+                'loc_row': location.loc_row_id,
+                'loc_bin': location.loc_bin_id,
+                'loc_tier': location.loc_tier_id,
+                'box_pk': box.pk,
+            }
+        )
+
+        self.assertEqual(200, response.status_code, response.content)
+
+        context_box = response.context.get('box')
+        self.assertIsNotNone(context_box)
+        self.assertEqual(
+            box.pk,
+            context_box.pk,
+        )
+        self.assertEqual(
+            location.pk,
+            context_box.location.pk,
+        )
+
