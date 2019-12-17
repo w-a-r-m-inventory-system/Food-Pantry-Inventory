@@ -17,8 +17,10 @@ from django.utils import timezone
 
 from fpiweb.models import \
     Box, \
+    BoxNumber, \
     BoxType, \
     Constraints, \
+    Location, \
     LocRow, \
     LocBin, \
     LocTier, \
@@ -656,5 +658,91 @@ class PrintLabelsForm(forms.Form):
     number_to_print = forms.IntegerField(
         initial=10,
     )
+
+
+class LocationForm(forms.ModelForm):
+    """A form for use whenever you need to select row, bin, and tier"""
+    class Meta:
+        model = Location
+        fields = (
+            'loc_row',
+            'loc_bin',
+            'loc_tier',
+        )
+
+
+class ExistingLocationForm(LocationForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        loc_row = cleaned_data.get('loc_row')
+        loc_bin = cleaned_data.get('loc_bin')
+        loc_tier = cleaned_data.get('loc_tier')
+
+        try:
+            location = Location.objects.get(
+                loc_row=loc_row,
+                loc_bin=loc_bin,
+                loc_tier=loc_tier,
+            )
+        except Location.DoesNotExist:
+            raise ValidationError(
+                f"Location {loc_bin.loc_bin}, {loc_row.loc_row}, {loc_tier.loc_tier} does not exist."
+            )
+        except Location.MultipleObjectsReturned:
+            raise ValidationError(
+                r"Multiple {loc_bin.loc_bin}, {loc_row.loc_row}, {loc_tier.loc_tier} locations found"
+            )
+
+        cleaned_data['location'] = location
+        return cleaned_data
+
+
+class BoxNumberField(forms.CharField):
+    """Accepts box number with or without BOX prefix.
+    Returns BoxNumber with BOX prefix and leading zeros"""
+
+    def clean(self, value):
+        value = super().clean(value)
+
+        if BoxNumber.validate(value):
+            return value.upper()
+
+        # Did the user just enter digit?  Try and turn this
+        # into a valid bo number
+        try:
+            value = int(value)
+        except (TypeError, ValueError):
+            raise ValidationError(
+                '%(value)s is not a valid box number',
+                params={'value': value},
+            )
+
+        return BoxNumber.format_box_number(value)
+
+
+class ExtantBoxNumberField(BoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        if not Box.objects.filter(box_number=value).exists():
+            raise ValidationError(
+                "Box number %(value)s is not present in the database.",
+                params={'value': value},
+            )
+        return value
+
+
+class ExtantBoxNumberForm(forms.Form):
+
+    box_number = ExtantBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
 
 # EOF

@@ -563,40 +563,21 @@ class Box(models.Model):
             )
         return display
 
-    def add(self, date_filled=None) -> None:
-        if not date_filled:
-            date_filled = timezone.now()
-        if not self.exp_year:
-            raise BoxError(f'exp_year must be set before Box.add is called')
-        Activity.objects.create(
-            box_number=self.box_number,
-            date_filled=date_filled,
-            exp_year=self.exp_year,
-            duration=0,
-            box_type=self.box_type.box_type_code,
-        )
-        return None
-
-    """
-    The following method was added by John C. as a stub.  Travis R. did not 
-    realize this when he wrote the support/BoxActivity.py module.  Later, 
-    that module could be incorporated into (or called from this models.py 
-    module.  That appears to be the more common way to do it.
-    """
-    def empty(self):
-
-        # TODO: finish creating activity record
-        Activity.objects.create(
-            box_number=self.box_number,
-            box_type=self.box_type,
-        )
-
-        # TODO: clear out location and product info
-
     def get_absolute_url(self):
         return reverse(
             'fpiweb:box_details',
             kwargs={'pk': self.pk},
+        )
+
+    @staticmethod
+    def select_location(queryset):
+        """Since we're probably going to have a lot of Box queries
+        where we also want to pull in location data"""
+
+        return queryset.select_related(
+            'location__loc_row',
+            'location__loc_bin',
+            'location__loc_tier',
         )
 
 
