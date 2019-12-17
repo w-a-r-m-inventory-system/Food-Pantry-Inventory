@@ -95,7 +95,7 @@ let buildPallet = {
         let totalForms =  Number.parseInt(buildPallet.totalFormsField.val());
         totalForms--;
         buildPallet.totalFormsField.val(totalForms);
-        if(totalForms == 0)
+        if(totalForms === 0)
             buildPallet.scanABoxRow.show();
     },
 

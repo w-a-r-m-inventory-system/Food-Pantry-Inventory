@@ -14,7 +14,10 @@ form   The BoxItemForm
   <td>
     {% bootstrap_field form.box_number show_help=False show_label=False %}
     {{ form.id }}{# hidden input #}
+    {{ form.box_type }}
   </td>
   <td>{% bootstrap_field form.product show_help=False show_label=False %}</td>
   <td>{% bootstrap_field form.exp_year show_help=False show_label=False %}</td>
+  <td>{% bootstrap_field form.exp_month_start show_help=False show_label=False placeholder='' %}</td>
+  <td>{% bootstrap_field form.exp_month_end show_help=False show_label=False placeholder='' %}</td>
 </tr>

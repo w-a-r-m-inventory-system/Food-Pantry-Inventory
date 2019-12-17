@@ -8,6 +8,7 @@ from re import compile as re_compile
 from re import IGNORECASE
 
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
@@ -17,6 +18,11 @@ __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
+
+MONTH_VALIDATORS = [
+    MinValueValidator(1),
+    MaxValueValidator(12),
+]
 
 class LocRow(models.Model):
     """
@@ -236,7 +242,7 @@ class Location(models.Model):
 
     def __str__(self) -> str:
         """ Default way to display a location record. """
-        display = (f'Location {self.loc_code} - {self.loc_descr}')
+        display = f'Location {self.loc_code} - {self.loc_descr}'
         if self.loc_in_warehouse:
             display += (f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})')
         return display
@@ -507,6 +513,7 @@ class Box(models.Model):
         'Expiration Start Month (Optional)',
         null=True,
         blank=True,
+        validators=MONTH_VALIDATORS,
         help_text=exp_month_start_help_text
     )
     """
@@ -520,6 +527,7 @@ class Box(models.Model):
         'Expiration End Month (Optional)',
         null=True,
         blank=True,
+        validators=MONTH_VALIDATORS,
         help_text=exp_month_end_help_text,
     )
     """ Optional emding month range of when the product expires, if filled. """

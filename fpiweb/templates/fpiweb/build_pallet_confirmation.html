@@ -1,0 +1,18 @@
+{% extends 'fpiweb/base.html' %}
+{% comment %}
+
+CONTEXT VARIABLES
+---------------------------------------------------------------------
+location:       Location
+
+{% endcomment %}
+
+{% block title %}
+Build Pallet Confirmation
+{% endblock %}
+
+{% block content %}
+
+{% include 'fpiweb/partial/location_row.html' with location=location %}
+
+{% endblock %}
