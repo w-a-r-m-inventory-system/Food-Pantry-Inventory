@@ -50,14 +50,17 @@ from fpiweb.code_reader import \
     read_box_number
 from fpiweb.forms import \
     BoxItemForm, \
+    ExtantBoxNumberForm, \
     BuildPalletForm, \
     ConstraintsForm, \
+    ExistingLocationForm, \
     LocRowForm, \
     LocBinForm, \
     LocTierForm, \
     LoginForm, \
     NewBoxForm, \
     PrintLabelsForm
+from fpiweb.support.BoxActivity import BoxActivityClass
 from fpiweb.qr_code_utilities import QRCodePrinter
 
 __author__ = '(Multiple)'
@@ -1205,5 +1208,138 @@ class ActivityDownloadView(LoginRequiredMixin, View):
         response['Content-Disposition'] = 'attachment; filename="activities.csv"'
         return response
 
+
+class ManualMoveBoxView(LoginRequiredMixin, View):
+    template_name = 'fpiweb/manual_move_box.html'
+
+    MODE_ENTER_BOX_NUMBER = 'enter_box_number'
+    MODE_ENTER_LOCATION = 'enter_location'
+    MODE_CONFIRMATION = 'confirmation'
+
+    @staticmethod
+    def build_context(
+            mode,
+            box_number_form=None,
+            box=None,
+            location_form=None,
+            errors=None):
+        return {
+            'mode': mode,
+            'box_number_form': box_number_form,
+            'box': box,
+            'location_form': location_form,
+            'view_class': ManualMoveBoxView,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        context = self.build_context(
+            self.MODE_ENTER_BOX_NUMBER,
+            ExtantBoxNumberForm(),
+        )
+        return render(request, self.template_name, context)
+
+    def post_box_number(self, request):
+        box_number_form = ExtantBoxNumberForm(request.POST)
+        if not box_number_form.is_valid():
+            context = self.build_context(
+                self.MODE_ENTER_BOX_NUMBER,
+                box_number_form,
+            )
+            return render(
+                request,
+                self.template_name,
+                context,
+                status=404,
+            )
+
+        box_number = box_number_form.cleaned_data.get('box_number')
+
+        boxes = Box.select_location(
+            Box.objects.filter(box_number=box_number)
+        )
+
+        return render(
+            request,
+            self.template_name,
+            self.build_context(
+                self.MODE_ENTER_LOCATION,
+                box=boxes.first(),
+                location_form=ExistingLocationForm(),
+            )
+        )
+
+    def post_location(self, request):
+        box_pk = request.POST.get('box_pk')
+        if not box_pk:
+            return render(
+                request,
+                self.template_name,
+                self.build_context(
+                    self.MODE_ENTER_BOX_NUMBER,
+                    errors=['Missing box_pk']
+                ),
+                status=400,
+            )
+
+        try:
+            box = Box.objects.get(pk=box_pk)
+        except Box.DoesNotExist as dne:
+            message = str(dne)
+            logger.error(message)
+            return render(
+                request,
+                self.template_name,
+                self.build_context(
+                    self.MODE_ENTER_BOX_NUMBER,
+                    errors=[message]
+                ),
+                status=404,
+            )
+
+        location_form = ExistingLocationForm(request.POST)
+        if not location_form.is_valid():
+            return render(
+                request,
+                self.template_name,
+                self.build_context(
+                    self.MODE_ENTER_LOCATION,
+                    box=box,
+                    location_form=location_form,
+                ),
+            )
+
+        location = location_form.cleaned_data.get('location')
+        if not location:
+            message = "Unable to retrieve location from form"
+            logger.error(message)
+            return render(
+                render,
+                self.template_name
+            )
+
+        box.location = location
+        box.save()
+
+        box_activity = BoxActivityClass()
+        box_activity.box_move(box_pk)
+
+        return render(
+            request,
+            self.template_name,
+            self.build_context(
+                self.MODE_CONFIRMATION,
+                box=box,
+            ),
+        )
+
+    def post(self, request, *args, **kwargs):
+        mode = request.POST.get('mode')
+        if mode == self.MODE_ENTER_BOX_NUMBER:
+            return self.post_box_number(request)
+        if mode == self.MODE_ENTER_LOCATION:
+            return self.post_location(request)
+        print(f"Unrecognized mode '{mode}'")
+        return render(request, self.template_name, {})
 
 # EOF

@@ -114,13 +114,12 @@ class BoxActivityClass:
         self.box = Box.objects.get(id=box_id)
 
         # find the prior open activity record
-        # try:
-        self.activity = Activity.objects.get(
-            box_number=self.box.box_number,
-            date_filled=self.box.date_filled
-        )
-        if self.activity:
-            # found an activity record, check it out
+        try:
+            self.activity = Activity.objects.get(
+                box_number=self.box.box_number,
+                date_filled=self.box.date_filled
+            )
+
             if self.activity.date_consumed:
                 # oops - box has no open activity record so create one
                 self.activity = None
@@ -130,12 +129,13 @@ class BoxActivityClass:
             else:
                 # expected - has open activity record
                 pass
-        else:
+        except Activity.DoesNotExist:
             # oops - box has no open activity record so create one
             self.activity = None
             self._add_activity(
                 adjustment=Activity.MOVE_ADDED
             )
+        # Let Activity.MultipleObjectsReturned error propagate.
 
         # back on happy path - update location
         self._update_activity_location()
