@@ -29,6 +29,7 @@ from fpiweb.views import \
     ScannerView, \
     TestScanView, \
     MaintenanceView, \
+    ManualMoveBoxView, \
     LocRowListView, \
     LocRowCreateView, \
     LocRowUpdateView, \
@@ -181,7 +182,7 @@ urlpatterns = [
 
     # Move a box
     # e.g. /fpiweb/box/<pk>/move/ = change location of box in inventory
-    path('box/<int:pk>/move/', BoxEmptyMoveView.as_view(), name='box_move'),
+    path('box/<int:pk>/move/', BoxMoveView.as_view(), name='box_move'),
 
     # fill a box
     # e.g. /fpiweb/box/<pk>/fill/ = fill an empy box and put in inventory
@@ -261,4 +262,10 @@ urlpatterns = [
         'activity/download/',
         ActivityDownloadView.as_view(),
         name='download_activities'),
+
+    path(
+        'manual_move_box/',
+        ManualMoveBoxView.as_view(),
+        name='manual_move_box',
+    )
 ]
