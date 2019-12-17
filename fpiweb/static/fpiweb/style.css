@@ -22,15 +22,17 @@ table {
     /*border-spacing: 3px;*/
 }
 
-td {
-    border: 1px solid;
-    background: #c0ffc0;
-    padding: 0.25rem;
+th {
+    border: 0.125rem solid;
+    padding: 0.5rem;
     text-align: center;
 }
 
-th {
-    padding: 0.25rem;
+td {
+    border: 0.125rem solid;
+    background: #c0ffc0;
+    padding: 0.5rem;
+    text-align: center;
 }
 
 /* this is the "modern" way to center a table

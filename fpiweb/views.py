@@ -42,6 +42,7 @@ from fpiweb.models import \
     LocBin, \
     LocTier, \
     Pallet, \
+    Product, \
     Profile, \
     Location, \
     PalletBox
@@ -660,7 +661,8 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
 class BuildPalletView(View):
     """Set action in view"""
-    template_name = 'fpiweb/build_pallet.html'
+    form_template = 'fpiweb/build_pallet.html'
+    confirmation_template = 'fpiweb/build_pallet_confirmation.html'
 
     BoxFormFactory = modelformset_factory(
         Box,
@@ -670,9 +672,12 @@ class BuildPalletView(View):
 
     def get(self, request, *args, **kwargs):
 
+        # When adding a box to an existing pallet a box number is passed
+        # as part of the URL
         box_pk = kwargs.get('box_pk')
 
         build_pallet_form = BuildPalletForm()
+        print(f"build_pallet_form.fields are {build_pallet_form.fields}")
 
         kwargs = {
             'prefix': 'box_forms',
@@ -688,24 +693,48 @@ class BuildPalletView(View):
             'form': build_pallet_form,
             'box_forms': box_forms,
         }
-        return render(request, self.template_name, context)
+        return render(request, self.form_template, context)
 
     def post(self, request):
 
-        form = BuildPalletForm(request.POST)
+        build_pallet_form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
 
-        if not form.is_valid() or not box_forms.is_valid():
+        if not build_pallet_form.is_valid() or not box_forms.is_valid():
+            print('build_pallet_form.errors', build_pallet_form.errors)
+            print('build_pallet.non_field_errors()', build_pallet_form.non_field_errors())
+
             return render(
                 request,
-                self.template_name,
+                self.form_template,
                 {
-                    'form': form,
+                    'form': build_pallet_form,
                     'box_forms': box_forms,
                 }
             )
 
-        return error_page(request, "forms are valid")
+        print('------------------')
+        box_pks = []
+        for box_form in box_forms:
+            print('BoxItemForm data {}'.format(box_form.cleaned_data))
+            print("cleaned_data['id'] is a", type(box_form.cleaned_data['id']))
+            print('box_form.instance is {}'.format(box_form.instance))
+
+            box = box_form.instance
+            print('box.id is', box.id)
+            box_pks.append(box.id)
+            print('box', box)
+            print('-----')
+        print('box_pks', box_pks)
+
+
+        return render(
+            request,
+            self.confirmation_template,
+            {
+                'location': build_pallet_form.instance
+            },
+        )
 
 
 class ScannerViewError(RuntimeError):
