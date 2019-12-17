@@ -8,6 +8,10 @@ h2 {
     text-align: center;
 }
 
+label{
+    font-weight: bold;
+}
+
 table {
     /*display: table;*/
     /*text-align: center;*/
@@ -21,8 +25,12 @@ table {
 td {
     border: 1px solid;
     background: #c0ffc0;
-    padding: 5px;
+    padding: 0.25rem;
     text-align: center;
+}
+
+th {
+    padding: 0.25rem;
 }
 
 /* this is the "modern" way to center a table
@@ -151,3 +159,4 @@ button.remove{
     padding: 0.125rem 0.375rem 0.125rem 0.375rem;
     color: white;
 }
+
