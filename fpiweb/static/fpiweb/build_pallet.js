@@ -8,17 +8,24 @@ let buildPallet = {
     getNextAvailableBoxFormId: function()
     {
         // text input holds the box number
-        let textInputs = buildPallet.tbody.find("tr input[type='text']");
-
+        let rows = buildPallet.tbody.find("tr");
         let idsInUse = new Set();
-        for(var i=0; i<textInputs.length; i++)
-        {
-            let textInput = textInputs[i];
-            let id = textInput.id;
+
+        //  input[type='text']
+        for(var i=0; i<rows.length; i++) {
+            let row = $(rows[i]);
+            let hiddenInput = row.find("input[type='hidden']");
+            if(hiddenInput.length === 0)
+            {
+                // This happens when the "Scan a Box" row is present
+                continue;
+            }
+
+            let id = hiddenInput.attr('id');
 
             // IDs are of the form id_box_forms-0-box_number
             let pieces = id.split('-');
-            if(pieces.length !== 3)
+            if (pieces.length !== 3)
             {
                 console.error(`id ${id} split into ${pieces.length} pieces`);
                 continue;
@@ -26,8 +33,7 @@ let buildPallet = {
 
             let temp = pieces[1];
             id = Number.parseInt(temp);
-            if(Number.isNaN(id))
-            {
+            if (Number.isNaN(id)) {
                 console.error(`'${temp}' is not an integer`);
                 continue;
             }
@@ -76,11 +82,19 @@ let buildPallet = {
             return;
         }
 
-        buildPallet.tbody.prepend(data);
+        // If no boxes have been scanned the table contains a row with
+        // a message prompting the user to scan a Box.
         buildPallet.scanABoxRow.hide();
-        buildPallet.totalFormsField.val(
-            Number.parseInt(buildPallet.totalFormsField.val()) + 1
-        );
+
+        let totalForms = buildPallet.totalFormsField.val();
+        totalForms =  Number.parseInt(totalForms);
+        totalForms++;
+
+        buildPallet.tbody.prepend(data);
+        buildPallet.totalFormsField.val(totalForms);
+
+        let boxFormRows = $('tr.boxItemFormRow');
+
         $('button.remove').click(buildPallet.removeBox);
     },
 
@@ -107,18 +121,14 @@ let buildPallet = {
 
         $('button.remove').click(buildPallet.removeBox);
 
+        // scanner setup will attach a click event handler to element
+        // with an ID of scanButton
         scanner.setup(
             buildPallet.scanCallback,
             buildPallet.scanRequest
         );
     }
 };
-
-
-
-
-
-
 
 
 // Using JQuery, add event handler for when the DOM is loaded (images,

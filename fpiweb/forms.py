@@ -683,16 +683,16 @@ class BoxItemForm(forms.ModelForm):
             'exp_month_end',
         ]
 
-    # id = forms.IntegerField(
-    #     required=True,
-    #     widget=forms.HiddenInput
-    # )
+    id = forms.IntegerField(
+        # Box.objects.all(),
+        required=True,
+        widget=forms.HiddenInput
+    )
 
     box_number = forms.CharField(
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
-        disabled=True,
-        required=False,
+        widget=forms.HiddenInput,
     )
 
     box_type = forms.ModelChoiceField(

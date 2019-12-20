@@ -97,13 +97,16 @@ div.coordinate_label{
         </thead>
         <tbody>
           {% for box_form in box_forms %}
-            <tr>
+            <tr class="boxItemFormRow">
               <td>
                 <button class="btn btn-danger remove">X</button>
               </td>
               <td>
-                {% bootstrap_field box_form.box_number show_help=False show_label=False %}
-                {{ box_form.id }}
+                <div class="form-group">
+                  <input type="text" class="form-control" value="{{ box_form.instance.box_number }}" disabled />
+                </div>
+                {{ form.id }}
+                {{ form.box_number }}
                 {{ box_form.box_type }}
               </td>
               <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
