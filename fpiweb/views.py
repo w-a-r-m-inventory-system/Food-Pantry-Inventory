@@ -698,8 +698,17 @@ class BuildPalletView(View):
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
 
         if not build_pallet_form.is_valid() or not box_forms.is_valid():
-            print('build_pallet_form.errors', build_pallet_form.errors)
-            print('build_pallet.non_field_errors()', build_pallet_form.non_field_errors())
+            if build_pallet_form.errors:
+                print('build_pallet_form.errors', build_pallet_form.errors)
+            if build_pallet_form.non_field_errors():
+                print('build_pallet.non_field_errors()', build_pallet_form.non_field_errors())
+            for i, box_form in enumerate(box_forms):
+                if box_form.errors:
+                    print("box_form-{} errors: {}".format(i, box_forms.errors))
+                if box_form.non_field_errors():
+                    print("box_form-{} non-field errors: {}".format(
+                        i,
+                        box_form.non_field_errors()))
 
             return render(
                 request,
@@ -801,6 +810,10 @@ class ScannerView(View):
                 'quantity': default_box_type.box_type_qty,
             }
         )
+        if created:
+            logger.info(f"Box with box number {box_number} created.")
+        else:
+            logger.info(f"Found box with box number {box_number}.")
         return box, created
 
     @staticmethod
