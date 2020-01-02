@@ -666,36 +666,19 @@ class BuildPalletForm(forms.ModelForm):
         return cleaned_data
 
 
-class BoxItemForm(forms.ModelForm):
+class BoxItemForm(forms.Form):
     """Form for the Box as it appears as part of a formset on the Build Pallet
     page"""
 
-    class Meta:
-        model = Box
-        fields = [
-            'id',
-            'box_number',
-            'box_type',
-            'product',
-            'exp_year',
-            'exp_month_start',
-            'exp_month_end',
-        ]
-
     id = forms.IntegerField(
-        # Box.objects.all(),
         required=True,
         widget=forms.HiddenInput
     )
 
+    # This is a read only field.  In the page a box number is displayed in an input element with no name or id
     box_number = forms.CharField(
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
-        widget=forms.HiddenInput,
-    )
-
-    box_type = forms.ModelChoiceField(
-        BoxType.objects.all(),
         widget=forms.HiddenInput,
     )
 
@@ -710,6 +693,18 @@ class BoxItemForm(forms.ModelForm):
         help_text=Box.exp_year_help_text,
     )
 
+    exp_month_start = forms.IntegerField(
+        required=False,
+        min_value=1,
+        max_value=12,
+    )
+
+    exp_month_end = forms.IntegerField(
+        required=False,
+        min_value=1,
+        max_value=12,
+    )
+
     # clean method copied from FillBoxForm
     def clean(self):
         cleaned_data = super().clean()
@@ -717,6 +712,18 @@ class BoxItemForm(forms.ModelForm):
         exp_month_end = cleaned_data.get('exp_month_end')
         validate_exp_month_start_end(exp_month_start, exp_month_end)
         return cleaned_data
+
+    @staticmethod
+    def get_initial_from_box(box):
+        return {
+            'id': box.id,
+            'box_number': box.box_number,
+            'box_type': box.box_type,
+            'product': box.product,
+            'exp_year': box.exp_year,
+            'exp_month_start': box.exp_month_start,
+            'exp_month_end': box.exp_month_end,
+        }
 
 
 class PrintLabelsForm(forms.Form):

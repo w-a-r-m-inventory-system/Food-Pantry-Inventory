@@ -2,8 +2,9 @@
 {% comment %}
 
 CONTEXT VARIABLES
------------------
-form   The BoxItemForm
+-------------------------------------------------
+box_number:     The Box's box_number
+form:           The BoxItemForm
 
 {% endcomment %}
 
@@ -15,7 +16,7 @@ form   The BoxItemForm
   </td>
   <td>
     <div class="form-group">
-      <input type="text" class="form-control" value="{{ form.instance.box_number }}" disabled />
+      <input type="text" class="form-control" value="{{ box_number }}" disabled />
       {{ form.id }}
       {{ form.box_number }}
       {{ form.box_type }}
