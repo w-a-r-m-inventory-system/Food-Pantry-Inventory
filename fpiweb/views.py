@@ -1,8 +1,11 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+
+from collections import OrderedDict
+from datetime import date
 from csv import writer as csv_writer
-from enum import Enum, auto
+from enum import Enum
 from io import BytesIO
 from json import loads
 from logging import getLogger, debug, info
@@ -14,7 +17,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize
 from django.db.models import Max
-from django.forms import modelformset_factory
+from django.forms import formset_factory
 from django.http import \
     FileResponse, \
     HttpResponse, \
@@ -63,6 +66,7 @@ from fpiweb.forms import \
     PrintLabelsForm
 from fpiweb.support.BoxActivity import BoxActivityClass
 from fpiweb.qr_code_utilities import QRCodePrinter
+from fpiweb.support.BoxActivity import BoxActivityClass
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -664,11 +668,27 @@ class BuildPalletView(View):
     form_template = 'fpiweb/build_pallet.html'
     confirmation_template = 'fpiweb/build_pallet_confirmation.html'
 
-    BoxFormFactory = modelformset_factory(
-        Box,
-        form=BoxItemForm,
+    BoxFormFactory = formset_factory(
+        BoxItemForm,
         extra=0,
     )
+
+    def show_forms_response(
+            self,
+            request,
+            build_pallet_form,
+            box_forms,
+            status=400):
+
+        return render(
+            request,
+            self.form_template,
+            {
+                'form': build_pallet_form,
+                'box_forms': box_forms,
+            },
+            status=status,
+        )
 
     def get(self, request, *args, **kwargs):
 
@@ -683,65 +703,121 @@ class BuildPalletView(View):
             'prefix': 'box_forms',
         }
         if box_pk:
-            kwargs['queryset'] = Box.objects.filter(pk=box_pk)
-        else:
-            kwargs['queryset'] = Box.objects.none()
+            raise NotImplementedError(
+                "Adding box to existing pallet not implemented")
 
-        box_forms = self.BoxFormFactory(**kwargs)
-
-        context = {
-            'form': build_pallet_form,
-            'box_forms': box_forms,
-        }
-        return render(request, self.form_template, context)
+        return self.show_forms_response(
+            request,
+            build_pallet_form,
+            self.BoxFormFactory(**kwargs),
+            status=200,
+        )
 
     def post(self, request):
 
         build_pallet_form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
 
-        if not build_pallet_form.is_valid() or not box_forms.is_valid():
-            if build_pallet_form.errors:
-                print('build_pallet_form.errors', build_pallet_form.errors)
-            if build_pallet_form.non_field_errors():
-                print('build_pallet.non_field_errors()', build_pallet_form.non_field_errors())
-            for i, box_form in enumerate(box_forms):
-                if box_form.errors:
-                    print("box_form-{} errors: {}".format(i, box_forms.errors))
-                if box_form.non_field_errors():
-                    print("box_form-{} non-field errors: {}".format(
-                        i,
-                        box_form.non_field_errors()))
+        build_pallet_form_valid = build_pallet_form.is_valid()
+        if not build_pallet_form_valid:
+            logger.debug("BuildPalletForm not valid")
 
-            return render(
+        box_forms_valid = box_forms.is_valid()
+        if not box_forms_valid:
+            logger.debug("BoxForms not valid")
+
+        if not all([build_pallet_form_valid, box_forms_valid]):
+            return self.show_forms_response(
                 request,
-                self.form_template,
-                {
-                    'form': build_pallet_form,
-                    'box_forms': box_forms,
-                }
+                build_pallet_form,
+                box_forms,
             )
 
-        print('------------------')
-        box_pks = []
-        for box_form in box_forms:
-            print('BoxItemForm data {}'.format(box_form.cleaned_data))
-            print("cleaned_data['id'] is a", type(box_form.cleaned_data['id']))
-            print('box_form.instance is {}'.format(box_form.instance))
+        location = build_pallet_form.instance
 
-            box = box_form.instance
-            print('box.id is', box.id)
-            box_pks.append(box.id)
-            print('box', box)
-            print('-----')
-        print('box_pks', box_pks)
+        # Update box records and 
+        boxes_by_id = OrderedDict()
+        duplicate_ids = set()
+        box_ids_not_found = set()
+        forms_missing_box_id = 0
+        for i, box_form in enumerate(box_forms):
+            cleaned_data = box_form.cleaned_data
+            box_id = cleaned_data.get('id')
 
+            # I'm getting None as a value in one of my tests.  How did that
+            # pass validation?
+            if not box_id:
+                forms_missing_box_id += 1
+                box_form.add_error('id', f"id is {box_id}")
+                continue
+
+            # Is this a duplicate box_id?
+            if box_id in boxes_by_id:
+                duplicate_ids.add(box_id)
+                continue
+
+            # Is box_id present in database?
+            try:
+                box = Box.objects.get(id=box_id)
+            except Box.DoesNotExist:
+                box_ids_not_found.add(box_id)
+                continue
+
+            boxes_by_id[box_id] = box
+
+            box.location = location
+            box.product = cleaned_data.get('product')
+            box.exp_year = cleaned_data.get('exp_year')
+            box.exp_month_start = cleaned_data.get('exp_month_start')
+            box.exp_month_end = cleaned_data.get('exp_month_end')
+
+            # Not having a date_filled causes an error if an activity
+            # record needs to be created.
+            if not box.date_filled:
+                box.date_filled = date.today()
+
+            box.save()
+
+            box_activity = BoxActivityClass()
+            box_activity.box_move(box.id)
+
+        if forms_missing_box_id > 0:
+            # error reported on box_form
+            logger.debug("forms_missing_box_id > 0")
+            return self.show_forms_response(
+                request,
+                build_pallet_form,
+                box_forms,
+            )
+
+        if duplicate_ids:
+            duplicate_ids = list(duplicate_ids)
+            message = f"Duplicate Box IDs: {', '.join(duplicate_ids)}"
+            logger.debug(message)
+            build_pallet_form.add_error(None, message)
+            return self.show_forms_response(
+                request,
+                build_pallet_form,
+                box_forms,
+            )
+
+        if box_ids_not_found:
+            box_ids_not_found = list(box_ids_not_found)
+            message = f"Box IDs not found: {', '.join(box_ids_not_found)}"
+            logger.debug(message)
+            build_pallet_form.add_error(None, message)
+            return self.show_forms_response(
+                request,
+                build_pallet_form,
+                box_forms,
+            )
 
         return render(
             request,
             self.confirmation_template,
             {
-                'location': build_pallet_form.instance
+                'location': location,
+                'boxes': boxes_by_id.values(),
             },
         )
 
@@ -911,7 +987,9 @@ class BoxItemFormView(LoginRequiredMixin, View):
 
     @staticmethod
     def get_form(box, prefix=None):
-        kwargs = {'instance': box}
+        kwargs = {
+            'initial': BoxItemForm.get_initial_from_box(box)
+        }
         if prefix:
             kwargs['prefix'] = prefix
         form = BoxItemForm(**kwargs)
@@ -936,6 +1014,7 @@ class BoxItemFormView(LoginRequiredMixin, View):
             request,
             self.template_name,
             {
+                'box_number': box.box_number,
                 'form': self.get_form(box, prefix),
             },
         )

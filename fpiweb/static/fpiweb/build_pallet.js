@@ -94,8 +94,38 @@ let buildPallet = {
         buildPallet.totalFormsField.val(totalForms);
 
         let boxFormRows = $('tr.boxItemFormRow');
+        if(boxFormRows.length >= 2)
+        {
+            let currentRow = $(boxFormRows[0]);
+            let priorRow = $(boxFormRows[1]);
+            buildPallet.defaultToPriorRowValues(priorRow, currentRow);
+        }
 
         $('button.remove').click(buildPallet.removeBox);
+    },
+
+    defaultToPriorRowValues: function(priorRow, currentRow)
+    {
+        let cellData = [
+            {index: 2, selector: 'select'},  // product
+            {index: 3, selector: 'select'},  // exp year
+            {index: 4, selector: 'input[type="number"]'},  // exp month start
+            {index: 5, selector: 'input[type="number"]'}  // exp month end
+        ];
+
+        let priorRowCells = priorRow.find('td');
+        let currentRowCells = currentRow.find('td');
+
+        for(var i=0; i<cellData.length; i++)
+        {
+            let cellDatum = cellData[i];
+            let value = $(priorRowCells[cellDatum.index])
+                .find(cellDatum.selector)
+                .val();
+            $(currentRowCells[cellDatum.index])
+                .find(cellDatum.selector)
+                .val(value);
+        }
     },
 
     removeBox: function(event)

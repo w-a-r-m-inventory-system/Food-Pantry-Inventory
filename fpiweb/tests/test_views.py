@@ -256,6 +256,7 @@ class BuildPalletViewTest(TestCase):
 
         for i, box in enumerate(boxes):
             box_data = {
+                'id': box.id,
                 'box_number': box.box_number,
                 'product': product.pk,
                 'exp_year': exp_year,
@@ -276,7 +277,7 @@ class BuildPalletViewTest(TestCase):
             reverse('fpiweb:build_pallet'),
             post_data,
         )
-        self.assertEqual(200, response.status_code, response.content)
+        self.assertEqual(200, response.status_code)
 
         for i, box in enumerate(boxes):
             box.refresh_from_db()

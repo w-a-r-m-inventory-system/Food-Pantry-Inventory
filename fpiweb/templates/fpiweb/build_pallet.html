@@ -85,7 +85,7 @@ div.coordinate_label{
         <thead>
           <tr>
             <th rowspan="2">Remove</th>
-            <th rowspan="2">Box</th>
+            <th rowspan="2">Box Number</th>
             <th rowspan="2">Product</th>
             <th rowspan="2">Expiration Year</th>
             <th colspan="2">Expiration Month (Optional)</th>
@@ -106,8 +106,6 @@ div.coordinate_label{
                   <input type="text" class="form-control" value="{{ box_form.instance.box_number }}" disabled />
                 </div>
                 {{ form.id }}
-                {{ form.box_number }}
-                {{ box_form.box_type }}
               </td>
               <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
               <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
