@@ -102,10 +102,15 @@ div.coordinate_label{
                 <button class="btn btn-danger remove">X</button>
               </td>
               <td>
+
+                {{ box_form.errors }}
+                {{ box_form.non_field_errors }}
                 <div class="form-group">
-                  <input type="text" class="form-control" value="{{ box_form.instance.box_number }}" disabled />
+                  <input type="text" class="form-control" value="{{ box_form.cleaned_data.box_number }}" disabled />
                 </div>
-                {{ form.id }}
+                {# These two are hidden fields #}
+                {{ box_form.id }}
+                {{ box_form.box_number }}
               </td>
               <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
               <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>

@@ -94,7 +94,9 @@ let buildPallet = {
         buildPallet.totalFormsField.val(totalForms);
 
         let boxFormRows = $('tr.boxItemFormRow');
-        if(boxFormRows.length >= 2)
+        let rowCount = boxFormRows.length;
+        console.debug(`There are ${rowCount} boxItemFormRows`);
+        if(rowCount >= 2)
         {
             let currentRow = $(boxFormRows[0]);
             let priorRow = $(boxFormRows[1]);
@@ -122,6 +124,9 @@ let buildPallet = {
             let value = $(priorRowCells[cellDatum.index])
                 .find(cellDatum.selector)
                 .val();
+            console.debug(
+                `priorRow index=${cellDatum.index} value=${value}`
+            );
             $(currentRowCells[cellDatum.index])
                 .find(cellDatum.selector)
                 .val(value);

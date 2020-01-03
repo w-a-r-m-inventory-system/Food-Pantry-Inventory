@@ -719,11 +719,6 @@ class BoxItemForm(forms.Form):
         return {
             'id': box.id,
             'box_number': box.box_number,
-            'box_type': box.box_type,
-            'product': box.product,
-            'exp_year': box.exp_year,
-            'exp_month_start': box.exp_month_start,
-            'exp_month_end': box.exp_month_end,
         }
 
 
