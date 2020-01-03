@@ -267,7 +267,7 @@ class BuildPalletViewTest(TestCase):
                 box_data['exp_month_start'] = 3
                 box_data['exp_month_end'] = 6
 
-            box_data = formset_form_post_data('id_box_forms', i, box_data)
+            box_data = formset_form_post_data('box_forms', i, box_data)
             post_data.update(box_data)
 
         # convert all the values to strings

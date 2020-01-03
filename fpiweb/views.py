@@ -3,7 +3,6 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 
 from collections import OrderedDict
-from datetime import date
 from csv import writer as csv_writer
 from enum import Enum
 from io import BytesIO
@@ -25,6 +24,7 @@ from django.http import \
     StreamingHttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views import View
 from django.views.generic import \
     CreateView, \
@@ -34,6 +34,7 @@ from django.views.generic import \
     ListView, \
     TemplateView, \
     UpdateView
+
 from sqlalchemy.engine.url import URL
 
 from fpiweb.models import \
@@ -667,6 +668,7 @@ class BuildPalletView(View):
     """Set action in view"""
     form_template = 'fpiweb/build_pallet.html'
     confirmation_template = 'fpiweb/build_pallet_confirmation.html'
+    formset_prefix = 'box_forms'
 
     BoxFormFactory = formset_factory(
         BoxItemForm,
@@ -700,7 +702,7 @@ class BuildPalletView(View):
         print(f"build_pallet_form.fields are {build_pallet_form.fields}")
 
         kwargs = {
-            'prefix': 'box_forms',
+            'prefix': self.formset_prefix,
         }
         if box_pk:
             raise NotImplementedError(
@@ -715,8 +717,12 @@ class BuildPalletView(View):
 
     def post(self, request):
 
+        logger.debug(f"POST data is {request.POST}")
         build_pallet_form = BuildPalletForm(request.POST)
-        box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
+        box_forms = self.BoxFormFactory(
+            request.POST,
+            prefix=self.formset_prefix,
+        )
 
         build_pallet_form_valid = build_pallet_form.is_valid()
         if not build_pallet_form_valid:
@@ -742,13 +748,12 @@ class BuildPalletView(View):
         forms_missing_box_id = 0
         for i, box_form in enumerate(box_forms):
             cleaned_data = box_form.cleaned_data
-            box_id = cleaned_data.get('id')
+            if not cleaned_data:
+                continue
 
-            # I'm getting None as a value in one of my tests.  How did that
-            # pass validation?
-            if not box_id:
-                forms_missing_box_id += 1
-                box_form.add_error('id', f"id is {box_id}")
+            box_id = cleaned_data.get('id')
+            if not isinstance(box_id, int):
+                logger.error(f"box_id {box_id} is a {type(box_id)}")
                 continue
 
             # Is this a duplicate box_id?
@@ -774,7 +779,7 @@ class BuildPalletView(View):
             # Not having a date_filled causes an error if an activity
             # record needs to be created.
             if not box.date_filled:
-                box.date_filled = date.today()
+                box.date_filled = timezone.now()
 
             box.save()
 
@@ -803,6 +808,7 @@ class BuildPalletView(View):
 
         if box_ids_not_found:
             box_ids_not_found = list(box_ids_not_found)
+            logger.debug("box_ids_not_found are {}".format(box_ids_not_found))
             message = f"Box IDs not found: {', '.join(box_ids_not_found)}"
             logger.debug(message)
             build_pallet_form.add_error(None, message)
