@@ -699,7 +699,6 @@ class BuildPalletView(View):
         box_pk = kwargs.get('box_pk')
 
         build_pallet_form = BuildPalletForm()
-        print(f"build_pallet_form.fields are {build_pallet_form.fields}")
 
         kwargs = {
             'prefix': self.formset_prefix,
@@ -741,7 +740,7 @@ class BuildPalletView(View):
 
         location = build_pallet_form.instance
 
-        # Update box records and 
+        # Update box records and
         boxes_by_id = OrderedDict()
         duplicate_ids = set()
         box_ids_not_found = set()
