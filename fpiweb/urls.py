@@ -192,7 +192,7 @@ urlpatterns = [
     # e.g. /fpiweb/box/<pk>/empty = consume the product in a box
     path('box/<int:pk>/empty/', BoxEmptyMoveView.as_view(), name='box_empty'),
 
-    # Test scan page (dev only)
+    # send scan image or box number to server receive JSON info on box
     path('box/box_form/', BoxItemFormView.as_view(), name='box_form'),
 
     # e.g. /fpiweb/test_scan/ = ???

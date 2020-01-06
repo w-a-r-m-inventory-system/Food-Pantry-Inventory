@@ -29,6 +29,7 @@ class BOX_ACTION(Enum):
     MOVE: str = 'move'
     EMPTY: str ='empty'
 
+
 log = getLogger('fpiweb')
 
 
