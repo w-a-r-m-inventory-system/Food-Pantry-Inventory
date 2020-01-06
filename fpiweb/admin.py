@@ -27,12 +27,12 @@ __creation_date__ = "04/01/2019"
 admin.site.register(Activity)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
-admin.site.register(Location)
 
 
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):
     list_display = (
+        'id',
         'box_number',
         'box_type',
         'location',
@@ -59,6 +59,21 @@ class ConstraintsAdmin(admin.ModelAdmin):
         'constraint_min',
         'constraint_max',
         'constraint_list',
+    )
+
+
+@admin.register(Location)
+class Location(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'loc_row',
+        'loc_bin',
+        'loc_tier',
+    )
+    list_filter = (
+        'loc_row',
+        'loc_bin',
+        'loc_tier',
     )
 
 
