@@ -65,6 +65,12 @@ div.coordinate_label{
       </div>
     </div>
 
+    {% if form.non_field_errors %}
+        <div class="row">
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        </div>
+    {% endif %}
+
     <div class="row" style="margin-bottom: 1rem;">
       {# by default a button acts like <input type="submit"> type="button" disables this behavior #}
       <button
@@ -74,39 +80,51 @@ div.coordinate_label{
         data-target="#scannerModal">Scan a Box</button>&nbsp;
       <button class="btn btn-primary">Pallet Complete</button>
     </div>
-
     <div class="row">
       <table id="boxTable" border="2">
         <thead>
           <tr>
-            <th>Remove</th>
-            <th>Box</th>
-            <th>Product</th>
-            <th>Expiration Year</th>
+            <th rowspan="2">Remove</th>
+            <th rowspan="2">Box Number</th>
+            <th rowspan="2">Product</th>
+            <th rowspan="2">Expiration Year</th>
+            <th colspan="2">Expiration Month (Optional)</th>
+          </tr>
+          <tr>
+            <th>Start</th>
+            <th>End</th>
           </tr>
         </thead>
         <tbody>
           {% for box_form in box_forms %}
-            <tr>
+            <tr class="boxItemFormRow">
               <td>
                 <button class="btn btn-danger remove">X</button>
               </td>
               <td>
-                {% bootstrap_field box_form.box_number show_help=False show_label=False %}
-                {{ box_form.box_id }}
+
+                {{ box_form.errors }}
+                {{ box_form.non_field_errors }}
+                <div class="form-group">
+                  <input type="text" class="form-control" value="{{ box_form.cleaned_data.box_number }}" disabled />
+                </div>
+                {# These two are hidden fields #}
+                {{ box_form.id }}
+                {{ box_form.box_number }}
               </td>
               <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
               <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
+              <td>{% bootstrap_field box_form.exp_month_start show_help=False show_label=False placeholder='' %}</td>
+              <td>{% bootstrap_field box_form.exp_month_end show_help=False show_label=False placeholder='' %}</td>
             </tr>
           {% empty %}
             <tr id="scanABoxRow">
-              <td colspan="4">Scan a box</td>
+              <td colspan="6">Scan a box</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-
   </form>
 </div>
 
