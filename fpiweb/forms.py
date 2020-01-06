@@ -153,6 +153,51 @@ def validate_int_list(char_list: list) -> bool:
     return valid_int_list
 
 
+def validate_exp_month_start_end(exp_month_start, exp_month_end):
+    """
+    Validate the start and end month, if given.
+
+    :param exp_month_start: number 1-12 (integer or string)
+    :param exp_month_end: number 1-12 (integer or string)
+    :return:
+    """
+    if exp_month_start is None and exp_month_end is None:
+        return
+
+    error_msg = (
+        "If Exp {} month is specified, Exp {} month must be specified"
+    )
+
+    if exp_month_start is not None and exp_month_end is None:
+        raise ValidationError(error_msg.format('start', 'end'))
+
+    if exp_month_end is not None and exp_month_start is None:
+        raise ValidationError(error_msg.format('end', 'start'))
+
+    try:
+        exp_month_start = int(exp_month_start)
+    except (TypeError, ValueError):
+        raise ValidationError(
+            "Exp month start {} is not an integer".format(
+                repr(exp_month_start),
+            )
+        )
+
+    try:
+        exp_month_end = int(exp_month_end)
+    except (TypeError, ValueError):
+        raise ValidationError(
+            "Exp month end {} is not an integer".format(
+                repr(exp_month_end)
+            )
+        )
+
+    if exp_month_end <= exp_month_start:
+        raise ValidationError(
+            'Exp month end must be after Exp month start'
+        )
+
+
 class Html5DateInput(DateInput):
     input_type = 'date'
 
@@ -356,7 +401,6 @@ class LocTierForm(forms.ModelForm):
             )
         return
 
-
     def clean(self):
         """
         Clean and validate the data given for the tier record.
@@ -556,33 +600,6 @@ class FillBoxForm(forms.ModelForm):
         help_text=Box.exp_month_end_help_text,
     )
 
-    @staticmethod
-    def validate_exp_month_start_end(exp_month_start, exp_month_end):
-        """
-        Validate the start and end month, if given.
-
-        :param exp_month_start:
-        :param exp_month_end:
-        :return:
-        """
-        if exp_month_start is None and exp_month_end is None:
-            return
-
-        error_msg = (
-            "If Exp {} month is specified, Exp {} month must be specified"
-        )
-
-        if exp_month_start is not None and exp_month_end is None:
-            raise ValidationError(error_msg.format('start', 'end'))
-
-        if exp_month_end is not None and exp_month_start is None:
-            raise ValidationError(error_msg.format('end', 'start'))
-
-        if exp_month_end <= exp_month_start:
-            raise ValidationError(
-                'Exp month end must be after Exp month start'
-            )
-
     def clean(self):
         """
         Clean and validate the data in this box record.
@@ -595,48 +612,75 @@ class FillBoxForm(forms.ModelForm):
         self.validate_exp_month_start_end(exp_month_start, exp_month_end)
 
 
-class BuildPalletForm(forms.Form):
-    # This may be changed to a Model form for the Location Table
+# class BuildPalletForm(forms.Form):
+#     # Don't try and turn this into a Model Form.  We're performing a search,
+#     # not creating a new Location or editing an existing one.
+#
+#     loc_row = forms.ModelChoiceField(
+#         LocRow.objects.all(),
+#         required=True,
+#     )
+#
+#     loc_bin = forms.ModelChoiceField(
+#         LocBin.objects.all(),
+#         required=True,
+#     )
+#
+#     loc_tier = forms.ModelChoiceField(
+#         LocTier.objects.all(),
+#         required=True,
+#     )
 
-    loc_row = forms.ModelChoiceField(
-        LocRow.objects.all(),
-        required=True,
-    )
 
-    loc_bin = forms.ModelChoiceField(
-        LocBin.objects.all(),
-        required=True,
-    )
+class BuildPalletForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = (
+            'loc_row',
+            'loc_bin',
+            'loc_tier',
+        )
 
-    loc_tier = forms.ModelChoiceField(
-        LocTier.objects.all(),
-        required=True,
-    )
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # The values returned are LocRow, LocBin, and LocTier objects
+        loc_row = cleaned_data['loc_row']
+        loc_bin = cleaned_data['loc_bin']
+        loc_tier = cleaned_data['loc_tier']
+
+        try:
+            self.instance = Location.objects.get(
+                loc_row=loc_row,
+                loc_bin=loc_bin,
+                loc_tier=loc_tier,
+            )
+        except Location.DoesNotExist:
+            raise forms.ValidationError(
+                "Location row={} bin={} tier={} not found.".format(
+                    loc_row.loc_row,
+                    loc_bin.loc_bin,
+                    loc_tier.loc_tier,
+                )
+            )
+
+        return cleaned_data
 
 
-class BoxItemForm(forms.ModelForm):
+class BoxItemForm(forms.Form):
     """Form for the Box as it appears as part of a formset on the Build Pallet
     page"""
-
-    class Meta:
-        model = Box
-        fields = [
-            'id',
-            'box_number',
-            'product',
-            'exp_year',
-        ]
 
     id = forms.IntegerField(
         required=True,
         widget=forms.HiddenInput
     )
 
+    # This is a read only field.  In the page a box number is displayed in an input element with no name or id
     box_number = forms.CharField(
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
-        disabled=True,
-        required=False,
+        widget=forms.HiddenInput,
     )
 
     product = forms.ModelChoiceField(
@@ -649,6 +693,33 @@ class BoxItemForm(forms.ModelForm):
         coerce=int,
         help_text=Box.exp_year_help_text,
     )
+
+    exp_month_start = forms.IntegerField(
+        required=False,
+        min_value=1,
+        max_value=12,
+    )
+
+    exp_month_end = forms.IntegerField(
+        required=False,
+        min_value=1,
+        max_value=12,
+    )
+
+    # clean method copied from FillBoxForm
+    def clean(self):
+        cleaned_data = super().clean()
+        exp_month_start = cleaned_data.get('exp_month_start')
+        exp_month_end = cleaned_data.get('exp_month_end')
+        validate_exp_month_start_end(exp_month_start, exp_month_end)
+        return cleaned_data
+
+    @staticmethod
+    def get_initial_from_box(box):
+        return {
+            'id': box.id,
+            'box_number': box.box_number,
+        }
 
 
 class PrintLabelsForm(forms.Form):
