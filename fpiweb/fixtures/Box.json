@@ -138,7 +138,7 @@
     "model": "fpiweb.box",
     "pk": 14,
     "fields": {
-      "box_number": "12345",
+      "box_number": "BOX23456",
       "box_type": 1,
       "location": 10,
       "product": 1,

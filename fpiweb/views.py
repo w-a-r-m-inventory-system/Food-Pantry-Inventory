@@ -1,8 +1,10 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+
+from collections import OrderedDict
 from csv import writer as csv_writer
-from enum import Enum, auto
+from enum import Enum
 from io import BytesIO
 from json import loads
 from logging import getLogger, debug, info
@@ -14,7 +16,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize
 from django.db.models import Max
-from django.forms import modelformset_factory
+from django.forms import formset_factory
 from django.http import \
     FileResponse, \
     HttpResponse, \
@@ -22,6 +24,7 @@ from django.http import \
     StreamingHttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views import View
 from django.views.generic import \
     CreateView, \
@@ -31,6 +34,7 @@ from django.views.generic import \
     ListView, \
     TemplateView, \
     UpdateView
+
 from sqlalchemy.engine.url import URL
 
 from fpiweb.models import \
@@ -42,6 +46,7 @@ from fpiweb.models import \
     LocBin, \
     LocTier, \
     Pallet, \
+    Product, \
     Profile, \
     Location, \
     PalletBox
@@ -62,6 +67,7 @@ from fpiweb.forms import \
     PrintLabelsForm
 from fpiweb.support.BoxActivity import BoxActivityClass
 from fpiweb.qr_code_utilities import QRCodePrinter
+from fpiweb.support.BoxActivity import BoxActivityClass
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -660,52 +666,165 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
 class BuildPalletView(View):
     """Set action in view"""
-    template_name = 'fpiweb/build_pallet.html'
+    form_template = 'fpiweb/build_pallet.html'
+    confirmation_template = 'fpiweb/build_pallet_confirmation.html'
+    formset_prefix = 'box_forms'
 
-    BoxFormFactory = modelformset_factory(
-        Box,
-        form=BoxItemForm,
+    BoxFormFactory = formset_factory(
+        BoxItemForm,
         extra=0,
     )
 
+    def show_forms_response(
+            self,
+            request,
+            build_pallet_form,
+            box_forms,
+            status=400):
+
+        return render(
+            request,
+            self.form_template,
+            {
+                'form': build_pallet_form,
+                'box_forms': box_forms,
+            },
+            status=status,
+        )
+
     def get(self, request, *args, **kwargs):
 
+        # When adding a box to an existing pallet a box number is passed
+        # as part of the URL
         box_pk = kwargs.get('box_pk')
 
         build_pallet_form = BuildPalletForm()
 
         kwargs = {
-            'prefix': 'box_forms',
+            'prefix': self.formset_prefix,
         }
         if box_pk:
-            kwargs['queryset'] = Box.objects.filter(pk=box_pk)
-        else:
-            kwargs['queryset'] = Box.objects.none()
+            raise NotImplementedError(
+                "Adding box to existing pallet not implemented")
 
-        box_forms = self.BoxFormFactory(**kwargs)
-
-        context = {
-            'form': build_pallet_form,
-            'box_forms': box_forms,
-        }
-        return render(request, self.template_name, context)
+        return self.show_forms_response(
+            request,
+            build_pallet_form,
+            self.BoxFormFactory(**kwargs),
+            status=200,
+        )
 
     def post(self, request):
 
-        form = BuildPalletForm(request.POST)
-        box_forms = self.BoxFormFactory(request.POST, prefix='box_forms')
+        logger.debug(f"POST data is {request.POST}")
+        build_pallet_form = BuildPalletForm(request.POST)
+        box_forms = self.BoxFormFactory(
+            request.POST,
+            prefix=self.formset_prefix,
+        )
 
-        if not form.is_valid() or not box_forms.is_valid():
-            return render(
+        build_pallet_form_valid = build_pallet_form.is_valid()
+        if not build_pallet_form_valid:
+            logger.debug("BuildPalletForm not valid")
+
+        box_forms_valid = box_forms.is_valid()
+        if not box_forms_valid:
+            logger.debug("BoxForms not valid")
+
+        if not all([build_pallet_form_valid, box_forms_valid]):
+            return self.show_forms_response(
                 request,
-                self.template_name,
-                {
-                    'form': form,
-                    'box_forms': box_forms,
-                }
+                build_pallet_form,
+                box_forms,
             )
 
-        return error_page(request, "forms are valid")
+        location = build_pallet_form.instance
+
+        # Update box records and
+        boxes_by_id = OrderedDict()
+        duplicate_ids = set()
+        box_ids_not_found = set()
+        forms_missing_box_id = 0
+        for i, box_form in enumerate(box_forms):
+            cleaned_data = box_form.cleaned_data
+            if not cleaned_data:
+                continue
+
+            box_id = cleaned_data.get('id')
+            if not isinstance(box_id, int):
+                logger.error(f"box_id {box_id} is a {type(box_id)}")
+                continue
+
+            # Is this a duplicate box_id?
+            if box_id in boxes_by_id:
+                duplicate_ids.add(box_id)
+                continue
+
+            # Is box_id present in database?
+            try:
+                box = Box.objects.get(id=box_id)
+            except Box.DoesNotExist:
+                box_ids_not_found.add(box_id)
+                continue
+
+            boxes_by_id[box_id] = box
+
+            box.location = location
+            box.product = cleaned_data.get('product')
+            box.exp_year = cleaned_data.get('exp_year')
+            box.exp_month_start = cleaned_data.get('exp_month_start')
+            box.exp_month_end = cleaned_data.get('exp_month_end')
+
+            # Not having a date_filled causes an error if an activity
+            # record needs to be created.
+            if not box.date_filled:
+                box.date_filled = timezone.now()
+
+            box.save()
+
+            box_activity = BoxActivityClass()
+            box_activity.box_move(box.id)
+
+        if forms_missing_box_id > 0:
+            # error reported on box_form
+            logger.debug("forms_missing_box_id > 0")
+            return self.show_forms_response(
+                request,
+                build_pallet_form,
+                box_forms,
+            )
+
+        if duplicate_ids:
+            duplicate_ids = list(duplicate_ids)
+            message = f"Duplicate Box IDs: {', '.join(duplicate_ids)}"
+            logger.debug(message)
+            build_pallet_form.add_error(None, message)
+            return self.show_forms_response(
+                request,
+                build_pallet_form,
+                box_forms,
+            )
+
+        if box_ids_not_found:
+            box_ids_not_found = list(box_ids_not_found)
+            logger.debug("box_ids_not_found are {}".format(box_ids_not_found))
+            message = f"Box IDs not found: {', '.join(box_ids_not_found)}"
+            logger.debug(message)
+            build_pallet_form.add_error(None, message)
+            return self.show_forms_response(
+                request,
+                build_pallet_form,
+                box_forms,
+            )
+
+        return render(
+            request,
+            self.confirmation_template,
+            {
+                'location': location,
+                'boxes': boxes_by_id.values(),
+            },
+        )
 
 
 class ScannerViewError(RuntimeError):
@@ -775,6 +894,10 @@ class ScannerView(View):
                 'quantity': default_box_type.box_type_qty,
             }
         )
+        if created:
+            logger.info(f"Box with box number {box_number} created.")
+        else:
+            logger.info(f"Found box with box number {box_number}.")
         return box, created
 
     @staticmethod
@@ -869,7 +992,9 @@ class BoxItemFormView(LoginRequiredMixin, View):
 
     @staticmethod
     def get_form(box, prefix=None):
-        kwargs = {'instance': box}
+        kwargs = {
+            'initial': BoxItemForm.get_initial_from_box(box)
+        }
         if prefix:
             kwargs['prefix'] = prefix
         form = BoxItemForm(**kwargs)
@@ -894,6 +1019,7 @@ class BoxItemFormView(LoginRequiredMixin, View):
             request,
             self.template_name,
             {
+                'box_number': box.box_number,
                 'form': self.get_form(box, prefix),
             },
         )
