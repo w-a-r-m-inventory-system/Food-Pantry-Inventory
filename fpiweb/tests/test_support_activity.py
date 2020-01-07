@@ -125,7 +125,7 @@ class ActivitySupportTestCase(TransactionTestCase):
         assert full_activity.adjustment_code is None
         return
 
-    def text_box_consume(self) -> None:
+    def test_box_consume(self) -> None:
         """
         Test consuming a box under various circumstances.
 
