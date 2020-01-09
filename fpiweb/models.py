@@ -595,7 +595,7 @@ class Pallet(models.Model):
     """
 
     class Meta:
-        ordering = ['user']
+        ordering = ('name',)
         app_label = 'fpiweb'
         verbose_name_plural = 'Pallets'
 
@@ -618,14 +618,14 @@ class Pallet(models.Model):
     )
     """ Internal record identifier for a pallet. """
 
-    user_help_text = "User managing this pallet"
-    user = models.OneToOneField(
-        User,
-        on_delete=models.PROTECT,
-        verbose_name="User",
-        help_text=user_help_text
+    name_help_text = "Name of pallet"
+    name = models.CharField(
+        'Name',
+        unique=True,
+        max_length=200,
+        help_text=name_help_text,
     )
-    """ ID of user building the pallet. """
+    """ Name of pallet. """
 
     location = models.ForeignKey(
         "Location",
@@ -646,7 +646,7 @@ class Pallet(models.Model):
 
     def __str__(self) -> str:
         """ Display the information about this pallet. """
-        display = f'Pallet for {self.user} - ' \
+        display = f'Pallet for {self.name} - ' \
                   f'status: {self.pallet_status}'
         return display
 
@@ -693,17 +693,6 @@ class PalletBox(models.Model):
         on_delete=models.PROTECT,
         help_text=box_help_text,
     )
-
-    box_number_help_text = "Number printed in the label on the box."
-    box_number_max_length = 8
-    box_number_min_length = box_number_max_length
-    box_number = models.CharField(
-        'Visible Box Number',
-        max_length=box_number_max_length,
-        unique=True,
-        help_text=box_number_help_text,
-    )
-    """ Number printed in the label on the box. """
 
     product_help_text = 'Product contained in this box, if filled.'
     product = models.ForeignKey(
@@ -1181,15 +1170,13 @@ class Profile(models.Model):
         help_text=title_help_text,
     )
 
-    active_location_help_text = (
-        "The active location for when user is building a pallet (Location)"
-    )
-    active_location = models.ForeignKey(
-        Location,
+    active_pallet_help_text = "Active Pallet"
+    active_pallet = models.ForeignKey(
+        Pallet,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        help_text=active_location_help_text,
+        help_text=active_pallet_help_text,
     )
 
     def __str__(self) -> str:
