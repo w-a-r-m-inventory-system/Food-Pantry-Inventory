@@ -49,8 +49,6 @@ sys.path.insert(1, django_app_directory)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'FPIDjango.settings'
 
 # Invoke Django code to establish its environment
-from django.conf import settings
-settings.configure()
 django.setup()
 
 # -- Project information -----------------------------------------------------
@@ -101,7 +99,7 @@ html_static_path = ['_static']
 html_title = "Food Pantry Inventory"
 
 # Shorter title used when needed.
-htmo_short_title = "Inventory"
+html_short_title = "Inventory"
 
 # Date stamp each page of documentation.  (Empty string used default format.)
 html_last_updated_fmt = ""
