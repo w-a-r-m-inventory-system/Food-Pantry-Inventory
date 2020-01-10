@@ -36,14 +36,6 @@ fpiweb.forms module
    :undoc-members:
    :show-inheritance:
 
-fpiweb.models module
---------------------
-
-.. automodule:: fpiweb.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 fpiweb.urls module
 ------------------
 
@@ -51,15 +43,6 @@ fpiweb.urls module
    :members:
    :undoc-members:
    :show-inheritance:
-
-fpiweb.views module
--------------------
-
-.. automodule:: fpiweb.views
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 
 Module contents
 ---------------
