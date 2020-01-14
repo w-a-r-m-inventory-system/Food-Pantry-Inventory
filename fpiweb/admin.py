@@ -105,7 +105,6 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'title',
-        'active_location',
     )
 
 # EOF
