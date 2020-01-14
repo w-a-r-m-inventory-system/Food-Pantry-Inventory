@@ -1,0 +1,145 @@
+{% extends 'fpiweb/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+form   The BuildPalletForm
+
+{% endcomment %}
+
+{% block title %}
+Build Pallet
+{% endblock %}
+
+{% block content %}
+<style>
+
+div.location{
+}
+
+div.coordinate{
+    float: left;
+    padding-left: 1rem;
+}
+
+div.coordinate_label{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+</style>
+
+{% include 'fpiweb/scanner.html' %}
+
+<div>{# root div of page #}
+
+  <form action="{% url 'fpiweb:build_pallet' %}" method="post">
+    {% csrf_token %}
+    {{ box_forms.management_form }}
+
+    <h1>Build Pallet</h1>
+    <div class="row">
+      <a href="{% url 'fpiweb:test_scan' %}">Back to test_scan page</a>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2">
+        <div class="coordinate_label">
+          Row
+        </div>
+        {% bootstrap_field form.loc_row  show_help=False show_label=False %}
+      </div>
+      <div class="col-md-2">
+        <div class="coordinate_label">
+          Bin
+        </div>
+        {% bootstrap_field form.loc_bin  show_help=False show_label=False %}
+      </div>
+      <div class="col-md-2">
+        <div class="coordinate_label">
+          Tier
+        </div>
+        {% bootstrap_field form.loc_tier show_help=False show_label=False %}
+      </div>
+    </div>
+
+    {% if form.non_field_errors %}
+        <div class="row">
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        </div>
+    {% endif %}
+
+    <div class="row" style="margin-bottom: 1rem;">
+      {# by default a button acts like <input type="submit"> type="button" disables this behavior #}
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#scannerModal">Scan a Box</button>&nbsp;
+      <button class="btn btn-primary">Pallet Complete</button>
+    </div>
+    <div class="row">
+      <table id="boxTable" border="2">
+        <thead>
+          <tr>
+            <th rowspan="2">Remove</th>
+            <th rowspan="2">Box Number</th>
+            <th rowspan="2">Product</th>
+            <th rowspan="2">Expiration Year</th>
+            <th colspan="2">Expiration Month (Optional)</th>
+          </tr>
+          <tr>
+            <th>Start</th>
+            <th>End</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for box_form in box_forms %}
+            <tr class="boxItemFormRow">
+              <td>
+                <button class="btn btn-danger remove">X</button>
+              </td>
+              <td>
+
+                {{ box_form.errors }}
+                {{ box_form.non_field_errors }}
+                <div class="form-group">
+                  <input type="text" class="form-control" value="{{ box_form.cleaned_data.box_number }}" disabled />
+                </div>
+                {# These two are hidden fields #}
+                {{ box_form.id }}
+                {{ box_form.box_number }}
+              </td>
+              <td>{% bootstrap_field box_form.product show_help=False show_label=False %}</td>
+              <td>{% bootstrap_field box_form.exp_year show_help=False show_label=False %}</td>
+              <td>{% bootstrap_field box_form.exp_month_start show_help=False show_label=False placeholder='' %}</td>
+              <td>{% bootstrap_field box_form.exp_month_end show_help=False show_label=False placeholder='' %}</td>
+            </tr>
+          {% empty %}
+            <tr id="scanABoxRow">
+              <td colspan="6">Scan a box</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block footer_javascript %}
+
+  <!-- boilerplate code for scannning functionality -->
+  <script src="{% static '/fpiweb/webrtc-adapter-1.0.2.js' %}"></script>
+  <script src="{% static '/fpiweb/js.cookie.js' %}"></script>
+  <script src="{% static '/fpiweb/ajaxSetup.js' %}"></script>
+  <script src="{% static '/fpiweb/scanner.js' %}"></script>
+  <script src="{% static '/fpiweb/build_pallet.js' %}"></script>
+
+{% endblock %}

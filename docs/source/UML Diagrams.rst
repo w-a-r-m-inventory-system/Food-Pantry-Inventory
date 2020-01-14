@@ -29,7 +29,7 @@ Scan QR Code
 Checkin
 =======
 
-..  uml:: UML/CheckinInventoryUseCase.puml
+..  uml:: UML/CheckinUseCase.puml
     :caption: **Checkin Inventory Use Case**
 
 ..  uml:: UML/CheckinSequenceDiagram.puml
@@ -49,11 +49,31 @@ Checkout
 Move Box
 ========
 
-..  uml:: UML/MoveBoxInventoryUseCase.puml
-    :caption: **Move Box Inventory Use Case**
+..  uml:: UML/MoveBoxUseCase.puml
+    :caption: **Move Box Use Case**
 
 ..  uml:: UML/MoveBoxSequenceDiagram.puml
-    :caption: **Move Box Inventory Sequence Diagram**
+    :caption: **Move Box Sequence Diagram**
+
+
+Fill a Pallet
+=============
+
+..  uml:: UML/FillPalletUseCase.puml
+    :caption: **Fill Pallet Use Case**
+
+..  uml:: UML/FillPalletSequenceDiagram.puml
+    :caption: **Fill Pallet Sequence Diagram**
+
+
+Move a Pallet
+=============
+
+..  uml:: UML/MovePalletUseCase.puml
+    :caption: **Move Pallet Use Case**
+
+..  uml:: UML/MovePalletSequenceDiagram.puml
+    :caption: **Move Pallet Sequence Diagram**
 
 
 TBD

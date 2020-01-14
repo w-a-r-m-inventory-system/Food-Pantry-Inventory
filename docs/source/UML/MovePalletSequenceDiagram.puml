@@ -1,0 +1,12 @@
+@startuml
+User -> Website: Choose Move Pallet Screen
+User -> Website: Identify "From" location of pallet
+Website -> User: Confirm count of boxes at that location
+User -> Website: Identify "To" location
+Website -> User: Confirm count of boxes at that location - if any
+Website -> User: If any boxes at the "To" location, ask if merging
+User -> Website: Confirm move (or merge, if appropriate)
+Website -> Database: Update the locations of all the "From" boxes
+Database -> Website: Confirm updates are complete
+Website -> User: Present confirmation of move
+@enduml

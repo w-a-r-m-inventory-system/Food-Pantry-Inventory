@@ -3,7 +3,6 @@
 *   Shelby Elzinga
 *   Travis Risner
 *   Harland Hansen
-*   Lisa Stumpf
 *   John Cassidy
 
 (Please refer to the document **Git Guidelines.rst** in the

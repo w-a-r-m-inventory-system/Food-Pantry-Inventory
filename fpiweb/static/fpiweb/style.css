@@ -8,6 +8,10 @@ h2 {
     text-align: center;
 }
 
+label{
+    font-weight: bold;
+}
+
 table {
     /*display: table;*/
     /*text-align: center;*/
@@ -18,10 +22,16 @@ table {
     /*border-spacing: 3px;*/
 }
 
+th {
+    border: 0.125rem solid;
+    padding: 0.5rem;
+    text-align: center;
+}
+
 td {
-    border: 1px solid;
+    border: 0.125rem solid;
     background: #c0ffc0;
-    padding: 5px;
+    padding: 0.5rem;
     text-align: center;
 }
 
@@ -43,6 +53,7 @@ table.subtable{
     margin-right: auto;
     padding: 5px 0;
 }
+
 table.subcell{
     /*border-style: none;*/
     border-collapse: collapse;
@@ -115,3 +126,39 @@ hr.style-one {
     height: 1px;
     background: #333 linear-gradient(to right, #ccc, #333, #ccc);
 }
+
+/* if you drop a {{ form.non_field_errors }} in your template.  The resulting
+    list has errorlist and nonfield classes */
+.errorlist {
+    color: red;
+    font-weight: bold;
+}
+
+.nonfield{
+}
+
+div#scannerModal video{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div#scannerModal>div.modal-dialog{
+    width: 90%;
+    max-width: 90%;
+}
+
+div#scannerModal div.controls{
+    margin-top: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+}
+
+button.remove{
+    font-weight: bold;
+    /* order is top, right, bottom left */
+    padding: 0.125rem 0.375rem 0.125rem 0.375rem;
+    color: white;
+}
+

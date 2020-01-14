@@ -48,6 +48,8 @@ __creation_date__ = "04/01/2019"
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+SCANS_DIR = join(dirname(BASE_DIR), 'scans')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -157,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # URL to allow a user to authenticate herself.  This becomes the default
 # used whenever Django detects someone trying to do something requiring
 # authentication.
-LOGIN_URL = 'fpiweb:login/'
+LOGIN_URL = 'fpiweb:login'
 
 
 # Internationalization
@@ -221,7 +223,8 @@ BOOTSTRAP4 = {
         "integrity":
             "sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH"
             "+8abtTE1Pi6jizo",
-        "crossorigin": "anonymous", },
+        "crossorigin": "anonymous",
+    },
 
     # The URL to the Popper.js JavaScript file (slim)
     "popper_url": {
@@ -277,7 +280,7 @@ BOOTSTRAP4 = {
 }
 
 
-LOG_DIR = join(dirname(BASE_DIR), 'log')
+LOG_DIR = join(BASE_DIR, 'log')
 
 LOGGING = {
     'version': 1,
@@ -289,28 +292,47 @@ LOGGING = {
         }
     },
     'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        },
         'django': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': join(LOG_DIR, 'django.log')
+            'filename': 'django.log',
+            'mode': 'w',
+            'formatter': 'standard',
         },
         'fpiweb': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': join(LOG_DIR, 'fpiweb.log'),
+            'filename': 'fpiweb.log',
+            'mode': 'w',
             'formatter': 'standard',
-        }
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'level': 'INFO',
+            'formatter': 'standard',
+            'filename': 'root.log',
+            'mode': 'w',
+        },
     },
     'loggers': {
         'django': {
-            'handlers': ['django'],
-            'level': 'DEBUG',
+            'handlers': ['django', 'console'],
+            'level': 'INFO',
             'propagate': True,
         },
         'fpiweb': {
-            'handlers': ['fpiweb'],
-            'level': 'DEBUG',
+            'handlers': ['fpiweb', 'console'],
+            'level': 'INFO',
             'propagate': True,
-        }
+        },
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['file', 'console'],
     },
 }

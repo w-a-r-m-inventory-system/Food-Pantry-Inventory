@@ -1,0 +1,71 @@
+{% extends 'fpiweb/base.html' %}
+
+{% block title %}
+    Manual Box and Pallet Management
+{% endblock %}
+
+{% block content %}
+    <h1>Manual Box and Pallet Management</h1>
+    <br/>
+    <h2>
+        for {{ current_user.first_name }} &nbsp; {{ current_user.last_name }}
+    </h2>
+    {% if active_pallet %}
+        {{ user_profile.active_pallet_id }}
+    {% else %}
+    No active pallet
+    {% endif %}
+    <hr/>
+
+
+    <h6>Manage a Pallet Manually</h6>
+
+    <div>
+        <a href="{{ pallet_target }}">
+            Current Pallet Status
+        </a>
+     </div>
+
+    <div>
+        <a href="{{ new_target }}">
+            Start a New Pallet
+        </a>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:about' %}">
+            Resume Pallet
+        </a>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:about' %}">
+            Move Pallet
+        </a>
+    </div>
+
+    <hr/>
+    <h6>Manage Individual Boxes Manually</h6>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Checkin a box
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:about' %}">
+        Checkout (consume product in) a box
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:manual_move_box' %}">
+        Move a box
+    </a>
+
+    <hr/>
+    <div>
+        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+    </div>
+
+
+{% endblock %}

@@ -30,8 +30,12 @@ Configuration with the following properties:
 |              |                              | that Django used to do its    |
 |              |                              | magic.                        |
 +--------------+------------------------------+-------------------------------+
+|Parameters:   | runserver localhost:8765     | This tells Django we run the  |
+|              |                              | server on our own machine on  |
+|              |                              | port 8765                     |
++--------------+------------------------------+-------------------------------+
 |Environment   | DJANGO_SETTINGS_MODULE=      | This tells Django where to    |
-|variables:    | FTPDjango.private.settings   | look for your private         |
+|variables:    | FPIDjango.private            | look for your private         |
 |              |                              | configuration file.           |
 +--------------+------------------------------+-------------------------------+
 |Working       | <project directory>/work     | If you haven't created this   |
@@ -63,19 +67,14 @@ changes:
 
 #.  Make a directory called <project>/FPIDjango/private.
 
-#.  Copy the files settings.py and settings_public.py into the new private
+#.  Copy the file settings_private.py into the new private
     directory.
-
-#.  Rename the settings_public.py in the private directory to
-    settings_private.py.
-
-#.  Change the file settings.py in the private directory to import from
-    settings_private.py.
 
 #.  Edit the file settings_private.py in the private directory to match your
     database values.
 
-#.  Change the value for MY_SECRET_KEY to some 50 character random value.
+#.  Change the value for MY_SECRET_KEY to some 50 character random value in
+    the new settings_private.py.
 
 Run Django
 ==========

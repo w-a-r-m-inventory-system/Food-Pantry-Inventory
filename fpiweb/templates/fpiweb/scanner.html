@@ -1,0 +1,45 @@
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+
+
+Some elements will be sized using JavaScript so I'm not using the standard
+base.html template.
+
+{% endcomment %}
+
+
+<div class="modal fade"
+     id="scannerModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scannerModalLabel">Scan a Box</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <video id="video">
+            <p>Video stream not available.</p>
+          </video>
+        </div>
+        <div class="controls">
+          <label for="boxNumber">Or key in a box number</label>
+          <input type="text" id="boxNumber" name="boxNumber"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="scanButton">Scan</button>
+      </div>
+
+    </div>
+  </div>
+</div>

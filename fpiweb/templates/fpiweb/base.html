@@ -1,20 +1,13 @@
-{% load static %}
-
-{# Load the bootstrap4 tag library #}
-{% load bootstrap4 %}
-
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
-
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
-
+{% load static %}{# django's static tag library #}
+{% load bootstrap4 %}{# bootstrap4 tag library #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" name="viewport" content="width-device-width"
-          initial-scale="1", shrink-to-fit=no">
+    <meta charset="UTF-8"
+          name="viewport"
+          content="width-device-width"
+          initial-scale="1"
+          shrink-to-fit=no"/>
 
 {#    <!-- Bootstrap CSS -->#}
 {#    <link rel="stylesheet"#}
@@ -29,21 +22,27 @@
     {# Form - (N/A) #}
 
     <title>
-        {% block title %}
-        {% endblock %}
+      {% block title %}
+      {% endblock %}
     </title>
-{#        <link rel="stylesheet" type="text/css" href=#}
-{#                "{% static 'bootstrap/css/bootstrap.min.css' %}"/>#}
-        <link rel="stylesheet" type="text/css" href=
-                "{% static 'fpiweb/style.css' %}"/>
+    {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-reboot.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
 
+  {% bootstrap_javascript jquery='full' %}
 </head>
 <body>
     <div class="container">
-        {% block content %}
-        {% endblock %}
+      {# Display django.contrib.messages as Bootstrap alerts #}
+      {% bootstrap_messages %}
+      {% block content %}
+      {% endblock %}
     </div>
     <script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-
+    {% block footer_javascript %}
+    {% endblock %}
 </body>
 </html>
+

@@ -257,6 +257,11 @@ coverage.xml
 local_settings.py
 db.sqlite3
 
+# Keep log directory itself and the placeholder.txt file, but ignore
+# everything else.
+!log/placeholder.txt
+log/**
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -375,18 +380,24 @@ fabric.properties
 # Project-specific files and folders
 # Ignore data for now
 work/
+data/
+
 # Ignore private settings
 /FPIDjango/private/
 
+# Ignore .png files in scans
+/scans/*.png
+
 # Travis personal ignore files
-/fpiweb/templates/fpiweb/animal_edit.html
-/fpiweb/templates/fpiweb/animal_detail.html
-/fpiweb/templates/fpiweb/animal_delete.html
-/fpiweb/templates/fpiweb/puzzle_solve_edit.html
-/fpiweb/templates/fpiweb/puzzle_edit.html
-/fpiweb/templates/fpiweb/puzzle_detail.html
-/fpiweb/wordtrek_views.py
-/fpiweb/wordtrek_forms.py
-/fpiweb/templates/fpiweb/animal_list.html
-/fpiweb/wordtrek_urls.py
-/fpiweb/templates/fpiweb/wordtrek_base.html
+#/fpiweb/templates/fpiweb/animal_edit.html
+#/fpiweb/templates/fpiweb/animal_detail.html
+#/fpiweb/templates/fpiweb/animal_delete.html
+#/fpiweb/templates/fpiweb/puzzle_solve_edit.html
+#/fpiweb/templates/fpiweb/puzzle_edit.html
+#/fpiweb/templates/fpiweb/puzzle_detail.html
+#/fpiweb/wordtrek_views.py
+#/fpiweb/wordtrek_forms.py
+#/fpiweb/templates/fpiweb/animal_list.html
+#/fpiweb/wordtrek_urls.py
+#/fpiweb/templates/fpiweb/wordtrek_base.html
+#/work/data/

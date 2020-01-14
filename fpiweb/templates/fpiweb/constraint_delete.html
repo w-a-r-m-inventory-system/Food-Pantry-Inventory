@@ -27,7 +27,7 @@
             <div class="col-md-12 text-center">
                 <strong>
                     Are you sure you want to delete the Constraint
-                    {{ constraint_delete_context }}?
+                    {{ constraints }}?
                 </strong>
             </div>
     </div>
@@ -37,7 +37,7 @@
     </div>
 
     <form action="
-            {%  url 'fpiweb:constraint_delete/' pk=constraint_delete_context.id %}"
+            {%  url 'fpiweb:constraint_delete' pk=constraints.id %}"
           method="POST">
         {% csrf_token %}
 
@@ -55,7 +55,7 @@
             <div class="col-md-12 text-center">
                 <a class="btn alert-info"
                    role="button"
-                   href="{% url 'fpiweb:constraints_view/' %}">
+                   href="{% url 'fpiweb:constraints_view' %}">
                     Cancel
                 </a>
             </div>
@@ -71,10 +71,10 @@
         View: ConstraintDelete
     </h6>
     <h6>
-        Delete URL: {%  url 'fpiweb:constraint_delete/' pk=1 %}
+        Delete URL: {%  url 'fpiweb:constraint_delete' pk=1 %}
     </h6>
     <h6>
-        Cancel URL: {% url 'fpiweb:constraints_view/' %}
+        Cancel URL: {% url 'fpiweb:constraints_view' %}
     </h6>
 
 {% endblock %}
