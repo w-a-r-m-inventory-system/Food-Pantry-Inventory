@@ -13,6 +13,7 @@ from .models import \
     LocBin, \
     LocRow, \
     LocTier, \
+    Pallet, \
     Product, \
     ProductCategory, \
     ProductExample, \
@@ -90,6 +91,11 @@ class LocRowAdmin(admin.ModelAdmin):
 @admin.register(LocTier)
 class LocTierAdmin(admin.ModelAdmin):
     list_display = ('loc_tier', 'loc_tier_descr')
+
+
+@admin.register(Pallet)
+class PalletAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
 
 @admin.register(Product)

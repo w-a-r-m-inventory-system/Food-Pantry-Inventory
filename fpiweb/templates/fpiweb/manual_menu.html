@@ -11,7 +11,7 @@
         for {{ current_user.first_name }} &nbsp; {{ current_user.last_name }}
     </h2>
     {% if active_pallet %}
-        {{ user_profile.active_pallet_id }}
+        Pallet: {{ user_profile.active_pallet.name }}
     {% else %}
     No active pallet
     {% endif %}

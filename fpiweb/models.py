@@ -619,10 +619,11 @@ class Pallet(models.Model):
     """ Internal record identifier for a pallet. """
 
     name_help_text = "Name of pallet"
+    name_max_length = 200
     name = models.CharField(
         'Name',
         unique=True,
-        max_length=200,
+        max_length=name_max_length,
         help_text=name_help_text,
     )
     """ Name of pallet. """
@@ -1170,20 +1171,9 @@ class Profile(models.Model):
         help_text=title_help_text,
     )
 
-    active_pallet_help_text = "Active Pallet"
-    active_pallet = models.ForeignKey(
-        Pallet,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        help_text=active_pallet_help_text,
-    )
-
     def __str__(self) -> str:
         """ display profile information """
         display = f'User: {self.user} - {self.title}'
-        if self.active_location:
-            display += f' pallet for {self.active_location}'
         return display
 
 # EOF

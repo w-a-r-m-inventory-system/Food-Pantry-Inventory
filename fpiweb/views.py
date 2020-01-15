@@ -64,8 +64,9 @@ from fpiweb.forms import \
     LocTierForm, \
     LoginForm, \
     NewBoxForm, \
+    PalletNameForm, \
+    PalletSelectForm, \
     PrintLabelsForm
-from fpiweb.support.BoxActivity import BoxActivityClass
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxActivity import BoxActivityClass
 
@@ -91,6 +92,12 @@ def error_page(
         },
         status=status
     )
+
+
+def get_user_and_profile(request):
+    user = request.user
+    profile = user.profile or Profile.objects.create(user=user)
+    return user, profile
 
 
 class IndexView(TemplateView):
@@ -666,14 +673,19 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
 class BuildPalletView(View):
     """Set action in view"""
+
     form_template = 'fpiweb/build_pallet.html'
     confirmation_template = 'fpiweb/build_pallet_confirmation.html'
     formset_prefix = 'box_forms'
+    page_title = 'Build Pallet'
 
     BoxFormFactory = formset_factory(
         BoxItemForm,
         extra=0,
     )
+
+    PALLET_SELECT_FORM_NAME = 'pallet_select_form'
+    PALLET_NAME_FORM_NAME = 'pallet_name_form'
 
     def show_forms_response(
             self,
@@ -681,6 +693,14 @@ class BuildPalletView(View):
             build_pallet_form,
             box_forms,
             status=400):
+        """
+        Display page with BuildPalletForm and BoxItemForms
+        :param request:
+        :param build_pallet_form:
+        :param box_forms:
+        :param status:
+        :return:
+        """
 
         return render(
             request,
@@ -692,31 +712,88 @@ class BuildPalletView(View):
             status=status,
         )
 
-    def get(self, request, *args, **kwargs):
-
-        # When adding a box to an existing pallet a box number is passed
-        # as part of the URL
-        box_pk = kwargs.get('box_pk')
-
-        build_pallet_form = BuildPalletForm()
-
-        kwargs = {
-            'prefix': self.formset_prefix,
-        }
-        if box_pk:
-            raise NotImplementedError(
-                "Adding box to existing pallet not implemented")
-
-        return self.show_forms_response(
+    @staticmethod
+    def show_pallet_management_page(
             request,
-            build_pallet_form,
-            self.BoxFormFactory(**kwargs),
-            status=200,
+            pallet_select_form=None,
+            pallet_name_form=None):
+
+        return PalletManagementView.show_page(
+            request,
+            page_title=BuildPalletView.page_title,
+            prompt="Select an existing pallet or create a new one to continue",
+            show_delete=False,
+            pallet_select_form=pallet_select_form,
+            pallet_name_form=pallet_name_form,
         )
+
+    def get(self, request):
+        return self.show_pallet_management_page(request)
 
     def post(self, request):
 
+        # salvaged from the original version of get
+        #
+        # build_pallet_form = BuildPalletForm()
+        #
+        # user, profile = get_user_and_profile(request)
+        # if not profile.active_pallet:
+        #     print(dir(request))
+        #     print('request.path', request.path)
+        #     form = PalletSelectForm(
+        #         initial={
+        #             'url_path': request.path,
+        #         }
+        #     )
+        #
+        #
+        # return self.show_forms_response(
+        #     request,
+        #     build_pallet_form,
+        #     self.BoxFormFactory(prefix=self.formset_prefix),
+        #     status=200,
+        # )
+
         logger.debug(f"POST data is {request.POST}")
+
+        # The forms in pallet_management.html have a form_name input to help
+        # us sort out which form is being submitted.
+        form_name = request.POST.get('form_name')
+
+        if form_name is None:
+            return self.process_build_pallet_forms(request)
+
+        if form_name not in [
+                self.PALLET_SELECT_FORM_NAME,
+                self.PALLET_NAME_FORM_NAME]:
+            return error_page(
+                request,
+                message="",
+                status=500
+            )
+
+        if form_name == self.PALLET_SELECT_FORM_NAME:
+            pallet_select_form = PalletSelectForm(request.POST)
+            if not pallet_select_form.is_valid():
+                return self.show_pallet_management_page(
+                    request,
+                    pallet_select_form=pallet_select_form,
+                )
+            pallet = pallet_select_form.cleaned_data.get('pallet')
+
+        if form_name == self.PALLET_NAME_FORM_NAME:
+            pallet_name_form = PalletNameForm(request.POST)
+            if not pallet_name_form.is_valid():
+                return self.show_pallet_management_page(
+                    request,
+                    pallet_name_form=pallet_name_form,
+                )
+            pallet = pallet_name_form.save()
+
+        # Load boxes for pallet
+
+    def process_build_pallet_forms(self, request):
+
         build_pallet_form = BuildPalletForm(request.POST)
         box_forms = self.BoxFormFactory(
             request.POST,
@@ -1046,18 +1123,15 @@ class ManualMenuView(TemplateView):
         current_user = self.request.user
         profile = current_user.profile
         if profile:
-            active_pallet = profile.active_location_id
+            active_pallet = profile.active_pallet
         else:
             active_pallet = None
 
         # does user have active pallet?  if so get info
         if active_pallet:
             new_target = None
-            pallet_rec = Pallet.objects.select_related().get(
-                user_id_id=current_user.id)
-            pallet_id = pallet_rec.id
             pallet_target = reverse_lazy(
-                'fpiweb:manual_pallet_status', args=[pallet_id]
+                'fpiweb:manual_pallet_status', args=[active_pallet.id]
             )
         else:
             new_target = reverse_lazy('fpiweb:manual_pallet_new')
@@ -1467,5 +1541,66 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
             return self.post_location(request)
         print(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
+
+
+class PalletManagementView(LoginRequiredMixin, View):
+    """Select current pallet, add new pallet, delete pallet"""
+
+    template_name = 'fpiweb/pallet_management.html'
+
+    @staticmethod
+    def show_page(
+            request,
+            page_title='Pallet Management',
+            show_delete=True,
+            prompt=None,
+            pallet_select_form=None,
+            pallet_name_form=None):
+
+        context = {
+            'page_title': page_title,
+            'show_delete': show_delete,
+            'prompt': prompt,
+            'pallet_select_form': pallet_select_form or PalletSelectForm(),
+            'pallet_name_form': pallet_name_form or PalletNameForm(),
+        }
+        return render(
+            request,
+            PalletManagementView.template_name,
+            context
+        )
+
+    def get(self, request):
+        return self.show_page(request)
+
+
+
+# TODO: Might be able to convert this into FormView
+class PalletSelectView(LoginRequiredMixin, FormView):
+
+    template_name = 'fpiweb/pallet_select.html'
+    success_url = reverse_lazy('fpiweb:index')
+    form_class = PalletSelectForm
+
+    def get_success_url(self):
+        return self.success_url
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        # form.send_email()
+        pallet = form.cleaned_data['pallet']
+
+        user, profile = get_user_and_profile(self.request)
+        profile.active_pallet = pallet
+        profile.save()
+
+        return super().form_valid(form)
+
+
+
+
+
+
 
 # EOF
