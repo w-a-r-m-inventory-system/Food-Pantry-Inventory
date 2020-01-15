@@ -6,16 +6,48 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import AboutView, ActivityDownloadView, BoxDetailsView, \
-    BoxEditView, BoxEmptyView, BoxEmptyMoveView, BoxItemFormView, BoxMoveView, \
-    BoxNewView, BoxScannedView, BuildPalletView, IndexView, LoginView, \
-    ConstraintCreateView, ConstraintDeleteView, ConstraintsListView, \
-    ConstraintUpdateView, LogoutView, PrintLabelsView, ScannerView, \
-    TestScanView, MaintenanceView, ManualMoveBoxView, LocRowListView, \
-    LocRowCreateView, LocRowUpdateView, LocRowDeleteView, LocBinListView, \
-    LocBinCreateView, LocBinUpdateView, LocBinDeleteView, LocTierListView, \
-    LocTierCreateView, LocTierUpdateView, LocTierDeleteView, ManualMenuView, \
-    ManualPalletNew, ManualPalletStatus
+from fpiweb.views import \
+    AboutView, \
+    ActivityDownloadView, \
+    BoxDetailsView, \
+    BoxEditView, \
+    BoxEmptyView, \
+    BoxEmptyMoveView, \
+    BoxItemFormView, \
+    BoxMoveView, \
+    BoxNewView, \
+    BoxScannedView, \
+    BuildPalletView, \
+    IndexView, \
+    LoginView, \
+    ConstraintCreateView, \
+    ConstraintDeleteView, \
+    ConstraintsListView, \
+    ConstraintUpdateView, \
+    LogoutView, \
+    PrintLabelsView, \
+    ScannerView, \
+    TestScanView, \
+    MaintenanceView, \
+    ManualMoveBoxView, \
+    LocRowListView, \
+    LocRowCreateView, \
+    LocRowUpdateView, \
+    LocRowDeleteView, \
+    LocBinListView, \
+    LocBinCreateView, \
+    LocBinUpdateView, \
+    LocBinDeleteView, \
+    LocTierListView, \
+    LocTierCreateView, \
+    LocTierUpdateView, \
+    LocTierDeleteView, \
+    ManualMenuView, \
+    ManualPalletNew,  \
+    ManualPalletStatus, \
+    PalletManagementView, \
+    PalletSelectView
+
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -218,12 +250,20 @@ urlpatterns = [
     #     name='manual_question'
     # ),
 
+    path(
+        'pallet/management/',
+        PalletManagementView.as_view(),
+        name='palletManagement',
+    ),
+
     path('build_pallet/', BuildPalletView.as_view(), name='build_pallet'),
 
     path(
         'build_pallet/<int:box_pk>/',
         BuildPalletView.as_view(),
         name='build_pallet_add_box'),
+
+    path('pallet/select/', PalletSelectView.as_view(), name='pallet_select'),
 
     path('scanner/', ScannerView.as_view(), name='scanner'),
 

@@ -10,6 +10,7 @@ from django.forms import \
     CharField, \
     DateInput, \
     Form, \
+    ModelChoiceField, \
     PasswordInput, \
     ValidationError
 from django.shortcuts import get_object_or_404
@@ -24,6 +25,7 @@ from fpiweb.models import \
     LocRow, \
     LocBin, \
     LocTier, \
+    Pallet, \
     Product, \
     ProductCategory
 
@@ -814,6 +816,19 @@ class ExtantBoxNumberForm(forms.Form):
         max_length=Box.box_number_max_length,
     )
 
+
+class PalletSelectForm(forms.Form):
+
+    pallet = ModelChoiceField(
+        queryset=Pallet.objects.order_by('name'),
+        empty_label='Select a Pallet',
+    )
+
+
+class PalletNameForm(forms.ModelForm):
+    class Meta:
+        model = Pallet
+        fields = ('name',)
 
 
 # EOF

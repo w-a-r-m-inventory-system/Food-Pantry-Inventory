@@ -700,15 +700,6 @@ class PalletBox(models.Model):
         on_delete=models.PROTECT,
         help_text=pallet_help_text,
     )
-    """ Internal record identifier for a pallet. """
-
-    box_number_help_text = 'Box number for this pallet box.'
-    box_number = models.CharField(
-        'Box number',
-        unique=True,
-        max_length=Box.box_number_max_length,
-        help_text=box_number_help_text,
-    )
 
     box_help_text = 'Internal record ideentifier for a box.'
     box = models.ForeignKey(
