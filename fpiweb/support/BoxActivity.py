@@ -10,7 +10,7 @@ from django.db import transaction, IntegrityError
 from django.utils.timezone import now
 
 from fpiweb.constants import InternalError
-from fpiweb.models import Box, Activity
+from fpiweb.models import Box, Activity, BoxNumber
 
 __author__ = 'Travis Risner'
 __project__ = "Food-Pantry-Inventory"
@@ -20,17 +20,18 @@ __creation_date__ = "07/31/2019"
 # "${Copyright.py}"
 
 
+log = getLogger('fpiweb')
+
+
 @unique
 class BOX_ACTION(Enum):
     """
     Actions to be applied to a box.
     """
-    FILL: str = 'fill'
-    MOVE: str = 'move'
-    EMPTY: str ='empty'
-
-
-log = getLogger('fpiweb')
+    ADD: str = 'add'         # add a new (empty) box to inventory
+    FILL: str = 'fill'       # fill an empty box with product
+    MOVE: str = 'move'       # move a box from one location to another
+    EMPTY: str = 'empty'     # empty (consume) a box of product
 
 
 class BoxActivityClass:
@@ -44,7 +45,15 @@ class BoxActivityClass:
         self.box: Optional[Box] = None
         self.activity: Optional[Activity] = None
 
-    def box_add(self, box_id: int):
+    def box_new(self, box_number: BoxNumber):
+        """
+        Record that a new (empty) box has been added to inventory.
+
+        :param box_number: a box number in the form of 'BOXnnnnn'
+        :return:
+        """
+
+    def box_fill(self, box_id: Box.id):
         """
         Record activity for a box being filled and added to inventory.
 
@@ -92,7 +101,7 @@ class BoxActivityClass:
         self._add_activity()
         return
 
-    def box_move(self, box_id: int):
+    def box_move(self, box_id: Box.id):
         """
         Record activity for a box being moved in tne inventory.
 
@@ -142,7 +151,7 @@ class BoxActivityClass:
         self._update_activity_location()
         return
 
-    def box_empty(self, box_id: int):
+    def box_empty(self, box_id: Box.id):
         """
         Record activity for a box being emptied (consumed).
 

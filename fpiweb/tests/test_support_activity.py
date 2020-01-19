@@ -60,7 +60,7 @@ class ActivitySupportTestCase(TransactionTestCase):
             'product', 'product__prod_cat', 'box_type',
         ).get(box_number='BOX12345')
         ba = BoxActivityClass()
-        ba.box_add(full_box.id)
+        ba.box_fill(full_box.id)
         full_activity = Activity.objects.get(
             box_number__exact=full_box.box_number,
             date_filled__exact=full_box.date_filled
