@@ -36,4 +36,11 @@ jobs:
         pip install -r requirements.txt
     - name: Test with pytest
       run: |
-        pytest
+        pytest --junitxml=junit/test-results
+    - name: Upload pytest test results
+        uses: actions/upload-artifact@master
+        with:
+          name: pytest-results
+          path: junit/test-results.xml
+        # Use always() to always run this step to publish test results when there are test failures
+        if: always()
