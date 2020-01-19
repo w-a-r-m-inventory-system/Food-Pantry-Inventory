@@ -17,16 +17,14 @@ jobs:
     - name: Create private directory
       run: |
         mkdir FPIDjango/private
-    - uses: finnp/create-file-action@1.0.0
-      env:
-        FILE_NAME: "FPIDjango/private/settings_private.py"
-        FILE_DATA: |
-          DB_ENGINE = "django.db.backends.postgresql"
-          DB_NAME = "WARM"
-          DB_USER = "admin"
-          DB_PSWD = "admin"
-          DB_HOST = "localhost"
-          DB_PORT = "8080"
+    - name: Create settings_private.py
+      run:
+        echo "DB_ENGINE = 'django.db.backends.postgresql'" > FPIDjango/private/settings_private.py
+        echo "DB_NAME = 'WARM'" >> FPIDjango/private/settings_private.py
+        echo "DB_USER = 'admin'" >> FPIDjango/private/settings_private.py
+        echo "DB_PSWD = 'admin'" >> FPIDjango/private/settings_private.py
+        echo "DB_HOST = 'localhost'" >> FPIDjango/private/settings_private.py
+        echo "DB_PORT = '8080'" >> FPIDjango/private/settings_private.py
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
