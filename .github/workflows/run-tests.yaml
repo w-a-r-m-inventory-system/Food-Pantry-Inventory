@@ -24,7 +24,7 @@ jobs:
         echo "DB_USER = 'admin'" >> FPIDjango/private/settings_private.py
         echo "DB_PSWD = 'admin'" >> FPIDjango/private/settings_private.py
         echo "DB_HOST = 'localhost'" >> FPIDjango/private/settings_private.py
-        echo "DB_PORT = '8080'" >> FPIDjango/private/settings_private.py
+        echo "DB_PORT = '5432'" >> FPIDjango/private/settings_private.py
         echo "MY_SECRET_KEY = '<specify your own random  string of 50 characters>'" >> FPIDjango/private/settings_private.py
     - name: Set up Python
       uses: actions/setup-python@v1
