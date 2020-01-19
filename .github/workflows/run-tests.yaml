@@ -14,6 +14,9 @@ jobs:
         postgresql db: "WARM"
         postgresql user: "admin"
         postgresql password: "admin"
+    - name: Create private directory
+      run: |
+        mkdir FPIDjango/private
     - uses: finnp/create-file-action@1.0.0
       env:
         FILE_NAME: "FPIDjango/private/settings_private.py"
