@@ -36,4 +36,4 @@ jobs:
         pip install -r requirements.txt
     - name: Test with pytest
       run: |
-        pytest --cov-report term-missing:skip-covered
+        pytest --cov-report term:skip-covered
