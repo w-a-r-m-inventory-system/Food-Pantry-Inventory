@@ -18,7 +18,7 @@ jobs:
       run: |
         mkdir FPIDjango/private
     - name: Create settings_private.py
-      run:
+      run: |
         echo "DB_ENGINE = 'django.db.backends.postgresql'" > FPIDjango/private/settings_private.py
         echo "DB_NAME = 'WARM'" >> FPIDjango/private/settings_private.py
         echo "DB_USER = 'admin'" >> FPIDjango/private/settings_private.py
