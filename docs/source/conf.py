@@ -24,11 +24,11 @@ import django
 # absolute path to conf.py including name
 full_path_w_filename = os.path.abspath(__file__)
 
-# full path to direcctory containing conf.py ( = source)
-directory_containing_file = os.path.dirname(full_path_w_filename)
+# full path to directory containing conf.py ( = source)
+directory_containing_conf = os.path.dirname(full_path_w_filename)
 
-# Full path to directory containing soure directory ( = docs)
-parent_directory = os.path.dirname(directory_containing_file)
+# Full path to directory containing source directory ( = docs)
+parent_directory = os.path.dirname(directory_containing_conf)
 
 # directory containing docs directory ( = project directory)
 BASE_DIR = os.path.dirname(parent_directory)
@@ -54,8 +54,8 @@ django.setup()
 # -- Project information -----------------------------------------------------
 
 project = 'Food Pantry Inventory System'
-copyright = '2019, (See Contributors.md)'
-author = '(See Contributors.md)'
+copyright = '2019, (See Contributors)'
+author = '(See Contributors)'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
@@ -80,7 +80,8 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'django.log',
+                    'fpiweb.log', 'root.log', ]
 
 
 # -- Options for HTML output -------------------------------------------------

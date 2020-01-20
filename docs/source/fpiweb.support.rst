@@ -1,6 +1,11 @@
 fpiweb.support package
 ======================
 
+.. automodule:: fpiweb.support
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -8,11 +13,3 @@ Submodules
 
    fpiweb.support.BoxActivity
    fpiweb.support.BoxManagement
-
-Module contents
----------------
-
-.. automodule:: fpiweb.support
-   :members:
-   :undoc-members:
-   :show-inheritance:
