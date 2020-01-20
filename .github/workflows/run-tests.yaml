@@ -40,3 +40,10 @@ jobs:
     - name: Test with pytest
       run: |
         pytest --cov-report term:skip-covered
+    - name: Build the documentation
+      run: |
+        pushd .
+        cd docs/
+        make html
+        popd
+      if: always()
