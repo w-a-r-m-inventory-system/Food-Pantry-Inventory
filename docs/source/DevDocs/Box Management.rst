@@ -12,14 +12,10 @@ system know.  A box may get emptied by someone who is unaware that there is
 an inventory system.
 
 The management of updating the database after user interaction has been
-isolated to two classes: BoxManagementClass and BoxActivityClass.  Although
-these two classes handle the actual updating of the databae.  Additional
+isolated to two classes: BoxManagementClass and BoxActivityClass.  These two
+classes should be the only code actually updating  the databae.  Additional
 guidance is provided below in the section `Pallet Management`_ about how
-pallets
-of boxes are handled
-by
-this
-inventory system.
+pallets of boxes are handled by this inventory system.
 
 
 **************************
@@ -51,100 +47,101 @@ BoxManagementClass.box_consume
     directly in the pantry.
 
 
+**************************
 Box Management API Details
-==========================
+**************************
 
 The expected input, actions, and output of the box management API calls are
 shown below.
 
 BoxManagementClass.box_new
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+==========================
 
 Add a new box with a unique box number to the inventory system.
 
 Expected Input
-""""""""""""""
+^^^^^^^^^^^^^^
 
 A unique box number and a valid box type.
 
 Action
-""""""
+^^^^^^
 
 A box record will be added to the inventory with the supplied box type.  All
 other fields in the box will be empty.
 
 Output
-""""""
+^^^^^^
 
 The new box record will be returned.
 
 BoxManagementClass.box_fill
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+===========================
 
 Add an individual box containing a named product at a specified location
 with a specified expiration year (and possibly range of months).
 
 Expected Input
-""""""""""""""
+^^^^^^^^^^^^^^
 
 The unmodified box record and the information needed to update the box.
 
 Actions
-"""""""
+^^^^^^^
 
 This API call will mark the indicated box with the contents, location and
 expiration indicated.  It will also make the call to create the appropriate
 Activity record.
 
 Output
-""""""
+^^^^^^
 
 The modified box record will be returned.
 
 
 BoxManagementClass.box_move
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+===========================
 
 Move a filled box from one location to another in the warehouse.
 
 Expected Input
-""""""""""""""
+^^^^^^^^^^^^^^
 
 The unmodified box record and the target location.
 
 Actions
-"""""""
+^^^^^^^
 
 This API call will change the location in the box record to the new
 location specified. It will also make the call to create the appropriate
 Activity record.
 
 Output
-""""""
+^^^^^^
 
 The modified box record will be returned.
 
 
 BoxManagementClass.box_consume
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+==============================
 
 Empty a box (consume it's contents) by putting the contents into QC or
 directly in the pantry.
 
 Expected Input
-""""""""""""""
+^^^^^^^^^^^^^^
 
 The unmodified box record.
 
 Actions
-"""""""
+^^^^^^^
 
 This API call will make the call to create the appropriate Activity record.
 It will then clear all the product, location, and expiration fields in the
 box record.
 
 Output
-""""""
+^^^^^^
 
 The modified box record will be returned.
 
@@ -305,10 +302,23 @@ Activity Management
 Box Activity API
 ****************
 
-The Box Activity API (`BoxActivityClass`) records information in the
+The Box Activity API (`BoxActivityClass`_) records information in the
 Activity table so that what is available can be readily discerned and that
 the flow of product through the facility can be determined.
 
 Although it has three public methods, none of them should be called directly
 because the box management API's will take care of calling the appropriate
 box activity API.
+
+##########################
+Box Management API Details
+##########################
+
+The details for each Box Management API call are documented in the source
+code of the call.
+
+_`BoxManagementClass` see BoxManagementClass in
+fpiweb/support/BoxManagement.py.
+
+_`BoxActivityClass` see BoxActivityClass in
+fpiweb/support/BoxActivity.py.
