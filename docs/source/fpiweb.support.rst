@@ -9,19 +9,7 @@ fpiweb.support package
 Submodules
 ----------
 
-fpiweb.support.BoxActivity module
----------------------------------
+.. toctree::
 
-.. automodule:: fpiweb.support.BoxActivity
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.support.BoxManagement module
------------------------------------
-
-.. automodule:: fpiweb.support.BoxManagement
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   fpiweb.support.BoxActivity
+   fpiweb.support.BoxManagement

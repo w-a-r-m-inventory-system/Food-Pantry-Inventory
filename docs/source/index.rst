@@ -10,18 +10,26 @@ This system is designed to manage a local food pantry inventory.  Initially
 it will manage the inventory in the warehouse.
 
 .. toctree::
-   :numbered: 4
    :maxdepth: 2
-   :caption: Overall Contents:
-   :name: mastertoc
+   :caption: Contents:
+
+   modules
 
    User Documentation
 
    Specifications
 
+   Outstanding Tasks
+
+   UML Diagrams
+
    Developer Documentation
 
-   Technical Documentation
+   JavaScriptAndJQuery
+
+   DevDocs/Box Management
+
+
 
 Indices and tables
 ==================

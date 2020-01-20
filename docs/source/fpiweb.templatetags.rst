@@ -9,19 +9,6 @@ fpiweb.templatetags package
 Submodules
 ----------
 
-fpiweb.templatetags.form module
--------------------------------
+.. toctree::
 
-.. automodule:: fpiweb.templatetags.form
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.templatetags.qr\_codes module
-------------------------------------
-
-.. automodule:: fpiweb.templatetags.qr_codes
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   fpiweb.templatetags.qr_codes
