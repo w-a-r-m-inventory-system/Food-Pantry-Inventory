@@ -44,11 +44,10 @@ class BoxManagementClass:
         self.box.box_type = box_type
         return self.box
 
-    def box_fill(self, box: Union[Box, Box.id],
-                 location: Union[Location, Location.id],
-                 product: Union[Product, Product.id], exp_year: int,
-                 exp_mo_start: int = 0, exp_mo_end: int = 0
-                 ):
+    def box_fill(
+            self, box: Union[Box, int], location: Union[Location, int],
+            product: Union[Product, int], exp_year: int,
+            exp_mo_start: int = 0, exp_mo_end: int = 0):
         """
         Fill an individual box with product and add to the inventory.
 
@@ -56,7 +55,7 @@ class BoxManagementClass:
         *   Box record has not been modified
         *   All required fields be valid
         *   Optional month start and end, if specified, must bracket one or
-            more months
+        more months
 
         :param box: Box record or id of a box already in the system
         :param location: Target location record or ID
@@ -85,9 +84,7 @@ class BoxManagementClass:
         self._add_box()
         return self.box
 
-    def box_move(self, box: Union[Box, Box.id],
-                 location: Union[Location, Location.id]
-                 ):
+    def box_move(self, box: Union[Box, int], location: Union[Location, int]):
         """
         Move an individual box in the inventory.
 
@@ -110,7 +107,7 @@ class BoxManagementClass:
         self._move_box()
         return self.box
 
-    def box_consume(self, box: Union[Box, Box.id]):
+    def box_consume(self, box: Union[Box, int]):
         """
         Consume (e.g. empty) a box.
 
@@ -128,7 +125,7 @@ class BoxManagementClass:
         self._consume_box()
         return self.box
 
-    def pallet_finish(self, pallet: Union[Pallet, Pallet.id]):
+    def pallet_finish(self, pallet: Union[Pallet, int]):
         """
         Finish the processing of a pallet of boxes into inventory.
 
