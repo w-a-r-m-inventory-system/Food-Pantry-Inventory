@@ -43,7 +43,7 @@ General Developer Documentation
 
 Helpful generic documentation.
 
-    :doc:`Developer Documentation <DevDocs/DevDocs>`
+    :doc:`Developer Resources <DevDocs/DevResources>`
 
 Django Documentation
 ====================
@@ -68,3 +68,15 @@ Documentation about git (the source code control software) that is specific to
 this project.
 
     :doc:`Git Guidelines <DevDocs/Git Guidelines>`
+
+Internal Documentation
+======================
+
+Javascript and JQuery information specific to this project.
+
+    :doc:`Javascript and JQuery <JavaScriptAndJQuery>`
+
+How information about boxes and their workflows.
+
+    :doc:`Box Management <DevDocs/Box Management>`
+
