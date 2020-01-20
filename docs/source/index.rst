@@ -13,6 +13,8 @@ it will manage the inventory in the warehouse.
    :maxdepth: 2
    :caption: Contents:
 
+   modules
+
    User Documentation
 
    Specifications
@@ -23,9 +25,9 @@ it will manage the inventory in the warehouse.
 
    Developer Documentation
 
-   modules/models
+   JavaScriptAndJQuery
 
-   modules/views
+   DevDocs/Box Management
 
 
 
