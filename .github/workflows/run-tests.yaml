@@ -1,4 +1,4 @@
-name: Python package
+name: Build and Test
 
 on: [push]
 
@@ -8,8 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - uses: harmon758/postgresql-action@v1
+    - name: Checkout source code
+      uses: actions/checkout@v1
+    - name: Set up Postgres Service
+      uses: harmon758/postgresql-action@v1
       with:
         postgresql db: "WARM"
         postgresql user: "admin"
@@ -32,6 +34,7 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
+        sudo apt install -y plantuml
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Test with pytest
