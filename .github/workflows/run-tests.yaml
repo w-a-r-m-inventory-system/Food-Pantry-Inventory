@@ -47,3 +47,13 @@ jobs:
         make O="-W" html
         popd
       if: always()
+    - name: Upload Test Coverage
+      uses: actions/upload-artifact@v1
+      with:
+        name: PytestCoverage
+        path: htmlcov
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v1
+      with:
+        name: SphinxDocumentation
+        path: docs/build/html
