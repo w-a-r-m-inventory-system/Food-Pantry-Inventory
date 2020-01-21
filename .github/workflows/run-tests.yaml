@@ -31,17 +31,31 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: '3.7.x'
+        python-version: '3.x'
     - name: Install dependencies
       run: |
+        sudo apt install -y plantuml
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Test with pytest
       run: |
-        pytest --cov-report term:skip-covered --durations=6 -v --tb=line
+        pytest --cov-report term:skip-covered --durations=6 -v
+    - name: Build the documentation
+      run: |
+        pushd .
+        cd docs/
+        make O="-W" html
+        popd
+      if: always()
     - name: Upload Test Coverage
       uses: actions/upload-artifact@v1
       with:
         name: PytestCoverage
         path: htmlcov
+      if: always()
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v1
+      with:
+        name: SphinxDocumentation
+        path: docs/build/html
       if: always()
