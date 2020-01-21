@@ -1,6 +1,6 @@
 name: Build and Test
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -52,8 +52,10 @@ jobs:
       with:
         name: PytestCoverage
         path: htmlcov
+      if: always()
     - name: Upload Documentation
       uses: actions/upload-artifact@v1
       with:
         name: SphinxDocumentation
         path: docs/build/html
+      if: always()
