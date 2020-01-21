@@ -39,7 +39,7 @@ jobs:
         pip install -r requirements.txt
     - name: Test with pytest
       run: |
-        pytest --cov-report term:skip-covered --durations=6 -v
+        pytest --cov-report term:skip-covered --durations=6 -v --tb=line
     - name: Build the documentation
       run: |
         pushd .
