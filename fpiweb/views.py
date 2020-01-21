@@ -766,9 +766,11 @@ class BuildPalletView(View):
         if form_name not in [
                 self.PALLET_SELECT_FORM_NAME,
                 self.PALLET_NAME_FORM_NAME]:
+            message = f"Unexpected form name {repr(form_name)}"
+            logger.error(message)
             return error_page(
                 request,
-                message="",
+                message=message,
                 status=500
             )
 
@@ -790,7 +792,25 @@ class BuildPalletView(View):
                 )
             pallet = pallet_name_form.save()
 
-        # Load boxes for pallet
+        if not pallet:
+            message = f"pallet not set"
+            logger.error(message)
+            return error_page(
+                request,
+                message=message,
+                status=500,
+            )
+
+        # Load boxes (PalletBox records) for pallet
+        pallet_boxes = pallet.boxes.all()
+
+        initial_data = []
+        for pallet_box in pallet_boxes:
+            initial_datum = {}
+
+
+
+
 
     def process_build_pallet_forms(self, request):
 
@@ -827,40 +847,40 @@ class BuildPalletView(View):
             if not cleaned_data:
                 continue
 
-            box_id = cleaned_data.get('id')
-            if not isinstance(box_id, int):
-                logger.error(f"box_id {box_id} is a {type(box_id)}")
+            pallet_box_id = cleaned_data.get('id')
+            if not isinstance(pallet_box_id, int):
+                logger.error(f"box_id {pallet_box_id} is a {type(pallet_box_id)}")
                 continue
 
             # Is this a duplicate box_id?
-            if box_id in boxes_by_id:
-                duplicate_ids.add(box_id)
+            if pallet_box_id in boxes_by_id:
+                duplicate_ids.add(pallet_box_id)
                 continue
 
             # Is box_id present in database?
             try:
-                box = Box.objects.get(id=box_id)
-            except Box.DoesNotExist:
-                box_ids_not_found.add(box_id)
+                pallet_box = PalletBox.objects.get(id=pallet_box_id)
+            except PalletBox.DoesNotExist:
+                box_ids_not_found.add(pallet_box_id)
                 continue
 
-            boxes_by_id[box_id] = box
+            boxes_by_id[pallet_box_id] = pallet_box
 
-            box.location = location
-            box.product = cleaned_data.get('product')
-            box.exp_year = cleaned_data.get('exp_year')
-            box.exp_month_start = cleaned_data.get('exp_month_start')
-            box.exp_month_end = cleaned_data.get('exp_month_end')
+            pallet_box.location = location
+            pallet_box.product = cleaned_data.get('product')
+            pallet_box.exp_year = cleaned_data.get('exp_year')
+            pallet_box.exp_month_start = cleaned_data.get('exp_month_start')
+            pallet_box.exp_month_end = cleaned_data.get('exp_month_end')
 
             # Not having a date_filled causes an error if an activity
             # record needs to be created.
-            if not box.date_filled:
-                box.date_filled = timezone.now()
+            if not pallet_box.date_filled:
+                pallet_box.date_filled = timezone.now()
 
-            box.save()
+            pallet_box.save()
 
             box_activity = BoxActivityClass()
-            box_activity.box_move(box.id)
+            box_activity.box_move(pallet_box.id)
 
         if forms_missing_box_id > 0:
             # error reported on box_form
