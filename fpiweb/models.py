@@ -667,7 +667,9 @@ class Pallet(models.Model):
 
 class PalletBox(models.Model):
     """
-    Temporary file to hold the individual boxes for a pallet.
+    Temporary file to hold the individual boxes for a pallet.  The goal of
+    this is to ensure that either a Box record has product, expiration, and
+    location or it has no product, no expiration, and no location.
     """
 
     class Meta:
@@ -697,11 +699,12 @@ class PalletBox(models.Model):
     pallet_help_text = 'Internal record identifier for a pallet.'
     pallet = models.ForeignKey(
         Pallet,
+        related_name='boxes',
         on_delete=models.PROTECT,
         help_text=pallet_help_text,
     )
 
-    box_help_text = 'Internal record ideentifier for a box.'
+    box_help_text = 'Internal record identifier for a box.'
     box = models.ForeignKey(
         Box,
         on_delete=models.PROTECT,
