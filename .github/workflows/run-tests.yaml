@@ -34,6 +34,7 @@ jobs:
         python-version: '3.7.x'
     - name: Install dependencies
       run: |
+        sudo apt update
         sudo apt install -y plantuml
         python -m pip install --upgrade pip
         pip install -r requirements.txt
