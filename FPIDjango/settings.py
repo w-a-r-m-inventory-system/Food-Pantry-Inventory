@@ -33,6 +33,7 @@ import os
 from os.path import dirname, join
 
 import psycopg2.extensions
+import django_extensions
 
 from FPIDjango.private.settings_private import *
 
@@ -81,6 +82,7 @@ INSTALLED_APPS = [
 
     # Third party apps
     'bootstrap4',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
