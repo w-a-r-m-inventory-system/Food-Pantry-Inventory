@@ -34,7 +34,6 @@ urlpatterns = [
     path('', LoginView.as_view()),
     path('fpiweb/', include('fpiweb.urls')),
     path('admin/', admin.site.urls),
-    path('', IndexView.as_view())
 ]
 
 # EOF

@@ -105,7 +105,8 @@ class LocBin(models.Model):
 
     loc_bin_descr_help_text = 'Location bin description'
     loc_bin_descr_max_length = 20  # e.g. "Bin 01"
-    loc_bin_descr = models.CharField('Loc Bin Description',
+    loc_bin_descr = models.CharField(
+        'Loc Bin Description',
         max_length=loc_bin_descr_max_length,
         help_text=loc_bin_descr_help_text,
     )
@@ -154,9 +155,11 @@ class LocTier(models.Model):
 
     loc_tier_descr_help_text = 'Location tier description'
     loc_tier_descr_max_length = 20  # e.g. "Tier 01"
-    loc_tier_descr = models.CharField('Loc Tier Description',
+    loc_tier_descr = models.CharField(
+        'Loc Tier Description',
         max_length=loc_tier_descr_max_length,
-        help_text=loc_tier_descr_help_text, )
+        help_text=loc_tier_descr_help_text,
+    )
     """ Location Tier Description """
 
     def __str__(self) -> str:
@@ -182,8 +185,10 @@ class Location(models.Model):
         verbose_name_plural = 'Locations'
 
     id_help_text = 'Internal record identifier for location.'
-    id = models.AutoField('Internal Location ID', primary_key=True,
-        help_text=id_help_text, )
+    id = models.AutoField(
+        'Internal Location ID', primary_key=True,
+        help_text=id_help_text,
+    )
     """ Internal record identifier for location. """
 
     loc_code_help_text = "Location code"
@@ -294,8 +299,10 @@ class BoxType(models.Model):
     # define a default display of box_type
     def __str__(self) -> str:
         """ Default way to display this box type record. """
-        display = (f'{self.box_type_code} - {self.box_type_descr} '
-                  f'({self.box_type_qty})')
+        display = (
+            f'{self.box_type_code} - {self.box_type_descr} '
+            f'({self.box_type_qty})'
+        )
         return display
 
 
@@ -477,14 +484,15 @@ class Box(models.Model):
         help_text=box_type_help_text,
     )
     """ Type of box with this number. """
-
+    location_help_text = 'Location of box'
     location = models.ForeignKey(
         "Location",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        help_text="Location of Box"
+        help_text=location_help_text
     )
+    """Location of box"""
 
     product_help_text = 'Product contained in this box, if filled.'
     product = models.ForeignKey(
@@ -555,19 +563,25 @@ class Box(models.Model):
     # define a default display of Box
     def __str__(self):
         """ Default way to display this box record. """
-        if self.exp_month_start or self.exp_month_end:
-            display = (
-                f'{self.box_number} ({self.box_type}) '
-                f'{self.product} {self.quantity}'
-                f'{self.exp_year} '
-                f'({self.exp_month_start}-{self.exp_month_end})'
-                f'{self.date_filled}'
+        display = (
+            f'{self.box_number} '
+            f'({self.box_type.box_type_code}/'
+            f'{self.quantity}) '
+        )
+        if self.product:
+            display += (
+                f'{self.product.prod_name} '
+                f'exp: {self.exp_year} '
             )
-        else:
-            display = (
-                f'{self.box_number} ({self.box_type}) '
-                f'{self.product} {self.quantity}'
-                f'{self.exp_year} {self.date_filled}'
+            if self.exp_month_start or self.exp_month_end:
+                display += (
+                    f'({self.exp_month_start:02}-{self.exp_month_end:02}) '
+                )
+            display += (
+                f'filled: {self.date_filled.year}/'
+                f'{self.date_filled.month:02}/'
+                f'{self.date_filled.day:02} '
+                f'at {self.location.loc_code}'
             )
         return display
 
@@ -686,6 +700,15 @@ class PalletBox(models.Model):
         on_delete=models.PROTECT,
         help_text=pallet_help_text,
     )
+    """ Internal record identifier for a pallet. """
+
+    box_number_help_text = 'Box number for this pallet box.'
+    box_number = models.CharField(
+        'Box number',
+        unique=True,
+        max_length=Box.box_number_max_length,
+        help_text=box_number_help_text,
+    )
 
     box_help_text = 'Internal record ideentifier for a box.'
     box = models.ForeignKey(
@@ -765,14 +788,16 @@ class Activity(models.Model):
         verbose_name_plural = 'Activities'
 
     # Adjustment Reasons
-    ADD_EMPTIED: str = 'Add Emptied'
+    FILL_EMPTIED: str = 'Fill Emptied'
     MOVE_ADDED: str = 'Move Added'
     CONSUME_ADDED: str = 'Consume Added'
+    CONSUME_EMPTIED: str = 'Consume Emptied'
 
     ADJUSTMENT_CODE_CHOICES: list = (
-        (ADD_EMPTIED, 'Add emptied previous contents'),
+        (FILL_EMPTIED, 'Fill emptied previous contents'),
         (MOVE_ADDED, 'Move added box'),
         (CONSUME_ADDED, 'Consume added box'),
+        (CONSUME_EMPTIED, 'Consume emptied previous contents')
     )
 
     id_help_text = 'Internal record identifier for an activity.'
@@ -839,7 +864,7 @@ class Activity(models.Model):
     )
     """ Category of product consumed. """
 
-    # Do NOT make date_filed a DateTime
+    # Do NOT make date_filled a DateTime
     date_filled_help_text = 'Approximate date product was put in the box.'
     date_filled = models.DateField(
         'Date Box Filled',
@@ -847,7 +872,7 @@ class Activity(models.Model):
     )
     """ Approximate date product was put in the box. """
 
-    # Do NOT make date_filed a DateTime
+    # Do NOT make date_consumed a DateTime
     date_consumed_help_text = 'Date product was consumed.'
     date_consumed = models.DateField(
         'Date Box Emptied',
@@ -888,7 +913,7 @@ class Activity(models.Model):
 
     quantity_help_text = (
         'Approximate number of items in the box when it was filled.'
-        )
+    )
     quantity = models.IntegerField(
         'Quantity in Box',
         default=0,
@@ -921,7 +946,8 @@ class Activity(models.Model):
         """ Default way to display this activity record. """
         display = f'{self.box_number} ({self.box_type})'
         if self.date_filled:
-            display = display + (' '
+            display = display + (
+                ' '
                 f'{self.prod_name} ({self.prod_cat_name}) '
                 f'{self.quantity} '
                 f'{self.exp_year}'
@@ -930,12 +956,14 @@ class Activity(models.Model):
                 f'{self.date_filled}'
             )
         if self.date_consumed:
-            display = display + (' '
+            display = display + (
+                ' '
                 f'{self.date_consumed}'
                 f'({self.duration} days) '
             )
         if self.adjustment_code:
-            display = display + (' '
+            display = display + (
+                ' '
                 f'{self.adjustment_code}'
             )
 
@@ -1141,7 +1169,7 @@ class ProductExample(models.Model):
 
     def __str__(self):
         """ Default way to display this product example """
-        display = f'{self.prod_example_name} ({self.prod_id})'
+        display = f'{self.prod_example_name} ({self.product})'
         return display
 
 
@@ -1182,8 +1210,8 @@ class Profile(models.Model):
     def __str__(self) -> str:
         """ display profile information """
         display = f'User: {self.user} - {self.title}'
-        if self.active_location:
-            display += f' pallet for {self.active_location}'
+        if self.active_pallet:
+            display += f' pallet ID {self.active_pallet}'
         return display
 
 # EOF
