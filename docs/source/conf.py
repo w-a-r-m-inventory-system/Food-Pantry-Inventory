@@ -6,6 +6,7 @@ http://www.sphinx-doc.org/en/master/config
 """
 
 import os
+import shutil
 import sys
 
 import django
@@ -37,6 +38,17 @@ BASE_DIR = os.path.dirname(parent_directory)
 
 # directory containing our Django application
 django_app_directory = os.path.join(BASE_DIR, 'fpiweb/')
+
+# Ensure private settings file exists before attempting docs build
+private_settings_module_path = os.path.join(BASE_DIR, 'FPIDjango', 'private')
+private_settings_file_path = os.path.join(private_settings_module_path, 'settings_private.py')
+if not os.path.exists(private_settings_file_path):
+    if not os.path.exists(private_settings_module_path):
+        os.mkdir(private_settings_module_path)
+    shutil.copy(
+        os.path.join(BASE_DIR, 'FPIDjango', 'settings_private.py'),
+        private_settings_file_path
+    )
 
 # Tell Sphinx to ignore Django imports
 # autodoc_mock_imports = ["django"]
