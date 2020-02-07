@@ -15,7 +15,7 @@ from fpiweb.views import AboutView, ActivityDownloadView, BoxDetailsView, \
     LocRowCreateView, LocRowUpdateView, LocRowDeleteView, LocBinListView, \
     LocBinCreateView, LocBinUpdateView, LocBinDeleteView, LocTierListView, \
     LocTierCreateView, LocTierUpdateView, LocTierDeleteView, ManualMenuView, \
-    ManualPalletNew, ManualPalletStatus, TravisTestView
+    ManualPalletNew, ManualPalletStatus
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -238,10 +238,5 @@ urlpatterns = [
         'manual_move_box/',
         ManualMoveBoxView.as_view(),
         name='manual_move_box',
-    ),
-    path(
-        'travistest/',
-        TravisTestView.as_view(),
-        name='travistest'
     ),
 ]
