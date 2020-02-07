@@ -62,12 +62,12 @@ Requirements:
 
     -   <domain> is (for now) a value passed in on the command line.
 
-    -   <box-id> is a nine character string of "boc" followed by a six digit
+    -   <box-id> is a nine character string of "BOX" followed by a five digit
         decimal number.
 
     example (<domain> = www.example.com and <box-id> = box123456
 
-    -   /https://www.example.com/fpiweb/box/box123456
+    -   /https://www.example.com/fpiweb/box/BOX12345
 
 -   In addition, each QR code should have the box number printed immediately
     below it and centered with the QR code..
@@ -138,7 +138,7 @@ on the web when using our application.
 
 Build web pages that will allow an authorized user to add, change and delete
 box type entries.  Deleting a box type will not be permitted
-if there are any product entries referencing this box type.
+if there are any box entries referencing this box type.
 
 .. _T5:
 

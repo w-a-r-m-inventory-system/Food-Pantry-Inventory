@@ -23,7 +23,11 @@
             </h2>
 
             <h5>
-                Pallet Target: {{ user.profile.active_location }}
+                Pallet Name: {{ pallet_rec.name }}
+            </h5>
+
+            <h5>
+                Pallet Target: {{ pallet_rec.location_id }}
             </h5>
             <h6>
                 {% if warehouse_flag %}
