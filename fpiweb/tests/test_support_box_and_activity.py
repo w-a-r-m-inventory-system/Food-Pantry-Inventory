@@ -44,8 +44,7 @@ class BoxSupportTestCase(TransactionTestCase):
         'LocBin',
         'LocTier',
         'Location',
-        'Activity',
-        'Constraints',
+        'Activity'
     ]
 
     # 'User', 'UserGroups', 'Group', 'Profile',

@@ -6,45 +6,16 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import \
-    AboutView, \
-    ActivityDownloadView, \
-    BoxDetailsView, \
-    BoxEditView, \
-    BoxEmptyView, \
-    BoxEmptyMoveView, \
-    BoxItemFormView, \
-    BoxMoveView, \
-    BoxNewView, \
-    BoxScannedView, \
-    BuildPalletView, \
-    IndexView, \
-    LoginView, \
-    ConstraintCreateView, \
-    ConstraintDeleteView, \
-    ConstraintsListView, \
-    ConstraintUpdateView, \
-    LogoutView, \
-    PrintLabelsView, \
-    ScannerView, \
-    TestScanView, \
-    MaintenanceView, \
-    ManualMoveBoxView, \
-    LocRowListView, \
-    LocRowCreateView, \
-    LocRowUpdateView, \
-    LocRowDeleteView, \
-    LocBinListView, \
-    LocBinCreateView, \
-    LocBinUpdateView, \
-    LocBinDeleteView, \
-    LocTierListView, \
-    LocTierCreateView, \
-    LocTierUpdateView, \
-    LocTierDeleteView, \
-    ManualMenuView, \
-    ManualPalletNew,  \
-    ManualPalletStatus
+from fpiweb.views import AboutView, ActivityDownloadView, BoxDetailsView, \
+    BoxEditView, BoxEmptyView, BoxEmptyMoveView, BoxItemFormView, BoxMoveView, \
+    BoxNewView, BoxScannedView, BuildPalletView, IndexView, LoginView, \
+    ConstraintCreateView, ConstraintDeleteView, ConstraintsListView, \
+    ConstraintUpdateView, LogoutView, PrintLabelsView, ScannerView, \
+    TestScanView, MaintenanceView, ManualMoveBoxView, LocRowListView, \
+    LocRowCreateView, LocRowUpdateView, LocRowDeleteView, LocBinListView, \
+    LocBinCreateView, LocBinUpdateView, LocBinDeleteView, LocTierListView, \
+    LocTierCreateView, LocTierUpdateView, LocTierDeleteView, ManualMenuView, \
+    ManualPalletNew, ManualPalletStatus, TravisTestView
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -267,5 +238,10 @@ urlpatterns = [
         'manual_move_box/',
         ManualMoveBoxView.as_view(),
         name='manual_move_box',
-    )
+    ),
+    path(
+        'travistest/',
+        TravisTestView.as_view(),
+        name='travistest'
+    ),
 ]

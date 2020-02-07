@@ -16,6 +16,8 @@ from .models import \
     Product, \
     ProductCategory, \
     ProductExample, \
+    Pallet, \
+    PalletBox, \
     Profile
 
 __author__ = '(Multiple)'
@@ -27,6 +29,8 @@ __creation_date__ = "04/01/2019"
 admin.site.register(Activity)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
+admin.site.register(Pallet)
+admin.site.register(PalletBox)
 
 
 @admin.register(Box)
@@ -105,6 +109,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'title',
+        'active_pallet_id',
     )
 
 # EOF

@@ -10,6 +10,7 @@ import shutil
 import sys
 
 import django
+import recommonmark
 
 # -- Path setup --------------------------------------------------------------
 
@@ -66,7 +67,7 @@ django.setup()
 # -- Project information -----------------------------------------------------
 
 project = 'Food Pantry Inventory System'
-copyright = '2019, (See Contributors)'
+copyright = '2020, (See Contributors)'
 author = '(See Contributors)'
 
 # The full version, including alpha/beta/rc tags
@@ -83,7 +84,8 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'sphinxcontrib.plantuml'
+    'sphinxcontrib.plantuml',
+    'recommonmark'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
