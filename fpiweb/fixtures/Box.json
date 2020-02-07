@@ -4,7 +4,7 @@
     "pk": 4,
     "fields": {
       "box_number": "BOX12345",
-      "box_type": 1,
+      "box_type": 2,
       "location": 1,
       "product": 53,
       "exp_year": 2019,
@@ -40,7 +40,7 @@
       "exp_year": 2020,
       "exp_month_start": null,
       "exp_month_end": null,
-      "date_filled": null,
+      "date_filled": "2019-05-26T04:00:00Z",
       "quantity": 24
     }
   },
@@ -130,7 +130,7 @@
       "exp_year": 2019,
       "exp_month_start": null,
       "exp_month_end": null,
-      "date_filled": null,
+      "date_filled": "2019-05-26T04:00:00Z",
       "quantity": 24
     }
   },
@@ -175,7 +175,7 @@
       "exp_year": null,
       "exp_month_start": null,
       "exp_month_end": null,
-      "date_filled": null,
+      "date_filled": "2019-05-26T04:00:00Z",
       "quantity": 24
     }
   },
@@ -185,7 +185,7 @@
     "fields": {
       "box_number": "BOX12368",
       "box_type": 1,
-      "location": 13,
+      "location": null,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,
@@ -200,7 +200,7 @@
     "fields": {
       "box_number": "BOX12369",
       "box_type": 1,
-      "location": 14,
+      "location": null,
       "product": null,
       "exp_year": null,
       "exp_month_start": null,

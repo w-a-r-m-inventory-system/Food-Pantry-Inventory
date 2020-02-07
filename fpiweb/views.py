@@ -73,6 +73,8 @@ __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
+from fpiweb.support.BoxManagement import BoxManagementClass
+
 logger = getLogger('fpiweb')
 
 
@@ -1046,16 +1048,16 @@ class ManualMenuView(TemplateView):
         current_user = self.request.user
         profile = current_user.profile
         if profile:
-            active_pallet = profile.active_location_id
+            active_pallet = profile.active_pallet
         else:
             active_pallet = None
 
         # does user have active pallet?  if so get info
         if active_pallet:
             new_target = None
-            pallet_rec = Pallet.objects.select_related().get(
-                user_id_id=current_user.id)
-            pallet_id = pallet_rec.id
+            # pallet_rec = Pallet.objects.select_related().get(
+            #     id=profile.active_pallet)
+            pallet_id = active_pallet.id
             pallet_target = reverse_lazy(
                 'fpiweb:manual_pallet_status', args=[pallet_id]
             )
@@ -1225,7 +1227,7 @@ class ManualPalletStatus(LoginRequiredMixin, ListView):
     context_object_name = 'manual_pallet_status'
     success_url = reverse_lazy('fpiweb:manual_menu')
 
-    def get_context_data(self, **kwargs):
+    def get_(self, **kwargs):
         """
         Add Site Information to About page.
 
@@ -1234,34 +1236,39 @@ class ManualPalletStatus(LoginRequiredMixin, ListView):
         """
 
         # get stuff from the request
-        context = super(ManualPalletStatus, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # get related stuff from the database
-        pallet_rec = context['manual_pallet_status'].get()
-        pallet_user_id = pallet_rec.user_id_id
-        profile_rec = Profile.objects.get(user_id=pallet_user_id)
-        active_location_id = profile_rec.active_location_id
-        location_rec = Location.objects.get(id=active_location_id)
-        location_row_id = location_rec.loc_row.id
-        row_descr = location_rec.loc_row.loc_row_descr
-        location_bin_id = location_rec.loc_bin.id
-        bin_descr = location_rec.loc_bin.loc_bin_descr
-        location_tier_id = location_rec.loc_tier.id
-        tier_descr = location_rec.loc_tier.loc_tier_descr
-        box_set = PalletBox.objects.filter(
-            pallet_id_id=pallet_rec.id).order_by('box_number')
+        current_user = self.request.user
+        profile_rec = Profile.objects.get(user_id=current_user.id)
+        if profile_rec.active_pallet:
+            pallet_rec = Pallet.objects.select_related(
+                'location',
+                'location__loc_row',
+                'location__loc_bin',
+                'location__loc_tier',
+            ).get(id=profile_rec.active_pallet)
+            location_rec = pallet_rec.location
+            loc_row_rec = location_rec.loc_row
+            loc_bin_rec = location_rec.loc_bin
+            loc_tier_rec = location_rec.loc_tier
+            box_set = PalletBox.objects.filter(
+                pallet_id=pallet_rec.id).order_by('box_number')
+        else:
+            pallet_rec = None
+            location_rec = None
+            loc_row_rec = None
+            loc_bin_rec = None
+            loc_tier_rec = None
+            box_set = None
 
-        # pallet_context = context['manual_pallet_status']
-        # pallet_query = pallet_context.query
-        warehouse_flag = location_rec.loc_in_warehouse
-        # remove entires below before production
-        context['warehouse_flag'] = warehouse_flag
-        context['row_id'] = location_row_id
-        context['row_descr'] = row_descr
-        context['bin_id'] = location_bin_id
-        context['bin_descr'] = bin_descr
-        context['tier_id'] = location_tier_id
-        context['tier_descr'] = tier_descr
+        context['user'] = current_user
+        context['profile'] = profile_rec
+        context['active_pallet'] = pallet_rec
+        context['location'] = location_rec
+        context['loc_row'] = loc_row_rec
+        context['loc_bin'] = loc_bin_rec
+        context['loc_tier'] = loc_tier_rec
         context['box_set'] = box_set
         return context
 

@@ -1,33 +1,89 @@
-##############
-Box Management
-##############
+########################
+Box and Activity Summary
+########################
 
-This food pantry inventory system tracks the products in the warehouse by
-box.  Ideally all boxes are handled correctly so this inventory system can
+This food pantry inventory system tracks the food and other product in
+the warehouse by box.  When a box has product in it, the system tracks
+what is in the box, where the box is located, and when the product in it
+will expire.
+
+The system also tracks box activity.  The activity information is
+designed to help the folks running the food pantry understand the flow
+of product through the pantry over time.  This information can help them
+see the trends of their clients.  They can anticipate when they are
+about to run low or when they have an excess of some product that
+another food pantry can use before it expires and has to be thrown away.
+
+
+***********
+Box Summary
+***********
+
+All boxes have a box type -- which indicates an approximate quantity of
+product it might contain.  All boxes have a QR code label with a unique
+identifier included for humans to read.  The QR code can be easily read
+by devices such as smart phones, tablets and laptops with cameras.
+
+A box may be either empty or full in the inventory system.  Scanning the
+QR code or typing in the identifier into the appropriate web page will
+reveal the state of the box in the system.
+
+A full box in the inventory system has information about what product is
+in it, where it is located, and when the product in it will expire.  The
+expiration information may indicate the only the year it expires or may
+indicate a part of a year, such as a quarter or month.  If a box is
+moved, the system is updated so finding the current location of any box
+is known.
+
+An empty box will have nothing but the box type.  The inventory system
+will have no product, location, or expiration information.  However, the
+boxes are expected to be sufficiently durable that they can be used a
+number of times.
+
+****************
+Activity Summary
+****************
+
+When a box has product in it, the activity information will also have
+the product, approximate quantity, location and expiration information
+about that box.  When a box is consumed (i. e. emptied) the activity
+information will be updated to indicate when it was consumed, how long
+the product was in the box, etc.  When a box is used again, a new
+activity record will be created so the information about the previous
+contents is preserved.
+
+**************
+Box Management
+**************
+
+Ideally all boxes are handled correctly so this inventory system can
 accurately report the quantity and location of all products in it.
 
-Alas, we all know that mistakes can be made.  A box may get overlooked and
-not get checked in.  A box may get moved without letting the inventory
-system know.  A box may get emptied by someone who is unaware that there is
-an inventory system.
+Alas, we all know that mistakes can be made.  A box may get overlooked
+and not get checked in.  A box may get moved without letting the
+inventory system know.  A box may get emptied by someone who is unaware
+that there is an inventory system.  The inventory system is tolerant of
+these foibles and tries to compensate rather than be rigid and require
+extra work.
 
 The management of updating the database after user interaction has been
-isolated to two classes: BoxManagementClass and BoxActivityClass.  These two
-classes should be the only code actually updating  the databae.  Additional
-guidance is provided below in the section `Pallet Management`_ about how
-pallets of boxes are handled by this inventory system.
+isolated to two classes: BoxManagementClass and BoxActivityClass.  These
+two classes should be the only code actually updating  the database.
+Additional guidance is provided below in the section `Pallet
+Management`_ about how pallets of boxes are handled by this inventory
+system.
 
 
-**************************
 Box Management API Summary
-**************************
+==========================
 
 The `BoxManagementClass`_ has five API's or public methods that can be
 called to update the database with details about a box (or a pallet of
 boxes).
 
 Individual Box API's
-====================
+---------------------
+
 For individual boxes the calls are:
 
 BoxManagementClass.box_new
@@ -47,15 +103,14 @@ BoxManagementClass.box_consume
     directly in the pantry.
 
 
-**************************
 Box Management API Details
-**************************
+==========================
 
 The expected input, actions, and output of the box management API calls are
 shown below.
 
 BoxManagementClass.box_new
-==========================
+--------------------------
 
 Add a new box with a unique box number to the inventory system.
 
@@ -76,7 +131,7 @@ Output
 The new box record will be returned.
 
 BoxManagementClass.box_fill
-===========================
+---------------------------
 
 Add an individual box containing a named product at a specified location
 with a specified expiration year (and possibly range of months).
@@ -100,7 +155,7 @@ The modified box record will be returned.
 
 
 BoxManagementClass.box_move
-===========================
+---------------------------
 
 Move a filled box from one location to another in the warehouse.
 
@@ -123,7 +178,7 @@ The modified box record will be returned.
 
 
 BoxManagementClass.box_consume
-==============================
+------------------------------
 
 Empty a box (consume it's contents) by putting the contents into QC or
 directly in the pantry.
@@ -145,9 +200,9 @@ Output
 
 The modified box record will be returned.
 
-#################
+*****************
 Pallet Management
-#################
+*****************
 
 Pallet management is designed to make dealing with pallets of boxes swift
 and easy.  Rather than require strict conformance to some arbitrary rules in
@@ -155,9 +210,9 @@ the inventory system, the system will accommodate variations to the typical
 scenarios.  The scenarios below are not meant to be inclusive but are
 designed to show developers what might happen.
 
-***************************
+
 Pallet Management Scenarios
-***************************
+===========================
 
 New Pallet Scenario
     The user will start with an empty pallet and add newly filled boxes of
@@ -201,7 +256,7 @@ Move a Pallet Scenaro
 
 
 Developer Suggestions
-=====================
+---------------------
 
 Perhaps a way of minimizing the amount of scanning by the user would be
 to either prepopulate the pallet boxes when a location with boxes is
@@ -214,7 +269,7 @@ record.
 
 
 Pallet Management API's
-=======================
+-----------------------
 
 The call for processing a pallet of boxes is:
 
@@ -233,7 +288,7 @@ boxes.
 
 
 Pallet Management API Details
-=============================
+-----------------------------
 
 The expected input, actions, and output of the box management API calls are
 shown below.
@@ -294,13 +349,13 @@ Output
 Nothing will be returned.
 
 
-###################
+*******************
 Activity Management
-###################
+*******************
 
-****************
+
 Box Activity API
-****************
+================
 
 The Box Activity API (`BoxActivityClass`_) records information in the
 Activity table so that what is available can be readily discerned and that
@@ -310,9 +365,9 @@ Although it has three public methods, none of them should be called directly
 because the box management API's will take care of calling the appropriate
 box activity API.
 
-##########################
-Box Management API Details
-##########################
+
+Box Activity API Details
+------------------------
 
 The details for each Box Management API call are documented in the source
 code of the call.
