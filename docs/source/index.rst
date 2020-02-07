@@ -11,7 +11,7 @@ it will manage the inventory in the warehouse.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Overall Contents:
 
    modules
 
@@ -19,15 +19,7 @@ it will manage the inventory in the warehouse.
 
    Specifications
 
-   Outstanding Tasks
-
-   UML Diagrams
-
    Developer Documentation
-
-   JavaScriptAndJQuery
-
-   DevDocs/Box Management
 
 
 
