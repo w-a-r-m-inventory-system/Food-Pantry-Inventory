@@ -7,7 +7,7 @@
           name="viewport"
           content="width-device-width"
           initial-scale="1"
-          shrink-to-fit=no"/>
+          shrink-to-fit="no"/>
 
 {#    <!-- Bootstrap CSS -->#}
 {#    <link rel="stylesheet"#}
@@ -31,7 +31,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-reboot.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
 
-  {% bootstrap_javascript jquery='full' %}
 </head>
 <body>
     <div class="container">
@@ -40,6 +39,9 @@
       {% block content %}
       {% endblock %}
     </div>
+
+    <script src="{% static '/fpiweb/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static '/fpiweb/popper.min.js' %}"></script>
     <script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
     {% block footer_javascript %}
     {% endblock %}
