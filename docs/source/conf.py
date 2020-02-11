@@ -97,6 +97,20 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'django.log',
                     'fpiweb.log', 'root.log', ]
 
+autodoc_default_options = {
+    'members': None,                  # include members (default)
+    'undoc-members': None,            # include members with no documentation
+    'member-order': 'alphabetical',   # sort members alphabetically
+    # 'private-members': None,        # document members beginning with "_"
+    # 'special-members': None,        # document dunderbar members
+    # 'inherited-members': None,      # show inherited members
+    # 'show-inheritance': None,       # shows inheritance below signature
+    # 'ignore-module-all': None,      # include __all__ member
+    # 'exclude-members': None,        # exclude members in list
+}
+
+# automatically generate autodoc stub files for any new modules
+autosummary_generate = True
 
 # -- Options for HTML output -------------------------------------------------
 

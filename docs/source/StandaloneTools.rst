@@ -1,11 +1,6 @@
 StandaloneTools package
 =======================
 
-.. automodule:: StandaloneTools
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -14,3 +9,11 @@ Submodules
    StandaloneTools.GenerateSecretKey
    StandaloneTools.LoadLocationData
    StandaloneTools.QRCodePrinter
+
+Module contents
+---------------
+
+.. automodule:: StandaloneTools
+   :members:
+   :undoc-members:
+   :show-inheritance:
