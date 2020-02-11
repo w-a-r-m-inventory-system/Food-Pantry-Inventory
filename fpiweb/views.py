@@ -69,6 +69,7 @@ from fpiweb.forms import \
     PrintLabelsForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxActivity import BoxActivityClass
+from fpiweb.support.BoxManagement import BoxManagementClass
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -648,7 +649,7 @@ class TestScanView(LoginRequiredMixin, TemplateView):
 
         # schema http or https
         schema = 'http'
-        if settings.DEBUG == False and hasattr(self.request, 'schema'):
+        if settings.DEBUG is False and hasattr(self.request, 'schema'):
             schema = self.request.schema
 
         protocol_and_host = "{}://{}".format(
@@ -694,6 +695,7 @@ class BuildPalletView(View):
             request,
             build_pallet_form,
             box_forms,
+            pallet,
             status=400):
         """
         Display page with BuildPalletForm and BoxItemForms
@@ -710,6 +712,7 @@ class BuildPalletView(View):
             {
                 'form': build_pallet_form,
                 'box_forms': box_forms,
+                'pallet': pallet,
             },
             status=status,
         )
@@ -730,31 +733,12 @@ class BuildPalletView(View):
         )
 
     def get(self, request):
+        # Show page to select/add new pallet.  This page will POST back to this
+        # view
         return self.show_pallet_management_page(request)
 
     def post(self, request):
-
-        # salvaged from the original version of get
-        #
-        # build_pallet_form = BuildPalletForm()
-        #
-        # user, profile = get_user_and_profile(request)
-        # if not profile.active_pallet:
-        #     print(dir(request))
-        #     print('request.path', request.path)
-        #     form = PalletSelectForm(
-        #         initial={
-        #             'url_path': request.path,
-        #         }
-        #     )
-        #
-        #
-        # return self.show_forms_response(
-        #     request,
-        #     build_pallet_form,
-        #     self.BoxFormFactory(prefix=self.formset_prefix),
-        #     status=200,
-        # )
+        # BuildPalletView.post
 
         logger.debug(f"POST data is {request.POST}")
 
@@ -776,6 +760,7 @@ class BuildPalletView(View):
                 status=500
             )
 
+        pallet = None
         if form_name == self.PALLET_SELECT_FORM_NAME:
             pallet_select_form = PalletSelectForm(request.POST)
             if not pallet_select_form.is_valid():
@@ -808,11 +793,30 @@ class BuildPalletView(View):
 
         initial_data = []
         for pallet_box in pallet_boxes:
-            initial_datum = {}
+            form_data = {
+                'box_number': pallet_box.box_number,
+                'product': pallet_box.product,
+                'exp_year': pallet_box.exp_year,
+                'exp_month_start': pallet_box.exp_month_start,
+                'exp_month_end': pallet_box.exp_month_end,
+            }
+            print("adding {} to initial_data".format(form_data))
+            initial_data.append(form_data)
 
+        build_pallet_form = BuildPalletForm(instance=pallet.location)
 
+        box_forms = self.BoxFormFactory(
+            initial=initial_data,
+            prefix=self.formset_prefix,
+        )
 
-
+        return self.show_forms_response(
+            request,
+            build_pallet_form,
+            box_forms,
+            pallet,
+            status=200,
+        )
 
     def process_build_pallet_forms(self, request):
 
@@ -840,74 +844,61 @@ class BuildPalletView(View):
         location = build_pallet_form.instance
 
         # Update box records and
-        boxes_by_id = OrderedDict()
-        duplicate_ids = set()
-        box_ids_not_found = set()
-        forms_missing_box_id = 0
+        boxes_by_box_number = OrderedDict()
+        duplicate_box_numbers = set()
+        forms_missing_box_number = 0
         for i, box_form in enumerate(box_forms):
             cleaned_data = box_form.cleaned_data
             if not cleaned_data:
                 continue
 
-            pallet_box_id = cleaned_data.get('id')
-            if not isinstance(pallet_box_id, int):
-                logger.error(f"box_id {pallet_box_id} is a {type(pallet_box_id)}")
+            box_number = cleaned_data.get('box_number')
+            if not isinstance(box_number, str):
+                logger.error(f"box_number {box_number} is a {type(box_number)}")
                 continue
 
             # Is this a duplicate box_id?
-            if pallet_box_id in boxes_by_id:
-                duplicate_ids.add(pallet_box_id)
+            if box_number in boxes_by_box_number:
+                duplicate_box_numbers.add(box_number)
                 continue
 
-            # Is box_id present in database?
+            # Is box_number present in database?
             try:
-                pallet_box = PalletBox.objects.get(id=pallet_box_id)
-            except PalletBox.DoesNotExist:
-                box_ids_not_found.add(pallet_box_id)
-                continue
+                box = Box.objects.get(box_number=box_number)
+                logger.debug(f"found existing box {box_number}")
+            except Box.DoesNotExist:
+                box = Box(
+                    box_number=box_number,
+                    box_type=Box.box_type_default(),
+                )
+                logger.debug(f"Created new box {box_number}")
 
-            boxes_by_id[pallet_box_id] = pallet_box
+            boxes_by_box_number[box_number] = box
 
-            pallet_box.location = location
-            pallet_box.product = cleaned_data.get('product')
-            pallet_box.exp_year = cleaned_data.get('exp_year')
-            pallet_box.exp_month_start = cleaned_data.get('exp_month_start')
-            pallet_box.exp_month_end = cleaned_data.get('exp_month_end')
+            if box.is_filled():
+                box_management = BoxManagementClass()
+                box_management.box_consume(box)
 
-            # Not having a date_filled causes an error if an activity
-            # record needs to be created.
-            if not pallet_box.date_filled:
-                pallet_box.date_filled = timezone.now()
+            box.product = cleaned_data.get('product')
+            box.exp_year = cleaned_data.get('exp_year')
+            box.exp_month_start = cleaned_data.get('exp_month_start')
+            box.exp_month_end = cleaned_data.get('exp_month_end')
+            box.save()
 
-            pallet_box.save()
+            box_management.box_move(box, location)
 
-            box_activity = BoxActivityClass()
-            box_activity.box_move(pallet_box.id)
-
-        if forms_missing_box_id > 0:
+        if forms_missing_box_number > 0:
             # error reported on box_form
-            logger.debug("forms_missing_box_id > 0")
+            logger.debug("forms_missing_box_number > 0")
             return self.show_forms_response(
                 request,
                 build_pallet_form,
                 box_forms,
             )
 
-        if duplicate_ids:
-            duplicate_ids = list(duplicate_ids)
-            message = f"Duplicate Box IDs: {', '.join(duplicate_ids)}"
-            logger.debug(message)
-            build_pallet_form.add_error(None, message)
-            return self.show_forms_response(
-                request,
-                build_pallet_form,
-                box_forms,
-            )
-
-        if box_ids_not_found:
-            box_ids_not_found = list(box_ids_not_found)
-            logger.debug("box_ids_not_found are {}".format(box_ids_not_found))
-            message = f"Box IDs not found: {', '.join(box_ids_not_found)}"
+        if duplicate_box_numbers:
+            duplicate_box_numbers = [str(k) for k in duplicate_box_numbers]
+            message = f"Duplicate box numbers: {', '.join(duplicate_box_numbers)}"
             logger.debug(message)
             build_pallet_form.add_error(None, message)
             return self.show_forms_response(
@@ -921,7 +912,7 @@ class BuildPalletView(View):
             self.confirmation_template,
             {
                 'location': location,
-                'boxes': boxes_by_id.values(),
+                'boxes': boxes_by_box_number.values(),
             },
         )
 
@@ -1019,7 +1010,7 @@ class ScannerView(View):
         }
         return data
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
 
         scan_data = request.POST.get('scanData')
         box_number = self.get_keyed_in_box_number(
@@ -1090,9 +1081,9 @@ class BoxItemFormView(LoginRequiredMixin, View):
     template_name = 'fpiweb/box_form.html'
 
     @staticmethod
-    def get_form(box, prefix=None):
+    def get_form(pallet_box, prefix=None):
         kwargs = {
-            'initial': BoxItemForm.get_initial_from_box(box)
+            'initial': BoxItemForm.get_initial_from_box(pallet_box)
         }
         if prefix:
             kwargs['prefix'] = prefix
@@ -1106,6 +1097,7 @@ class BoxItemFormView(LoginRequiredMixin, View):
             request.POST.get('boxNumber'),
         )
         prefix = request.POST.get('prefix')
+        pallet_pk = request.POST.get('palletPk')
 
         try:
             box, created = ScannerView.get_box(scan_data, box_number)
@@ -1114,12 +1106,30 @@ class BoxItemFormView(LoginRequiredMixin, View):
             logger.error(error)
             return HttpResponse("Scan failed.", status=404)
 
+        try:
+            pallet = Pallet.objects.get(pk=pallet_pk)
+        except Pallet.DoesNotExist as dne:
+            error = str(dne)
+            logger.error(error)
+            return HttpResponse(f"Pallet pk={pallet_pk} not found", status=404)
+
+        # If box is filled, empty it before continuing
+        if box.is_filled():
+            box_management = BoxManagementClass()
+            box_management.box_consume(box)
+
+        # Look for PalletBox record
+        pallet_box, created = PalletBox.objects.get_or_create(
+            box_number=box.box_number,
+            pallet=pallet
+        )
+
         return render(
             request,
             self.template_name,
             {
                 'box_number': box.box_number,
-                'form': self.get_form(box, prefix),
+                'form': self.get_form(pallet_box, prefix),
             },
         )
 

@@ -59,6 +59,10 @@ let buildPallet = {
     {
         let nextFormId = buildPallet.getNextAvailableBoxFormId();
         let prefix = `box_forms-${nextFormId}`;
+        let palletPk = $('#pallet_id').val();
+
+        if(boxNumber !== '')
+            scanData = '';
 
         $.post(
             '/fpiweb/box/box_form/',
@@ -66,6 +70,7 @@ let buildPallet = {
                 scanData: scanData,
                 boxNumber: boxNumber,
                 prefix: prefix,
+                palletPk: palletPk,
             },
             callback,
             'html'

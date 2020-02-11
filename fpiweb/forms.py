@@ -673,10 +673,8 @@ class BoxItemForm(forms.Form):
     """Form for the Box as it appears as part of a formset on the Build Pallet
     page"""
 
-    id = forms.IntegerField(
-        required=True,
-        widget=forms.HiddenInput
-    )
+    # I've deliberately removed the ID field so that this form may
+    # be used for either Box or PalletBox records.
 
     # This is a read only field.  In the page a box number is displayed in an input element with no name or id
     box_number = forms.CharField(
@@ -718,10 +716,15 @@ class BoxItemForm(forms.Form):
 
     @staticmethod
     def get_initial_from_box(box):
+        """
+        :param box: Box or PalletBox record
+        :return: 
+        """
         return {
-            'id': box.id,
             'box_number': box.box_number,
         }
+
+
 
 
 class PrintLabelsForm(forms.Form):

@@ -560,6 +560,11 @@ class Box(models.Model):
     )
     """ Approximate or default number of items in the box, if filled. """
 
+    def is_filled(self):
+        if self.product:
+            return True
+        return False
+
     # define a default display of Box
     def __str__(self):
         """ Default way to display this box record. """
@@ -696,6 +701,15 @@ class PalletBox(models.Model):
     )
     """ Internal record identifier for a pallet box. """
 
+    box_number = models.CharField(
+        'Visible Box Number',
+        max_length=Box.box_number_max_length,
+        null=True,
+        blank=True,
+        help_text=Box.box_number_help_text,
+    )
+    """ Number printed in the label on the box. """
+
     pallet_help_text = 'Internal record identifier for a pallet.'
     pallet = models.ForeignKey(
         Pallet,
@@ -707,6 +721,8 @@ class PalletBox(models.Model):
     box_help_text = 'Internal record identifier for a box.'
     box = models.ForeignKey(
         Box,
+        null=True,
+        blank=True,
         on_delete=models.PROTECT,
         help_text=box_help_text,
     )
@@ -714,6 +730,8 @@ class PalletBox(models.Model):
     product_help_text = 'Product contained in this box, if filled.'
     product = models.ForeignKey(
         Product,
+        null=True,
+        blank=True,
         on_delete=models.PROTECT,
         verbose_name='product',
         help_text=product_help_text,
@@ -723,6 +741,8 @@ class PalletBox(models.Model):
     exp_year_help_text = 'Year the product expires, if filled.'
     exp_year = models.IntegerField(
         'Year Product Expires',
+        null=True,
+        blank=True,
         help_text=exp_year_help_text,
     )
     """ Year the product expires, if filled. """
