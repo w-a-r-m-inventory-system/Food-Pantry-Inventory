@@ -1,7 +1,7 @@
 """
 test_support_activity.py - Test handling activity records.
 """
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from logging import getLogger, debug, error
 
 from django.test import TestCase, TransactionTestCase
@@ -143,7 +143,7 @@ class ActivitySupportTestCase(TransactionTestCase):
         empty_box.exp_year = None
         empty_box.exp_month_start = None
         empty_box.exp_month_end = None
-        empty_box.date_filled = None
+        empty_box.date_filled = now().date()
         empty_box.save()
 
         # modify the activity record to match

@@ -22,8 +22,11 @@ from fpiweb.models import \
     LocRow, \
     LocBin, \
     LocTier, \
+    PalletBox, \
     Product
-from fpiweb.views import ManualMoveBoxView
+from fpiweb.views import \
+    BoxItemFormView, \
+    ManualMoveBoxView
 
 
 def management_form_post_data(
@@ -416,5 +419,23 @@ class ManualMoveBoxViewTest(TestCase):
             location.pk,
             context_box.location.pk,
         )
+
+
+class TestBoxItemFormView(TestCase):
+
+    def test_get_form(self):
+        box_number = BoxNumber.format_box_number(15)
+        pallet_box = PalletBox(
+            box_number=box_number,
+        )
+        form = BoxItemFormView.get_form(pallet_box)
+        self.assertIsNotNone(form)
+        self.assertIsNone(form.prefix)
+        self.assertEqual(
+            box_number,
+            form.initial['box_number']
+        )
+
+
 
 

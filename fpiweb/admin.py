@@ -14,6 +14,7 @@ from .models import \
     LocRow, \
     LocTier, \
     Pallet, \
+    PalletBox, \
     Product, \
     ProductCategory, \
     ProductExample, \
@@ -95,7 +96,20 @@ class LocTierAdmin(admin.ModelAdmin):
 
 @admin.register(Pallet)
 class PalletAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('pk', 'name',)
+
+
+@admin.register(PalletBox)
+class PalletBoxAdmin(admin.ModelAdmin):
+    list_display = (
+        'box_number',
+        'pallet',
+        'box',
+        'product',
+        'exp_year',
+        'exp_month_start',
+        'exp_month_end'
+    )
 
 
 @admin.register(Product)
