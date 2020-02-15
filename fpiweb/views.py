@@ -572,7 +572,7 @@ class BoxDetailsView(LoginRequiredMixin, DetailView):
     context_object_name = 'box'
 
     def get_context_data(self, **kwargs):
-        debug(f"kwargs are {kwargs}")
+        logger.debug(f"kwargs are {kwargs}")
         context = super().get_context_data(**kwargs)
         return context
 
