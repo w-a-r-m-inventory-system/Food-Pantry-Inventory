@@ -1,6 +1,57 @@
-**************************
+##########################
 JavaScript and JQuery Tips
+##########################
+
 **************************
+JavaScript Library Sources
+**************************
+
+**************************
+JavaScript Library Sources
+**************************
+
+jQuery
+======
+
+Bootstrap4 apparently wants a specific version of jQuery:
+
+    jquery-3.3.1.min.js
+
+It can be downloaded from the `jQuery site <https://code.jquery.com/jquery/>`_
+(as of Feb 2020).  Copy the file into the appropriate project directory.
+Currently that is: ::
+
+    ./Food-Project-Inventory/fpiweb/static/fpiweb/
+
+
+Popper
+======
+
+Bootstrap also wants to use a library called popper.  The developers of this
+library strongly urge that it be downloaded and maintained using a version
+control system such as npm.  The following are suggested steps for obtaining
+a current version of popper:
+
+1.  Install npm (or pnpm).  Currently is is available via Homebrew.  (See
+`Pnpm site <https://github.com/pnpm/pnpm>`_ for other ways to obtain pnpm.)
+
+    brew install pnpm
+
+#.  If you already have a js repository go there.  Otherwise move to an
+empty directory.  Run this command to download and build popper. ::
+
+    pnpm install @popperjs/core
+
+#.  Go to the directory where the one file we need is
+located. ::
+
+    cd ./node_modules/@popperjs/core/dist/umd/
+
+#.  Copy the file "popper.min.js" into the appropriate project directory.
+Currently that is: ::
+
+    ./Food-Project-Inventory/fpiweb/static/fpiweb/
+
 
 The Three Levels of DOM Manipulation
 ====================================
