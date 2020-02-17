@@ -1,11 +1,6 @@
 fpiweb.migrations package
 =========================
 
-.. automodule:: fpiweb.migrations
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -35,3 +30,12 @@ Submodules
    fpiweb.migrations.0022_consolidate_location_fields
    fpiweb.migrations.0023_auto_20200102_2045
    fpiweb.migrations.0024_change_pallet_handling
+   fpiweb.migrations.0025_restore_pallet_box_number_tweak_activity
+
+Module contents
+---------------
+
+.. automodule:: fpiweb.migrations
+   :members:
+   :undoc-members:
+   :show-inheritance:

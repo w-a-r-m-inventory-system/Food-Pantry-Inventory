@@ -1,11 +1,6 @@
 FPIDjango package
 =================
 
-.. automodule:: FPIDjango
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Subpackages
 -----------
 
@@ -22,3 +17,11 @@ Submodules
    FPIDjango.settings_private
    FPIDjango.urls
    FPIDjango.wsgi
+
+Module contents
+---------------
+
+.. automodule:: FPIDjango
+   :members:
+   :undoc-members:
+   :show-inheritance:

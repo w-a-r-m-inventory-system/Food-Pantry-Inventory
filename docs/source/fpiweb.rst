@@ -1,11 +1,6 @@
 fpiweb package
 ==============
 
-.. automodule:: fpiweb
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Subpackages
 -----------
 
@@ -31,3 +26,11 @@ Submodules
    fpiweb.qr_code_utilities
    fpiweb.urls
    fpiweb.views
+
+Module contents
+---------------
+
+.. automodule:: fpiweb
+   :members:
+   :undoc-members:
+   :show-inheritance:
