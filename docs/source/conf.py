@@ -11,6 +11,7 @@ import sys
 
 import django
 import recommonmark
+import sphinx_rtd_theme
 
 # -- Path setup --------------------------------------------------------------
 
@@ -85,7 +86,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinxcontrib.plantuml',
-    'recommonmark'
+    'recommonmark',
+    'sphinx_rtd_theme'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -97,13 +99,27 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'django.log',
                     'fpiweb.log', 'root.log', ]
 
+autodoc_default_options = {
+    'members': None,                  # include members (default)
+    'undoc-members': None,            # include members with no documentation
+    'member-order': 'alphabetical',   # sort members alphabetically
+    # 'private-members': None,        # document members beginning with "_"
+    # 'special-members': None,        # document dunderbar members
+    # 'inherited-members': None,      # show inherited members
+    # 'show-inheritance': None,       # shows inheritance below signature
+    # 'ignore-module-all': None,      # include __all__ member
+    # 'exclude-members': None,        # exclude members in list
+}
+
+# automatically generate autodoc stub files for any new modules
+autosummary_generate = True
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -122,5 +138,25 @@ html_last_updated_fmt = ""
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 html_logo = os.path.join('_static', 'Food_Pantry_Logo.jpg')
+
+# The following configures the Read-the-Docs theme.  See
+# https://sphinx-rtd-theme.readthedocs.io/en/stable/index.html for details on
+# configuration options.
+html_theme_options = {
+    'canonical_url': '',
+    # 'analytics_id': 'UA-XXXXXXX-1',  #  Provided by Google in your dashboard
+    'logo_only': False,
+    'display_version': True,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+    # 'vcs_pageview_mode': '',
+    'style_nav_header_background': 'white',
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False
+}
 
 # EOF
