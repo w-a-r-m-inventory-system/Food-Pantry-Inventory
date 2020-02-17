@@ -1,5 +1,5 @@
-Food Pantry Inventory Code
-==========================
+StandaloneTools
+===============
 
 .. toctree::
    :maxdepth: 4
