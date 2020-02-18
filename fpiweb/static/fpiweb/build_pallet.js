@@ -59,7 +59,7 @@ let buildPallet = {
     {
         let nextFormId = buildPallet.getNextAvailableBoxFormId();
         let prefix = `box_forms-${nextFormId}`;
-        let palletPk = $('#pallet_id').val();
+        let palletPk = $('#id_pallet-pallet').val();
 
         if(boxNumber !== '')
             scanData = '';

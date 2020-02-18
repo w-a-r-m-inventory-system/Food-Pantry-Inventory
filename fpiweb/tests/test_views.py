@@ -15,6 +15,7 @@ from fpiweb.forms import \
     ExtantBoxNumberForm, \
     ExistingLocationForm
 from fpiweb.models import \
+    Activity, \
     Box, \
     BoxNumber, \
     BoxType, \
@@ -22,10 +23,12 @@ from fpiweb.models import \
     LocRow, \
     LocBin, \
     LocTier, \
+    Pallet, \
     PalletBox, \
     Product
 from fpiweb.views import \
     BoxItemFormView, \
+    BuildPalletView, \
     ManualMoveBoxView
 
 
@@ -214,19 +217,82 @@ class BuildPalletViewTest(TestCase):
         'LocTier',
         'Product',
         'ProductCategory',
-        'Box',
         'BoxType'
     )
 
-    def test_post(self):
-        user = User.objects.create_user(
-            'aturing',
-            'aturing@example.com',
-            'abc123',
+    @staticmethod
+    def get_build_pallet_form_post_data(location):
+        post_data = {
+            'loc_row': location.loc_row.pk,
+            'loc_bin': location.loc_bin.pk,
+            'loc_tier': location.loc_tier.pk,
+        }
+        prefix = BuildPalletView.build_pallet_form_prefix
+        post_data = {f"{prefix}-{k}": v for k, v in post_data.items()}
+        return post_data
+
+    @staticmethod
+    def build_boxes(number_of_boxes):
+        boxes = []
+        default_box_type = Box.box_type_default()
+        for i in range(number_of_boxes):
+            box_number = BoxNumber.get_next_box_number()
+            box = Box.objects.create(
+                box_number=box_number,
+                box_type=default_box_type,
+            )
+            boxes.append(box)
+        return boxes
+
+    @staticmethod
+    def build_pallet_boxes(pallet, boxes, product, exp_year):
+        pallet_boxes = []
+        for box in boxes:
+            pallet_box = PalletBox(
+                pallet=pallet,
+                box=box,
+                product=product,
+                exp_year=exp_year,
+            )
+            pallet_boxes.append(pallet_box)
+        return pallet_boxes
+
+    @staticmethod
+    def get_box_forms_post_data(pallet_boxes):
+        prefix = BuildPalletView.formset_prefix
+        post_data = management_form_post_data(
+            prefix,
+            len(pallet_boxes),
         )
 
-        client = Client()
-        client.force_login(user)
+        for i, pallet_box in enumerate(pallet_boxes):
+            box = pallet_box.box
+            form_data = {
+                'id': box.id,
+                'box_number': box.box_number,
+                'product': pallet_box.product.id,
+                'exp_year': pallet_box.exp_year,
+            }
+
+            if pallet_box.exp_month_start:
+                form_data['exp_month_start'] = pallet_box.exp_month_start
+            if pallet_box.exp_month_end:
+                form_data['exp_month_end'] = pallet_box.exp_month_end
+
+            form_data = formset_form_post_data(prefix, i, form_data)
+            post_data.update(form_data)
+
+        return post_data
+
+    @staticmethod
+    def get_hidden_pallet_form_post_data(pallet):
+        key = f"{BuildPalletView.hidden_pallet_form_prefix}-pallet"
+        return {key: pallet.pk}
+
+    def test_get(self):
+        self.fail("Incomplete test")
+
+    def test_post_process_box_forms(self):
 
         # Pick a specific Location
         location = Location.objects.get(
@@ -236,50 +302,47 @@ class BuildPalletViewTest(TestCase):
         )
 
         number_of_boxes = 3
+        boxes = self.build_boxes(number_of_boxes)
 
-        # Get 3 boxes that AREN'T in that Location
-        boxes = Box.objects.exclude(location=location)[:number_of_boxes]
-
-        # choose a product that isn't in any of the boxes
-        product = Product.objects \
-            .exclude(pk__in=[b.product.pk for b in boxes]) \
-            .first()
-
+        product = Product.objects.first()
         exp_year = date.today().year + 3
 
-        formset_prefix = 'box_forms'
-        post_data =  {
-            'loc_row': location.loc_row.pk,
-            'loc_bin': location.loc_bin.pk,
-            'loc_tier': location.loc_tier.pk,
-        }
+        pallet = Pallet.objects.create(name='gray pallet')
+
+        # Using PalletBoxes to build form post data
+        pallet_boxes = self.build_pallet_boxes(
+            pallet,
+            boxes,
+            product,
+            exp_year,
+        )
+        pallet_boxes[0].exp_month_start = 3
+        pallet_boxes[0].exp_month_end = 6
+
+        post_data = self.get_build_pallet_form_post_data(location)
         post_data.update(
-            management_form_post_data(formset_prefix, number_of_boxes)
+            self.get_hidden_pallet_form_post_data(pallet)
+        )
+        post_data.update(
+            self.get_box_forms_post_data(
+                pallet_boxes
+            )
         )
 
-        for i, box in enumerate(boxes):
-            box_data = {
-                'id': box.id,
-                'box_number': box.box_number,
-                'product': product.pk,
-                'exp_year': exp_year,
-            }
+        user = User.objects.create_user(
+            'aturing',
+            'aturing@example.com',
+            'abc123',
+        )
 
-            # set exp month start and end
-            if i == 0:
-                box_data['exp_month_start'] = 3
-                box_data['exp_month_end'] = 6
-
-            box_data = formset_form_post_data('box_forms', i, box_data)
-            post_data.update(box_data)
-
-        # convert all the values to strings
-        post_data = {k: str(v) for k, v in post_data.items()}
+        client = Client()
+        client.force_login(user)
 
         response = client.post(
             reverse('fpiweb:build_pallet'),
             post_data,
         )
+
         self.assertEqual(200, response.status_code)
 
         for i, box in enumerate(boxes):
@@ -292,6 +355,13 @@ class BuildPalletViewTest(TestCase):
             if i == 0:
                 self.assertEqual(3, box.exp_month_start)
                 self.assertEqual(6, box.exp_month_end)
+
+            self.assertEqual(
+                1,
+                Activity.objects.filter(
+                    box_number=box.box_number
+                ).count()
+            )
 
 
 class ManualMoveBoxViewTest(TestCase):

@@ -59,6 +59,7 @@ from fpiweb.forms import \
     BuildPalletForm, \
     ConstraintsForm, \
     ExistingLocationForm, \
+    HiddenPalletForm, \
     LocRowForm, \
     LocBinForm, \
     LocTierForm, \
@@ -679,7 +680,11 @@ class BuildPalletView(View):
 
     form_template = 'fpiweb/build_pallet.html'
     confirmation_template = 'fpiweb/build_pallet_confirmation.html'
+
+    build_pallet_form_prefix = 'build_pallet'
     formset_prefix = 'box_forms'
+    hidden_pallet_form_prefix = 'pallet'
+
     page_title = 'Build Pallet'
 
     BoxFormFactory = formset_factory(
@@ -695,13 +700,14 @@ class BuildPalletView(View):
             request,
             build_pallet_form,
             box_forms,
-            pallet,
+            pallet_form,
             status=400):
         """
         Display page with BuildPalletForm and BoxItemForms
         :param request:
         :param build_pallet_form:
         :param box_forms:
+        :param pallet_form:
         :param status:
         :return:
         """
@@ -712,7 +718,7 @@ class BuildPalletView(View):
             {
                 'form': build_pallet_form,
                 'box_forms': box_forms,
-                'pallet': pallet,
+                'pallet_form': pallet_form,
             },
             status=status,
         )
@@ -747,6 +753,7 @@ class BuildPalletView(View):
         form_name = request.POST.get('form_name')
 
         if form_name is None:
+            # Processing contents of build_pallet.html
             return self.process_build_pallet_forms(request)
 
         if form_name not in [
@@ -803,27 +810,44 @@ class BuildPalletView(View):
             print("adding {} to initial_data".format(form_data))
             initial_data.append(form_data)
 
-        build_pallet_form = BuildPalletForm(instance=pallet.location)
+        build_pallet_form = BuildPalletForm(
+            prefix=self.build_pallet_form_prefix,
+            instance=pallet.location,
+        )
 
         box_forms = self.BoxFormFactory(
             initial=initial_data,
             prefix=self.formset_prefix,
         )
 
+        pallet_form = HiddenPalletForm(
+            prefix=self.hidden_pallet_form_prefix,
+            initial={
+                'pallet': pallet,
+            },
+        )
+
         return self.show_forms_response(
             request,
             build_pallet_form,
             box_forms,
-            pallet,
+            pallet_form,
             status=200,
         )
 
     def process_build_pallet_forms(self, request):
 
-        build_pallet_form = BuildPalletForm(request.POST)
+        build_pallet_form = BuildPalletForm(
+            request.POST,
+            prefix=self.build_pallet_form_prefix
+        )
         box_forms = self.BoxFormFactory(
             request.POST,
             prefix=self.formset_prefix,
+        )
+        pallet_form = HiddenPalletForm(
+            request.POST,
+            prefix=self.hidden_pallet_form_prefix,
         )
 
         build_pallet_form_valid = build_pallet_form.is_valid()
@@ -834,11 +858,19 @@ class BuildPalletView(View):
         if not box_forms_valid:
             logger.debug("BoxForms not valid")
 
-        if not all([build_pallet_form_valid, box_forms_valid]):
+        pallet_form_valid = pallet_form.is_valid()
+        if not pallet_form_valid:
+            logger.debug("HiddenPalletForm not valid")
+
+        if not all([
+                build_pallet_form_valid,
+                box_forms_valid,
+                pallet_form_valid]):
             return self.show_forms_response(
                 request,
                 build_pallet_form,
                 box_forms,
+                pallet_form,
             )
 
         location = build_pallet_form.instance
@@ -879,12 +911,15 @@ class BuildPalletView(View):
                 box_management = BoxManagementClass()
                 box_management.box_consume(box)
 
-            box.product = cleaned_data.get('product')
-            box.exp_year = cleaned_data.get('exp_year')
-            box.exp_month_start = cleaned_data.get('exp_month_start')
-            box.exp_month_end = cleaned_data.get('exp_month_end')
-            box.save()
-
+            box_management = BoxManagementClass()
+            box_management.box_fill(
+                box=box,
+                location=location,
+                product=cleaned_data.get('product'),
+                exp_year=cleaned_data.get('exp_year'),
+                exp_mo_start=cleaned_data.get('exp_month_start', 0),
+                exp_mo_end=cleaned_data.get('exp_month_end', 0),
+            )
             box_management.box_move(box, location)
 
         if forms_missing_box_number > 0:
@@ -894,6 +929,7 @@ class BuildPalletView(View):
                 request,
                 build_pallet_form,
                 box_forms,
+                pallet_form,
             )
 
         if duplicate_box_numbers:
@@ -905,7 +941,10 @@ class BuildPalletView(View):
                 request,
                 build_pallet_form,
                 box_forms,
+                pallet_form,
             )
+
+
 
         return render(
             request,
@@ -1109,9 +1148,9 @@ class BoxItemFormView(LoginRequiredMixin, View):
         try:
             pallet = Pallet.objects.get(pk=pallet_pk)
         except Pallet.DoesNotExist as dne:
-            error = str(dne)
+            error = f"Pallet pk={pallet_pk} not found"
             logger.error(error)
-            return HttpResponse(f"Pallet pk={pallet_pk} not found", status=404)
+            return HttpResponse(error, status=404)
 
         # If box is filled, empty it before continuing
         if box.is_filled():
@@ -1121,6 +1160,7 @@ class BoxItemFormView(LoginRequiredMixin, View):
         # Look for PalletBox record
         pallet_box, created = PalletBox.objects.get_or_create(
             box_number=box.box_number,
+            box=box,
             pallet=pallet
         )
 

@@ -31,9 +31,6 @@ __creation_date__ = "04/01/2019"
 admin.site.register(Activity)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
-admin.site.register(Pallet)
-admin.site.register(PalletBox)
-
 
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):

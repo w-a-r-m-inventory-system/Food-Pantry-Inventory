@@ -834,4 +834,10 @@ class PalletNameForm(forms.ModelForm):
         fields = ('name',)
 
 
+class HiddenPalletForm(forms.Form):
+    pallet = ModelChoiceField(
+        queryset=Pallet.objects.all(),
+        widget=forms.HiddenInput,
+    )
+
 # EOF

@@ -249,7 +249,7 @@ class Location(models.Model):
         """ Default way to display a location record. """
         display = f'Location {self.loc_code} - {self.loc_descr}'
         if self.loc_in_warehouse:
-            display += (f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})')
+            display += f'({self.loc_row}/{self.loc_bin}/{self.loc_tier})'
         return display
 
 
@@ -582,12 +582,13 @@ class Box(models.Model):
                 display += (
                     f'({self.exp_month_start:02}-{self.exp_month_end:02}) '
                 )
-            display += (
-                f'filled: {self.date_filled.year}/'
-                f'{self.date_filled.month:02}/'
-                f'{self.date_filled.day:02} '
-                f'at {self.location.loc_code}'
-            )
+            if self.date_filled:
+                display += (
+                    f'filled: {self.date_filled.year}/'
+                    f'{self.date_filled.month:02}/'
+                    f'{self.date_filled.day:02} '
+                    f'at {self.location.loc_code}'
+                )
         return display
 
     def get_absolute_url(self):

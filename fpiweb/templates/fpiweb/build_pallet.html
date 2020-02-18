@@ -8,7 +8,7 @@ CONTEXT VARIABLES
 -----------------
 form:       The BuildPalletForm
 box_forms:  Formset of BoxItemForms
-pallet:     A Pallet Instance
+pallet_form:     A HiddenPalletForm
 
 {% endcomment %}
 
@@ -40,7 +40,7 @@ div.coordinate_label{
 
   <form action="{% url 'fpiweb:build_pallet' %}" method="post">
     {% csrf_token %}
-    <input id="pallet_id" type="hidden" value="{{ pallet.pk }}"/>
+    {{ pallet_form.pallet }}
     {{ box_forms.management_form }}
 
     <h1>Build Pallet</h1>
@@ -52,7 +52,7 @@ div.coordinate_label{
     </div>
 
     <div class="row">
-        <label>Pallet:</label> {{ pallet }}
+        <label>Pallet:</label> {{ pallet_form.instance }}
     </div>
 
     <div class="row">
