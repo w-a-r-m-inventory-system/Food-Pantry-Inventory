@@ -7,13 +7,20 @@ from bs4 import BeautifulSoup
 from datetime import date
 
 from django.contrib.auth.models import User
+from django.forms.formsets import BaseFormSet
 from django.test import Client, TestCase
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.utils.html import escape
+
 
 from fpiweb.forms import \
+    BuildPalletForm, \
     ExtantBoxNumberForm, \
-    ExistingLocationForm
+    ExistingLocationForm, \
+    HiddenPalletForm, \
+    PalletNameForm, \
+    PalletSelectForm
 from fpiweb.models import \
     Activity, \
     Box, \
@@ -26,6 +33,7 @@ from fpiweb.models import \
     Pallet, \
     PalletBox, \
     Product
+from fpiweb.tests.utility import create_user, default_password
 from fpiweb.views import \
     BoxItemFormView, \
     BuildPalletView, \
@@ -78,10 +86,7 @@ class BoxNewViewTest(TestCase):
 
         # create user for this test (It will only exist briefly in the test
         # database).
-        user = User.objects.create_user(
-            'awesterville',
-            'alice.westerville@example.com',
-            'abc123')
+        user = create_user('alice', 'westerville')
 
         # Client sends HTTP requests and receives HTTP responses like a user's
         # browser.  It doesn't run any JavaScript, for that you need to use
@@ -155,9 +160,8 @@ class LoginView(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_post(self):
-        username = 'jdoe'
-        password = 'abc123'
-        User.objects.create_user(username, 'jdoe@example.com', password)
+
+        user = create_user('john', 'doe')
 
         client = Client()
         url = reverse('fpiweb:login')
@@ -165,8 +169,8 @@ class LoginView(TestCase):
         response = client.post(
             url,
             {
-                'username': username,
-                'password': password,
+                'username': user.username,
+                'password': default_password,
             },
         )
 
@@ -176,7 +180,7 @@ class LoginView(TestCase):
         response = client.post(
             url,
             {
-                'username': username,
+                'username': user.username,
                 'password': 'NARF!!',
             },
         )
@@ -219,6 +223,8 @@ class BuildPalletViewTest(TestCase):
         'ProductCategory',
         'BoxType'
     )
+
+    url = reverse_lazy('fpiweb:build_pallet')
 
     @staticmethod
     def get_build_pallet_form_post_data(location):
@@ -290,7 +296,140 @@ class BuildPalletViewTest(TestCase):
         return {key: pallet.pk}
 
     def test_get(self):
-        self.fail("Incomplete test")
+
+        user = create_user('bob', 'shrock')
+
+        client = Client()
+        client.force_login(user)
+
+        response = client.get(self.url)
+        self.assertEqual(200, response.status_code)
+
+        pallet_select_form = response.context.get('pallet_select_form')
+        self.assertIsInstance(pallet_select_form, PalletSelectForm)
+
+        pallet_name_form = response.context.get('pallet_name_form')
+        self.assertIsInstance(pallet_name_form, PalletNameForm)
+
+    def test_post_bad_form_name(self):
+
+        user = create_user('cindy', 'state')
+
+        client = Client()
+        client.force_login(user)
+
+        form_name = 'cindy'
+        response = client.post(
+            self.url,
+            {
+                'form_name': form_name,
+            }
+        )
+        self.assertContains(
+            response,
+            escape(f"Unexpected form name {repr(form_name)}"),
+            status_code=500,
+            html=True,
+        )
+
+    def test_post_pallet_select_name_form(self):
+
+        user = create_user('alice', 'shrock')
+
+        client = Client()
+        client.force_login(user)
+
+        # -------------------
+        # No pallet selected
+        # -------------------
+        response = client.post(
+            self.url,
+            {
+                'form_name': BuildPalletView.PALLET_SELECT_FORM_NAME,
+            }
+        )
+        self.assertEqual(
+            400,
+            response.status_code,
+            response.content.decode(),
+        )
+        self.assertIsInstance(
+            response.context.get('pallet_select_form'),
+            PalletSelectForm,
+        )
+
+        pallet = Pallet.objects.create()
+
+        response = client.post(
+            self.url,
+            {
+                'form_name': BuildPalletView.PALLET_SELECT_FORM_NAME,
+                'pallet': pallet.pk
+            }
+        )
+        self.assertEqual(200, response.status_code)
+
+        build_pallet_form = response.context.get('form')
+        box_forms = response.context.get('box_forms')
+        pallet_form = response.context.get('pallet_form')
+
+        self.assertIsInstance(build_pallet_form, BuildPalletForm)
+        self.assertIsInstance(box_forms, BaseFormSet)
+        self.assertIsInstance(pallet_form, HiddenPalletForm)
+
+        pallet_form = response.context.get('pallet_form')
+        self.assertIsInstance(pallet_form, HiddenPalletForm)
+        self.assertEqual(
+            pallet,
+            pallet_form.initial.get('pallet')
+        )
+
+    def test_post_pallet_name_form(self):
+
+        user = create_user('doug', 'state')
+
+        client = Client()
+        client.force_login(user)
+
+        # -----------------------
+        # No pallet name entered
+        # -----------------------
+        response = client.post(
+            self.url,
+            {
+                'form_name': BuildPalletView.PALLET_NAME_FORM_NAME,
+            }
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertIsInstance(
+            response.context.get('pallet_name_form'),
+            PalletNameForm,
+        )
+
+        pallet_name = "nuevo palet"
+        response = client.post(
+            self.url,
+            {
+                'form_name': BuildPalletView.PALLET_NAME_FORM_NAME,
+                'name': pallet_name,
+            }
+        )
+        self.assertEqual(200, response.status_code)
+
+        build_pallet_form = response.context.get('form')
+        box_forms = response.context.get('box_forms')
+        pallet_form = response.context.get('pallet_form')
+
+        self.assertIsInstance(build_pallet_form, BuildPalletForm)
+        self.assertIsInstance(box_forms, BaseFormSet)
+        self.assertIsInstance(pallet_form, HiddenPalletForm)
+
+        pallet_form = response.context.get('pallet_form')
+        self.assertIsInstance(pallet_form, HiddenPalletForm)
+        self.assertEqual(
+            Pallet.objects.get(name=pallet_name),
+            pallet_form.initial.get('pallet'),
+        )
 
     def test_post_process_box_forms(self):
 
@@ -329,17 +468,13 @@ class BuildPalletViewTest(TestCase):
             )
         )
 
-        user = User.objects.create_user(
-            'aturing',
-            'aturing@example.com',
-            'abc123',
-        )
+        user = create_user('alan', 'turing')
 
         client = Client()
         client.force_login(user)
 
         response = client.post(
-            reverse('fpiweb:build_pallet'),
+            self.url,
             post_data,
         )
 
@@ -362,6 +497,13 @@ class BuildPalletViewTest(TestCase):
                     box_number=box.box_number
                 ).count()
             )
+
+        self.assertFalse(Pallet.objects.filter(pk=pallet.pk).exists())
+        self.assertFalse(
+            PalletBox.objects.filter(
+                box_number__in={b.box_number for b in boxes}
+            )
+        )
 
 
 class ManualMoveBoxViewTest(TestCase):

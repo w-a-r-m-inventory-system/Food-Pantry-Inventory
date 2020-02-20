@@ -727,7 +727,8 @@ class BuildPalletView(View):
     def show_pallet_management_page(
             request,
             pallet_select_form=None,
-            pallet_name_form=None):
+            pallet_name_form=None,
+            status_code=200):
 
         return PalletManagementView.show_page(
             request,
@@ -736,6 +737,7 @@ class BuildPalletView(View):
             show_delete=False,
             pallet_select_form=pallet_select_form,
             pallet_name_form=pallet_name_form,
+            status_code=status_code,
         )
 
     def get(self, request):
@@ -774,6 +776,7 @@ class BuildPalletView(View):
                 return self.show_pallet_management_page(
                     request,
                     pallet_select_form=pallet_select_form,
+                    status_code=400,
                 )
             pallet = pallet_select_form.cleaned_data.get('pallet')
 
@@ -783,6 +786,7 @@ class BuildPalletView(View):
                 return self.show_pallet_management_page(
                     request,
                     pallet_name_form=pallet_name_form,
+                    status_code=400,
                 )
             pallet = pallet_name_form.save()
 
@@ -944,7 +948,13 @@ class BuildPalletView(View):
                 pallet_form,
             )
 
-
+        # Delete PalletBoxes and Pallet
+        PalletBox.objects.filter(
+            box_number__in=boxes_by_box_number.keys()
+        ).delete()
+        pallet = pallet_form.cleaned_data.get('pallet')
+        if pallet:
+            pallet.delete()
 
         return render(
             request,
@@ -1635,7 +1645,8 @@ class PalletManagementView(LoginRequiredMixin, View):
             show_delete=True,
             prompt=None,
             pallet_select_form=None,
-            pallet_name_form=None):
+            pallet_name_form=None,
+            status_code=200):
 
         context = {
             'page_title': page_title,
@@ -1647,7 +1658,8 @@ class PalletManagementView(LoginRequiredMixin, View):
         return render(
             request,
             PalletManagementView.template_name,
-            context
+            context,
+            status=status_code
         )
 
     def get(self, request):
