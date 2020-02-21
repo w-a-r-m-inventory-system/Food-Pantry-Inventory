@@ -1796,10 +1796,11 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
         exp_year_form = ExpYearForm(request.POST)
         if not exp_year_form.is_valid():
             exp_year_failed_context = self.build_context(
-                mode=self.MODE_ENTER_LOCATION,
+                mode=self.MODE_ENTER_EXP_YEAR,
                 box=box,
                 product=product,
-                location_form=exp_year_form,
+                location=location,
+                exp_year_form=exp_year_form,
             ),
             return render(
                 request,

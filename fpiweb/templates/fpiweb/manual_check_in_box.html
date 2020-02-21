@@ -13,6 +13,7 @@ product             A Product instance
 location_form       An ExistingLocationForm
 location            A Location instance
 exp_year_form       A form for selecting the expiration year
+exp_year            The selected expiratioh year
 exp_mo_start        Starting month of expiration range - if specified
 exp_mo_end          Ending month of expiration range - if specified
 view_class          Reference to ManualCheckinBoxView
@@ -116,7 +117,7 @@ errors              A list of errors.
                            value="Choose Location"/>
                 </div>
             {% endif %}
-        {% elif mode == view_class.MODE_EXP_YEAR %}
+        {% elif mode == view_class.MODE_ENTER_EXP_YEAR %}
             {% if not box %}
                 <div class="alert alert-danger">box not defined</div>
             {% elif not product %}
