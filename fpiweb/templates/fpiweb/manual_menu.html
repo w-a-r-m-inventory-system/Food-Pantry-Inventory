@@ -11,59 +11,15 @@
         for {{ user.first_name }} &nbsp; {{ user.last_name }}
         {{ profile.title }}
     </h2>
-    {% if active_pallet %}
-        {{ active_pallet.name }}  {{ active_pallet.pallet_status }}
-    {% else %}
-        No active pallet
-    {% endif %}
-    <hr/>
-
-
-    <h6>Manage a Pallet Manually</h6>
-
-    {% if active_pallet %}
-        {%  for box in box_set %}
-            <div>
-                <br/>
-                {{ box.box_number }}
-                {{ box.product }}
-                {{ box.exp_year }}
-                {{ box.exp_month_start }}
-                {{ box.exp_month_end }}
-                <a href="{% url 'fpiweb:about' %}">
-                    Remove box from pallet
-                </a>
-            </div>
-        {% endfor %}
-        <div>
-            <a href="{% url 'fpiweb:about' %}">
-                Add another box
-            </a>
-        </div>
-    {% else %}
-        <div>
-            <a href="{% url 'fpiweb:about' %}">
-                Select or Start a New Pallet
-            </a>
-        </div>
-    {% endif %}
-
-    <hr/>
-    <h6>Manage Individual Boxes Manually</h6>
 
     <br/>
-    <a href="{% url 'fpiweb:about' %}">
-        Checkin a box
+    <a href="{% url 'fpiweb:manual_pallet_menu' %}">
+        Manage a pallet manually
     </a>
 
     <br/>
-    <a href="{% url 'fpiweb:about' %}">
-        Checkout (consume product in) a box
-    </a>
-
-    <br/>
-    <a href="{% url 'fpiweb:manual_move_box' %}">
-        Move a box
+    <a href="{% url 'fpiweb:manual_box_menu' %}">
+        Manage an individual box manually
     </a>
 
     <hr/>

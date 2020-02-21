@@ -46,7 +46,10 @@ from fpiweb.views import \
     ManualPalletNew,  \
     ManualPalletStatus, \
     PalletManagementView, \
-    PalletSelectView
+    PalletSelectView, \
+    ManualPalletMenuView, \
+    ManualBoxMenuView, \
+    ManualCheckinBoxView
 
 
 # from fpiweb.views import ConstraintDetailView
@@ -226,6 +229,18 @@ urlpatterns = [
         name='manual_menu'
     ),
 
+    # Manual pallet management menu
+    # e.g. /fpiweb/manualpalletmenu/ = show manual pallet management menu
+    path('manualpalletmenu/',
+         ManualPalletMenuView.as_view(),
+         name='manual_pallet_menu'),
+
+    # Manual box management menu
+    # e.g. /fpiweb/manualboxmenu/ = show manual box management menu
+    path('manualboxmenu/',
+         ManualBoxMenuView.as_view(),
+         name='manual_box_menu'),
+
     # Manually start a new pallet
     # e.g. /fpiweb/manualpalletnew = manually starting a new pallet
     path(
@@ -274,6 +289,16 @@ urlpatterns = [
         ActivityDownloadView.as_view(),
         name='download_activities'),
 
+    # Manually check in a box
+    # e.g. /fpiweb/manual_checkin_box/ = check in a box manually
+    path(
+        'manual_checkin_box/',
+        ManualCheckinBoxView.as_view(),
+        name='manual_checkin_box',
+    ),
+
+    # Manually move a filled box
+    # e.g. /fpiweb/manual_move_box/ = move a filled box manually
     path(
         'manual_move_box/',
         ManualMoveBoxView.as_view(),

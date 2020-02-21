@@ -18,11 +18,12 @@ from fpiweb.forms import \
     BuildPalletForm, \
     ExtantBoxNumberForm, \
     ExistingLocationForm, \
+    FilledBoxNumberForm, \
     HiddenPalletForm, \
     PalletNameForm, \
     PalletSelectForm
+
 from fpiweb.models import \
-    Activity, \
     Box, \
     BoxNumber, \
     BoxType, \
@@ -221,6 +222,7 @@ class BuildPalletViewTest(TestCase):
         'LocTier',
         'Product',
         'ProductCategory',
+        'Box',
         'BoxType'
     )
 
@@ -534,7 +536,7 @@ class ManualMoveBoxViewTest(TestCase):
         )
 
         box_number_form = response.context.get('box_number_form')
-        self.assertIsInstance(box_number_form, ExtantBoxNumberForm)
+        self.assertIsInstance(box_number_form, FilledBoxNumberForm)
         self.assertIsNone(response.context['box'])
         self.assertIsNone(response.context['location_form'])
         self.assertIsNone(response.context['errors'])
@@ -561,7 +563,7 @@ class ManualMoveBoxViewTest(TestCase):
         )
         self.assertIsInstance(
             response.context['box_number_form'],
-            ExtantBoxNumberForm,
+            FilledBoxNumberForm,
         )
 
         box = Box.objects.create(

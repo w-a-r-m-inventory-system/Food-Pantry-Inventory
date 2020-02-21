@@ -1,37 +1,225 @@
 {% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+mode                string indicating mode.  Constants are defined for this in
+                    the ManualCheckinBoxView class.
+box_number_form     An EmptyBoxNumberForm
+box                 A Box instance
+product_form        An ExistingProductForm
+product             A Product instance
+location_form       An ExistingLocationForm
+location            A Location instance
+exp_year_form       A form for selecting the expiration year
+exp_mo_start        Starting month of expiration range - if specified
+exp_mo_end          Ending month of expiration range - if specified
+view_class          Reference to ManualCheckinBoxView
+errors              A list of errors.
+
+{% endcomment %}
 
 {% block title %}
-    About Food Pantry Inventory
+    Checkin a Box
 {% endblock %}
 
 {% block content %}
-    <div>
-        <h1>
-            About the Food Pantry Inventory System
-        </h1>
-    </div>
-    <br/>
 
-    <div class="col-md-11">
-        <div class="text-center">
-            <h2>
-                {{ site_name }}
-            </h2>
+    <h1>Check In a Box</h1>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
         </div>
-        <h3>
-            {{ site_address }}
-            <br/>
-            {{ site_csz }}
-            <br/>
-            {{ site_phone }}
-            <br/>
-            <a href="{{ site_url }}">{{ site_url }}</a>
+    {% endif %}
 
-        </h3>
-    </div>
 
-    <div>
-        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
-    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="mode" value="{{ mode }}"/>
+
+        {% if mode == view_class.MODE_ENTER_BOX_NUMBER %}
+            {% bootstrap_field box_number_form.box_number show_help=False %}
+            <input type="submit" class="btn btn-primary" value="Select Box"/>
+
+        {% elif mode == view_class.MODE_ENTER_PRODUCT %}
+            {% if not box %}
+                <div class="alert alert-danger">box not defined</div>
+            {% else %}
+                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Number:</label> {{ box.box_number }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Type:</label>
+                        {{ box.box_type.box_type_descr }}
+                        ({{ box.box_type.box_type_qty }})
+                    </div>
+                </div>
+
+                <h2>Choose Product in Box</h2>
+
+                <div class="row">
+                    {% bootstrap_field product_form.product show_help=False %}
+
+                </div>
+                <div class="row">
+                    <input type="submit" class="btn btn-primary"
+                           value="Select Product"/>
+                </div>
+            {% endif %}
+
+        {% elif mode == view_class.MODE_ENTER_LOCATION %}
+            {% if not box %}
+                <div class="alert alert-danger">box not defined</div>
+            {% elif not product %}
+                <div class="alert alert-danger">product not defined</div>
+            {% else %}
+                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
+                <input type="hidden" name="product_pk"
+                       value="{{ product.pk }}"/>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Number:</label> {{ box.box_number }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Type:</label>
+                        {{ box.box_type.box_type_descr }}
+                        ({{ box.box_type.box_type_qty }})
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Product:</label>
+                        {{ product.prod_name }}
+                    </div>
+                </div>
+
+                <h2>Choose New Location</h2>
+
+               <div class="row">{% bootstrap_field location_form.loc_row show_help=False %}</div>
+                <div class="row">{% bootstrap_field location_form.loc_bin show_help=False %}</div>
+                <div class="row">{% bootstrap_field location_form.loc_tier show_help=False %}</div>
+                <div class="row">
+                    <input type="submit" class="btn btn-primary"
+                           value="Choose Location"/>
+                </div>
+            {% endif %}
+        {% elif mode == view_class.MODE_EXP_YEAR %}
+            {% if not box %}
+                <div class="alert alert-danger">box not defined</div>
+            {% elif not product %}
+                <div class="alert alert-danger">product not defined</div>
+            {% elif not location %}
+                <div class="alert alert-danger">location not defined</div>
+            {% else %}
+                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
+                <input type="hidden" name="product_pk"
+                       value="{{ product.pk }}"/>
+                <input type="hidden" name="location_pk"
+                       value="{{ location.pk }}"/>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Number:</label> {{ box.box_number }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Type:</label>
+                        {{ box.box_type.box_type_descr }}
+                        ({{ box.box_type.box_type_qty }})
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Product:</label>
+                        {{ product.prod_name }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Location:</label>
+                        {{ location.loc_row.loc_row }} /&nbsp;
+                        {{ location.loc_bin.loc_bin }} /&nbsp;
+                        {{ location.loc_tier.loc_tier }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Expiration Year</label>
+                        {{ exp_year_form }}
+                    </div>
+                </div>
+                <div class="row">
+                    {% bootstrap_field exp_year_form.exp_year show_help=False %}
+                </div>
+                <div class="row">
+                    <input type="submit" class="btn btn-primary"
+                           value="Choose Expiration Year"/>
+                </div>
+             {% endif %}
+        {% elif mode == view_class.MODE_CONFIRMATION %}
+            <div class="row">Box {{ box.box_number }} has been successfully
+                moved to Row {{ box.location.loc_row.loc_row }}, Bin
+                {{ box.location.loc_bin.loc_bin }}, Tier
+                {{ box.location.loc_tier.loc_tier }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger">Mode is &quot;{{ mode }}&quot;</div>
+        {% endif %}
+
+        <br/>
+
+        <div>
+            <a href="{% url 'fpiweb:manual_box_menu' %}">
+                {% if mode == view_class.MODE_CONFIRMATION %}
+                    Return to Manual Box Menu</a>
+                {% else %}
+                    Cancel Box Check In
+                {% endif %}
+        </div>
+
+        {% comment %}
+
+        {% bootstrap_field form.box_type show_help=False %}
+        <div class="row" style="margin-top: 1rem; margin-bottom: 2rem">
+            <div class="col-md-2">
+                <label>Row:</label>
+                <span id="currentRow"></span>
+            </div>
+            <div class="col-md-2">
+                <label>Bin:</label>
+                <span id="currentBin"></span>
+            </div>
+            <div class="col-md-2">
+                <label>Tier:</label>
+                <span id="currentTier"></span>
+            </div>
+        </div>
+        <h2>Choose New Location:</h2>
+        {% bootstrap_field form.loc_row show_help=False %}
+        {% bootstrap_field form.loc_bin show_help=False %}
+        {% bootstrap_field form.loc_tier show_help=False %}
+        <input
+            type="submit"
+            class="btn btn-primary"
+            value="Check Box Out (Consume)"/>
+        <a href="{% url 'fpiweb:manual_menu' %}"
+            class="btn btn-secondary">Cancel</a>
+        {% endcomment %}
+    </form>
+
 
 {% endblock %}

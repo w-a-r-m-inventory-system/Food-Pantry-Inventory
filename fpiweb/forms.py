@@ -10,7 +10,6 @@ from django.forms import \
     CharField, \
     DateInput, \
     Form, \
-    ModelChoiceField, \
     PasswordInput, \
     ValidationError
 from django.shortcuts import get_object_or_404
@@ -25,7 +24,6 @@ from fpiweb.models import \
     LocRow, \
     LocBin, \
     LocTier, \
-    Pallet, \
     Product, \
     ProductCategory
 
@@ -676,7 +674,8 @@ class BoxItemForm(forms.Form):
     # I've deliberately removed the ID field so that this form may
     # be used for either Box or PalletBox records.
 
-    # This is a read only field.  In the page a box number is displayed in an input element with no name or id
+    # This is a read only field.  In the page a box number is displayed in
+    # an input element with no name or id
     box_number = forms.CharField(
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
@@ -718,13 +717,11 @@ class BoxItemForm(forms.Form):
     def get_initial_from_box(box):
         """
         :param box: Box or PalletBox record
-        :return: 
+        :return:
         """
         return {
             'box_number': box.box_number,
         }
-
-
 
 
 class PrintLabelsForm(forms.Form):
@@ -734,6 +731,34 @@ class PrintLabelsForm(forms.Form):
     number_to_print = forms.IntegerField(
         initial=10,
     )
+
+
+class ProductForm(forms.Form):
+    """A form for use whenever you need to select a product."""
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),
+        empty_label='Select a product',
+    )
+
+
+class ExistingProductForm(ProductForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        prod_name = cleaned_data.get('prod_name')
+
+        try:
+            product = Product.objects.get(
+                prod_name=prod_name,
+            )
+        except Product.DoesNotExist:
+            raise ValidationError(
+                f"Product {prod_name} does not exist."
+            )
+
+        cleaned_data['product'] = product
+        return cleaned_data
 
 
 class LocationForm(forms.ModelForm):
@@ -775,6 +800,15 @@ class ExistingLocationForm(LocationForm):
         return cleaned_data
 
 
+class ExpYearForm(forms.Form):
+    """A form for use whenever you need to select a year."""
+    exp_year = forms.TypedChoiceField(
+        choices=expire_year_choices,
+        coerce=int,
+        help_text=Box.exp_year_help_text,
+    )
+
+
 class BoxNumberField(forms.CharField):
     """Accepts box number with or without BOX prefix.
     Returns BoxNumber with BOX prefix and leading zeros"""
@@ -786,7 +820,7 @@ class BoxNumberField(forms.CharField):
             return value.upper()
 
         # Did the user just enter digit?  Try and turn this
-        # into a valid bo number
+        # into a valid box number
         try:
             value = int(value)
         except (TypeError, ValueError):
@@ -796,6 +830,54 @@ class BoxNumberField(forms.CharField):
             )
 
         return BoxNumber.format_box_number(value)
+
+
+class EmptyBoxNumberField(BoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        if not Box.objects.filter(box_number=value).exists():
+            raise ValidationError(
+                f"Box number {value} is not present in the database.",
+            )
+        box = Box.objects.get(box_number=value)
+        if box.product:
+            raise ValidationError(f'Box number {value} is not empty.')
+        return value
+
+
+class EmptyBoxNumberForm(forms.Form):
+
+    box_number = EmptyBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
+class FilledBoxNumberField(BoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        if not Box.objects.filter(box_number=value).exists():
+            raise ValidationError(
+                f"Box number {value} is not present in the database.",
+            )
+        box = Box.objects.get(box_number=value)
+        if not box.product:
+            raise ValidationError(f'Box number {value} is empty.')
+        return value
+
+
+class FilledBoxNumberForm(forms.Form):
+
+    box_number = FilledBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
 
 
 class ExtantBoxNumberField(BoxNumberField):
