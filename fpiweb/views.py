@@ -879,6 +879,10 @@ class BuildPalletView(View):
 
         location = build_pallet_form.instance
 
+        pallet = pallet_form.cleaned_data.get('pallet')
+        pallet.location = location
+        pallet.save()
+
         # Update box records and
         boxes_by_box_number = OrderedDict()
         duplicate_box_numbers = set()
@@ -900,31 +904,37 @@ class BuildPalletView(View):
 
             # Is box_number present in database?
             try:
-                box = Box.objects.get(box_number=box_number)
+                pallet_box = PalletBox.objects.get(box_number=box_number)
                 logger.debug(f"found existing box {box_number}")
-            except Box.DoesNotExist:
-                box = Box(
+            except PalletBox.DoesNotExist:
+                pallet_box = PalletBox(
                     box_number=box_number,
-                    box_type=Box.box_type_default(),
                 )
                 logger.debug(f"Created new box {box_number}")
 
-            boxes_by_box_number[box_number] = box
+            pallet_box.pallet = pallet
+            pallet_box.product = cleaned_data.get('product')
+            pallet_box.exp_year = cleaned_data.get('exp_year')
+            pallet_box.exp_month_start = cleaned_data.get('exp_month_start', 0)
+            pallet_box.exp_month_end = cleaned_data.get('exp_month_end', 0)
 
-            if box.is_filled():
+            # Does the pallet_box have a box?
+            if not pallet_box.box:
+                box, created = Box.objects.get_or_create(
+                    box_number=box_number,
+                    box_type=Box.box_type_default(),
+                )
+                pallet_box.box = box
+
+            pallet_box.save()
+
+            boxes_by_box_number[box_number] = pallet_box
+
+            # When the box was scanned it would have been emptied if it was
+            # filled.  This catches whether anything has changed.
+            if pallet_box.box.is_filled():
                 box_management = BoxManagementClass()
-                box_management.box_consume(box)
-
-            box_management = BoxManagementClass()
-            box_management.box_fill(
-                box=box,
-                location=location,
-                product=cleaned_data.get('product'),
-                exp_year=cleaned_data.get('exp_year'),
-                exp_mo_start=cleaned_data.get('exp_month_start', 0),
-                exp_mo_end=cleaned_data.get('exp_month_end', 0),
-            )
-            box_management.box_move(box, location)
+                box_management.box_consume(pallet_box.box)
 
         if forms_missing_box_number > 0:
             # error reported on box_form
@@ -948,13 +958,8 @@ class BuildPalletView(View):
                 pallet_form,
             )
 
-        # Delete PalletBoxes and Pallet
-        PalletBox.objects.filter(
-            box_number__in=boxes_by_box_number.keys()
-        ).delete()
-        pallet = pallet_form.cleaned_data.get('pallet')
-        if pallet:
-            pallet.delete()
+        box_management = BoxManagementClass()
+        box_management.pallet_finish(pallet)
 
         return render(
             request,
