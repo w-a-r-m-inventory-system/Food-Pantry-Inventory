@@ -249,7 +249,7 @@ class Location(models.Model):
         """ Default way to display a location record. """
         display = f'Location {self.loc_code} - {self.loc_descr}'
         if self.loc_in_warehouse:
-            display += (f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})')
+            display += f'({self.loc_row}/{self.loc_bin}/{self.loc_tier})'
         return display
 
 
@@ -560,6 +560,11 @@ class Box(models.Model):
     )
     """ Approximate or default number of items in the box, if filled. """
 
+    def is_filled(self):
+        if self.product:
+            return True
+        return False
+
     # define a default display of Box
     def __str__(self):
         """ Default way to display this box record. """
@@ -577,12 +582,13 @@ class Box(models.Model):
                 display += (
                     f'({self.exp_month_start:02}-{self.exp_month_end:02}) '
                 )
-            display += (
-                f'filled: {self.date_filled.year}/'
-                f'{self.date_filled.month:02}/'
-                f'{self.date_filled.day:02} '
-                f'at {self.location.loc_code}'
-            )
+            if self.date_filled:
+                display += (
+                    f'filled: {self.date_filled.year}/'
+                    f'{self.date_filled.month:02}/'
+                    f'{self.date_filled.day:02} '
+                    f'at {self.location.loc_code}'
+                )
         return display
 
     def get_absolute_url(self):
@@ -667,7 +673,9 @@ class Pallet(models.Model):
 
 class PalletBox(models.Model):
     """
-    Temporary file to hold the individual boxes for a pallet.
+    Temporary file to hold the individual boxes for a pallet.  The goal of
+    this is to ensure that either a Box record has product, expiration, and
+    location or it has no product, no expiration, and no location.
     """
 
     class Meta:
@@ -694,25 +702,28 @@ class PalletBox(models.Model):
     )
     """ Internal record identifier for a pallet box. """
 
+    box_number = models.CharField(
+        'Visible Box Number',
+        max_length=Box.box_number_max_length,
+        null=True,
+        blank=True,
+        help_text=Box.box_number_help_text,
+    )
+    """ Number printed in the label on the box. """
+
     pallet_help_text = 'Internal record identifier for a pallet.'
     pallet = models.ForeignKey(
         Pallet,
+        related_name='boxes',
         on_delete=models.PROTECT,
         help_text=pallet_help_text,
     )
-    """ Internal record identifier for a pallet. """
 
-    box_number_help_text = 'Box number for this pallet box.'
-    box_number = models.CharField(
-        'Box number',
-        unique=True,
-        max_length=Box.box_number_max_length,
-        help_text=box_number_help_text,
-    )
-
-    box_help_text = 'Internal record ideentifier for a box.'
+    box_help_text = 'Internal record identifier for a box.'
     box = models.ForeignKey(
         Box,
+        null=True,
+        blank=True,
         on_delete=models.PROTECT,
         help_text=box_help_text,
     )
@@ -720,6 +731,8 @@ class PalletBox(models.Model):
     product_help_text = 'Product contained in this box, if filled.'
     product = models.ForeignKey(
         Product,
+        null=True,
+        blank=True,
         on_delete=models.PROTECT,
         verbose_name='product',
         help_text=product_help_text,
@@ -729,6 +742,8 @@ class PalletBox(models.Model):
     exp_year_help_text = 'Year the product expires, if filled.'
     exp_year = models.IntegerField(
         'Year Product Expires',
+        null=True,
+        blank=True,
         help_text=exp_year_help_text,
     )
     """ Year the product expires, if filled. """
