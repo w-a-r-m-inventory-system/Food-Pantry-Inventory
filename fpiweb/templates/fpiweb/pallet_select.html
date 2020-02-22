@@ -1,0 +1,26 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+form:  PalletSelectForm instance
+
+{% endcomment %}
+{% block title %}
+    Select Pallet
+{% endblock %}
+
+{% block content %}
+<h1>Select Pallet</h1>
+
+<div class="row">
+    <form action="{% url 'fpiweb:pallet_select' %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_field form.pallet show_label=False %}
+        <input type="submit" class="btn btn-primary" value="Select"/>
+    </form>
+</div>
+
+{% endblock %}
+
