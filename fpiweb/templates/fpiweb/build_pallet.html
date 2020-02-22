@@ -1,11 +1,14 @@
 {% extends 'fpiweb/base.html' %}
 {% load static %}
 {% load bootstrap4 %}
+{% load form %}
 {% comment %}
 
 CONTEXT VARIABLES
 -----------------
-form   The BuildPalletForm
+form:       The BuildPalletForm
+box_forms:  Formset of BoxItemForms
+pallet_form:     A HiddenPalletForm
 
 {% endcomment %}
 
@@ -37,11 +40,19 @@ div.coordinate_label{
 
   <form action="{% url 'fpiweb:build_pallet' %}" method="post">
     {% csrf_token %}
+    {{ pallet_form.pallet }}
     {{ box_forms.management_form }}
 
     <h1>Build Pallet</h1>
     <div class="row">
-      <a href="{% url 'fpiweb:test_scan' %}">Back to test_scan page</a>
+      <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+    </div>
+    <div class="row">
+      <a href="{% url 'fpiweb:build_pallet' %}">Select another pallet.</a>
+    </div>
+
+    <div class="row">
+        <label>Pallet:</label> {{ pallet_form.pallet }}
     </div>
 
     <div class="row">
@@ -102,11 +113,12 @@ div.coordinate_label{
                 <button class="btn btn-danger remove">X</button>
               </td>
               <td>
-
-                {{ box_form.errors }}
-                {{ box_form.non_field_errors }}
+                {% comment %}
+                  {{ box_form.errors }}
+                  {{ box_form.non_field_errors }}
+                {% endcomment %}
                 <div class="form-group">
-                  <input type="text" class="form-control" value="{{ box_form.cleaned_data.box_number }}" disabled />
+                  <input type="text" class="form-control" value="{% initial_or_cleaned box_form 'box_number' %}" disabled />
                 </div>
                 {# These two are hidden fields #}
                 {{ box_form.id }}
