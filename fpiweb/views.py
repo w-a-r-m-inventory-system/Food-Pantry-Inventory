@@ -74,14 +74,11 @@ from fpiweb.forms import \
     ProductForm, \
     ExpYearForm
 from fpiweb.qr_code_utilities import QRCodePrinter
-from fpiweb.support.BoxActivity import BoxActivityClass
 from fpiweb.support.BoxManagement import BoxManagementClass
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
-
-from fpiweb.support.BoxManagement import BoxManagementClass
 
 logger = getLogger('fpiweb')
 
@@ -1817,7 +1814,15 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
             product=product,
             exp_year=exp_year,
         )
-
+        # go get the final box info
+        filled_box = Box.objects.select_related(
+            'box_type',
+            'product',
+            'location',
+        ).get(id=box.id)
+        box_type = box.box_type
+        product = box.product
+        location = box.location
         return render(
             request,
             self.template_name,

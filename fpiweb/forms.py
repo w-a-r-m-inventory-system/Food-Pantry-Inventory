@@ -10,11 +10,14 @@ from django.forms import \
     CharField, \
     DateInput, \
     Form, \
+    ModelChoiceField, \
     PasswordInput, \
     ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from fpiweb.constants import \
+    CURRENT_YEAR
 from fpiweb.models import \
     Box, \
     BoxNumber, \
@@ -24,6 +27,7 @@ from fpiweb.models import \
     LocRow, \
     LocBin, \
     LocTier, \
+    Pallet, \
     Product, \
     ProductCategory
 
@@ -45,10 +49,16 @@ def month_choices():
         [(str(i), str(i)) for i in range(1, 13)]
     )
 
-
 def expire_year_choices():
-    current_year = timezone.now().year
-    years_ahead = 5
+    current_year = CURRENT_YEAR
+    exp_year_limit_key = Constraints.FUTURE_EXP_YEAR_LIMIT
+    years_ahead_constraint_rec = Constraints.objects.get(
+        constraint_name=exp_year_limit_key
+    )
+    years_ahead_list = Constraints.get_values(
+        Constraints.FUTURE_EXP_YEAR_LIMIT
+    )
+    years_ahead = years_ahead_list[0]
     for i in range(years_ahead + 1):
         value = str(current_year + i)
         yield value, value
@@ -153,7 +163,8 @@ def validate_int_list(char_list: list) -> bool:
     return valid_int_list
 
 
-def validate_exp_month_start_end(exp_month_start, exp_month_end):
+def validate_exp_month_start_end(exp_month_start: Optional[int],
+                                 exp_month_end: Optional[int]) -> bool:
     """
     Validate the start and end month, if given.
 
@@ -162,10 +173,10 @@ def validate_exp_month_start_end(exp_month_start, exp_month_end):
     :return:
     """
     if exp_month_start is None and exp_month_end is None:
-        return
+        return True
 
     error_msg = (
-        "If Exp {} month is specified, Exp {} month must be specified"
+        "If Exp {} month is specified, Exp {} month must also be specified"
     )
 
     if exp_month_start is not None and exp_month_end is None:
@@ -196,7 +207,7 @@ def validate_exp_month_start_end(exp_month_start, exp_month_end):
         raise ValidationError(
             'Exp month end must be after Exp month start'
         )
-
+    return True
 
 class Html5DateInput(DateInput):
     input_type = 'date'

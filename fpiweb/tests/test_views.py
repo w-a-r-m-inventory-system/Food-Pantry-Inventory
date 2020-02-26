@@ -33,7 +33,8 @@ from fpiweb.models import \
     LocTier, \
     Pallet, \
     PalletBox, \
-    Product
+    Product, \
+    Activity
 from fpiweb.tests.utility import create_user, default_password
 from fpiweb.views import \
     BoxItemFormView, \
@@ -222,8 +223,8 @@ class BuildPalletViewTest(TestCase):
         'LocTier',
         'Product',
         'ProductCategory',
-        'Box',
-        'BoxType'
+        'BoxType',
+        'Constraints',
     )
 
     url = reverse_lazy('fpiweb:build_pallet')

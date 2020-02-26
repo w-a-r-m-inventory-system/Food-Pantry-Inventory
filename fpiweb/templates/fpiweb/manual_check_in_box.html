@@ -173,9 +173,12 @@ errors              A list of errors.
              {% endif %}
         {% elif mode == view_class.MODE_CONFIRMATION %}
             <div class="row">Box {{ box.box_number }} has been successfully
-                moved to Row {{ box.location.loc_row.loc_row }}, Bin
-                {{ box.location.loc_bin.loc_bin }}, Tier
-                {{ box.location.loc_tier.loc_tier }}
+                filled with {{ product.prod_name }}
+                which expires {{ exp_year }}
+                {% if exp_mo_start %}
+                    ({{ exp_mo_start }} - {{ exp_mo_end }})
+                {% endif %}
+                and is now located at {{ location.loc_desc }},
             </div>
         {% else %}
             <div class="alert alert-danger">Mode is &quot;{{ mode }}&quot;</div>

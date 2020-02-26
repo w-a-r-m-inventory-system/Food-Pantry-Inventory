@@ -51,7 +51,7 @@ class BuildPalletFormTest(TestCase):
 
 class BoxItemFormTest(TestCase):
 
-    fixtures = ('BoxType', 'Product', 'ProductCategory')
+    fixtures = ('BoxType', 'Product', 'ProductCategory', 'Constraints')
 
     def test_expire_months(self):
         """ensure that start month <= end month"""

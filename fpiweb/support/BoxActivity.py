@@ -152,8 +152,6 @@ class BoxActivityClass:
                     f'{self.activity.date_consumed}'
                 )
                 self.activity = None
-                # logger.debug(f'Act Box Fill: Activity box consumed: '
-                #       f'{self.box.date_consumed}')
             else:
                 # oops - empty box before filling it again
                 logger.debug(f'Act Box Fill: Consuming previous box contents')
