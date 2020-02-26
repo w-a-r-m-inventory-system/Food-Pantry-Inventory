@@ -147,11 +147,13 @@ class BoxActivityClass:
             )
             if self.activity.date_consumed:
                 # box previously emptied - expected
-                logger.debug(f'Act Box Fill: Previous activity consumed: '
-                      f'{self.activity.date_consumed}')
+                logger.debug(
+                    f'Act Box Fill: Previous activity consumed: '
+                    f'{self.activity.date_consumed}'
+                )
                 self.activity = None
-                logger.debug(f'Act Box Fill: Activity box consumed: '
-                      f'{self.activity.date_consumed}')
+                # logger.debug(f'Act Box Fill: Activity box consumed: '
+                #       f'{self.box.date_consumed}')
             else:
                 # oops - empty box before filling it again
                 logger.debug(f'Act Box Fill: Consuming previous box contents')
@@ -211,14 +213,18 @@ class BoxActivityClass:
                 box_number=self.box.box_number,
                 date_filled=self.box.date_filled.date()
             )
-            logger.debug(f'Act Box Move: Activity found: '
-                  f'{self.activity.box_number}, '
-                  f'filled:{self.activity.date_filled}')
+            logger.debug(
+                f'Act Box Move: Activity found: '
+                f'{self.activity.box_number}, '
+                f'filled:{self.activity.date_filled}'
+            )
 
             if self.activity.date_consumed:
                 # oops - box has no open activity record so create one
-                logger.debug(f'Act Box Move: Previous contents consumed on '
-                      f'{self.activity.date_consumed}')
+                logger.debug(
+                    f'Act Box Move: Previous contents consumed on '
+                    f'{self.activity.date_consumed}'
+                )
                 self.activity = None
                 self._add_activity(
                     adjustment=Activity.MOVE_ADDED
@@ -230,8 +236,10 @@ class BoxActivityClass:
         except Activity.DoesNotExist:
             # oops - box has no open activity record so create one
             self.activity = None
-            logger.debug(f'Act Box Move: Activity for this box missing - making a '
-                  f'new one...')
+            logger.debug(
+                f'Act Box Move: Activity for this box missing - making a '
+                f'new one...'
+            )
             self._add_activity(
                 adjustment=Activity.MOVE_ADDED
             )
@@ -281,13 +289,17 @@ class BoxActivityClass:
                 box_number__exact=self.box.box_number).latest(
                 'date_filled', '-date_consumed'
             )
-            logger.debug(f'Act Box Empty: Activity found - id: '
-                  f'{self.activity.id}, filled: {self.activity.date_filled}')
+            logger.debug(
+                f'Act Box Empty: Activity found - id: '
+                f'{self.activity.id}, filled: {self.activity.date_filled}'
+            )
 
             if self.activity.date_consumed:
                 # oops - this activity record already consumed, make another
-                logger.debug(f'Act Box Empty: activity consumed '
-                      f'{self.activity.date_consumed}, make new activity')
+                logger.debug(
+                    f'Act Box Empty: activity consumed '
+                    f'{self.activity.date_consumed}, make new activity'
+                )
                 self.activity = None
                 self._add_activity(adjustment=Activity.CONSUME_ADDED)
             elif (
@@ -306,15 +318,19 @@ class BoxActivityClass:
             ):
                 # some sort of mismatch due to the box being emptied and
                 # refilled without notifying the inventory system
-                logger.debug(f'Act Box Empty: mismatch, consume this activity and '
-                      f'make a new one')
+                logger.debug(
+                    f'Act Box Empty: mismatch, consume this activity and '
+                    f'make a new one'
+                )
                 self._consume_activity(
                     adjustment=Activity.CONSUME_ADDED)
                 self._add_activity(adjustment=Activity.CONSUME_EMPTIED)
             else:
                 # expected
-                logger.debug(f'Act Box Empty: box and activity matched, record '
-                      f'consumption ')
+                logger.debug(
+                    f'Act Box Empty: box and activity matched, record '
+                    f'consumption '
+                )
                 pass
         except Activity.DoesNotExist:
             # oops - box has no open activity record so create one
@@ -356,8 +372,10 @@ class BoxActivityClass:
                     adjustment_code=adjustment,
                 )
                 self.activity.save()
-                logger.debug(f'Act Box_Add: Just added activity ID: '
-                      f'{self.activity.id}')
+                logger.debug(
+                    f'Act Box_Add: Just added activity ID: '
+                    f'{self.activity.id}'
+                )
         except IntegrityError as exc:
             # report an internal error
             self._report_internal_error(
@@ -379,8 +397,10 @@ class BoxActivityClass:
                 self.activity.loc_bin = self.loc_bin.loc_bin
                 self.activity.loc_tier = self.loc_tier.loc_tier
                 self.activity.save()
-                logger.debug(f'Act Box_Upd: Just updated activity ID: '
-                      f'{self.activity.id}')
+                logger.debug(
+                    f'Act Box_Upd: Just updated activity ID: '
+                    f'{self.activity.id}'
+                )
         except IntegrityError as exc:
             # report an internal error
             self._report_internal_error(
@@ -408,20 +428,24 @@ class BoxActivityClass:
                 if not self.activity.adjustment_code:
                     self.activity.adjustment_code = adjustment
                 self.activity.save()
-                logger.debug(f'Act Box_Empty: Just consumed activity ID: '
-                      f'{self.activity.id}')
+                logger.debug(
+                    f'Act Box_Empty: Just consumed activity ID: '
+                    f'{self.activity.id}'
+                )
 
-                # update box record
-                self.box.location = None
-                self.box.product = None
-                self.box.exp_year = None
-                self.box.exp_month_start = None
-                self.box.exp_month_end = None
-                self.box.date_filled = None
-                self.box.quantity = None
-                self.box.save()
-                logger.debug(f'Act Box_Empty: Just emptied box ID: '
-                      f'{self.box.id}')
+                # update box record but only if on happy path
+                if not adjustment:
+                    self.box.location = None
+                    self.box.product = None
+                    self.box.exp_year = None
+                    self.box.exp_month_start = None
+                    self.box.exp_month_end = None
+                    self.box.date_filled = None
+                    self.box.quantity = None
+                    self.box.save()
+                    logger.debug(
+                        f'Act Box_Empty: Just emptied box ID: {self.box.id}'
+                    )
         except IntegrityError as exc:
             # report an internal error
             self._report_internal_error(
