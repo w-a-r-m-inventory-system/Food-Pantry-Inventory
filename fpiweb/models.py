@@ -966,9 +966,14 @@ class Activity(models.Model):
                 f'{self.prod_name} ({self.prod_cat_name}) '
                 f'{self.quantity} '
                 f'{self.exp_year}'
-                f'({self.exp_month_start}-'
-                f'{self.exp_month_end}) at '
-                f'{self.date_filled}'
+            )
+            if self.exp_month_start:
+                display = display + (
+                    f'({self.exp_month_start}-'
+                    f'{self.exp_month_end})'
+                )
+            display = display + (
+                f' at {self.date_filled}'
             )
         if self.date_consumed:
             display = display + (
