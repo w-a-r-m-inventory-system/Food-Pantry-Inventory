@@ -16,6 +16,8 @@ from django.forms import \
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from fpiweb.constants import \
+    CURRENT_YEAR
 from fpiweb.models import \
     Box, \
     BoxNumber, \
@@ -47,10 +49,16 @@ def month_choices():
         [(str(i), str(i)) for i in range(1, 13)]
     )
 
-
 def expire_year_choices():
-    current_year = timezone.now().year
-    years_ahead = 5
+    current_year = CURRENT_YEAR
+    exp_year_limit_key = Constraints.FUTURE_EXP_YEAR_LIMIT
+    years_ahead_constraint_rec = Constraints.objects.get(
+        constraint_name=exp_year_limit_key
+    )
+    years_ahead_list = Constraints.get_values(
+        Constraints.FUTURE_EXP_YEAR_LIMIT
+    )
+    years_ahead = years_ahead_list[0]
     for i in range(years_ahead + 1):
         value = str(current_year + i)
         yield value, value
@@ -155,7 +163,8 @@ def validate_int_list(char_list: list) -> bool:
     return valid_int_list
 
 
-def validate_exp_month_start_end(exp_month_start, exp_month_end):
+def validate_exp_month_start_end(exp_month_start: Optional[int],
+                                 exp_month_end: Optional[int]) -> bool:
     """
     Validate the start and end month, if given.
 
@@ -164,10 +173,10 @@ def validate_exp_month_start_end(exp_month_start, exp_month_end):
     :return:
     """
     if exp_month_start is None and exp_month_end is None:
-        return
+        return True
 
     error_msg = (
-        "If Exp {} month is specified, Exp {} month must be specified"
+        "If Exp {} month is specified, Exp {} month must also be specified"
     )
 
     if exp_month_start is not None and exp_month_end is None:
@@ -194,11 +203,11 @@ def validate_exp_month_start_end(exp_month_start, exp_month_end):
             )
         )
 
-    if exp_month_end <= exp_month_start:
+    if exp_month_end < exp_month_start:
         raise ValidationError(
-            'Exp month end must be after Exp month start'
+            'Exp month end must be later than or equal to Exp month start'
         )
-
+    return True
 
 class Html5DateInput(DateInput):
     input_type = 'date'
@@ -559,7 +568,7 @@ class NewBoxForm(forms.ModelForm):
             if self.instance.box_type:
                 box_type = self.instance.box_type
                 self.instance.quantity = box_type.box_type_qty
-        return super(NewBoxForm, self).save(commit=commit)
+        return super().save(commit=commit)
 
 
 class FillBoxForm(forms.ModelForm):
@@ -614,26 +623,6 @@ class FillBoxForm(forms.ModelForm):
         self.validate_exp_month_start_end(exp_month_start, exp_month_end)
 
 
-# class BuildPalletForm(forms.Form):
-#     # Don't try and turn this into a Model Form.  We're performing a search,
-#     # not creating a new Location or editing an existing one.
-#
-#     loc_row = forms.ModelChoiceField(
-#         LocRow.objects.all(),
-#         required=True,
-#     )
-#
-#     loc_bin = forms.ModelChoiceField(
-#         LocBin.objects.all(),
-#         required=True,
-#     )
-#
-#     loc_tier = forms.ModelChoiceField(
-#         LocTier.objects.all(),
-#         required=True,
-#     )
-
-
 class BuildPalletForm(forms.ModelForm):
     class Meta:
         model = Location
@@ -676,7 +665,8 @@ class BoxItemForm(forms.Form):
     # I've deliberately removed the ID field so that this form may
     # be used for either Box or PalletBox records.
 
-    # This is a read only field.  In the page a box number is displayed in an input element with no name or id
+    # This is a read only field.  In the page a box number is displayed in
+    # an input element with no name or id
     box_number = forms.CharField(
         max_length=Box.box_number_max_length,
         min_length=Box.box_number_min_length,
@@ -718,13 +708,11 @@ class BoxItemForm(forms.Form):
     def get_initial_from_box(box):
         """
         :param box: Box or PalletBox record
-        :return: 
+        :return:
         """
         return {
             'box_number': box.box_number,
         }
-
-
 
 
 class PrintLabelsForm(forms.Form):
@@ -734,6 +722,57 @@ class PrintLabelsForm(forms.Form):
     number_to_print = forms.IntegerField(
         initial=10,
     )
+
+
+class BoxTypeForm(forms.Form):
+    """A form to use whenever a box type selection is needed."""
+    box_type = forms.ModelChoiceField(
+        queryset=BoxType.objects.all(),
+        empty_label='Select a box type',
+    )
+
+
+class ExistingBoxTypeForm(BoxTypeForm):
+    """A form to validate that the box type exists."""
+    def clean(self):
+        """Validate the box type."""
+        cleaned_data = super().clean()
+
+        box_type = cleaned_data.get('box_type')
+        if not box_type:
+            raise ValidationError(
+                f'Box Type does not exist.'
+            )
+        cleaned_data['box_type'] = box_type
+        return cleaned_data
+
+
+class ProductForm(forms.Form):
+    """A form for use whenever you need to select a product."""
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),
+        empty_label='Select a product',
+    )
+
+
+class ExistingProductForm(ProductForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        prod_name = cleaned_data.get('prod_name')
+
+        try:
+            product = Product.objects.get(
+                prod_name=prod_name,
+            )
+        except Product.DoesNotExist:
+            raise ValidationError(
+                f"Product {prod_name} does not exist."
+            )
+
+        cleaned_data['product'] = product
+        return cleaned_data
 
 
 class LocationForm(forms.ModelForm):
@@ -775,6 +814,15 @@ class ExistingLocationForm(LocationForm):
         return cleaned_data
 
 
+class ExpYearForm(forms.Form):
+    """A form for use whenever you need to select a year."""
+    exp_year = forms.TypedChoiceField(
+        choices=expire_year_choices,
+        coerce=int,
+        help_text=Box.exp_year_help_text,
+    )
+
+
 class BoxNumberField(forms.CharField):
     """Accepts box number with or without BOX prefix.
     Returns BoxNumber with BOX prefix and leading zeros"""
@@ -786,7 +834,7 @@ class BoxNumberField(forms.CharField):
             return value.upper()
 
         # Did the user just enter digit?  Try and turn this
-        # into a valid bo number
+        # into a valid box number
         try:
             value = int(value)
         except (TypeError, ValueError):
@@ -796,6 +844,79 @@ class BoxNumberField(forms.CharField):
             )
 
         return BoxNumber.format_box_number(value)
+
+
+class NewBoxNumberField(BoxNumberField):
+    """
+    Add a new box number to the database.
+
+    Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is not found, store the box number in the
+    field's box attribute
+    """
+
+    def clean(self, value):
+        value = super().clean(value)
+        if Box.objects.filter(box_number=value).exists():
+            raise ValidationError(
+                f"Box number {value} already exists in the database.",
+            )
+        return value
+
+
+class NewBoxNumberForm(forms.Form):
+
+    box_number = NewBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
+class EmptyBoxNumberField(BoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        if not Box.objects.filter(box_number=value).exists():
+            raise ValidationError(
+                f"Box number {value} is not present in the database.",
+            )
+        box = Box.objects.get(box_number=value)
+        if box.product:
+            raise ValidationError(f'Box number {value} is not empty.')
+        return value
+
+
+class EmptyBoxNumberForm(forms.Form):
+
+    box_number = EmptyBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
+class FilledBoxNumberField(BoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        if not Box.objects.filter(box_number=value).exists():
+            raise ValidationError(
+                f"Box number {value} is not present in the database.",
+            )
+        box = Box.objects.get(box_number=value)
+        if not box.product:
+            raise ValidationError(f'Box number {value} is empty.')
+        return value
+
+
+class FilledBoxNumberForm(forms.Form):
+
+    box_number = FilledBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
 
 
 class ExtantBoxNumberField(BoxNumberField):

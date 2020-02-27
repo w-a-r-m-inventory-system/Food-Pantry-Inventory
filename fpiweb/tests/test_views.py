@@ -18,11 +18,12 @@ from fpiweb.forms import \
     BuildPalletForm, \
     ExtantBoxNumberForm, \
     ExistingLocationForm, \
+    FilledBoxNumberForm, \
     HiddenPalletForm, \
     PalletNameForm, \
     PalletSelectForm
+
 from fpiweb.models import \
-    Activity, \
     Box, \
     BoxNumber, \
     BoxType, \
@@ -32,7 +33,8 @@ from fpiweb.models import \
     LocTier, \
     Pallet, \
     PalletBox, \
-    Product
+    Product, \
+    Activity
 from fpiweb.tests.utility import create_user, default_password
 from fpiweb.views import \
     BoxItemFormView, \
@@ -221,7 +223,8 @@ class BuildPalletViewTest(TestCase):
         'LocTier',
         'Product',
         'ProductCategory',
-        'BoxType'
+        'BoxType',
+        'Constraints',
     )
 
     url = reverse_lazy('fpiweb:build_pallet')
@@ -534,7 +537,7 @@ class ManualMoveBoxViewTest(TestCase):
         )
 
         box_number_form = response.context.get('box_number_form')
-        self.assertIsInstance(box_number_form, ExtantBoxNumberForm)
+        self.assertIsInstance(box_number_form, FilledBoxNumberForm)
         self.assertIsNone(response.context['box'])
         self.assertIsNone(response.context['location_form'])
         self.assertIsNone(response.context['errors'])
@@ -561,7 +564,7 @@ class ManualMoveBoxViewTest(TestCase):
         )
         self.assertIsInstance(
             response.context['box_number_form'],
-            ExtantBoxNumberForm,
+            FilledBoxNumberForm,
         )
 
         box = Box.objects.create(

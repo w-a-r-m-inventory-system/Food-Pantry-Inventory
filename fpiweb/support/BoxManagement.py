@@ -14,10 +14,19 @@ from typing import Optional, Union
 from django.db import transaction
 from django.utils.timezone import now
 
-from fpiweb.constants import InvalidValueError, InvalidActionAttemptedError, \
-    HIGHEST_EXPIRATION_YEAR, CURRENT_YEAR
-from fpiweb.models import Box, Pallet, PalletBox, Location, Product, BoxType, \
-    BoxNumber
+from fpiweb.constants import \
+    InvalidValueError, \
+    InvalidActionAttemptedError, \
+    CURRENT_YEAR
+from fpiweb.models import \
+    Box, \
+    Pallet, \
+    PalletBox, \
+    Location, \
+    Product, \
+    BoxType, \
+    BoxNumber, \
+    Constraints
 from fpiweb.support.BoxActivity import BoxActivityClass
 
 
@@ -167,8 +176,12 @@ class BoxManagementClass:
 
         # presume the date information is true until proven otherwise
         expiration_info_valid = True
-        # check year
-        if exp_year < CURRENT_YEAR or exp_year > HIGHEST_EXPIRATION_YEAR:
+
+        years_ahead_list = Constraints.get_values(
+            Constraints.FUTURE_EXP_YEAR_LIMIT)
+        years_ahead = years_ahead_list[0]
+        future_exp_year_limit = CURRENT_YEAR + years_ahead
+        if exp_year < CURRENT_YEAR or exp_year > future_exp_year_limit:
             expiration_info_valid = False
         else:
             self.exp_year = exp_year

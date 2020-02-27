@@ -5,24 +5,24 @@
 CONTEXT VARIABLES
 -----------------
 mode                string indicating mode.  Constants are defined for this in
-                    the ManualConsumeBoxView class.
+                    the ManualBoxStatusView class.
 box_number_form     A FilledBoxNumberForm
 box                 A Box instance
 box_type            A BoxType instance
 product             A Product instance
 location            A Location instance
-view_class          Reference to ManualConsumeBoxView
+view_class          Reference to ManualBoxStatusView
 errors              A list of errors.
 
 {% endcomment %}
 
 {% block title %}
-    Consume Box
+    Box Status
 {% endblock %}
 
 {% block content %}
 
-    <h1>Consume (Empty) a Box</h1>
+    <h1>Manual Status a Box</h1>
 
     {% if errors %}
         <div class="alert alert-danger">
@@ -41,11 +41,10 @@ errors              A list of errors.
         {% if mode == view_class.MODE_ENTER_BOX_NUMBER %}
             {% bootstrap_field box_number_form.box_number show_help=False %}
             <input type="submit" class="btn btn-primary" value="Search"/>
-        {% elif mode == view_class.MODE_CONSUME_BOX %}
+        {% elif mode == view_class.MODE_CONFIRMATION %}
             {% if not box %}
                 <div class="alert alert-danger">box not defined</div>
             {% else %}
-                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
                 <div class="row">
                     <div class="col-md-6">
                         <label>Box Number:</label> {{ box.box_number }}
@@ -58,45 +57,45 @@ errors              A list of errors.
                         ({{ box.box_type.box_type_qty }})
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Box Contents:</label>
-                        {{ box.product.prod_name }}
+                {% if product %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Box Contents:</label>
+                            {{ box.product.prod_name }}
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Contents Expire:</label>
-                        {{ box.exp_year }}
-                        {% if box.exp_mo_start %}
-                            &nbsp; ({{ box.exp_mo_start }} --
-                            {{ box.exp_mo_end }})
-                        {% endif %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Contents Expire:</label>
+                            {{ box.exp_year }}
+                            {% if box.exp_mo_start %}
+                                &nbsp; ({{ box.exp_mo_start }} --
+                                {{ box.exp_mo_end }})
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <label>Row:</label> {{ box.location.loc_row.loc_row }}
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Row:</label>
+                            {{ box.location.loc_row.loc_row }}
+                        </div>
+                        <div class="col-md-2">
+                            <label>Bin:</label>
+                            {{ box.location.loc_bin.loc_bin }}
+                        </div>
+                        <div class="col-md-2">
+                            <label>Tier:</label>
+                            {{ box.location.loc_tier.loc_tier }}
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <label>Bin:</label> {{ box.location.loc_bin.loc_bin }}
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Box is Empty</label>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <label>Tier:</label> {{ box.location.loc_tier.loc_tier }}
-                    </div>
-                </div>
-
-                <h2>Consume (Empty) Box?</h2>
-
-                <div class="row">
-                    <input type="submit" class="btn btn-primary"
-                           value="Consume"/>
-                </div>
+                {% endif %}
             {% endif %}
-        {% elif mode == view_class.MODE_CONFIRMATION %}
-            <div class="row">Box {{ box.box_number }} has been successfully
-                consumed.
-            </div>
         {% else %}
             <div class="alert alert-danger">Mode is &quot;{{ mode }}&quot;</div>
         {% endif %}
@@ -104,12 +103,13 @@ errors              A list of errors.
         <br/>
 
         <div>
+            <a href="{% url 'fpiweb:manual_box_status' %}">
+                Check another box</a>
+        </div>
+
+        <div>
             <a href="{% url 'fpiweb:manual_box_menu' %}">
-                {% if mode == view_class.MODE_CONFIRMATION %}
-                    Return to Manual Box Menu</a>
-                {% else %}
-                    Cancel Box Consumption
-                {% endif %}
+                Return to Manual Box Menu</a>
         </div>
     </form>
 
