@@ -15,12 +15,6 @@ from datetime import date
 CURRENT_YEAR = date.today().year
 """ The current year - used for validating expiration dates """
 
-LOWEST_EXPIRATION_YEAR = CURRENT_YEAR - 2
-""" The lowest valid year for expiration dates """
-
-HIGHEST_EXPIRATION_YEAR = CURRENT_YEAR + 4
-""" The highest valid year for expiration dates """
-
 
 # # # # # # # # # # # # # # #
 # Project specific exceptions

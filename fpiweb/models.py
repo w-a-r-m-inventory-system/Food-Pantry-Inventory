@@ -249,7 +249,7 @@ class Location(models.Model):
         """ Default way to display a location record. """
         display = f'Location {self.loc_code} - {self.loc_descr}'
         if self.loc_in_warehouse:
-            display += f'({self.loc_row}/{self.loc_bin}/{self.loc_tier})'
+            display += (f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})')
         return display
 
 
@@ -990,18 +990,6 @@ class Activity(models.Model):
         return display
 
 
-@unique
-class CONSTRAINT_NAME_KEYS(Enum):
-    """
-    Valid constraint key values with associated names for each key.
-    """
-    TIER: str = 'Tier'
-    ROW: str = 'Row'
-    BIN: str = 'Bin'
-    EXP_YEAR: str = 'Expiration Year'
-    QUANTITY: str = 'Quantity'
-
-
 class Constraints(models.Model):
     """
     Constraints of valid values.
@@ -1012,7 +1000,26 @@ class Constraints(models.Model):
         app_label = 'fpiweb'
         verbose_name_plural = 'Constraints'
 
-    # Constraint Choice Names
+    # Valid constraint key values with associated names for each key.
+    TIER: str = 'Tier'
+    ROW: str = 'Row'
+    BIN: str = 'Bin'
+    QUANTITY_LIMIT: str = 'Quantity Limit'
+    FUTURE_EXP_YEAR_LIMIT = 'Future Expiration Year Limit'
+    LOCATION_EXCLUSIONS = 'Location Exclusions '
+
+    CONSTRAINT_NAME_CHOICES = (
+        (ROW, 'Rows in the warehouse'),
+        (BIN, 'Bins in the Warehouse'),
+        (TIER, 'Tiers in the Warehouse'),
+        (LOCATION_EXCLUSIONS, 'Warehouse locations excluded from inventory'),
+        (QUANTITY_LIMIT, 'Typical count of items in a box'),
+        (FUTURE_EXP_YEAR_LIMIT,
+            'Maximum years of future expiration permitted'),
+    )
+
+
+    # Constraint Type Choice Names
     INT_RANGE = 'Int-MM'
     CHAR_RANGE = 'Char-MM'
     INT_LIST = 'Int-List'
@@ -1037,6 +1044,7 @@ class Constraints(models.Model):
     constraint_name = models.CharField(
         'Constraint Name',
         max_length=30,
+        choices=CONSTRAINT_NAME_CHOICES,
         unique=True,
         help_text=constraint_name_help_text,
     )
