@@ -194,35 +194,6 @@ errors              A list of errors.
                     Cancel Box Check In
                 {% endif %}
         </div>
-
-        {% comment %}
-
-        {% bootstrap_field form.box_type show_help=False %}
-        <div class="row" style="margin-top: 1rem; margin-bottom: 2rem">
-            <div class="col-md-2">
-                <label>Row:</label>
-                <span id="currentRow"></span>
-            </div>
-            <div class="col-md-2">
-                <label>Bin:</label>
-                <span id="currentBin"></span>
-            </div>
-            <div class="col-md-2">
-                <label>Tier:</label>
-                <span id="currentTier"></span>
-            </div>
-        </div>
-        <h2>Choose New Location:</h2>
-        {% bootstrap_field form.loc_row show_help=False %}
-        {% bootstrap_field form.loc_bin show_help=False %}
-        {% bootstrap_field form.loc_tier show_help=False %}
-        <input
-            type="submit"
-            class="btn btn-primary"
-            value="Check Box Out (Consume)"/>
-        <a href="{% url 'fpiweb:manual_menu' %}"
-            class="btn btn-secondary">Cancel</a>
-        {% endcomment %}
     </form>
 
 

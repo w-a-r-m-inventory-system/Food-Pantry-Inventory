@@ -1,0 +1,75 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+mode                string indicating mode.  Constants are defined for this in
+                    the ManualNewBoxView class.
+box_number_form     A NewBoxNumberForm
+box                 A Box instance
+box_type_form       a BoxTypeForm
+box_type
+view_class          Reference to ManualMoveBoxView
+errors              A list of errors.
+
+{% endcomment %}
+
+{% block title %}
+    New Box
+{% endblock %}
+
+{% block content %}
+
+    <h1>New Box</h1>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="mode" value="{{ mode }}"/>
+        {% if mode == view_class.MODE_ENTER_BOX_NUMBER %}
+            {% bootstrap_field box_number_form.box_number show_help=False %}
+            {% bootstrap_field box_type_form.box_type show_help=False %}
+            <input type="submit" class="btn btn-primary" value="Add Box"/>
+        {% elif mode == view_class.MODE_CONFIRMATION %}
+            <div class="row">Box {{ box.box_number }} with box type
+                {{ box.box_type }} has been successfully created.
+            </div>
+        {% else %}
+            <div class="alert alert-danger">Mode is &quot;{{ mode }}&quot;</div>
+        {% endif %}
+
+
+        <br/>
+
+        {% if mode == view_class.MODE_CONFIRMATION %}
+            <div>
+                <a href="{% url 'fpiweb:manual_add_box' %}">
+                    Add another box</a>
+            </div>
+
+            <div>
+                <a href="{% url 'fpiweb:manual_box_menu' %}">
+                    Return to Manual Box Menu</a>
+            </div>
+        {% else %}
+            <div>
+                <a href="{% url 'fpiweb:manual_box_menu' %}">
+                    Cancel Adding a Box</a>
+            </div>
+        {% endif %}
+
+    </form>
+
+
+{% endblock %}

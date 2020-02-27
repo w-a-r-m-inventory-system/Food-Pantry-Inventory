@@ -66,7 +66,7 @@ class BoxItemFormTest(TestCase):
         form = BoxItemForm(post_data)
         self.assertFalse(form.is_valid())
         self.assertIn(
-            'Exp month end must be after Exp month start',
+            'Exp month end must be later than or equal to Exp month start',
             form.non_field_errors()
         )
 

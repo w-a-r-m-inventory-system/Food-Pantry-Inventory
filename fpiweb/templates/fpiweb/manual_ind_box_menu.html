@@ -16,17 +16,24 @@
     <h6>Manage Individual Boxes Manually</h6>
 
     <br/>
-    <a href="{% url 'fpiweb:about' %}">
+    <a href="{% url 'fpiweb:manual_box_status' %}">
+        Check the status of a box
+    </a>
+
+    <br/>
+    <br/>
+
+    <a href="{% url 'fpiweb:manual_add_box' %}">
         Add a new box to inventory
     </a>
 
     <br/>
-    <a href="{% url 'fpiweb:manual_checkin_box' %}">
+    <a href="{% url 'fpiweb:manual_checkout_box' %}">
         Checkin a box
     </a>
 
     <br/>
-    <a href="{% url 'fpiweb:about' %}">
+    <a href="{% url 'fpiweb:manual_checkout_box' %}">
         Checkout (consume product in) a box
     </a>
 

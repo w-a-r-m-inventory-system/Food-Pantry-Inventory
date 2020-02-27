@@ -58,6 +58,22 @@ location            Location object representing where the box has been moved
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Contents:</label>
+                        {{ box.product.prod_name }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Contents Expire:</label>
+                        {{ box.exp_year }}
+                        {% if box.exp_mo_start %}
+                            &nbsp; ({{ box.exp_mo_start }} --
+                            {{ box.exp_mo_end }})
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-2">
                         <label>Row:</label> {{ box.location.loc_row.loc_row }}
                     </div>

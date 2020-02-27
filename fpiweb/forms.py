@@ -203,9 +203,9 @@ def validate_exp_month_start_end(exp_month_start: Optional[int],
             )
         )
 
-    if exp_month_end <= exp_month_start:
+    if exp_month_end < exp_month_start:
         raise ValidationError(
-            'Exp month end must be after Exp month start'
+            'Exp month end must be later than or equal to Exp month start'
         )
     return True
 
@@ -568,7 +568,7 @@ class NewBoxForm(forms.ModelForm):
             if self.instance.box_type:
                 box_type = self.instance.box_type
                 self.instance.quantity = box_type.box_type_qty
-        return super(NewBoxForm, self).save(commit=commit)
+        return super().save(commit=commit)
 
 
 class FillBoxForm(forms.ModelForm):
@@ -621,26 +621,6 @@ class FillBoxForm(forms.ModelForm):
         exp_month_start = cleaned_data.get('exp_month_start')
         exp_month_end = cleaned_data.get('exp_month_end')
         self.validate_exp_month_start_end(exp_month_start, exp_month_end)
-
-
-# class BuildPalletForm(forms.Form):
-#     # Don't try and turn this into a Model Form.  We're performing a search,
-#     # not creating a new Location or editing an existing one.
-#
-#     loc_row = forms.ModelChoiceField(
-#         LocRow.objects.all(),
-#         required=True,
-#     )
-#
-#     loc_bin = forms.ModelChoiceField(
-#         LocBin.objects.all(),
-#         required=True,
-#     )
-#
-#     loc_tier = forms.ModelChoiceField(
-#         LocTier.objects.all(),
-#         required=True,
-#     )
 
 
 class BuildPalletForm(forms.ModelForm):
@@ -744,6 +724,29 @@ class PrintLabelsForm(forms.Form):
     )
 
 
+class BoxTypeForm(forms.Form):
+    """A form to use whenever a box type selection is needed."""
+    box_type = forms.ModelChoiceField(
+        queryset=BoxType.objects.all(),
+        empty_label='Select a box type',
+    )
+
+
+class ExistingBoxTypeForm(BoxTypeForm):
+    """A form to validate that the box type exists."""
+    def clean(self):
+        """Validate the box type."""
+        cleaned_data = super().clean()
+
+        box_type = cleaned_data.get('box_type')
+        if not box_type:
+            raise ValidationError(
+                f'Box Type does not exist.'
+            )
+        cleaned_data['box_type'] = box_type
+        return cleaned_data
+
+
 class ProductForm(forms.Form):
     """A form for use whenever you need to select a product."""
     product = forms.ModelChoiceField(
@@ -841,6 +844,31 @@ class BoxNumberField(forms.CharField):
             )
 
         return BoxNumber.format_box_number(value)
+
+
+class NewBoxNumberField(BoxNumberField):
+    """
+    Add a new box number to the database.
+
+    Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is not found, store the box number in the
+    field's box attribute
+    """
+
+    def clean(self, value):
+        value = super().clean(value)
+        if Box.objects.filter(box_number=value).exists():
+            raise ValidationError(
+                f"Box number {value} already exists in the database.",
+            )
+        return value
+
+
+class NewBoxNumberForm(forms.Form):
+
+    box_number = NewBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
 
 
 class EmptyBoxNumberField(BoxNumberField):

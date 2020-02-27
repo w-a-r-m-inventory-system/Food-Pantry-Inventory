@@ -6,51 +6,19 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import \
-    AboutView, \
-    ActivityDownloadView, \
-    BoxDetailsView, \
-    BoxEditView, \
-    BoxEmptyView, \
-    BoxEmptyMoveView, \
-    BoxItemFormView, \
-    BoxMoveView, \
-    BoxNewView, \
-    BoxScannedView, \
-    BuildPalletView, \
-    IndexView, \
-    LoginView, \
-    ConstraintCreateView, \
-    ConstraintDeleteView, \
-    ConstraintsListView, \
-    ConstraintUpdateView, \
-    LogoutView, \
-    PrintLabelsView, \
-    ScannerView, \
-    TestScanView, \
-    MaintenanceView, \
-    ManualMoveBoxView, \
-    LocRowListView, \
-    LocRowCreateView, \
-    LocRowUpdateView, \
-    LocRowDeleteView, \
-    LocBinListView, \
-    LocBinCreateView, \
-    LocBinUpdateView, \
-    LocBinDeleteView, \
-    LocTierListView, \
-    LocTierCreateView, \
-    LocTierUpdateView, \
-    LocTierDeleteView, \
-    ManualMenuView, \
-    ManualPalletNew,  \
-    ManualPalletStatus, \
-    PalletManagementView, \
-    PalletSelectView, \
-    ManualPalletMenuView, \
-    ManualBoxMenuView, \
-    ManualCheckinBoxView
-
+from fpiweb.views import AboutView, ActivityDownloadView, BoxDetailsView, \
+    BoxEditView, BoxEmptyView, BoxEmptyMoveView, BoxItemFormView, BoxMoveView, \
+    BoxNewView, BoxScannedView, BuildPalletView, IndexView, LoginView, \
+    ConstraintCreateView, ConstraintDeleteView, ConstraintsListView, \
+    ConstraintUpdateView, LogoutView, PrintLabelsView, ScannerView, \
+    TestScanView, MaintenanceView, ManualMoveBoxView, LocRowListView, \
+    LocRowCreateView, LocRowUpdateView, LocRowDeleteView, LocBinListView, \
+    LocBinCreateView, LocBinUpdateView, LocBinDeleteView, LocTierListView, \
+    LocTierCreateView, LocTierUpdateView, LocTierDeleteView, ManualMenuView, \
+    ManualPalletNew, ManualPalletStatus, PalletManagementView, \
+    PalletSelectView, ManualPalletMenuView, ManualBoxMenuView, \
+    ManualCheckinBoxView, ManualConsumeBoxView, ManualBoxStatusView, \
+    ManualNewBoxView
 
 # from fpiweb.views import ConstraintDetailView
 
@@ -289,6 +257,11 @@ urlpatterns = [
         ActivityDownloadView.as_view(),
         name='download_activities'),
 
+    # Manually add an empty box to the inventory system
+    # e.g. /fpiweb/manual_box_status/ = determine the status of a box manually
+    path('manual_add_box/', ManualNewBoxView.as_view(),
+        name='manual_add_box', ),
+
     # Manually check in a box
     # e.g. /fpiweb/manual_checkin_box/ = check in a box manually
     path(
@@ -297,11 +270,27 @@ urlpatterns = [
         name='manual_checkin_box',
     ),
 
+    # Manually check out a box
+    # e.g. /fpiweb/manual_checkout_box/ = check out a box manually
+    path(
+        'manual_checkout_box/',
+        ManualConsumeBoxView.as_view(),
+        name='manual_checkout_box',
+    ),
+
     # Manually move a filled box
     # e.g. /fpiweb/manual_move_box/ = move a filled box manually
     path(
         'manual_move_box/',
         ManualMoveBoxView.as_view(),
         name='manual_move_box',
+    ),
+
+    # Manually get a box status
+    # e.g. /fpiweb/manual_box_status/ = determine the status of a box manually
+    path(
+        'manual_box_status/',
+        ManualBoxStatusView.as_view(),
+        name='manual_box_status',
     ),
 ]
