@@ -53,30 +53,18 @@ from fpiweb.models import \
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
-from fpiweb.forms import \
-    BoxItemForm, \
-    ExtantBoxNumberForm, \
-    BuildPalletForm, \
-    ConstraintsForm, \
-    ExistingLocationForm, \
-    HiddenPalletForm, \
-    LocRowForm, \
-    LocBinForm, \
-    LocTierForm, \
-    LoginForm, \
-    NewBoxForm, \
-    PalletNameForm, \
-    PalletSelectForm, \
-    PrintLabelsForm
+from fpiweb.forms import BoxItemForm, EmptyBoxNumberForm, FilledBoxNumberForm, \
+    ExtantBoxNumberForm, BuildPalletForm, ConstraintsForm, \
+    ExistingLocationForm, HiddenPalletForm, LocRowForm, LocBinForm, \
+    LocTierForm, LoginForm, NewBoxForm, PalletNameForm, PalletSelectForm, \
+    PrintLabelsForm, ExistingProductForm, ProductForm, ExpYearForm, \
+    NewBoxNumberForm, BoxTypeForm, ExistingBoxTypeForm
 from fpiweb.qr_code_utilities import QRCodePrinter
-from fpiweb.support.BoxActivity import BoxActivityClass
 from fpiweb.support.BoxManagement import BoxManagementClass
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
-
-from fpiweb.support.BoxManagement import BoxManagementClass
 
 logger = getLogger('fpiweb')
 
@@ -1064,7 +1052,7 @@ class ScannerView(View):
         }
         return data
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
 
         scan_data = request.POST.get('scanData')
         box_number = self.get_keyed_in_box_number(
@@ -1184,14 +1172,16 @@ class BoxItemFormView(LoginRequiredMixin, View):
             self.template_name,
             {
                 'box_number': box.box_number,
-                'form': self.get_form(pallet_box, prefix),
+                'form': self.get_form(
+                    pallet_box,
+                    prefix),
             },
         )
 
 
 class ManualMenuView(TemplateView):
     """
-    Default web page (/index)
+    Menu to choose between manual pallet or manual box management
     """
     template_name = 'fpiweb/manual_menu.html'
 
@@ -1235,20 +1225,80 @@ class ManualMenuView(TemplateView):
         context['pallet_target'] = pallet_target
         return context
 
-    def get_success_url(self, **kwargs):
+
+class ManualPalletMenuView(TemplateView):
+    """
+    Menu of choices for manual pallet management.
+    """
+    template_name = 'fpiweb/manual_pallet_menu.html'
+
+    def get_context_data(self, **kwargs):
         """
-        Construct success url.
+        Add User Information to Manual Menu page.
 
         :param kwargs:
         :return:
         """
+
+        # get information from the database
+        context = super().get_context_data(**kwargs)
+
+        # get the current user and related profile
         current_user = self.request.user
-        user_profile = Profile.objects.select_related().get(id=current_user.id)
-        pallet_rec = Pallet.objects.select_related().get(
-            user_id_id=current_user.id)
-        pallet_id = pallet_rec.id
-        target = reverse_lazy('fpiweb:manual_pallet_status', args=[pallet_id])
-        return target
+        profile = current_user.profile
+        if profile:
+            active_pallet = profile.active_pallet
+        else:
+            active_pallet = None
+
+        # does user have active pallet?  if so get info
+        if active_pallet:
+            new_target = None
+            # pallet_rec = Pallet.objects.select_related().get(
+            #     id=profile.active_pallet)
+            pallet_id = active_pallet.id
+            pallet_target = reverse_lazy(
+                'fpiweb:manual_pallet_status', args=[pallet_id]
+            )
+        else:
+            new_target = reverse_lazy('fpiweb:manual_pallet_new')
+            pallet_target = None
+
+        # load up  the context for the template
+        context['current_user'] = current_user
+        context['user_profile'] = profile
+        context['active_pallet'] = active_pallet
+        context['new_target'] = new_target
+        context['pallet_target'] = pallet_target
+        return context
+
+
+class ManualBoxMenuView(TemplateView):
+    """
+    Menu of choices for manual individual box management.
+    """
+    template_name = 'fpiweb/manual_ind_box_menu.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add User Information to Manual Menu page.
+
+        :param kwargs:
+        :return:
+        """
+
+        # get information from the database
+        context = super().get_context_data(**kwargs)
+
+        # get the current user and related profile
+        current_user = self.request.user
+        profile = current_user.profile
+
+        # load up  the context for the template
+        context['current_user'] = current_user
+        context['user_profile'] = profile
+        return context
+
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """
@@ -1504,6 +1554,620 @@ class ActivityDownloadView(LoginRequiredMixin, View):
         return response
 
 
+class ManualBoxStatusView(LoginRequiredMixin, View):
+    template_name = 'fpiweb/manual_box_status.html'
+
+    MODE_ENTER_BOX_NUMBER = 'enter_box_number'
+    MODE_CONFIRMATION = 'confirmation'
+
+    @staticmethod
+    def build_context(
+            *,
+            mode,
+            box_number_form=None,
+            box=None,
+            box_type=None,
+            product_form=None,
+            product=None,
+            location_form=None,
+            location=None,
+            errors=None):
+        return {
+            'mode': mode,
+            'box_number_form': box_number_form,
+            'box': box,
+            'box_type': box_type,
+            'product_form': product_form,
+            'product': product,
+            'location_form': location_form,
+            'location': location,
+            'view_class': ManualBoxStatusView,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        """
+        Prepare to display consume box number form for the first time.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        get_context = self.build_context(
+            mode=self.MODE_ENTER_BOX_NUMBER,
+            box_number_form=FilledBoxNumberForm(),
+        )
+        return render(request, self.template_name, get_context)
+
+    def post_box_number(self, request):
+        box_number_form = ExtantBoxNumberForm(request.POST)
+        if not box_number_form.is_valid():
+            box_number_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=box_number_form,
+                errors=[(
+                    f"Box {box_number_form.get('box_number')} not in "
+                    f"inventory"
+                )],
+            )
+            return render(
+                request,
+                self.template_name,
+                box_number_failed_context,
+                status=404,
+            )
+
+        box_number = box_number_form.cleaned_data.get('box_number')
+        # go get the final box info
+        box = Box.objects.select_related(
+            'box_type',
+            'product',
+            'location',
+        ).get(box_number=box_number)
+        box_type = box.box_type
+        product = box.product
+        location = box.location
+
+        # go get the final box info after any modifications
+        return render(
+            request,
+            self.template_name,
+            self.build_context(
+                mode=self.MODE_CONFIRMATION,
+                box=box,
+                box_type=box_type,
+                product=product,
+                location=location,
+            ),
+        )
+
+    def post(self, request, *args, **kwargs):
+        mode = request.POST.get('mode')
+        if mode == self.MODE_ENTER_BOX_NUMBER:
+            return self.post_box_number(request)
+        print(f"Unrecognized mode '{mode}'")
+        return render(request, self.template_name, {})
+
+
+class ManualNewBoxView(LoginRequiredMixin, View):
+    template_name = 'fpiweb/manual_new_box.html'
+
+    MODE_ENTER_BOX_NUMBER = 'enter_box_number'
+    MODE_CONFIRMATION = 'confirmation'
+
+    @staticmethod
+    def build_context(
+            *,
+            mode,
+            box_number_form=None,
+            box=None,
+            box_type=None,
+            box_type_form=None,
+            errors: Optional[list]=None):
+        return {
+            'mode': mode,
+            'box_number_form': box_number_form,
+            'box': box,
+            'box_type': box_type,
+            'box_type_form': box_type_form,
+            'view_class': ManualNewBoxView,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        """
+        Prepare to display consume box number form for the first time.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        get_context = self.build_context(
+            mode=self.MODE_ENTER_BOX_NUMBER,
+            box_number_form=NewBoxNumberForm(),
+            box_type_form=ExistingBoxTypeForm(),
+        )
+        return render(request, self.template_name, get_context)
+
+    def post_box_number(self, request):
+        box_number_form = NewBoxNumberForm(request.POST)
+        box_type_form = ExistingBoxTypeForm(request.POST)
+        if not box_number_form.is_valid():
+            box_number = box_number_form.data['box_number']
+            box_number_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=box_number_form,
+                box_type_form=box_type_form,
+                errors=[f"Box {box_number} already in inventory"],
+            )
+            return render(
+                request,
+                self.template_name,
+                box_number_failed_context,
+                status=404,
+            )
+
+        box_number = box_number_form.cleaned_data.get('box_number')
+
+        if not box_type_form.is_valid():
+            box_type_failed__context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=box_number_form,
+                box_type_form=box_type_form,
+            )
+            return render(
+                request,
+                self.template_name,
+                box_type_failed__context,
+                status=404,
+            )
+        box_type = box_type_form.cleaned_data['box_type']
+
+        # add the box to inventory
+        box_mgmt = BoxManagementClass()
+        box = box_mgmt.box_new(box_number=box_number, box_type=box_type)
+
+        # present the final box info
+        return render(
+            request,
+            self.template_name,
+            self.build_context(
+                mode=self.MODE_CONFIRMATION,
+                box=box,
+                box_type=box_type,
+            ),
+        )
+
+    def post(self, request, *args, **kwargs):
+        mode = request.POST.get('mode')
+        if mode == self.MODE_ENTER_BOX_NUMBER:
+            return self.post_box_number(request)
+        print(f"Unrecognized mode '{mode}'")
+        return render(request, self.template_name, {})
+
+
+class ManualCheckinBoxView(LoginRequiredMixin, View):
+    template_name = 'fpiweb/manual_check_in_box.html'
+
+    MODE_ENTER_BOX_NUMBER = 'enter_box_number'
+    MODE_ENTER_PRODUCT = 'enter_product'
+    MODE_ENTER_LOCATION = 'enter_location'
+    MODE_ENTER_EXP_YEAR = 'enter_exp_year'
+    MODE_CONFIRMATION = 'confirmation'
+
+    @staticmethod
+    def build_context(
+            *,
+            mode,
+            box_number_form=None,
+            box=None,
+            product_form=None,
+            product=None,
+            location_form=None,
+            location=None,
+            exp_year_form=None,
+            exp_year=None,
+            errors: Optional[list]=None):
+        return {
+            'mode': mode,
+            'box_number_form': box_number_form,
+            'box': box,
+            'product_form': product_form,
+            'product': product,
+            'location_form': location_form,
+            'location': location,
+            'exp_year_form': exp_year_form,
+            'exp_year': exp_year,
+            'view_class': ManualCheckinBoxView,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        get_context = self.build_context(
+            mode=self.MODE_ENTER_BOX_NUMBER,
+            box_number_form=EmptyBoxNumberForm(),
+        )
+        return render(request, self.template_name, get_context)
+
+    def post_box_number(self, request):
+        box_number_form = EmptyBoxNumberForm(request.POST)
+        if not box_number_form.is_valid():
+            box_number_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=box_number_form,
+                errors=[(
+                    f"Box {box_number_form.get('box_number')} not in inventory"
+                )],
+            )
+            return render(
+                request,
+                self.template_name,
+                box_number_failed_context,
+                status=404,
+            )
+
+        box_number = box_number_form.cleaned_data.get('box_number')
+        box = Box.objects.get(box_number=box_number)
+
+        pre_product_context = self.build_context(
+            mode=self.MODE_ENTER_PRODUCT,
+            box=box,
+            product_form=ExistingProductForm(),
+        )
+        return render(
+            request,
+            self.template_name,
+            pre_product_context,
+        )
+
+    def post_product(self, request):
+        box_pk = request.POST.get('box_pk')
+        if not box_pk:
+            box_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=EmptyBoxNumberForm(),
+                errors=['Missing box_pk']
+            ),
+            return render(
+                request,
+                self.template_name,
+                box_failed_context,
+                status=400,
+            )
+        box = Box.objects.get(pk=box_pk)
+
+        product_form = ExistingProductForm(request.POST)
+        if not product_form.is_valid():
+            product_failed_context = self.build_context(
+                mode=self.MODE_ENTER_PRODUCT,
+                box=box,
+                product_form=product_form,
+                errors=['Missing product']
+            ),
+            return render(
+                request,
+                self.template_name,
+                product_failed_context,
+                status=400,
+            )
+        product = product_form.cleaned_data.get('product')
+
+        pre_location_context = self.build_context(
+            mode=self.MODE_ENTER_LOCATION,
+            box=box,
+            product=product,
+            location_form=ExistingLocationForm(),
+        )
+        return render(
+            request,
+            self.template_name,
+            pre_location_context,
+        )
+
+    def post_location(self, request):
+        box_pk = request.POST.get('box_pk')
+        if not box_pk:
+            box_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=EmptyBoxNumberForm(),
+                errors=['Missing box_pk']
+            ),
+            return render(
+                request,
+                self.template_name,
+                box_failed_context,
+                status=400,
+            )
+        box = Box.objects.get(pk=box_pk)
+
+        product_pk = request.POST.get('product_pk')
+        if not product_pk:
+            product_failed_context = self.build_context(
+                mode=self.MODE_ENTER_PRODUCT,
+                box=box,
+                product_form=ProductForm(),
+                errors=['Missing product_pk'],
+            ),
+            return render(
+                request,
+                self.template_name,
+                product_failed_context,
+                status=400,
+            )
+        product = Product.objects.get(pk=product_pk)
+
+        location_form = ExistingLocationForm(request.POST)
+        if not location_form.is_valid():
+            location_failed_context = self.build_context(
+                mode=self.MODE_ENTER_LOCATION,
+                box=box,
+                product=product,
+                location_form=location_form,
+                errors=['Missing location']
+            ),
+            return render(
+                request,
+                self.template_name,
+                location_failed_context,
+                status=404
+            )
+        location = location_form.cleaned_data.get('location')
+
+        pre_exp_year_context = self.build_context(
+            mode=self.MODE_ENTER_EXP_YEAR,
+            box=box,
+            product=product,
+            location=location,
+            exp_year_form=ExpYearForm(),
+        )
+        return render(
+            request,
+            self.template_name,
+            pre_exp_year_context,
+        )
+
+    def post_exp_year(self, request):
+        box_pk = request.POST.get('box_pk')
+        if not box_pk:
+            box_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=EmptyBoxNumberForm(),
+                errors=['Missing box_pk']
+            ),
+            return render(
+                request,
+                self.template_name,
+                box_failed_context,
+                status=400,
+            )
+        box = Box.objects.get(pk=box_pk)
+
+        product_pk = request.POST.get('product_pk')
+        if not product_pk:
+            product_failed_context = self.build_context(
+                mode=self.MODE_ENTER_PRODUCT,
+                box=box,
+                product_form=ProductForm(),
+                errors=['Missing product_pk'],
+            ),
+            return render(
+                request,
+                self.template_name,
+                product_failed_context,
+                status=400,
+            )
+        product = Product.objects.get(pk=product_pk)
+
+        location_pk = request.POST.get('location_pk')
+        if not location_pk:
+            location_failed_context = self.build_context(
+                mode=self.MODE_ENTER_LOCATION,
+                box=box,
+                product=product,
+                location_form=ExistingLocationForm,
+                errors=['Missing location']
+            ),
+            return render(
+                request,
+                self.template_name,
+                location_failed_context,
+                status=400,
+            )
+        location = Location.objects.get(pk=location_pk)
+
+        exp_year_form = ExpYearForm(request.POST)
+        if not exp_year_form.is_valid():
+            exp_year_failed_context = self.build_context(
+                mode=self.MODE_ENTER_EXP_YEAR,
+                box=box,
+                product=product,
+                location=location,
+                exp_year_form=exp_year_form,
+                errors=['invalid expiration year']
+            ),
+            return render(
+                request,
+                self.template_name,
+                exp_year_failed_context,
+                status=400,
+            )
+        exp_year = exp_year_form.cleaned_data.get('exp_year')
+
+        # apply fill box to database
+        box_mgmt = BoxManagementClass()
+        box = box_mgmt.box_fill(
+            box=box,
+            location=location,
+            product=product,
+            exp_year=exp_year,
+        )
+        # go get the final box info
+        filled_box = Box.objects.select_related(
+            'box_type',
+            'product',
+            'location',
+        ).get(id=box.id)
+        box_type = box.box_type
+        product = box.product
+        location = box.location
+        return render(
+            request,
+            self.template_name,
+            self.build_context(
+                mode=self.MODE_CONFIRMATION,
+                box=box,
+                product=product,
+                location=location,
+                exp_year=exp_year,
+            ),
+        )
+
+    def post(self, request, *args, **kwargs):
+        mode = request.POST.get('mode')
+        if mode == self.MODE_ENTER_BOX_NUMBER:
+            return self.post_box_number(request)
+        if mode == self.MODE_ENTER_PRODUCT:
+            return self.post_product(request)
+        if mode == self.MODE_ENTER_LOCATION:
+            return self.post_location(request)
+        if mode == self.MODE_ENTER_EXP_YEAR:
+            return self.post_exp_year(request)
+        print(f"Unrecognized mode '{mode}'")
+        return render(request, self.template_name, {})
+
+
+class ManualConsumeBoxView(LoginRequiredMixin, View):
+    template_name = 'fpiweb/manual_check_out_box.html'
+
+    MODE_ENTER_BOX_NUMBER = 'enter_box_number'
+    MODE_CONSUME_BOX = 'consume_box'
+    MODE_CONFIRMATION = 'confirmation'
+
+    @staticmethod
+    def build_context(
+            *,
+            mode,
+            box_number_form=None,
+            box=None,
+            box_type=None,
+            product_form=None,
+            product=None,
+            location_form=None,
+            location=None,
+            errors: Optional[list]=None):
+        return {
+            'mode': mode,
+            'box_number_form': box_number_form,
+            'box': box,
+            'box_type': box_type,
+            'product_form': product_form,
+            'product': product,
+            'location_form': location_form,
+            'location': location,
+            'view_class': ManualConsumeBoxView,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        """
+        Prepare to display consume box number form for the first time.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        get_context = self.build_context(
+            mode=self.MODE_ENTER_BOX_NUMBER,
+            box_number_form=FilledBoxNumberForm(),
+        )
+        return render(request, self.template_name, get_context)
+
+    def post_box_number(self, request):
+        box_number_form = FilledBoxNumberForm(request.POST)
+        if not box_number_form.is_valid():
+            box_number_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=box_number_form,
+                errors=['Box number missing or box is empty']
+            )
+            return render(
+                request,
+                self.template_name,
+                box_number_failed_context,
+                status=400,
+            )
+
+        box_number = box_number_form.cleaned_data.get('box_number')
+        # go get the final box info
+        filled_box = Box.objects.select_related(
+            'box_type',
+            'product',
+            'location',
+        ).get(box_number=box_number)
+        box_type = filled_box.box_type
+        product = filled_box.product
+        location = filled_box.location
+        pre_consume_context = self.build_context(
+            mode=self.MODE_CONSUME_BOX,
+            box=filled_box,
+            box_type=box_type,
+            product=product,
+            location=location,
+        )
+        return render(
+            request,
+            self.template_name,
+            pre_consume_context,
+        )
+
+    def post_consume_box(self, request):
+        box_pk = request.POST.get('box_pk')
+        if not box_pk:
+            box_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=FilledBoxNumberForm(),
+                errors=['Missing box_pk']
+            ),
+            return render(
+                request,
+                self.template_name,
+                box_failed_context,
+                status=400,
+            )
+        box = Box.objects.get(pk=box_pk)
+
+        # apply box consumption to database
+        box_mgmt = BoxManagementClass()
+        box = box_mgmt.box_consume(box=box)
+
+        # go get the final box info after any modifications
+        empty_box = Box.objects.select_related(
+            'box_type',
+        ).get(id=box.id)
+        box_type = box.box_type
+        return render(
+            request,
+            self.template_name,
+            self.build_context(
+                mode=self.MODE_CONFIRMATION,
+                box=empty_box,
+                box_type=box_type,
+            ),
+        )
+
+    def post(self, request, *args, **kwargs):
+        mode = request.POST.get('mode')
+        if mode == self.MODE_ENTER_BOX_NUMBER:
+            return self.post_box_number(request)
+        if mode == self.MODE_CONSUME_BOX:
+            return self.post_consume_box(request)
+        print(f"Unrecognized mode '{mode}'")
+        return render(request, self.template_name, {})
+
+
 class ManualMoveBoxView(LoginRequiredMixin, View):
     template_name = 'fpiweb/manual_move_box.html'
 
@@ -1513,11 +2177,12 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
 
     @staticmethod
     def build_context(
+            *,
             mode,
             box_number_form=None,
             box=None,
             location_form=None,
-            errors=None):
+            errors: Optional[list]=None):
         return {
             'mode': mode,
             'box_number_form': box_number_form,
@@ -1529,17 +2194,18 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         context = self.build_context(
-            self.MODE_ENTER_BOX_NUMBER,
-            ExtantBoxNumberForm(),
+            mode=self.MODE_ENTER_BOX_NUMBER,
+            box_number_form=FilledBoxNumberForm(),
         )
         return render(request, self.template_name, context)
 
     def post_box_number(self, request):
-        box_number_form = ExtantBoxNumberForm(request.POST)
+        box_number_form = FilledBoxNumberForm(request.POST)
         if not box_number_form.is_valid():
             context = self.build_context(
-                self.MODE_ENTER_BOX_NUMBER,
-                box_number_form,
+                mode=self.MODE_ENTER_BOX_NUMBER,
+                box_number_form=box_number_form,
+                errors=['Box number invalid']
             )
             return render(
                 request,
@@ -1558,7 +2224,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
             request,
             self.template_name,
             self.build_context(
-                self.MODE_ENTER_LOCATION,
+                mode=self.MODE_ENTER_LOCATION,
                 box=boxes.first(),
                 location_form=ExistingLocationForm(),
             )
@@ -1571,7 +2237,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 self.build_context(
-                    self.MODE_ENTER_BOX_NUMBER,
+                    mode=self.MODE_ENTER_BOX_NUMBER,
                     errors=['Missing box_pk']
                 ),
                 status=400,
@@ -1586,7 +2252,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 self.build_context(
-                    self.MODE_ENTER_BOX_NUMBER,
+                    mode=self.MODE_ENTER_BOX_NUMBER,
                     errors=[message]
                 ),
                 status=404,
@@ -1598,10 +2264,12 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 self.build_context(
-                    self.MODE_ENTER_LOCATION,
+                    mode=self.MODE_ENTER_LOCATION,
                     box=box,
                     location_form=location_form,
+                    errors=['invalid or missing location'],
                 ),
+                status=404
             )
 
         location = location_form.cleaned_data.get('location')
@@ -1609,21 +2277,29 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
             message = "Unable to retrieve location from form"
             logger.error(message)
             return render(
-                render,
-                self.template_name
+                request,
+                self.template_name,
+                self.build_context(
+                    mode=self.MODE_ENTER_LOCATION,
+                    box=box,
+                    location_form=location_form,
+                    errors=['invalid or missing location'],
+                ),
+                status=404
             )
 
-        box.location = location
-        box.save()
-
-        box_activity = BoxActivityClass()
-        box_activity.box_move(box_pk)
+        # apply location change to database
+        box_mgmt = BoxManagementClass()
+        box = box_mgmt.box_move(
+            box=box,
+            location=location
+        )
 
         return render(
             request,
             self.template_name,
             self.build_context(
-                self.MODE_CONFIRMATION,
+                mode=self.MODE_CONFIRMATION,
                 box=box,
             ),
         )
