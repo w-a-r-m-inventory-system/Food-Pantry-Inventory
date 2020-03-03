@@ -4,22 +4,12 @@ fpiweb.tests package
 Submodules
 ----------
 
-fpiweb.tests.test\_forms module
--------------------------------
+.. toctree::
 
-.. automodule:: fpiweb.tests.test_forms
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.tests.test\_views module
--------------------------------
-
-.. automodule:: fpiweb.tests.test_views
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   fpiweb.tests.test_forms
+   fpiweb.tests.test_models
+   fpiweb.tests.test_support_box_and_activity
+   fpiweb.tests.test_views
 
 Module contents
 ---------------

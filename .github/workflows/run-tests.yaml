@@ -1,0 +1,47 @@
+name: Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v1
+    - name: Set up Postgres Service
+      uses: harmon758/postgresql-action@v1
+      with:
+        postgresql db: "WARM"
+        postgresql user: "admin"
+        postgresql password: "admin"
+    - name: Create private directory
+      run: |
+        mkdir FPIDjango/private
+    - name: Create settings_private.py
+      run: |
+        echo "DB_ENGINE = 'django.db.backends.postgresql'" > FPIDjango/private/settings_private.py
+        echo "DB_NAME = 'WARM'" >> FPIDjango/private/settings_private.py
+        echo "DB_USER = 'admin'" >> FPIDjango/private/settings_private.py
+        echo "DB_PSWD = 'admin'" >> FPIDjango/private/settings_private.py
+        echo "DB_HOST = 'localhost'" >> FPIDjango/private/settings_private.py
+        echo "DB_PORT = '5432'" >> FPIDjango/private/settings_private.py
+        echo "MY_SECRET_KEY = '<specify your own random  string of 50 characters>'" >> FPIDjango/private/settings_private.py
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.7.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Test with pytest
+      run: |
+        pytest --cov-report term:skip-covered --durations=6 -v --tb=line
+    - name: Upload Test Coverage
+      uses: actions/upload-artifact@v1
+      with:
+        name: PytestCoverage
+        path: htmlcov
+      if: always()

@@ -1,0 +1,11 @@
+[
+  {
+    "model": "fpiweb.pallet",
+    "pk": 2,
+    "fields": {
+      "user_id": 1,
+      "location": 1,
+      "pallet_status": "Fill"
+    }
+  }
+]

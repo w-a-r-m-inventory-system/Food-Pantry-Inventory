@@ -1,0 +1,64 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+page_title:             String with page title
+show_delete:            Boolean indicating whether to show delete section
+prompt:                 String, prompt displayed at top of page (optional)
+pallet_select_form:     PalletSelectForm instance
+pallet_name_form:       PalletNameForm instance
+mode:                   Int or String: mode indicator
+
+{% endcomment %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
+
+<h1>Pallet</h1>
+
+{% if prompt %}
+  <p>{{ prompt }}</p>
+{% endif %}
+
+<h2>Select</h2>
+<div class="row">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_field pallet_select_form.pallet show_label=False %}
+        <input type="hidden" name="form_name" value="pallet_select_form"/>
+        <input type="submit" class="btn btn-primary" value="Select"/>
+    </form>
+</div>
+
+<hr/>
+
+<h2>Add</h2>
+<div class="row">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_field pallet_name_form.name show_label=False %}
+        <input type="hidden" name="form_name" value="pallet_name_form"/>
+        <input type="submit" class="btn btn-primary" value="Add"/>
+    </form>
+</div>
+
+
+{% if show_delete %}
+  <hr/>
+
+  <h2>Delete</h2>
+{% endif %}
+
+<hr/>
+
+<div>
+    <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+</div>
+
+
+{% endblock %}

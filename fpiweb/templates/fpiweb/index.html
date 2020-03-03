@@ -5,10 +5,12 @@
 {% endblock %}
 
 {% block content %}
+
     <h1>Welcome to the Food Pantry Inventory System</h1>
     <br/>
     <h3>Links to other parts of the system:</h3>
     <br/>
+
 
 
     <div>
@@ -23,20 +25,25 @@
         </a>
     </div>
 
-    <a href="{% url 'fpiweb:login' %}">
-        Login
-    </a>
+    <div>
+        <a href="{% url 'fpiweb:login' %}">Login</a>
+    </div>
 
-    <br/>
-    <a href="{% url 'fpiweb:logout' %}">
-        Logout
-    </a>
-
+    <div>
+        <a href="{% url 'fpiweb:logout' %}">Logout</a>
+    </div>
     <br/>
     <a href="{% url 'fpiweb:maintenance' %}">
         System Maintenance
     </a>
 
+    <div>
+        <a href="{% url 'fpiweb:constraints_view' %}">Constraints List</a>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:print_labels' %}">Print Labels</a>
+    </div>
     {#    <br/>#}
     {#    <a href="{% url 'fpiweb:box_new' %}">#}
     {#    Add Box#}
@@ -46,13 +53,14 @@
         <a href="{% url 'fpiweb:test_scan' %}">Test Scan</a>
     </div>
 
+    <div>
+        <a href="{% url 'fpiweb:download_activities' %}">Download Activity Log</a>
+    </div>
+
     <hr/>
     <h2>Actions</h2>
     <div class="row">
-        <a class="btn btn-primary"
-           href="{% url 'fpiweb:build_pallet' %}">
-            Build Pallet
-        </a>
+        <a class="btn btn-primary" href="{% url 'fpiweb:build_pallet' %}">Build Pallet</a>
     </div>
     <div class="row">
         <a class="btn btn-primary" href="">Move Box</a>
@@ -62,6 +70,18 @@
     </div>
     <div class="row">
         <a class="btn btn-primary" href="">Combine Pallets</a>
+    </div>
+
+
+    <hr/>
+    <div>
+
+    </div>
+    <div>
+        <br/>
+        <a href="{% url 'fpiweb:manual_menu' %}">
+            Manual Box and Pallet Maintenance
+        </a>
     </div>
 
 {% endblock %}

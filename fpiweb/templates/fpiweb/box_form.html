@@ -1,0 +1,29 @@
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-------------------------------------------------
+box_number:     The Box's box_number
+form:           The BoxItemForm
+
+{% endcomment %}
+
+<tr class="boxItemFormRow">
+  <td>
+    <div class="form-group">
+      <button class="remove btn btn-danger">X</button>
+    </div>
+  </td>
+  <td>
+    <div class="form-group">
+      <input type="text" class="form-control" value="{{ box_number }}" disabled />
+      {{ form.id }}
+      {{ form.box_number }}
+      {{ form.box_type }}
+    </div>
+  </td>
+  <td>{% bootstrap_field form.product show_help=False show_label=False %}</td>
+  <td>{% bootstrap_field form.exp_year show_help=False show_label=False %}</td>
+  <td>{% bootstrap_field form.exp_month_start show_help=False show_label=False placeholder='' %}</td>
+  <td>{% bootstrap_field form.exp_month_end show_help=False show_label=False placeholder='' %}</td>
+</tr>

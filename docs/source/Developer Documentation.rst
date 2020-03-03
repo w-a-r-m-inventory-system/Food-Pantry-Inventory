@@ -1,6 +1,22 @@
-***********************
+#######################
 Developer Documentation
-***********************
+#######################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Table of Contents:
+
+   UML Diagrams
+
+   DevDocs/Box Management
+
+   DevDocs/Deployment Documentation
+
+   DevDocs/Django and Nginx
+
+   DevDocs/JavaScriptAndJQuery
+
+   Outstanding Tasks
 
 Getting Started
 ===============
@@ -41,18 +57,16 @@ Please start with the :doc:`Git Guidelines <DevDocs/Git Guidelines>`.
 General Developer Documentation
 ===============================
 
-Helpful generic documentation.
-
-    :doc:`Developer Documentation <DevDocs/DevDocs>`
+Helpful :doc:`Developer Resources <DevDocs/DevResources>` are available.
 
 Django Documentation
 ====================
 
 Documentation about Django, including documentation specific to this project.
 
-    :doc:`Django <DevDocs/Django>`
+:doc:`Django <DevDocs/Django>`
 
-    :doc:`Django Guidelines <DevDocs/Django Guidelines>`
+:doc:`Django Guidelines <DevDocs/Django Guidelines>`
 
 PostgreSQL Documentation
 ========================
@@ -68,3 +82,31 @@ Documentation about git (the source code control software) that is specific to
 this project.
 
     :doc:`Git Guidelines <DevDocs/Git Guidelines>`
+
+Internal Documentation
+======================
+
+Javascript and JQuery information specific to this project.
+
+    :doc:`Javascript and JQuery <DevDocs/JavaScriptAndJQuery>`
+
+How information about boxes and their workflows.
+
+    :doc:`Box Management <DevDocs/Box Management>`
+    
+
+Deployment Documentation
+========================
+
+This system is planned to be deployed in a "cloud" platform.
+See :doc:`Deployment Documentation <DevDocs/Deployment Documentation>` for
+both an overview of the deployment plans and will describe the details as
+they are implemented.
+
+
+	  
+User Documentation
+==================
+
+User documentation has already been given elsewhere.
+

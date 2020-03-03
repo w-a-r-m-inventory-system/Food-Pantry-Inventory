@@ -1,10 +1,12 @@
 # Food Pantry Inventory Tracking
 
+[![Documentation Status](https://readthedocs.org/projects/food-pantry-inventory/badge/?version=latest)](https://food-pantry-inventory.readthedocs.io/en/latest/?badge=latest)
+
 Welcome to the Food Pantry Inventory open source project!
 
 This project is designed to track the inventory in the warehouse of a food
 pantry.  It tracks boxes of product by location (row, bin, and  tier), contents
-(green beans, corn, etc.) and by expiration year.  The expriation can 
+(green beans, corn, etc.) and by expiration year.  The expiration can 
 optionally be tracked by half-year, quarter, or arbitrary month ranges.
 
 Details of this system are given in the documentation located at docs/source/index.rst.
@@ -21,7 +23,7 @@ This project is licensed following the MIT licene given in
 
 ## Contributors
 
-Contributers are noted in [Contributors](Contributors.md)
+Contributors are noted in [Contributors](Contributors.md)
 
 # Quick Start Install
 
@@ -86,8 +88,14 @@ main directory and running:
         
     b.  To test the inventory system, use "run_pytest" to run all the django
         unit tests and the pytests contained in the "tests" subdirectory.
+        
+    c.  An alternate way to run the tests is to run the following commands.
+    
+        source venv/bin/activate            (if this has not already been run)
+        
+        ./manage.py test
 
-## How to Get Started Contrubuting
+## How to Get Started Contributing
 
 Please refer to the Wiki for this project on how to get set up to contribute
 to this project.

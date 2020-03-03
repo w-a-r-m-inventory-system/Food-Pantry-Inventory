@@ -11,21 +11,15 @@ it will manage the inventory in the warehouse.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Overall Contents:
+
+   modules
 
    User Documentation
 
    Specifications
 
-   Outstanding Tasks
-
-   UML Diagrams
-
    Developer Documentation
-
-   modules/models
-
-   modules/views
 
 
 

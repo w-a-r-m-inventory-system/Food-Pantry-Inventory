@@ -1,0 +1,149 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+mode                string indicating mode.  Constants are defined for this in
+                    the ManualMoveBoxView class.
+box_number_form     An ExtantBoxNumberForm
+box                 A Box instance
+location_form       An ExistingLocationForm
+view_class          Reference to ManualMoveBoxView
+errors              A list of errors.
+location            Location object representing where the box has been moved
+
+{% endcomment %}
+
+{% block title %}
+    Move Box
+{% endblock %}
+
+{% block content %}
+
+    <h1>Move Box</h1>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="mode" value="{{ mode }}"/>
+        {% if mode == view_class.MODE_ENTER_BOX_NUMBER %}
+            {% bootstrap_field box_number_form.box_number show_help=False %}
+            <input type="submit" class="btn btn-primary" value="Search"/>
+        {% elif mode == view_class.MODE_ENTER_LOCATION %}
+            {% if not box %}
+                <div class="alert alert-danger">box not defined</div>
+            {% else %}
+                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Number:</label> {{ box.box_number }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Type:</label>
+                        {{ box.box_type.box_type_descr }}
+                        ({{ box.box_type.box_type_qty }})
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Box Contents:</label>
+                        {{ box.product.prod_name }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Contents Expire:</label>
+                        {{ box.exp_year }}
+                        {% if box.exp_mo_start %}
+                            &nbsp; ({{ box.exp_mo_start }} --
+                            {{ box.exp_mo_end }})
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Row:</label> {{ box.location.loc_row.loc_row }}
+                    </div>
+                    <div class="col-md-2">
+                        <label>Bin:</label> {{ box.location.loc_bin.loc_bin }}
+                    </div>
+                    <div class="col-md-2">
+                        <label>Tier:</label> {{ box.location.loc_tier.loc_tier }}
+                    </div>
+                </div>
+
+                <h2>Choose New Location</h2>
+
+                <div class="row">{% bootstrap_field location_form.loc_row show_help=False %}</div>
+                <div class="row">{% bootstrap_field location_form.loc_bin show_help=False %}</div>
+                <div class="row">{% bootstrap_field location_form.loc_tier show_help=False %}</div>
+                <div class="row">
+                    <input type="submit" class="btn btn-primary" value="Move"/>
+                </div>
+            {% endif %}
+        {% elif mode == view_class.MODE_CONFIRMATION %}
+            <div class="row">Box {{ box.box_number }} has been successfully
+                moved to Row {{ box.location.loc_row.loc_row }}, Bin
+                {{ box.location.loc_bin.loc_bin }}, Tier
+                {{ box.location.loc_tier.loc_tier }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger">Mode is &quot;{{ mode }}&quot;</div>
+        {% endif %}
+
+        <br/>
+
+        <div>
+            <a href="{% url 'fpiweb:manual_box_menu' %}">
+                {% if mode == view_class.MODE_CONFIRMATION %}
+                    Return to Manual Box Menu</a>
+                {% else %}
+                    Cancel Box Move
+                {% endif %}
+        </div>
+
+        {% comment %}
+
+        {% bootstrap_field form.box_type show_help=False %}
+        <div class="row" style="margin-top: 1rem; margin-bottom: 2rem">
+            <div class="col-md-2">
+                <label>Row:</label>
+                <span id="currentRow"></span>
+            </div>
+            <div class="col-md-2">
+                <label>Bin:</label>
+                <span id="currentBin"></span>
+            </div>
+            <div class="col-md-2">
+                <label>Tier:</label>
+                <span id="currentTier"></span>
+            </div>
+        </div>
+        <h2>Choose New Location:</h2>
+        {% bootstrap_field form.loc_row show_help=False %}
+        {% bootstrap_field form.loc_bin show_help=False %}
+        {% bootstrap_field form.loc_tier show_help=False %}
+        <input
+            type="submit"
+            class="btn btn-primary"
+            value="Check Box Out (Consume)"/>
+        <a href="{% url 'fpiweb:manual_menu' %}"
+            class="btn btn-secondary">Cancel</a>
+        {% endcomment %}
+    </form>
+
+
+{% endblock %}

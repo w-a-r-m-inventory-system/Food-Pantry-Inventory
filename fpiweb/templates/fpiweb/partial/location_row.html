@@ -1,0 +1,18 @@
+{% comment %}
+
+CONTEXT VARIABLES
+---------------------------------------------------------------------
+location:   A Location object
+
+{% endcomment %}
+<div class="row">
+    <div class="col-md-2">
+        <label>Row:</label> {{ location.loc_row.loc_row }}
+    </div>
+    <div class="col-md-2">
+        <label>Bin:</label> {{ location.loc_bin.loc_bin }}
+    </div>
+    <div class="col-md-2">
+        <label>Tier:</label> {{ location.loc_tier.loc_tier }}
+    </div>
+</div>

@@ -6,13 +6,13 @@ Usage:
     QRCodePrinter.py --version
 
 Options:
+
     -p <URL_prefix>, --prefix=<URL_prefix>   The URL prefix for the box number
     -s <nnn>, --start=<nnn>                  Starting box number to use
     -c <nnn>, --count=<nnn>                  Number of QR codes to print
     -o <file>, --output=<file>               Output file name
-    -h --help                                Show this help and quit.
-    -v --version                             Show the version of this program and quit.
-
+    -h, --help                                Show this help and quit.
+    -v, --version                             Show the version of this program and quit.
 """
 
 import logging
