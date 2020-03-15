@@ -13,6 +13,7 @@ Options:
     -o <file>, --output=<file>               Output file name
     -h, --help                                Show this help and quit.
     -v, --version                             Show the version of this program and quit.
+
 """
 
 import logging
