@@ -380,7 +380,6 @@ class BoxActivityClass:
                 exc,
                 'adding an activity for a newly filled box'
             )
-        # self.activity = None
         return
 
     def _update_activity_location(self):

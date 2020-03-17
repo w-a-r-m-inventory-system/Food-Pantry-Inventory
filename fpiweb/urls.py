@@ -6,18 +6,52 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 
-from fpiweb.views import AboutView, ActivityDownloadView, BoxDetailsView, \
-    BoxEditView, BoxEmptyView, BoxEmptyMoveView, BoxItemFormView, BoxMoveView, \
-    BoxNewView, BoxScannedView, BuildPalletView, IndexView, LoginView, \
-    ConstraintCreateView, ConstraintDeleteView, ConstraintsListView, \
-    ConstraintUpdateView, LogoutView, PrintLabelsView, ScannerView, \
-    TestScanView, MaintenanceView, ManualMoveBoxView, LocRowListView, \
-    LocRowCreateView, LocRowUpdateView, LocRowDeleteView, LocBinListView, \
-    LocBinCreateView, LocBinUpdateView, LocBinDeleteView, LocTierListView, \
-    LocTierCreateView, LocTierUpdateView, LocTierDeleteView, ManualMenuView, \
-    ManualPalletNew, ManualPalletStatus, PalletManagementView, \
-    PalletSelectView, ManualPalletMenuView, ManualBoxMenuView, \
-    ManualCheckinBoxView, ManualConsumeBoxView, ManualBoxStatusView, \
+from fpiweb.views import \
+    AboutView, \
+    ActivityDownloadView, \
+    BoxDetailsView, \
+    BoxEditView, \
+    BoxEmptyView, \
+    BoxEmptyMoveView, \
+    BoxItemFormView, \
+    BoxMoveView, \
+    BoxNewView, \
+    BoxScannedView, \
+    BuildPalletView, \
+    IndexView, \
+    LoginView, \
+    ConstraintCreateView, \
+    ConstraintDeleteView, \
+    ConstraintsListView, \
+    ConstraintUpdateView, \
+    LogoutView, \
+    PrintLabelsView, \
+    ScannerView, \
+    TestScanView, \
+    MaintenanceView, \
+    ManualMoveBoxView, \
+    LocRowListView, \
+    LocRowCreateView, \
+    LocRowUpdateView, \
+    LocRowDeleteView, \
+    LocBinListView, \
+    LocBinCreateView, \
+    LocBinUpdateView, \
+    LocBinDeleteView, \
+    LocTierListView, \
+    LocTierCreateView, \
+    LocTierUpdateView, \
+    LocTierDeleteView, \
+    ManualMenuView, \
+    ManualPalletNew, \
+    ManualPalletStatus, \
+    PalletManagementView, \
+    PalletSelectView, \
+    ManualPalletMenuView, \
+    ManualBoxMenuView, \
+    ManualCheckinBoxView, \
+    ManualConsumeBoxView, \
+    ManualBoxStatusView, \
     ManualNewBoxView
 
 # from fpiweb.views import ConstraintDetailView

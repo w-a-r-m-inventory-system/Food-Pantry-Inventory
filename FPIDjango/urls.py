@@ -33,7 +33,7 @@ __creation_date__ = "04/01/2019"
 urlpatterns = [
     path('', LoginView.as_view()),
     path('fpiweb/', include('fpiweb.urls')),
-    path('admin/', admin.site.urls),
+    path('warmadmin/', admin.site.urls,),
 ]
 
 # EOF
