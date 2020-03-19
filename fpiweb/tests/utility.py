@@ -15,3 +15,9 @@ def create_user(first_name, last_name):
         f"{first_name}.{last_name}",
         default_password,
     )
+    profile = Profile.objects.create(
+        user=user,
+        title='User',
+    )
+
+    return user

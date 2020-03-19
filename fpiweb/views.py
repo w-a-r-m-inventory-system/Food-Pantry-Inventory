@@ -53,12 +53,28 @@ from fpiweb.models import \
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
-from fpiweb.forms import BoxItemForm, EmptyBoxNumberForm, FilledBoxNumberForm, \
-    ExtantBoxNumberForm, BuildPalletForm, ConstraintsForm, \
-    ExistingLocationForm, HiddenPalletForm, LocRowForm, LocBinForm, \
-    LocTierForm, LoginForm, NewBoxForm, PalletNameForm, PalletSelectForm, \
-    PrintLabelsForm, ExistingProductForm, ProductForm, ExpYearForm, \
-    NewBoxNumberForm, BoxTypeForm, ExistingBoxTypeForm
+from fpiweb.forms import BoxItemForm, \
+    EmptyBoxNumberForm, \
+    FilledBoxNumberForm, \
+    ExtantBoxNumberForm, \
+    BuildPalletForm, \
+    ConstraintsForm, \
+    ExistingLocationForm, \
+    HiddenPalletForm, \
+    LocRowForm, \
+    LocBinForm, \
+    LocTierForm, \
+    LoginForm, \
+    NewBoxForm, \
+    PalletNameForm, \
+    PalletSelectForm, \
+    PrintLabelsForm, \
+    ExistingProductForm, \
+    ProductForm, \
+    ExpYearForm, \
+    NewBoxNumberForm, \
+    BoxTypeForm, \
+    ExistingBoxTypeForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 
@@ -92,11 +108,30 @@ def get_user_and_profile(request):
     return user, profile
 
 
-class IndexView(TemplateView):
+class IndexView(LoginRequiredMixin, TemplateView):
     """
     Default web page (/index)
     """
     template_name = 'fpiweb/index.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add some security info so appropriate links can be hidden.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+        profile=Profile.objects.get(user=current_user)
+        context={
+            'first_name': current_user.first_name,
+            'last_name': current_user.last_name,
+            'title': profile.title,
+            'email': current_user.email
+        }
+        return context
+
 
 
 class AboutView(TemplateView):
@@ -116,7 +151,7 @@ class AboutView(TemplateView):
         """
 
         # get this information from the database later
-        context = super(AboutView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         site_name = 'WARM (Westerville Area Resource Ministries)'
         site_address = '150 Heatherdown Dr.'
         site_csz = 'Westerville Ohio 43081'
@@ -139,13 +174,22 @@ class LoginView(FormView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
 
-        user = authenticate(self.request, username=username, password=password)
+        user = authenticate(
+            request=self.request,
+            username=username,
+            password=password
+        )
 
         if user is None:
             form.add_error(None, "Invalid username and/or password")
             return self.form_invalid(form)
 
         login(self.request, user)
+        profile = Profile.objects.get_or_create(
+            user_id=user.id,
+            defaults={'title': 'User'},
+        )
+
         return super().form_valid(form)
 
 
@@ -427,7 +471,6 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
 
     formClass = ConstraintsForm
 
-    # TODO Why are fields required here in the create - 1/18/17
     fields = ['constraint_name', 'constraint_descr', 'constraint_type',
               'constraint_min', 'constraint_max', 'constraint_list', ]
 
@@ -747,8 +790,9 @@ class BuildPalletView(View):
             return self.process_build_pallet_forms(request)
 
         if form_name not in [
-                self.PALLET_SELECT_FORM_NAME,
-                self.PALLET_NAME_FORM_NAME]:
+            self.PALLET_SELECT_FORM_NAME,
+            self.PALLET_NAME_FORM_NAME
+        ]:
             message = f"Unexpected form name {repr(form_name)}"
             logger.error(message)
             return error_page(
@@ -855,9 +899,10 @@ class BuildPalletView(View):
             logger.debug("HiddenPalletForm not valid")
 
         if not all([
-                build_pallet_form_valid,
-                box_forms_valid,
-                pallet_form_valid]):
+            build_pallet_form_valid,
+            box_forms_valid,
+            pallet_form_valid
+        ]):
             return self.show_forms_response(
                 request,
                 build_pallet_form,
@@ -892,7 +937,10 @@ class BuildPalletView(View):
 
             # Is box_number present in database?
             try:
-                pallet_box = PalletBox.objects.get(box_number=box_number)
+                pallet_box = PalletBox.objects.get(
+                    pallet=pallet,
+                    box_number=box_number
+                )
                 logger.debug(f"found existing box {box_number}")
             except PalletBox.DoesNotExist:
                 pallet_box = PalletBox(
@@ -2363,17 +2411,13 @@ class PalletSelectView(LoginRequiredMixin, FormView):
         # It should return an HttpResponse.
         # form.send_email()
         pallet = form.cleaned_data['pallet']
+        # set default status
+        pallet.pallet_status = Pallet.FILL
 
         user, profile = get_user_and_profile(self.request)
         profile.active_pallet = pallet
         profile.save()
 
         return super().form_valid(form)
-
-
-
-
-
-
 
 # EOF
