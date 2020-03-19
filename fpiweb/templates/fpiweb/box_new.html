@@ -25,16 +25,6 @@
         {% csrf_token %}
         {% bootstrap_field form.box_number %}
         {% bootstrap_field form.box_type %}
-        {% comment %}
-        {% bootstrap_field form.loc_row %}
-        {% bootstrap_field form.loc_bin %}
-        {% bootstrap_field form.loc_tier %}
-        {% bootstrap_field form.product %}
-        {% bootstrap_field form.exp_year %}
-        {% bootstrap_field form.exp_month_start %}
-        {% bootstrap_field form.exp_month_end %}
-        {% bootstrap_field form.date_filled %}
-        {% endcomment %}
         <input type="submit" value="Submit"/>
     </form>
 
@@ -51,7 +41,7 @@
         Template: box_edit.html
     </h6>
     <h6>
-        View: BoxAddView
+        View: ManualBoxAddView
     </h6>
     <h6>
         Add URL: {% url 'fpiweb:box_new' %}

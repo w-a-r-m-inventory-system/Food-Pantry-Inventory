@@ -92,12 +92,15 @@ class LoadLocationDataClass:
         __tablename__ = 'fpiweb_locrow'
 
     class LocBin(Base):
+        """ Location Bin table definition """
         __tablename__ = 'fpiweb_locbin'
 
     class LocTier(Base):
+        """ Location Tier table definition """
         __tablename__ = 'fpiweb_loctier'
 
     class Location(Base):
+        """ Location table definition """
         __tablename__ = 'fpiweb_location'
 
     def __init__(self):
