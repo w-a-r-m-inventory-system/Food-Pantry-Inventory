@@ -1,6 +1,11 @@
 FPIDjango package
 =================
 
+.. automodule:: FPIDjango
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
@@ -11,17 +16,35 @@ Subpackages
 Submodules
 ----------
 
-.. toctree::
+FPIDjango.settings module
+-------------------------
 
-   FPIDjango.settings
-   FPIDjango.settings_private
-   FPIDjango.urls
-   FPIDjango.wsgi
-
-Module contents
----------------
-
-.. automodule:: FPIDjango
+.. automodule:: FPIDjango.settings
    :members:
    :undoc-members:
    :show-inheritance:
+
+FPIDjango.settings\_private module
+----------------------------------
+
+.. automodule:: FPIDjango.settings_private
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+FPIDjango.urls module
+---------------------
+
+.. automodule:: FPIDjango.urls
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+FPIDjango.wsgi module
+---------------------
+
+.. automodule:: FPIDjango.wsgi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+

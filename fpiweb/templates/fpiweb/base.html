@@ -9,12 +9,6 @@
           initial-scale="1"
           shrink-to-fit="no"/>
 
-{#    <!-- Bootstrap CSS -->#}
-{#    <link rel="stylesheet"#}
-{#          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"#}
-{#          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"#}
-{#          crossorigin="anonymous">#}
-
     {# Purpose - Base html for all other templates. #}
     {# URL Name - (N/A) #}
     {# URL Response - (N/A) #}
@@ -22,9 +16,9 @@
     {# Form - (N/A) #}
 
     <title>
-      {% block title %}
-      {% endblock %}
-    </title>
+        {% block title %}
+        {% endblock %}
+</title>
     {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
@@ -34,10 +28,10 @@
 </head>
 <body>
     <div class="container">
-      {# Display django.contrib.messages as Bootstrap alerts #}
-      {% bootstrap_messages %}
-      {% block content %}
-      {% endblock %}
+        {# Display django.contrib.messages as Bootstrap alerts #}
+        {% bootstrap_messages %}
+        {% block content %}
+        {% endblock %}
     </div>
 
     <script src="{% static '/fpiweb/jquery-3.3.1.min.js' %}"></script>

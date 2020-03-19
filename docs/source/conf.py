@@ -87,7 +87,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinxcontrib.plantuml',
     'recommonmark',
-    'sphinx_rtd_theme'
+    'sphinx_rtd_theme',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -96,20 +96,47 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'django.log',
-                    'fpiweb.log', 'root.log', ]
+exclude_patterns = [
+    '_build',
+    'Thumbs.db',
+    '.DS_Store',
+    'django.log',
+    'fpiweb.log',
+    'root.log',
+]
 
+# options to specify what to include or exclude in the Sphinx output.
+
+# Note - Apparently the Unittest library never uses Sphinx for documentation
+# or the maintainers would have cleaned up the comments.
+
+# Note - Apparently, just the presence of the key in the options dictionary
+# is sufficient to enable the option.  Hence the options we don't want are
+# commented out.
 autodoc_default_options = {
-    'members': None,                  # include members (default)
-    'undoc-members': None,            # include members with no documentation
+    'members': True,                  # include members (default)
+    'undoc-members': True,            # include members with no documentation
     'member-order': 'alphabetical',   # sort members alphabetically
-    # 'private-members': None,        # document members beginning with "_"
-    # 'special-members': None,        # document dunderbar members
-    # 'inherited-members': None,      # show inherited members
-    # 'show-inheritance': None,       # shows inheritance below signature
-    # 'ignore-module-all': None,      # include __all__ member
-    # 'exclude-members': None,        # exclude members in list
+    # 'private-members': None,          # document members beginning with "_"
+    # 'special-members': None,          # document dunderbar members
+    # 'inherited-members': None,        # show inherited members
+    'show-inheritance': True,         # shows inheritance below signature
+    # 'ignore-module-all': None,        # include __all__ member
+    'exclude-members':
+        'assertWarnsRegex, '
+        'assertTupleEqual, '
+        'assertRaisesRegex, '
+        'assertListEqual, '
+        'assertFieldOutput, '
+        'assertSequenceEqual, '
+        'assertSetEqual, '
+        'prepare, '
+        '_pre_setup, '
+        '_post_teardown',             # exclude members in list
 }
+
+# allow markdown documents to be included via the recommonmark library
+source_suffix = ['.rst', '.md']
 
 # automatically generate autodoc stub files for any new modules
 autosummary_generate = True
@@ -156,7 +183,7 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
 }
 
 # EOF

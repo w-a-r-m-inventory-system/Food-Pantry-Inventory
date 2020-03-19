@@ -34,8 +34,11 @@ from fpiweb.models import \
     Pallet, \
     PalletBox, \
     Product, \
-    Activity
-from fpiweb.tests.utility import create_user, default_password
+    Activity, \
+    Profile
+from fpiweb.tests.utility import \
+    create_user, \
+    default_password
 from fpiweb.views import \
     BoxItemFormView, \
     BuildPalletView, \
@@ -88,7 +91,15 @@ class BoxNewViewTest(TestCase):
 
         # create user for this test (It will only exist briefly in the test
         # database).
-        user = create_user('alice', 'westerville')
+        # create an associated profile - just for the test
+        user = User.objects.create_user(
+            'awesterville',
+            'alice.westerville@example.com',
+            'abc123')
+        profile = Profile.objects.create(
+            title='Test User',
+            user=user,
+        )
 
         # Client sends HTTP requests and receives HTTP responses like a user's
         # browser.  It doesn't run any JavaScript, for that you need to use
@@ -140,8 +151,33 @@ class BoxNewViewTest(TestCase):
 
 class IndexViewTest(TestCase):
 
-    def test_get(self):
+    # fixtures = ('Profile',)
+
+    def test_get_success_url(self):
+
+        # create user for this test (It will only exist briefly in the test
+        # database).
+        # create an associated profile - just for the test
+        user = User.objects.create_user(
+            'awesterville',
+            'alice.westerville@example.com',
+            'abc123')
+        profile = Profile.objects.create(
+            title='Test User',
+            user=user,
+        )
+        # Client sends HTTP requests and receives HTTP responses like a user's
+        # browser.  It doesn't run any JavaScript, for that you need to use
+        # Selenium to control a real browser.
         client = Client()
+
+        # The first time I ran this test, I found that response.url was the
+        # login page.  Ooops, forgot to log in.  Call the force_login method
+        # to make Django act like we've gone through the login page
+        client.force_login(user)
+
+    # def test_get(self):
+    #     client = Client()
         response = client.get(reverse('fpiweb:index'))
         self.assertEqual(200, response.status_code)
 
@@ -162,8 +198,9 @@ class LoginView(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_post(self):
-
-        user = create_user('john', 'doe')
+        username = 'jdoe'
+        password = 'abc123'
+        User.objects.create_user(username, 'jdoe@example.com', password)
 
         client = Client()
         url = reverse('fpiweb:login')
@@ -171,8 +208,8 @@ class LoginView(TestCase):
         response = client.post(
             url,
             {
-                'username': user.username,
-                'password': default_password,
+                'username': username,
+                'password': password,
             },
         )
 
@@ -182,7 +219,7 @@ class LoginView(TestCase):
         response = client.post(
             url,
             {
-                'username': user.username,
+                'username': username,
                 'password': 'NARF!!',
             },
         )
@@ -449,7 +486,10 @@ class BuildPalletViewTest(TestCase):
         product = Product.objects.first()
         exp_year = date.today().year + 3
 
-        pallet = Pallet.objects.create(name='gray pallet')
+        pallet = Pallet.objects.create(
+            name='gray pallet',
+            pallet_status=Pallet.FILL
+        )
 
         # Using PalletBoxes to build form post data
         pallet_boxes = self.build_pallet_boxes(
@@ -651,7 +691,4 @@ class TestBoxItemFormView(TestCase):
             box_number,
             form.initial['box_number']
         )
-
-
-
 

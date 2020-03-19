@@ -304,12 +304,15 @@ class BoxManagementClass:
         Finish the processing of a pallet  of boxes into inventory.  Each
         box of the pallet will be processed.  Nothing will be returned.
 
-        Note - a pallet is still considered  valid even if there are no
+        Note - a pallet is still considered valid even if there are no
         boxes associated with it.
 
         Requirements:
 
         *   A valid pallet record, pallet name, or ID
+
+        *   A pallet status indicating  if the boxes have just been filled
+            or are being moved to a new location
 
         Exception:
 
@@ -343,19 +346,38 @@ class BoxManagementClass:
             raise InvalidValueError(
                 f'166 - The location of "{pallet_rec.location}" does not '
                 f'exist')
+        # TODO Mar 19 2020 travis - temporary fix
+        pallet_status = pallet.pallet_status
+        if pallet_status is None or pallet_status.strip() == '':
+            pallet_status = Pallet.FILL
         pallet_boxes = PalletBox.objects.filter(pallet=pallet_rec)
         # transfer info and delete the pallet and its boxes in one trans
         with transaction.atomic():
-            # transfer the information to the real boxes
-            for pallet_box in pallet_boxes:
-                box = pallet_box.box
-                product = pallet_box.product
-                exp_year = pallet_box.exp_year
-                exp_mo_start = pallet_box.exp_month_start
-                exp_mo_end = pallet_box.exp_month_end
-                self.box_fill(box=box, location=location, product=product,
-                              exp_year=exp_year, exp_mo_start=exp_mo_start,
-                              exp_mo_end=exp_mo_end, )
+            if pallet_status == Pallet.FILL:
+                # transfer the information to the real boxes
+                for pallet_box in pallet_boxes:
+                    box = pallet_box.box
+                    product = pallet_box.product
+                    exp_year = pallet_box.exp_year
+                    exp_mo_start = pallet_box.exp_month_start
+                    exp_mo_end = pallet_box.exp_month_end
+                    self.box_fill(
+                        box=box,
+                        location=location,
+                        product=product,
+                        exp_year=exp_year,
+                        exp_mo_start=exp_mo_start,
+                        exp_mo_end=exp_mo_end,
+                    )
+            else:
+                # move or merge the boxes to the new location
+                for pallet_box in pallet_boxes:
+                    box = pallet_box.box
+                    self.box_move(
+                        box=box,
+                        location=location,
+                    )
+
             # delete the pallet boxes for this pallet en mass
             pallet_boxes.delete()
             # now delete the pallet itself
