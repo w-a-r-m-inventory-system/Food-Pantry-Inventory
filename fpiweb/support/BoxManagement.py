@@ -346,10 +346,14 @@ class BoxManagementClass:
             raise InvalidValueError(
                 f'166 - The location of "{pallet_rec.location}" does not '
                 f'exist')
+        # TODO Mar 19 2020 travis - temporary fix
+        pallet_status = pallet.pallet_status
+        if pallet_status is None or pallet_status.strip() == '':
+            pallet_status = Pallet.FILL
         pallet_boxes = PalletBox.objects.filter(pallet=pallet_rec)
         # transfer info and delete the pallet and its boxes in one trans
         with transaction.atomic():
-            if pallet.pallet_status == Pallet.FILL:
+            if pallet_status == Pallet.FILL:
                 # transfer the information to the real boxes
                 for pallet_box in pallet_boxes:
                     box = pallet_box.box

@@ -155,17 +155,17 @@ urlpatterns = [
     # Constraint Add page
     # e.g. /fpiweb/constraint/add/ = add a constraint
     path('constraint/add/', ConstraintCreateView.as_view(),
-        name='constraint_new', ),
+         name='constraint_new', ),
 
     # Constraint Edit page
     # e.g. /fpiweb/constraint/edit/4/ = edit constraint # 4
     path('constraint/edit/<int:pk>/', ConstraintUpdateView.as_view(),
-        name='constraint_update', ),
+         name='constraint_update', ),
 
     # Constraint Delete Page
     # e.g. /fpiweb/constraint/delete/4/ = delete constraint # 4
     path('constraint/delete/<int:pk>/', ConstraintDeleteView.as_view(),
-        name='constraint_delete', ),
+         name='constraint_delete', ),
 
     # Box Add page
     # e.g.  /fpiweb/box/add/ = add a box to inventory
@@ -294,7 +294,7 @@ urlpatterns = [
     # Manually add an empty box to the inventory system
     # e.g. /fpiweb/manual_box_status/ = determine the status of a box manually
     path('manual_add_box/', ManualNewBoxView.as_view(),
-        name='manual_add_box', ),
+         name='manual_add_box', ),
 
     # Manually check in a box
     # e.g. /fpiweb/manual_checkin_box/ = check in a box manually

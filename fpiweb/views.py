@@ -790,8 +790,9 @@ class BuildPalletView(View):
             return self.process_build_pallet_forms(request)
 
         if form_name not in [
-                self.PALLET_SELECT_FORM_NAME,
-                self.PALLET_NAME_FORM_NAME]:
+            self.PALLET_SELECT_FORM_NAME,
+            self.PALLET_NAME_FORM_NAME
+        ]:
             message = f"Unexpected form name {repr(form_name)}"
             logger.error(message)
             return error_page(
@@ -898,9 +899,10 @@ class BuildPalletView(View):
             logger.debug("HiddenPalletForm not valid")
 
         if not all([
-                build_pallet_form_valid,
-                box_forms_valid,
-                pallet_form_valid]):
+            build_pallet_form_valid,
+            box_forms_valid,
+            pallet_form_valid
+        ]):
             return self.show_forms_response(
                 request,
                 build_pallet_form,
@@ -935,7 +937,10 @@ class BuildPalletView(View):
 
             # Is box_number present in database?
             try:
-                pallet_box = PalletBox.objects.get(box_number=box_number)
+                pallet_box = PalletBox.objects.get(
+                    pallet=pallet,
+                    box_number=box_number
+                )
                 logger.debug(f"found existing box {box_number}")
             except PalletBox.DoesNotExist:
                 pallet_box = PalletBox(
@@ -2406,17 +2411,13 @@ class PalletSelectView(LoginRequiredMixin, FormView):
         # It should return an HttpResponse.
         # form.send_email()
         pallet = form.cleaned_data['pallet']
+        # set default status
+        pallet.pallet_status = Pallet.FILL
 
         user, profile = get_user_and_profile(self.request)
         profile.active_pallet = pallet
         profile.save()
 
         return super().form_valid(form)
-
-
-
-
-
-
 
 # EOF
