@@ -61,6 +61,9 @@ SECRET_KEY = MY_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Site info - see https://docs.djangoproject.com/en/3.0/ref/contrib/sites/
+SITE_ID = 1
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
 
 

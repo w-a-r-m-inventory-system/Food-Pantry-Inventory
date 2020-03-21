@@ -22,9 +22,9 @@
     {# Form - (N/A) #}
 
     <title>
-      {% block title %}
-      {% endblock %}
-    </title>
+        {% block title %}
+        {% endblock %}
+</title>
     {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
@@ -34,10 +34,10 @@
 </head>
 <body>
     <div class="container">
-      {# Display django.contrib.messages as Bootstrap alerts #}
-      {% bootstrap_messages %}
-      {% block content %}
-      {% endblock %}
+        {# Display django.contrib.messages as Bootstrap alerts #}
+        {% bootstrap_messages %}
+        {% block content %}
+        {% endblock %}
     </div>
 
     <script src="{% static '/fpiweb/jquery-3.3.1.min.js' %}"></script>
