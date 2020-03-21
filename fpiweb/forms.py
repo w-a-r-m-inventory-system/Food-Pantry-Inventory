@@ -760,15 +760,11 @@ class ExistingProductForm(ProductForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        prod_name = cleaned_data.get('prod_name')
+        product = cleaned_data.get('product')
 
-        try:
-            product = Product.objects.get(
-                prod_name=prod_name,
-            )
-        except Product.DoesNotExist:
+        if not product:
             raise ValidationError(
-                f"Product {prod_name} does not exist."
+                f"Product does not exist."
             )
 
         cleaned_data['product'] = product
