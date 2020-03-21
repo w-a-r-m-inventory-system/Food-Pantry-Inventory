@@ -43,6 +43,7 @@ class QRCodePrinter(object):
         width, height = letter
         self.width: int = width
         self.height: int = height
+        self.next_pos = 0
 
     def initialize_pdf_file(self, buffer):
         """
