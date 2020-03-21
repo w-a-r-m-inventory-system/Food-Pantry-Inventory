@@ -1154,10 +1154,10 @@ class PrintLabelsView(View):
 
         buffer = BytesIO()
 
-        QRCodePrinter().print(
-            form.cleaned_data.get('starting_number'),
-            form.cleaned_data.get('number_to_print'),
-            buffer,
+        QRCodePrinter(url_prefix='').print(
+            starting_number=form.cleaned_data.get('starting_number'),
+            count=form.cleaned_data.get('number_to_print'),
+            buffer=buffer,
         )
 
         # FileResponse sets the Content-Disposition header so that browsers
@@ -1846,7 +1846,7 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
                 mode=self.MODE_ENTER_BOX_NUMBER,
                 box_number_form=box_number_form,
                 errors=[(
-                    f"Box {box_number_form.get('box_number')} not in inventory"
+                    f'Invalid box number'
                 )],
             )
             return render(

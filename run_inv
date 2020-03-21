@@ -48,8 +48,8 @@ if [ "$(uname)" = 'Darwin' ]; then
   open $CLIENT_URL
 elif [ "$X" = "Y" ]; then
   # identify Windows Subsystem for Linux (WSL) and run command to start URL
-  : # (do nothing command)
-elif [ "$SHELL" = '/bin/bash' ]; then
+  cmd.exe /c start $URL
+ elif [ "$SHELL" = '/bin/bash' ]; then
   # Assume some form of Linux with xdg-open command
   xdg-open $CLIENT_URL
 else
