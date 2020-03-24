@@ -311,7 +311,7 @@ class BoxManagementClass:
 
         *   A valid pallet record, pallet name, or ID
 
-        *   A pallet status indicating  if the boxes have just been filled
+        *   A pallet status indicating if the boxes have just been filled
             or are being moved to a new location
 
         Exception:

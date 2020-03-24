@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Food Pantry Inventory System's documentation!
-========================================================
+Welcome to the Food Pantry Inventory System documentation!
+##########################################################
 
 This system is designed to manage a local food pantry inventory.  Initially
 it will manage the inventory in the warehouse.
@@ -23,9 +23,14 @@ it will manage the inventory in the warehouse.
 
    Technical Documentation
 
+   Restructured Text Examples
+
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+This documentation was last generated on |today| for
+version |version| (release |release|).
