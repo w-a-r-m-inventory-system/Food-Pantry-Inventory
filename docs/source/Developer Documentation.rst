@@ -1,3 +1,5 @@
+.. _Developer Documentation:
+
 #######################
 Developer Documentation
 #######################
@@ -100,13 +102,5 @@ Deployment Documentation
 
 This system is planned to be deployed in a "cloud" platform.
 See :doc:`Deployment Documentation <DevDocs/Deployment Documentation>` for
-both an overview of the deployment plans and will describe the details as
+both an overview of the deployment plans and details as
 they are implemented.
-
-
-	  
-User Documentation
-==================
-
-User documentation has already been given elsewhere.
-
