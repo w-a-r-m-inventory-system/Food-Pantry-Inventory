@@ -71,8 +71,10 @@ project = 'Food Pantry Inventory System'
 copyright = '2020, (See Contributors)'
 author = '(See Contributors)'
 
-# The full version, including alpha/beta/rc tags
-release = '0.1'
+# The version identifier (major and minor only)
+version = '0.1'
+# The full release identifier, including alpha/beta/rc tags
+release = '0.1.1a1'
 
 
 # -- General configuration ---------------------------------------------------
