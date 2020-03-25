@@ -41,7 +41,7 @@ above the label.
 QR Code Printing GUI Program
 ++++++++++++++++++++++++++++
 
-This program has not yet been written.  When it has, this paragraph will be 
+This program has not yet been written.  When it has, this paragraph will be
 replaced by the instructions on how to run it.
 
 QR Code Printing CLI Pregram
@@ -69,7 +69,7 @@ Instructions for Use
         QRCodePrinter.py -p=<URL_prefix> -s <nnn> -c <nnn> -o <file>
         QRCodePrinter.py -h | --help
         QRCodePrinter.py --version
-    
+
     Options:
         -p <URL_prefix>, --prefix=<URL_prefix>   The URL prefix for the box number
         -s <nnn>, --start=<nnn>                  Starting box number to use
