@@ -200,7 +200,7 @@ Changes will be implemented by:
 #.  Push the changes into the developer's fork on GitHub
 #.  Submit a pull request into the main repository
 
-See the :doc:`Developer Docummentation <Developer Documentation>` for more
+See the :doc:`Developer Documentation <DeveloperDocumentation>` for more
 information about how to be a contributor to this project and how to get
 started.
 
@@ -208,5 +208,5 @@ started.
 Tasks
 =====
 
-Please refer to the document :doc:`Outstanding Tasks <Outstanding Tasks>` for
+Please refer to the document :doc:`Outstanding Tasks <OutstandingTasks>` for
 specific items that need to be accomplished.

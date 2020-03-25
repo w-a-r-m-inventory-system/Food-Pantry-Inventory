@@ -379,7 +379,7 @@ with `link to elsewhere`_ in the document_.  See `Cross-References`_ below.
 A link to headers in the same document such
 as `ReStructured Text Examples`_ and Links_ can be easily referenced since
 Sphinx automatically creates links out of all headers.  Headers can be in
-some other rST_ document, such as :ref:`Developer Documentation` can also be
+some other rST_ document, such as :ref:`DeveloperDocumentation` can also be
 referenced if the header to be referenced is given additional markup.
 
 Links to glossary terms can be imbeded in a paragraph uaing the syntax::

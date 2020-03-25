@@ -11,4 +11,4 @@ Django and Nginx Interaction
 ****************************
 
 Interaction between Django and Nginx is given in
-:doc:`Django and Nginx <Django and Nginx>`
+:doc:`Django and Nginx <DjangoAndNginx>`
