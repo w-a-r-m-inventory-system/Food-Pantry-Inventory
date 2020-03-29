@@ -33,6 +33,7 @@ import os
 from os.path import dirname, join
 
 import psycopg2.extensions
+import django_extensions
 
 from FPIDjango.private.settings_private import *
 
@@ -48,6 +49,8 @@ __creation_date__ = "04/01/2019"
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+SCANS_DIR = join(dirname(BASE_DIR), 'scans')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -57,6 +60,9 @@ SECRET_KEY = MY_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# Site info - see https://docs.djangoproject.com/en/3.0/ref/contrib/sites/
+SITE_ID = 1
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
 
@@ -79,6 +85,7 @@ INSTALLED_APPS = [
 
     # Third party apps
     'bootstrap4',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

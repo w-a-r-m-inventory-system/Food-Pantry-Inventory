@@ -53,7 +53,7 @@ Configure PostgreSQL Server
 ---------------------------
 
 Install PostgreSQL according to the instructions given in the document
-:doc:`PostgreSQL Guidelines <PostgreSQL Guidelines>`.
+:doc:`PostgreSQL Guidelines <PostgreSQLGuidelines>`.
 
 When finished with the installation and configuration of PostgreSQL, there
 should be a running server on your local computer with a database named

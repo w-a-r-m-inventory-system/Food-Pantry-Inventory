@@ -1,0 +1,60 @@
+{% extends 'fpiweb/base.html' %}
+{% comment %}
+
+CONTEXT VARIABLES
+---------------------------------------------------------------------
+location:       Location
+boxes:          Iterable of Box objects
+
+{% endcomment %}
+
+{% block title %}
+Build Pallet Confirmation
+{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <h1>Pallet Complete</h1>
+  </div>
+
+  <div class="row">
+    <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+  </div>
+  <br/>
+
+  {% include 'fpiweb/partial/location_row.html' with location=location %}
+
+  <div class="row">
+    <table id="boxTable" border="2">
+      <thead>
+        <tr>
+          <th rowspan="2">Box Number</th>
+          <th rowspan="2">Product</th>
+          <th rowspan="2">Expiration Year</th>
+          <th colspan="2">Expiration Month</th>
+        </tr>
+        <tr>
+          <th>Start</th>
+          <th>End</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for box in boxes %}
+          <tr>
+            <td>{{ box.box_number }}</td>
+            <td>{{ box.product.prod_name }}</td>
+            <td>{{ box.exp_year }}</td>
+            <td>{{ box.exp_month_start|default_if_none:'' }}</td>
+            <td>{{ box.exp_month_end|default_if_none:'' }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td>No boxes found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}

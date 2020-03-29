@@ -1,0 +1,103 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+    About Food Pantry Inventory
+{% endblock %}
+
+{% block content %}
+<style>
+
+div.location{
+}
+
+div.coordinate{
+    float: left;
+    padding-left: 1rem;
+}
+
+div.coordinate_label{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+</style>
+
+    <div>
+        <h1>
+            About the Food Pantry Inventory System
+        </h1>
+    </div>
+    <br/>
+
+    <div class="col-md-11">
+        <div class="text-center">
+            <h2>
+                (site_name)
+            </h2>
+        </div>
+        <h3>
+            User ID: {{ user_id }}
+
+        </h3>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:manual_menu' %}">Return to manual box menu</a>
+    </div>
+
+<h1>Select Location</h1>
+
+<form action="{% url 'fpiweb:manual_pallet_status' user_pk=user_id %}"
+      method="post">
+  {% csrf_token %}
+
+  {{ forms.management_form }}
+
+        {# Non-field error messages appear here #}
+        {% if form.non_field_errors %}
+            <div class="row">
+                <ul class="col-md-6">
+                    {% for error in form.non_field_errors %}
+                        <li class="lead alert-danger bg-danger">
+                            <strong>{{ error }}</strong>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {# form body appears here #}
+        <table class="form-group">
+            {% for field in form %}
+                <tr id="{{ field.auto_id }}_container">
+                    <div class="alert-info">
+                        {{ field.label_tag }}
+                    </div>
+                    <div>
+                        {{ field.help_text|safe }}
+                    </div>
+                    <div class="form-control">
+                        {{ field }}
+                    </div>
+                    <div id="{{ field.auto_id }}_errors"
+                         class="alert-warning">
+                        {{ field.errors }}
+                    </div>
+                </tr>
+            {% endfor %}
+        </table>
+
+        {# save button as default #}
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <button id="save_location"
+                        type="submit"
+                        class="btn btn-default alert-success">
+                    Save
+                </button>
+            </div>
+        </div>
+</form>
+
+{% endblock %}

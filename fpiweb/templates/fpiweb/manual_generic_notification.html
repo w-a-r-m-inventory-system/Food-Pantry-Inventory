@@ -1,0 +1,45 @@
+{% extends 'fpiweb/base.html' %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>
+            {{ title }}
+        </h1>
+    </div>
+    <br/>
+
+    <ul>
+        {% for line in message_list %}
+            <li>{{ line }}</li>
+        {% endfor %}
+    </ul>
+
+
+    {% if note_type == 'QUESTION' %}
+        <form action="{{ yes_url }}"
+                      method="POST">
+            {% csrf_token %}
+        </form>
+        <form action="{{ no_url }}"
+                      method="POST">
+            {% csrf_token %}
+        </form>
+
+    {% else %}
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="btn alert-info"
+                   role="button"
+                   href="{{ return_url }}">
+                    Continue
+                </a>
+            </div>
+        </div>
+    {% endif %}
+    </form>
+
+{% endblock %}

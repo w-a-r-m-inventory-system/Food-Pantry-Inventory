@@ -3,31 +3,27 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Food Pantry Inventory System's documentation!
-========================================================
+Welcome to the Food Pantry Inventory System documentation!
+##########################################################
 
 This system is designed to manage a local food pantry inventory.  Initially
 it will manage the inventory in the warehouse.
 
 .. toctree::
+   :numbered: 4
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Overall Contents:
+   :name: mastertoc
 
-   User Documentation
+   User Documentation <UserDocumentation>
 
    Specifications
 
-   Outstanding Tasks
+   Developer Documentation <DeveloperDocumentation>
 
-   UML Diagrams
+   Technical Documentation <TechnicalDocumentation>
 
-   Developer Documentation
-
-   modules/models
-
-   modules/views
-
-
+   Restructured Text Examples <RestructuredTextExamples>
 
 Indices and tables
 ==================
@@ -35,3 +31,6 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+This documentation was last generated on |today| for
+version |version| (release |release|).

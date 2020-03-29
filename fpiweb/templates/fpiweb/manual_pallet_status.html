@@ -1,0 +1,112 @@
+{% extends 'fpiweb/base.html' %}
+
+{% block title %}
+    Pallet Status
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-11">
+        <div class="text-center">
+            <h2>
+                Building a pallet for
+            </h2>
+            <h1>
+                {{ user.first_name }} &nbsp; {{ user.last_name }}
+
+            </h1>
+            <h4>
+                {{ user.profile.title }}
+            </h4>
+            <hr/>
+            <h2>
+                Current Pallet Information
+            </h2>
+
+            <h5>
+                Pallet Name: {{ pallet_rec.name }}
+            </h5>
+
+            <h5>
+                Pallet Target: {{ pallet_rec.location_id }}
+            </h5>
+            <h6>
+                {% if warehouse_flag %}
+                    Warehouse Location
+                {% else %}
+                    Not in Warehouse
+                {% endif %}
+            </h6>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="text-left">
+            Left Justified
+        </div>
+    </div>
+    <hr/>
+    <div class="col-md-11">
+        <div class="text-center">
+            <h2>
+                Boxes in Pallet So Far
+            </h2>
+        </div>
+        <table>
+            <thead>
+            <td>
+                Box
+            </td>
+            <td>
+                Status
+            </td>
+            <td>
+                Product
+            </td>
+            <td>
+                Exp. Year
+            </td>
+            <td>
+                Mo. Start
+            </td>
+            <td>
+                Mo. Stop
+            </td>
+            </thead>
+            {% for box in box_set %}
+                <tr>
+                    <td>
+                        {{ box.box_number }}
+                    </td>
+                    <td>
+                        {{ box.box_status }}
+                    </td>
+                    <td>
+                        {{ box.product }}
+                    </td>
+                    <td>
+                        {{ box.exp_year }}
+                    </td>
+                    <td>
+                        {{ box.exp_month_start|default_if_none:'&nbsp;' }}
+                    </td>
+                    <td>
+                        {{ box.exp_month_end|default_if_none:'&nbsp;' }}
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+    <div>
+        <a href="{% url 'fpiweb:manual_menu' %}">Return to manual box menu</a>
+    </div>
+    <hr/>
+    <div class="text">
+        Supplemental Info
+        <br/>
+        {{ row_id }} - {{ row_descr }}, &nbsp;
+        {{ bin_id }} - {{ bin_descr }}, &nbsp;
+        {{ tier_id }} - {{ tier_descr }}
+
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+[
+  {
+    "model": "fpiweb.activity",
+    "pk": 1,
+    "fields": {
+      "box_number": "BOX12346",
+      "box_type": "Evans",
+      "loc_row": "01",
+      "loc_bin": "01",
+      "loc_tier": "A1",
+      "prod_name": "Oranges",
+      "prod_cat_name": "Fruit",
+      "date_filled": "2019-05-26",
+      "date_consumed": null,
+      "exp_year": 2019,
+      "exp_month_start": null,
+      "exp_month_end": null,
+      "quantity": 24,
+      "duration": 0,
+      "adjustment_code": null
+    }
+  },
+  {
+    "model": "fpiweb.activity",
+    "pk": 2,
+    "fields": {
+      "box_number": "BOX12355",
+      "box_type": "Banana",
+      "loc_row": "01",
+      "loc_bin": "01",
+      "loc_tier": "A1",
+      "prod_name": "Tea",
+      "prod_cat_name": "Bevereges",
+      "date_filled": "2019-05-29",
+      "date_consumed": null,
+      "exp_year": 2019,
+      "exp_month_start": null,
+      "exp_month_end": null,
+      "quantity": 52,
+      "duration": 0,
+      "adjustment_code": null
+    }
+  }
+]
