@@ -11,49 +11,49 @@ from fpiweb.views import \
     ActivityDownloadView, \
     BoxDetailsView, \
     BoxEditView, \
-    BoxEmptyView, \
     BoxEmptyMoveView, \
+    BoxEmptyView, \
     BoxItemFormView, \
     BoxMoveView, \
     BoxNewView, \
     BoxScannedView, \
     BuildPalletView, \
-    IndexView, \
-    LoginView, \
     ConstraintCreateView, \
     ConstraintDeleteView, \
     ConstraintsListView, \
     ConstraintUpdateView, \
-    LogoutView, \
-    PrintLabelsView, \
-    ScannerView, \
-    TestScanView, \
-    MaintenanceView, \
-    ManualMoveBoxView, \
-    LocRowListView, \
-    LocRowCreateView, \
-    LocRowUpdateView, \
-    LocRowDeleteView, \
-    LocBinListView, \
+    IndexView, \
     LocBinCreateView, \
-    LocBinUpdateView, \
     LocBinDeleteView, \
-    LocTierListView, \
+    LocBinListView, \
+    LocBinUpdateView, \
+    LocRowCreateView, \
+    LocRowDeleteView, \
+    LocRowListView, \
+    LocRowUpdateView, \
     LocTierCreateView, \
-    LocTierUpdateView, \
     LocTierDeleteView, \
+    LocTierListView, \
+    LocTierUpdateView, \
+    LoginView, \
+    LogoutView, \
+    MaintenanceView, \
+    ManualBoxMenuView, \
+    ManualBoxStatusView, \
+    ManualCheckinBoxView, \
+    ManualConsumeBoxView, \
     ManualMenuView, \
+    ManualMoveBoxView, \
+    ManualNewBoxView, \
+    ManualPalletMenuView, \
+    ManualPalletMoveView, \
     ManualPalletNew, \
     ManualPalletStatus, \
     PalletManagementView, \
     PalletSelectView, \
-    ManualPalletMenuView, \
-    ManualBoxMenuView, \
-    ManualCheckinBoxView, \
-    ManualConsumeBoxView, \
-    ManualBoxStatusView, \
-    ManualNewBoxView
-
+    PrintLabelsView, \
+    ScannerView, \
+    TestScanView
 # from fpiweb.views import ConstraintDetailView
 
 __author__ = '(Multiple)'
@@ -250,6 +250,12 @@ urlpatterns = [
         ManualPalletNew.as_view(),
         name='manual_pallet_new'
     ) ,
+
+    path(
+        'manual_pallet_move/',
+        ManualPalletMoveView.as_view(),
+        name='manual_pallet_move',
+    ),
 
     # Manually show the current pallet status
     # e.g. /fpiweb/manualpalletstatus/5/ = current pallet status
