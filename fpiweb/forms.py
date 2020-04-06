@@ -791,6 +791,10 @@ class ExistingLocationForm(LocationForm):
         loc_bin = cleaned_data.get('loc_bin')
         loc_tier = cleaned_data.get('loc_tier')
 
+        if not all([loc_row, loc_bin, loc_tier]):
+            # Location form will have already raised validation error
+            return cleaned_data
+
         try:
             location = Location.objects.get(
                 loc_row=loc_row,
@@ -799,15 +803,88 @@ class ExistingLocationForm(LocationForm):
             )
         except Location.DoesNotExist:
             raise ValidationError(
-                f"Location {loc_bin.loc_bin}, {loc_row.loc_row}, {loc_tier.loc_tier} does not exist."
+                f"Location {loc_row.loc_row}, {loc_bin.loc_bin}, {loc_tier.loc_tier} does not exist."
             )
         except Location.MultipleObjectsReturned:
             raise ValidationError(
-                r"Multiple {loc_bin.loc_bin}, {loc_row.loc_row}, {loc_tier.loc_tier} locations found"
+                f"Multiple {loc_row.loc_row}, {loc_bin.loc_bin}, {loc_tier.loc_tier} locations found"
             )
 
         cleaned_data['location'] = location
         return cleaned_data
+
+
+class ExistingLocationWithBoxesForm(ExistingLocationForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+        location = cleaned_data.get('location')
+        if not location:
+            # If ExistingLocationform fails validation, Location will not be
+            # in cleaned_data.  ExistingLocationForm will have already raised
+            # a ValidationError
+            return cleaned_data
+        if Box.objects.filter(location=location).exists():
+            return cleaned_data
+        raise ValidationError(
+            "Location {}, {}, {} doesn't have any boxes".format(
+                location.loc_row.loc_row,
+                location.loc_bin.loc_bin,
+                location.loc_tier.loc_tier,
+            )
+        )
+
+
+class MoveToLocationForm(ExistingLocationForm):
+    from_location = ModelChoiceField(
+        queryset=Location.objects.all(),
+        widget=forms.HiddenInput
+    )
+
+
+class ConfirmMergeForm(forms.Form):
+
+    ACTION_CHANGE_LOCATION = 'C'
+    ACTION_MERGE_PALLETS = 'M'
+
+    ACTION_CHOICES = (
+        (ACTION_CHANGE_LOCATION, 'Change To Location'),
+        (ACTION_MERGE_PALLETS, 'Merge Pallets'),
+    )
+
+    from_location = ModelChoiceField(
+        queryset=Location.objects.all(),
+        widget=forms.HiddenInput,
+    )
+
+    to_location = ModelChoiceField(
+        queryset=Location.objects.all(),
+        widget=forms.HiddenInput,
+    )
+
+    boxes_at_to_location = forms.IntegerField(
+        disabled=True,
+        required=False,
+        widget=forms.HiddenInput,
+    )
+
+    action = forms.ChoiceField(
+        choices=ACTION_CHOICES,
+    )
+
+    def boxes_at_to_location_int(self):
+        return self.initial.get('boxes_at_to_location', -1)
+
+    def to_location_str(self):
+        field_name = 'to_location'
+        location = self.initial.get(field_name)
+        if not location:
+            return f"{field_name} not found in initial"
+        return "{}, {}, {}".format(
+            location.loc_row.loc_row,
+            location.loc_bin.loc_bin,
+            location.loc_tier.loc_tier,
+        )
 
 
 class ExpYearForm(forms.Form):
