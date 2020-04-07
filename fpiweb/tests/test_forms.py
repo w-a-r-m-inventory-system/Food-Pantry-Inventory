@@ -17,10 +17,18 @@ from fpiweb.models import \
 
 
 class NewBoxFormTest(TestCase):
+    """
+    Test creating a new box number not previously in inventory.
+    """
 
     fixtures = ('BoxType', 'Constraints')
 
     def test_save(self):
+        """
+        Test saving a new box number.
+
+        :return:
+        """
 
         box_type = BoxType.objects.get(box_type_code='Evans')
 
@@ -43,6 +51,9 @@ class NewBoxFormTest(TestCase):
 
 
 class BuildPalletFormTest(TestCase):
+    """
+    Test the form for building a pallet of boxes.
+    """
 
     def test_is_valid__location_not_specified(self):
         form = BuildPalletForm()
@@ -50,11 +61,16 @@ class BuildPalletFormTest(TestCase):
 
 
 class BoxItemFormTest(TestCase):
+    """
+    Test adding boxes to the pallet form.
+    """
 
-    fixtures = ('BoxType', 'Product', 'ProductCategory')
+    fixtures = ('BoxType', 'Product', 'ProductCategory', 'Constraints')
 
     def test_expire_months(self):
-        """ensure that start month <= end month"""
+        """
+        Ensure that start month <= end month
+        """
         post_data = {
             'box_number': BoxNumber.format_box_number(12),
             'product': Product.objects.first().pk,
@@ -66,7 +82,7 @@ class BoxItemFormTest(TestCase):
         form = BoxItemForm(post_data)
         self.assertFalse(form.is_valid())
         self.assertIn(
-            'Exp month end must be after Exp month start',
-            form.non_field_errors()
+            'Exp month end must be later than or equal to Exp month start',
+            form.non_field_errors(),
         )
 

@@ -1,8 +1,8 @@
 :orphan:
 
-***********************
-Developer Documentation
-***********************
+*******************
+Developer Resources
+*******************
 
 Some good possible sources to learn things:
 

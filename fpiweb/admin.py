@@ -13,9 +13,13 @@ from .models import \
     LocBin, \
     LocRow, \
     LocTier, \
+    Pallet, \
+    PalletBox, \
     Product, \
     ProductCategory, \
     ProductExample, \
+    Pallet, \
+    PalletBox, \
     Profile
 
 __author__ = '(Multiple)'
@@ -27,7 +31,6 @@ __creation_date__ = "04/01/2019"
 admin.site.register(Activity)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
-
 
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):
@@ -92,6 +95,24 @@ class LocTierAdmin(admin.ModelAdmin):
     list_display = ('loc_tier', 'loc_tier_descr')
 
 
+@admin.register(Pallet)
+class PalletAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name',)
+
+
+@admin.register(PalletBox)
+class PalletBoxAdmin(admin.ModelAdmin):
+    list_display = (
+        'box_number',
+        'pallet',
+        'box',
+        'product',
+        'exp_year',
+        'exp_month_start',
+        'exp_month_end'
+    )
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
@@ -105,6 +126,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'title',
+        'active_pallet_id',
     )
 
 # EOF

@@ -1,0 +1,20 @@
+[
+	{
+		"model": "fpiweb.profile",
+		"pk": 1,
+		"fields": {
+			"user": 1,
+			"title": "System Admin",
+			"active_pallet": 1
+		}
+	},
+	{
+		"model": "fpiweb.profile",
+		"pk": 2,
+		"fields": {
+			"user": 2,
+			"title": "Distribution Manager",
+			"active_pallet": null
+		}
+	}
+]

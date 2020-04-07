@@ -43,11 +43,15 @@ class QRCodePrinter(object):
         width, height = letter
         self.width: int = width
         self.height: int = height
+        self.next_pos = 0
 
     def initialize_pdf_file(self, buffer):
         """
+        Prepare to scribble on a new pdf file.
+
         :param buffer:  May be a string with a filename or a BytesIO or other
-        File-like object
+            File-like object
+
         """
         self.pdf: Canvas(buffer, pagesize=letter)
 

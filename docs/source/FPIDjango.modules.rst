@@ -5,7 +5,3 @@ FPIDjango
    :maxdepth: 4
 
    FPIDjango
-
-   fpiweb
-
-   StandaloneTools
