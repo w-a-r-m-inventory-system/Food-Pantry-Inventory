@@ -186,10 +186,6 @@ class BoxManagementClass:
         else:
             self.exp_year = exp_year
 
-        # first presume both months are zero or none
-
-        self.exp_mo_end = 0
-
         # both valid months or zero or null
         if (exp_mo_start is None) or exp_mo_start == 0:
             self.exp_mo_start = 0
