@@ -25,11 +25,6 @@ it will manage the inventory in the warehouse.
 
    Restructured Text Examples <RestructuredTextExamples>
 
-   Restructured Text Examples
-
-   Restructured Text Examples
-
-   Restructured Text Examples
 
 Indices and tables
 ==================

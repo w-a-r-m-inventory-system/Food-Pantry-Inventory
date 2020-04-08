@@ -1,4 +1,5 @@
-.. _Developer Documentation:
+
+.. _DeveloperDocumentation:
 
 #######################
 Developer Documentation
