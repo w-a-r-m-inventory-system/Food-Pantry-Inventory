@@ -209,7 +209,8 @@ class BoxActivityClass:
         try:
             self.activity = Activity.objects.get(
                 box_number=self.box.box_number,
-                date_filled=self.box.date_filled.date()
+                date_filled=self.box.date_filled.date(),
+                date_consumed=None,
             )
             logger.debug(
                 f'Act Box Move: Activity found: '
@@ -217,20 +218,9 @@ class BoxActivityClass:
                 f'filled:{self.activity.date_filled}'
             )
 
-            if self.activity.date_consumed:
-                # oops - box has no open activity record so create one
-                logger.debug(
-                    f'Act Box Move: Previous contents consumed on '
-                    f'{self.activity.date_consumed}'
-                )
-                self.activity = None
-                self._add_activity(
-                    adjustment=Activity.MOVE_ADDED
-                )
-            else:
-                # expected - has open activity record
-                logger.debug(f'Act Box Move: Activity not consumed - proceeding...')
-                pass
+            logger.debug(
+                f'Act Box Move: Activity not consumed - proceeding...'
+            )
         except Activity.DoesNotExist:
             # oops - box has no open activity record so create one
             self.activity = None
