@@ -64,7 +64,6 @@ DEBUG = True
 # Site info - see https://docs.djangoproject.com/en/3.0/ref/contrib/sites/
 SITE_ID = 1
 
-# added 192.168.1.200 & 127.0.0.1 to facilitate debugging Mike Rehner- should be removed
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
 
 
