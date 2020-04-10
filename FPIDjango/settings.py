@@ -65,7 +65,7 @@ DEBUG = True
 SITE_ID = 1
 
 # added 192.168.1.200 & 127.0.0.1 to facilitate debugging Mike Rehner- should be removed
-ALLOWED_HOSTS = ['192.168.1.200', '127.0.0.1', 'localhost', DB_HOST]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
 
 
 # Application definition
