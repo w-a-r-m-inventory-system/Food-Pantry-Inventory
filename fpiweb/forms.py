@@ -837,11 +837,13 @@ class ExistingLocationForm(LocationForm):
             )
         except Location.DoesNotExist:
             raise ValidationError(
-                f"Location {loc_row.loc_row}, {loc_bin.loc_bin}, {loc_tier.loc_tier} does not exist."
+                f"Location {loc_row.loc_row}, {loc_bin.loc_bin}, "
+                f"{loc_tier.loc_tier} does not exist."
             )
         except Location.MultipleObjectsReturned:
             raise ValidationError(
-                f"Multiple {loc_row.loc_row}, {loc_bin.loc_bin}, {loc_tier.loc_tier} locations found"
+                f"Multiple {loc_row.loc_row}, {loc_bin.loc_bin}, "
+                f"{loc_tier.loc_tier} locations found"
             )
 
         cleaned_data['location'] = location
