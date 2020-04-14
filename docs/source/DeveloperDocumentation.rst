@@ -1,4 +1,5 @@
-.. _Developer Documentation:
+
+.. _DeveloperDocumentation:
 
 #######################
 Developer Documentation
@@ -8,17 +9,17 @@ Developer Documentation
    :maxdepth: 2
    :caption: Developer Table of Contents:
 
-   UML Diagrams
+   UML Diagrams <UMLDiagrams>
 
-   DevDocs/Box Management
+   Box Management <DevDocs/BoxManagement>
 
-   DevDocs/Deployment Documentation
+   Deployment Documentation <DevDocs/DeploymentDocumentation>
 
-   DevDocs/Django and Nginx
+   Django and Nginx <DevDocs/DjangoAndNginx>
 
-   DevDocs/JavaScriptAndJQuery
+   JavaScript And JQuery <DevDocs/JavaScriptAndJQuery>
 
-   Outstanding Tasks
+   Outstanding Tasks <OutstandingTasks>
 
 Getting Started
 ===============
@@ -53,7 +54,7 @@ The Django web framework code will be downloaded as part of the project code.
 Starting Point
 --------------
 
-Please start with the :doc:`Git Guidelines <DevDocs/Git Guidelines>`.
+Please start with the :doc:`Git Guidelines <DevDocs/GitGuidelines>`.
 
 
 General Developer Documentation
@@ -68,14 +69,14 @@ Documentation about Django, including documentation specific to this project.
 
 :doc:`Django <DevDocs/Django>`
 
-:doc:`Django Guidelines <DevDocs/Django Guidelines>`
+:doc:`Django Guidelines <DevDocs/DjangoGuidelines>`
 
 PostgreSQL Documentation
 ========================
 
 Documentation about PostgreSQL that is specific to this project.
 
-    :doc:`PostgreSQL Guidelines <DevDocs/PostgreSQL Guidelines>`
+    :doc:`PostgreSQL Guidelines <DevDocs/PostgreSQLGuidelines>`
 
 Git Documentation
 =================
@@ -83,7 +84,7 @@ Git Documentation
 Documentation about git (the source code control software) that is specific to
 this project.
 
-    :doc:`Git Guidelines <DevDocs/Git Guidelines>`
+    :doc:`Git Guidelines <DevDocs/GitGuidelines>`
 
 Internal Documentation
 ======================
@@ -94,13 +95,13 @@ Javascript and JQuery information specific to this project.
 
 How information about boxes and their workflows.
 
-    :doc:`Box Management <DevDocs/Box Management>`
+    :doc:`Box Management <DevDocs/BoxManagement>`
     
 
 Deployment Documentation
 ========================
 
 This system is planned to be deployed in a "cloud" platform.
-See :doc:`Deployment Documentation <DevDocs/Deployment Documentation>` for
+See :doc:`Deployment Documentation <DevDocs/DeploymentDocumentation>` for
 both an overview of the deployment plans and details as
 they are implemented.

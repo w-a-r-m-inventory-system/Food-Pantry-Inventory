@@ -15,15 +15,16 @@ it will manage the inventory in the warehouse.
    :caption: Overall Contents:
    :name: mastertoc
 
-   User Documentation
+   User Documentation <UserDocumentation>
 
    Specifications
 
-   Developer Documentation
+   Developer Documentation <DeveloperDocumentation>
 
-   Technical Documentation
+   Technical Documentation <TechnicalDocumentation>
 
-   Restructured Text Examples
+   Restructured Text Examples <RestructuredTextExamples>
+
 
 Indices and tables
 ==================
