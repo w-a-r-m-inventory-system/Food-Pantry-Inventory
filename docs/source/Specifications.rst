@@ -41,8 +41,8 @@ The key objectives of this system are:
     -   Most of the people handling the product are volunteers who are
         helping for only an hour or two at a time.
 
-    -   Ideally parts of this system can accomodate teenagers or may be
-        mentally challenged.
+    -   Ideally parts of this system can accommodate teenagers or people with
+        disabilities.
 
 Initial Approach
 ================
