@@ -3,6 +3,7 @@ from base64 import b64decode
 from binascii import Error as BinasciiError
 from datetime import datetime
 from logging import getLogger
+from os import remove
 from pathlib import Path
 from random import seed, randint
 from subprocess import run
@@ -43,6 +44,11 @@ def get_scan_file_path():
     )
 
 
+def delete_file(image_file_path):
+    logger.info(f"deleting {image_file_path}")
+    remove(str(image_file_path))
+
+
 def read(scan_data):
 
     if not scan_data.startswith(scan_data_prefix):
@@ -63,6 +69,7 @@ def read(scan_data):
     except OSError as e:
         raise CodeReaderError(str(e))
 
+    logger.info(f"writing file to {image_file_path}")
     with image_file_path.open('wb') as image_file:
         image_file.write(scan_data_bytes)
 
@@ -93,8 +100,10 @@ def read(scan_data):
     if completed_process.returncode != 0:
         error_message = completed_process.stderr.decode()
         logger.error(error_message)
+        delete_file(image_file_path)
         raise CodeReaderError(error_message)
 
+    delete_file(image_file_path)
     qr_data = completed_process.stdout.decode()
     return qr_data
 
