@@ -6,7 +6,9 @@ There are numerous tasks and activities that remain to be accomplished by
 someone before this project can be deployed.
 
 This task table shows all the known activities that remain to be done.  The
-details of each task are given below.
+details of each task are given below.  As tasks are completed the
+details will be moved to an appropriate location elsewhere in this
+documentation.
 
 Task Table
 ==========
@@ -15,24 +17,87 @@ Task Table
     :widths: auto
     :align: left
 
-    =======  ========  =======  ==============================================
-    Task ID  Priority  Issue #  Title
-    =======  ========  =======  ==============================================
-    `T1`_              55       QR Label print program needed
-    `T2`_              54       Product Examples Table
-    `T3`_              53       Modify base.html template to use static files
-    `T4`_              42       Box Type Table
-    `T5`_              41       Product Table
-    `T6`_              40       Product Category Table
-    `T7`_              39       Build Add Inventory Screen
-    `T8`_              56       Add ability to move a box
-    `T9`_              57       Scan a QR code
-    `T10`_             58       Getting error from autodoc when running Sphinx to create documentation
-    =======  ========  =======  ==============================================
+    ========  =========  ====================================================
+    Issue #   Milestone  Title
+    ========  =========  ====================================================
+    `I-202`_  `M-V0.9`_  blah blah
+    `I-201`_  `M-V1.0`_  blah blah
+    `I-200`_  `M-V1.1`_  blah blah
+    `I-199`_  `M-ReWk`_  blah blah
+    `I-198`_  `M-V0.9`_  Build Pallet Screen Enhancement
+    `I-192`_  `M-V0.9`_  Build Pallet Screen. Save more in Pallet Box record
+    `I-190`_  `M-V0.9`_  Build Pallet: set pallet ID in profile
+    `I-189`_  `M-V0.9`_  Ensure that the "Evans" box type is default
+    `I-178`_  `M-V0.9`_  Manual box checkin needs to be streamlined
+    `I-177`_  `M-V0.9`_  Add start/end months to Manual Box Checkin
+    `I-176`_  `M-V0.9`_  Change user password
+    `I-175`_  `M-V0.9`_  Add/Change/Delete a User
+    `I-174`_  `M-V0.9`_  Delete a pallet
+    `I-173`_  `M-V0.9`_  Build Pallet needs to set pallet status
+    `I-167`_  `M-V0.9`_  Results of Mike R.'s original testing
+    `I-165`_  `M-V0.9`_  Automatically add a profile when needed
+    `I-161`_  `M-V0.9`_  Move Pallet
+    `I-145`_  `M-V0.9`_  Defaults for start/end month won't go back to zero
+    `I-139`_  `M-V0.9`_  Build Pallet Screen: Navigation and Pallet records
+    `I-138`_  `M-V0.9`_  Enhance README.md with a more detailed purpose.
+    `I-125`_  `M-V0.9`_  Add/Move box(es) should merge into location.
+    `I-124`_  `M-V0.9`_  Manual pallet and box management
+    `I-115`_  `M-V0.9`_  Rework the API of theQR label print program
+    `I-89`_   `M-V0.9`_  Improve README.md etc. for easier for joining.
+    `I-88`_   `M-V0.9`_  Make a docker file and image of project to run locally
+    `I-71`_   `M-V0.9`_  QR Print Label Program - GUI Version Needed
+    `I-64`_   `M-V0.9`_  Populate Box.quantity when Box record is created.
+    `I-54`_   `M-V0.9`_  Product Examples Table - Build A/C/D screens
+    `I-42`_   `M-V0.9`_  Box Type Table - Build A/C/D screens
+    `I-41`_   `M-V0.9`_  Product Table - build A/C/D screens
+    `I-40`_   `M-V0.9`_  Product Category Table - build A/C/D screens
+    ========  =========  ====================================================
 
+Milestone Descriptions
+======================
+
+_`M-V0.9`  Version 0.9 Pre-production demo
+
+_`M-V1.0`  Version 1.0 - MVP
+
+_`M-V1.1`  Version 1.1 First polish
+
+_`M-ReWk`  Needs to be reworked.
 
 Task Descriptions
 =================
+
+    _`I-202`  blah blah
+    _`I-201`  blah blah
+    _`I-200`  blah blah
+    _`I-199`  blah blah
+    _`I-198`  Build Pallet Screen Enhancement
+    _`I-192`  Build Pallet Screen. Save more in Pallet Box record
+    _`I-190`  Build Pallet: set pallet ID in profile
+    _`I-189`  Ensure that the "Evans" box type is default
+    _`I-178`  Manual box checkin needs to be streamlined
+    _`I-177`  Add start/end months to Manual Box Checkin
+    _`I-176`  Change user password
+    _`I-175`  Add/Change/Delete a User
+    _`I-174`  Delete a pallet
+    _`I-173`  Build Pallet needs to set pallet status
+    _`I-167`  Results of Mike R.'s original testing
+    _`I-165`  Automatically add a profile when needed
+    _`I-161`  Move Pallet
+    _`I-145`  Defaults for start/end month won't go back to zero
+    _`I-139`  Build Pallet Screen: Navigation and Pallet records
+    _`I-138`  Enhance README.md with a more detailed purpose.
+    _`I-125`  Add/Move box(es) should merge into location.
+    _`I-124`  Manual pallet and box management
+    _`I-115`  Rework the API of theQR label print program
+    _`I-89`  Improve README.md etc. for easier for joining.
+    _`I-88`  Make a docker file and image of project to run locally
+    _`I-71`  QR Print Label Program - GUI Version Needed
+    _`I-64`  Populate Box.quantity when Box record is created.
+    _`I-54`  Product Examples Table - Build A/C/D screens
+    _`I-42`  Box Type Table - Build A/C/D screens
+    _`I-41`  Product Table - build A/C/D screens
+    _`I-40`  Product Category Table - build A/C/D screens
 
 .. _T1:
 
@@ -234,33 +299,3 @@ what is found or not found in the database, switch to an appropriate screen.
     Box record empty   Present new box screen
     Box record filled  Present empty or move box screen
     =================  ============
-
-.. _t10:
-
-**T10: Getting error from autodoc when running Sphinx to create documentation**
--------------------------------------------------------------------------------
-
-Getting the following error when running Sphinx.
-
-::
-
-    WARNING: autodoc: failed to import module 'views' from module 'fpiweb'; the following exception was raised:
-    Traceback (most recent call last):
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/venv/lib/python3.7/site-packages/sphinx/ext/autodoc/importer.py", line 232, in import_module
-        __import__(modname)
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/fpiweb/views.py", line 14, in <module>
-        from django.contrib.auth.mixins import LoginRequiredMixin
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/venv/lib/python3.7/site-packages/django/contrib/auth/mixins.py", line 3, in <module>
-        from django.contrib.auth.views import redirect_to_login
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/venv/lib/python3.7/site-packages/django/contrib/auth/views.py", line 10, in <module>
-        from django.contrib.auth.forms import (
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/venv/lib/python3.7/site-packages/django/contrib/auth/forms.py", line 10, in <module>
-        from django.contrib.auth.models import User
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/venv/lib/python3.7/site-packages/django/contrib/auth/models.py", line 3, in <module>
-        from django.contrib.contenttypes.models import ContentType
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/venv/lib/python3.7/site-packages/django/contrib/contenttypes/models.py", line 133, in <module>
-        class ContentType(models.Model):
-    File "/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/venv/lib/python3.7/site-packages/django/db/models/base.py", line 111, in __new__
-        "INSTALLED_APPS." % (module, name)
-    RuntimeError: Model class django.contrib.contenttypes.models.ContentType doesn't declare an explicit app_label and isn't in an application in INSTALLED_APPS.
-
