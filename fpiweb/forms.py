@@ -926,7 +926,7 @@ class ConfirmMergeForm(forms.Form):
 class ExpYearForm(forms.Form):
     """A form for use whenever you need to select a year."""
     exp_year = forms.TypedChoiceField(
-        choices=expire_year_choices(),
+        choices=expire_year_choices,
         coerce=int,
         help_text=Box.exp_year_help_text,
     )
