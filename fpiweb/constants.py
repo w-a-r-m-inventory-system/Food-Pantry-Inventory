@@ -10,6 +10,8 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import NamedTuple, List
 
+from django.core.exceptions import ValidationError
+
 # # # # # #
 # Constants
 # # # # # #
@@ -24,7 +26,7 @@ MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 # Project specific exceptions
 # # # # # # # # # # # # # # #
 
-class ProjectError(Exception):
+class ProjectError(ValidationError):
     """
     All exceptions unique to this project wil be based on this class.
     """
