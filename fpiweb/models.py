@@ -2,6 +2,7 @@
 models.py - Define the database tables using ORM models.
 """
 from enum import Enum, unique
+from typing import Union
 
 # import as to avoid conflict with built-in function compile
 from re import compile as re_compile
@@ -180,7 +181,6 @@ class Location(models.Model):
     """
 
     class Meta:
-        ordering = ['loc_code']
         app_label = 'fpiweb'
         verbose_name_plural = 'Locations'
 
@@ -251,6 +251,42 @@ class Location(models.Model):
         if self.loc_in_warehouse:
             display += (f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})')
         return display
+
+    @staticmethod
+    def get_location(
+            loc_row: Union[LocRow, int, str],
+            loc_bin: Union[LocBin, int, str],
+            loc_tier: Union[LocTier, int, str],
+    ):
+        """
+        This method originated as convenient way to retrieve a Location from
+        the database inside a test.
+        :param loc_row:
+        :param loc_bin:
+        :param loc_tier:
+        :return: Location or None
+        """
+
+        row_key = 'loc_row__loc_row' if isinstance(loc_row, str) else 'loc_row'
+        bin_key = 'loc_bin__loc_bin' if isinstance(loc_bin, str) else 'loc_bin'
+
+        if isinstance(loc_tier, str):
+            tier_key = 'loc_tier__loc_tier'
+        else:
+            tier_key = 'loc_tier'
+
+        kwargs = {
+            row_key: loc_row,
+            bin_key: loc_bin,
+            tier_key: loc_tier,
+        }
+
+        try:
+            return Location.objects.get(**kwargs)
+        except Location.DoesNotExist:
+            return None
+        # Note: I'm deliberately letting MultipleObjectsReturned exception
+        # percolate up the stack.
 
 
 class BoxType(models.Model):
