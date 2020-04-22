@@ -54,17 +54,14 @@ def add_no_selection_choice(other_choices, dash_count=2):
 
 
 def month_choices():
-    return add_no_selection_choice(
-        [(str(nbr), name) for nbr, name in enumerate(MONTHS, 1)]
-    )
+    list_with_zero_month: list = [(0, 'No Label')] + \
+        list([(str(nbr), name) for nbr, name in enumerate(MONTHS, 1)])
+    # print(f'{list_with_zero_month=}')
+    return list_with_zero_month
 
 
 def expire_year_choices():
     current_year = CURRENT_YEAR
-    # exp_year_limit_key = Constraints.FUTURE_EXP_YEAR_LIMIT
-    # years_ahead_constraint_rec = Constraints.objects.get(
-    #     constraint_name=exp_year_limit_key
-    # )
     years_ahead_list = Constraints.get_values(
         Constraints.FUTURE_EXP_YEAR_LIMIT
     )
@@ -184,17 +181,19 @@ def validate_exp_month_start_end(
     :param exp_month_end: number 1-12 (integer or string)
     :return:
     """
-    if exp_month_start is None and exp_month_end is None:
+    exp_month_start = 0 if exp_month_start is None else exp_month_start
+    exp_month_end = 0 if exp_month_end is None else exp_month_end
+    if exp_month_start == 0 and exp_month_end == 0 :
         return True
 
     error_msg = (
         "If Exp {} month is specified, Exp {} month must also be specified"
     )
 
-    if exp_month_start is not None and exp_month_end is None:
+    if exp_month_start != 0 and exp_month_end == 0:
         raise InvalidValueError(error_msg.format('start', 'end'))
 
-    if exp_month_end is not None and exp_month_start is None:
+    if exp_month_end != 0 and exp_month_start == 0:
         raise InvalidValueError(error_msg.format('end', 'start'))
 
     try:
@@ -239,7 +238,7 @@ def validation_exp_months_bool(
     try:
         validate_exp_month_start_end(exp_month_start, exp_month_end)
     except ProjectError as xcp:
-        error_msg = str(xcp)
+        error_msg = xcp.message
         validation.add_error(error_msg)
     return validation
 

@@ -41,7 +41,8 @@ from sqlalchemy.engine.url import URL
 
 from fpiweb.constants import \
     ProjectError, \
-    InvalidValueError
+    InvalidValueError, \
+    HTTP_STATUS
 from fpiweb.models import \
     Activity, \
     Box, \
@@ -58,13 +59,34 @@ from fpiweb.models import \
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
-from fpiweb.forms import BoxItemForm, BoxTypeForm, ConfirmMergeForm, \
-    ConstraintsForm, BuildPalletForm, EmptyBoxNumberForm, ExistingBoxTypeForm, \
-    ExistingLocationForm, ExistingLocationWithBoxesForm, ExistingProductForm, \
-    ExtantBoxNumberForm, ExpYearForm, FilledBoxNumberForm, HiddenPalletForm, \
-    LocRowForm, LocBinForm, LocTierForm, LoginForm, MoveToLocationForm, \
-    NewBoxForm, NewBoxNumberForm, PalletNameForm, PalletSelectForm, \
-    PrintLabelsForm, ProductForm, ExpMoStartForm, ExpMoEndForm, \
+from fpiweb.forms import \
+    BoxItemForm, \
+    BoxTypeForm, \
+    ConfirmMergeForm, \
+    ConstraintsForm, \
+    BuildPalletForm, \
+    EmptyBoxNumberForm, \
+    ExistingBoxTypeForm, \
+    ExistingLocationForm, \
+    ExistingLocationWithBoxesForm, \
+    ExistingProductForm, \
+    ExtantBoxNumberForm, \
+    ExpYearForm, \
+    FilledBoxNumberForm, \
+    HiddenPalletForm, \
+    LocRowForm, \
+    LocBinForm, \
+    LocTierForm, \
+    LoginForm, \
+    MoveToLocationForm, \
+    NewBoxForm, \
+    NewBoxNumberForm, \
+    PalletNameForm, \
+    PalletSelectForm, \
+    PrintLabelsForm, \
+    ProductForm, \
+    ExpMoStartForm, \
+    ExpMoEndForm, \
     validation_exp_months_bool
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
@@ -2072,85 +2094,61 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
             product_form=ExistingProductForm(),
             location_form=ExistingLocationForm(),
             exp_year_form=ExpYearForm(),
-            exp_month_start_form=ExpMoStartForm,
-            exp_month_end_form=ExpMoEndForm,
+            exp_month_start_form=ExpMoStartForm(),
+            exp_month_end_form=ExpMoEndForm(),
         )
         return render(request, self.template_name, get_context)
 
     def post_box_info(self, request):
+        """
+        Validate the posted information.
+
+        :param request: container of initial or latest post
+        :return:
+        """
+        # initialize variables that will be filled in later
+        box_number = None
+        box = None
+        product = None
+        location = None
+        exp_year = None
+        exp_month_start = None
+        exp_month_end = None
+
+        # start by hoping everything is ok -- then validate
+        status = HTTP_STATUS.OK
+        error_msgs = list()
 
         # validate box number
         box_number_form = ExtantBoxNumberForm(request.POST)
         if not box_number_form.is_valid():
-            box_number_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_INFO,
-                box_number_form=box_number_form,
-                errors=[(
-                    f'Invalid box number'
-                )],
-            )
-            return render(
-                request,
-                self.template_name,
-                box_number_failed_context,
-                status=404,
-            )
-
-        box_number = box_number_form.cleaned_data.get('box_number')
-        box = Box.objects.get(box_number=box_number)
+            status = HTTP_STATUS.NOT_FOUND
+            error_msgs.append(f'Invalid box number')
+        else:
+            box_number = box_number_form.cleaned_data.get('box_number')
+            box = Box.objects.get(box_number=box_number)
 
         # Validate product
         product_form = ExistingProductForm(request.POST)
         if not product_form.is_valid():
-            product_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_INFO,
-                box=box,
-                product_form=product_form,
-                errors=['Missing product']
-            ),
-            return render(
-                request,
-                self.template_name,
-                product_failed_context,
-                status=400,
-            )
-        product = product_form.cleaned_data.get('product')
+            status = HTTP_STATUS.BAD_REQUEST
+            error_msgs.append('Missing product')
+        else:
+            product = product_form.cleaned_data.get('product')
 
         # validate location
         location_form = ExistingLocationForm(request.POST)
         if not location_form.is_valid():
-            location_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_INFO,
-                box=box,
-                product=product,
-                location_form=location_form,
-                errors=['Missing location']
-            ),
-            return render(
-                request,
-                self.template_name,
-                location_failed_context,
-                status=404
-            )
-        location = location_form.cleaned_data.get('location')
+            status = HTTP_STATUS.BAD_REQUEST
+            error_msgs.append('Missing location')
+        else:
+            location = location_form.cleaned_data.get('location')
 
         # validate expiration year
         exp_year_form = ExpYearForm(request.POST)
         if not exp_year_form.is_valid():
-            exp_year_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_INFO,
-                box=box,
-                product=product,
-                location=location,
-                exp_year_form=exp_year_form,
-                errors=['invalid expiration year'],
-            ),
-            return render(
-                request,
-                self.template_name,
-                exp_year_failed_context,
-                status=400,
-            )
+            status = HTTP_STATUS.BAD_REQUEST
+            error_msgs.append('invalid expiration year')
         exp_year = exp_year_form.cleaned_data.get('exp_year')
 
         # validate expiration months
@@ -2159,49 +2157,39 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
 
         if (not exp_month_start_form.is_valid()) or \
                 (not exp_month_end_form.is_valid()):
-            exp_month_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_INFO,
-                box=box,
-                product=product,
-                location=location,
-                exp_month_start_form=exp_month_start_form,
-                exp_month_end_form=exp_month_end_form,
-                errors=['invalid expiration month start'],
-            )
-            return render(
-                request,
-                self.template_name,
-                exp_month_failed_context,
-                status=400,
-            )
+            status = HTTP_STATUS.BAD_REQUEST
+            error_msgs.append('invalid expiration month start')
+        else:
+            exp_month_start = exp_month_start_form.cleaned_data.get(
+                'exp_month_start')
 
-        exp_month_start = exp_month_start_form.cleaned_data.get(
-            'exp_month_start')
+            exp_month_end = exp_month_end_form.cleaned_data.get(
+                'exp_month_end')
+            validation = validation_exp_months_bool(
+                exp_month_start,
+                exp_month_end
+            )
+            if not validation.is_valid:
+                status = HTTP_STATUS.BAD_REQUEST
+                error_msgs = error_msgs + validation.error_msg_list
 
-        exp_month_end = exp_month_end_form.cleaned_data.get('exp_month_end')
-        validation = validation_exp_months_bool(exp_month_start,exp_month_end)
-        if not validation.is_valid:
+        # Was everything valid?  If not, report it
+        if status != HTTP_STATUS.OK:
             validation_failed_context = self.build_context(
                 mode=self.MODE_ENTER_BOX_INFO,
                 box_number_form=box_number_form,
-                # box=box,
                 product_form=product_form,
-                product=product,
                 location_form=location_form,
-                location=location,
                 exp_year_form=exp_year_form,
-                exp_year=exp_year,
                 exp_month_start_form=exp_month_start_form,
-                exp_month_start=exp_month_start,
                 exp_month_end_form=exp_month_end_form,
-                exp_month_end=exp_month_end,
-                errors=[validation.error_msg_list],
+                errors=error_msgs,
             )
             return render(
                 request,
                 self.template_name,
                 validation_failed_context,
-                status=400,
+                status=status
             )
 
         # apply fill box to database
