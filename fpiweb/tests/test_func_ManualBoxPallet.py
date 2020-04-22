@@ -9,18 +9,29 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
+# curious why this shows an error?
+from fpiweb.models import \
+    Activity, \
+    Box, \
+    BoxType, \
+    Product
+
 
 import time
 import random
 import string
 
-class CheckStatusOfBox(StaticLiveServerTestCase):
+class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
+
+    fixtures = ['BoxType.json', 'LocBin.json', 'LocRow.json', 'LocTier.json',
+                'Location.json', 'ProductCategory.json', 'Product.json',
+                'Box.json',]
 
     test_user = ""
 
     RECORD = False
     def delay_for_recording(self):
-        # Need to delat for (1) wait for page load (2) recording
+        # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
             time.sleep(10)
         else:
@@ -34,7 +45,7 @@ class CheckStatusOfBox(StaticLiveServerTestCase):
 
 
     def setUp(self):
-        super(CheckStatusOfBox, self).setUp()
+        super(ManualBoxPalletMaintenance, self).setUp()
         test_user = utility.create_user('test', 'user')
         test_user.set_password(utility.default_password)
         test_user.save()
@@ -47,6 +58,15 @@ class CheckStatusOfBox(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
         self.browser.add_cookie({'name': 'sessionid', 'value': cookie.value,
                                  'secure': False, 'path': '/'})
+
+        ####################################################################
+        #
+        # LOAD TEST DATA into the Test DB in this section.
+        # The DB will be taken down after each test
+        #
+        #
+        #
+        ######################################################################
 
 
     @classmethod
@@ -108,6 +128,7 @@ class CheckStatusOfBox(StaticLiveServerTestCase):
         box_number.send_keys("12345")
         search_button = self.browser.find_element_by_xpath("//input[@value='Search']")
         search_button.submit()
+        
         self.fail("Fails when box number entered is not in database")
 
         self.delay_for_recording()
@@ -124,11 +145,12 @@ class CheckStatusOfBox(StaticLiveServerTestCase):
         self.browser.find_element_by_link_text("Add a new box to inventory").click()
         self.delay_for_recording()
         box_number = self.browser.find_element_by_id("id_box_number")
-        box_number.send_keys("12345")
+        box_number.send_keys("77777")
         box_type_select = Select(self.browser.find_element_by_id("id_box_type"))
-        # box_type_select.select_by_index(1)
+        # no drop down list data in TestDB so test fails
+        box_type_select.select_by_index(1)
 
-        self.browser.quit()
+
 
 
 
