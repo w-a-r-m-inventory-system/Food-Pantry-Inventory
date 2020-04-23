@@ -38,10 +38,17 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
             time.sleep(2)
 
 
+    def select_random_dropdown(self, dropdown_int):
+        random.seed()
+        # return ''.join(random.choice(string.digits) for _i in range(dropdown_int))
+        return random.randint(1,dropdown_int)
+
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.browser = webdriver.Firefox()
+        cls.browser.delete_all_cookies()
 
 
     def setUp(self):
@@ -112,8 +119,9 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
         self.assertIn("Welcome to Food Pantry Inventory System", self.browser.title)
 
-    '''
+
     def test_ManualStatusBox(self):
+        fname="test_ManualStatusBox"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
@@ -122,33 +130,78 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
         self.assertIn("Box Status", self.browser.title)
 
+        # test for valid box number
         box_number = self.browser.find_element_by_id("id_box_number")
         box_number.send_keys("12345")
         search_button = self.browser.find_element_by_xpath("//input[@value='Search']")
         search_button.submit()
-        
-        self.fail("Fails when box number entered is not in database")
-
         self.delay_for_recording()
 
+        # test for box number not in database
         self.browser.back()
-        self.fail("Fails when box number entered with 6 digits is not in database")
-    '''
+        self.assertIn("Box Status", self.browser.title)
+        box_number = self.browser.find_element_by_id("id_box_number")
+        box_number.clear()
+        box_number.send_keys("77777")
+        search_button = self.browser.find_element_by_xpath("//input[@value='Search']")
+        search_button.submit()
+        self.delay_for_recording()
+        if self.browser.title.__contains__("Server Error"):
+            self.fail("Test fails when entering invalid Box Number, 500 page displayed in " +
+                      fname)
 
-    def test_NewBox(self):
+    def test_AddNewBox(self):
+        fname= "test_AddNewBox"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
-        # Test 'Add a new box to inventory' link
+        # Test 'Add a new box to inventory' link with valid new box number
         self.browser.find_element_by_link_text("Add a new box to inventory").click()
         self.delay_for_recording()
         box_number = self.browser.find_element_by_id("id_box_number")
         box_number.send_keys("77777")
         box_type_select = Select(self.browser.find_element_by_id("id_box_type"))
-        # no drop down list data in TestDB so test fails
-        box_type_select.select_by_index(1)
+        box_type_select.select_by_index(self.select_random_dropdown(2))
+        add_button = self.browser.find_element_by_xpath("//input[@value='Add Box']")
+        add_button.submit()
+        self.delay_for_recording()
+        try:
+            self.assertTrue(self.browser.find_element_by_xpath("//input[@value='confirmation' "
+                                                               "and @type='hidden']"))
+        except:
+            self.fail("Exceptions raised. Failed to add New Box in function " + fname)
+
+        # Test 'Add a new box to inventory' with a box number already in dataset
+        self.browser.find_element_by_link_text("Add another box").click()
+        box_number = self.browser.find_element_by_id("id_box_number")
+        box_number.send_keys("77777")
+        box_type_select = Select(self.browser.find_element_by_id("id_box_type"))
+        box_type_select.select_by_index(self.select_random_dropdown(2))
+        add_button = self.browser.find_element_by_xpath("//input[@value='Add Box']")
+        add_button.submit()
+        self.delay_for_recording()
+        try:
+            # Look for error message
+            self.browser.find_element_by_class_name("invalid-feedback")
+        except:
+            self.fail("Unable to find invalid-feedback in " + fname)
+
+        # Verify 'Cancel Adding a Box' works
+        self.browser.find_element_by_link_text("Cancel Adding a Box").click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box Management", self.browser.title)
 
 
+    def test_CheckinBox(self):
+        # Start off in Manual Box Management page
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
+        self.assertIn("Manual Box Management", self.browser.title)
+        # Test 'Add a new box to inventory' link with valid new box number
+        self.browser.find_element_by_link_text("Checkin a box").click()
+        self.delay_for_recording()
+        box_number = self.browser.find_element_by_id("id_box_number")
+        # Must be empty box and in database
+        box_number.send_keys("77777")
 
 
 
