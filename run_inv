@@ -44,7 +44,7 @@ SERVER_PID=$(ps -f | grep runserver | awk "\$3 = $ROOT_PID { print \$2 }") >/dev
 # echo "root: $ROOT_PID, task: $SERVER_PID"
 
 # wait a moment for the server to start up
-sleep 1s
+sleep 2s
 
 # build client URL
 CLIENT_URL=http://$HOST_IP:$SERVER_PORT
