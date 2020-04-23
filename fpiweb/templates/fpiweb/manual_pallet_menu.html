@@ -9,10 +9,12 @@
     <br/>
     <h2>
         for {{ user.first_name }} &nbsp; {{ user.last_name }}
-        {{ profile.title }}
+    </h2>
+    <h2>
+        {{ user_profile.title }}
     </h2>
     {% if active_pallet %}
-        {{ active_pallet.name }}  {{ active_pallet.pallet_status }}
+        {{ active_pallet.name }} - {{ active_pallet.pallet_status }}
     {% else %}
         No active pallet
     {% endif %}
@@ -22,17 +24,35 @@
     <h6>Manage a Pallet Manually</h6>
 
     {% if active_pallet %}
+
+        <div class="row text-center">
+            <div class="col-md-2"><strong>Box Number</strong></div>
+            <div class="col-md-2"><strong>Product</strong></div>
+            <div class="col-md-3"><strong>Expiration</strong></div>
+            <div class="col-md-2 text-center">
+                <strong>Edit Box</strong>
+            </div>
+            <div class="col-md-2 text-center">
+                <strong>Remove Box From Pallet</strong>
+            </div>
+    </div>
+
         {%  for box in box_set %}
-            <div>
-                <br/>
-                {{ box.box_number }}
-                {{ box.product }}
-                {{ box.exp_year }}
-                {{ box.exp_month_start }}
-                {{ box.exp_month_end }}
-                <a href="{% url 'fpiweb:about' %}">
-                    Remove box from pallet
-                </a>
+            <div class="row text-center">
+                <div class="col-md-2">{{ box.box_number }}</div>
+                <div class="col-md-2">{{ box.product }}</div>
+                <div class="col-md-3">{{ box.exp_year }}
+                    {% if box.exp_month_start %}
+                        ({{ box.exp_month_start }} -
+                        {{ box.exp_month_end }})
+                    {% endif %}
+                </div>
+                <div class="col-md-2 text-center">
+                    <a href="{% url 'fpiweb:about' %}">Edit</a>
+                </div>
+                <div class="col-md-2 text-center">
+                    <a href="{% url 'fpiweb:about' %}">Remove</a>
+                </div>
             </div>
         {% endfor %}
         <div>

@@ -1155,7 +1155,7 @@ class Constraints(models.Model):
     def get_values(constraint_name):
         try:
             constraint = Constraints.objects.get(
-                constraint_name__iexact=constraint_name)
+                constraint_name=constraint_name)
         except Constraints.DoesNotExist:
             return None
 
