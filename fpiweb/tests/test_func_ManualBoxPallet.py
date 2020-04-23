@@ -64,8 +64,6 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         # LOAD TEST DATA into the Test DB in this section.
         # The DB will be taken down after each test
         #
-        #
-        #
         ######################################################################
 
 
