@@ -1724,12 +1724,31 @@ class ManualPalletMoveView(LoginRequiredMixin, View):
         return f"temp{max_number + 1}"
 
     def move_boxes(self, request, from_location, to_location):
+
+        pallet, box_count = self.get_pallet_and_box_count(
+            from_location,
+            to_location
+        )
+
+        box_manager = BoxManagementClass()
+        box_manager.pallet_finish(pallet)
+
+        return self.build_response(
+            request,
+            self.MODE_COMPLETE,
+            boxes_moved=box_count,
+            to_location=to_location,
+        )
+
+    @staticmethod
+    def get_pallet_and_box_count(from_location, to_location):
         # Create temporary Pallet and PalletBox records in order to use
         # pallet_finish
         with transaction.atomic():
             pallet = Pallet.objects.create(
-                name=self.get_next_temp_name(),
-                location=to_location
+                name=ManualPalletMoveView.get_next_temp_name(),
+                location=to_location,
+                pallet_status=Pallet.MOVE,
             )
 
         boxes_to_move = Box.objects.filter(location=from_location)
@@ -1745,18 +1764,9 @@ class ManualPalletMoveView(LoginRequiredMixin, View):
                 exp_month_end=box.exp_month_end,
             )
             pallet_boxes.append(pallet_box)
-        boxes_moved = len(pallet_boxes)
+
         PalletBox.objects.bulk_create(pallet_boxes)
-
-        box_manager = BoxManagementClass()
-        box_manager.pallet_finish(pallet)
-
-        return self.build_response(
-            request,
-            self.MODE_COMPLETE,
-            boxes_moved=boxes_moved,
-            to_location=to_location,
-        )
+        return pallet, len(pallet_boxes)
 
     def build_response(
             self,
