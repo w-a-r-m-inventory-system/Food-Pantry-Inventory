@@ -621,7 +621,7 @@ class ManualMoveBoxViewTest(TestCase):
         # response = client.post(
         #     self.url,
         #     {
-        #         'mode': ManualMoveBoxView.MODE_ENTER_BOX_NUMBER,
+        #         'mode': ManualMoveBoxView.MODE_ENTER_BOX_INFO,
         #         'box_number': box_number
         #     }
         # )
