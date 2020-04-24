@@ -25,7 +25,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
     fixtures = ['BoxType.json', 'LocBin.json', 'LocRow.json', 'LocTier.json',
                 'Location.json', 'ProductCategory.json', 'Product.json',
-                'Box.json',]
+                'Box.json', 'Pallet.json','PalletBox.json']
 
     test_user = ""
 
@@ -139,6 +139,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
         # test for box number not in database
         self.browser.back()
+        self.delay_for_recording()
         self.assertIn("Box Status", self.browser.title)
         box_number = self.browser.find_element_by_id("id_box_number")
         box_number.clear()
