@@ -4,7 +4,7 @@ __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
 from bs4 import BeautifulSoup
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib.auth.models import User
 from django.forms.formsets import BaseFormSet
@@ -878,11 +878,14 @@ class ManualPalletMoveViewTest(TestCase):
         from_location = Location.get_location('01', '03', 'A1')
         to_location = Location.get_location('01', '03', 'A2')
 
+        box_type = Box.box_type_default()
         box = Box.objects.create(
-            box_type=Box.box_type_default(),
+            box_type=box_type,
             location=from_location,
             product=Product.objects.first(),
             exp_year=timezone.now().year + 2,
+            date_filled=timezone.now() - timedelta(days=30),
+            quantity=box_type.box_type_qty
         )
 
         response = client.post(
@@ -963,11 +966,14 @@ class ManualPalletMoveViewTest(TestCase):
         from_location = Location.get_location('02', '02', 'A1')
         to_location = Location.get_location('02', '02', 'C1')
 
+        box_type = Box.box_type_default()
         box = Box.objects.create(
-            box_type=Box.box_type_default(),
+            box_type=box_type,
             location=from_location,
             product=Product.objects.first(),
-            exp_year=timezone.now().year + 2
+            exp_year=timezone.now().year + 2,
+            date_filled=timezone.now() - timedelta(days=5),
+            quantity=box_type.box_type_qty,
         )
 
         response = client.post(
@@ -990,4 +996,41 @@ class ManualPalletMoveViewTest(TestCase):
             box.location_id,
         )
         self.assertContains(response, '1 boxes moved to: row 02, bin 02, tier C1.')
+
+    def test_get_pallet_and_box_count(self):
+
+        from_location = Location.get_location('01', '01', 'A1')
+        to_location = Location.get_location('01', '01', 'A2')
+
+        box_type = Box.box_type_default()
+        box = Box.objects.create(
+            box_type=box_type,
+            location=from_location,
+            product=Product.objects.first(),
+            exp_year=timezone.now().year + 3,
+            date_filled=timezone.now() - timedelta(days=60),
+            quantity=box_type.box_type_qty,
+        )
+
+        pallet, box_count = ManualPalletMoveView.get_pallet_and_box_count(
+            from_location,
+            to_location,
+        )
+
+        self.assertEqual(1, box_count)
+        self.assertIsInstance(pallet, Pallet)
+        self.assertEqual(
+            to_location.pk,
+            pallet.location_id
+        )
+        self.assertRegex(
+            pallet.name,
+            r'temp\d+',
+        )
+        self.assertEqual(
+            Pallet.MOVE,
+            pallet.pallet_status,
+        )
+
+
 
