@@ -99,7 +99,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
         # lets also test logout
 
-
+    '''
     def test_ManualBoxPalletManagementPage(self):
         # Start off in main page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
@@ -192,17 +192,44 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
         self.assertIn("Manual Box Management", self.browser.title)
 
-
+    '''
     def test_CheckinBox(self):
+
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
         # Test 'Add a new box to inventory' link with valid new box number
+        self.browser.find_element_by_link_text("Add a new box to inventory").click()
+        self.delay_for_recording()
+        box_number = self.browser.find_element_by_id("id_box_number")
+        box_number.send_keys("77777")
+        box_type_select = Select(self.browser.find_element_by_id("id_box_type"))
+        box_type_select.select_by_index(self.select_random_dropdown(2))
+        add_button = self.browser.find_element_by_xpath("//input[@value='Add Box']")
+        add_button.submit()
+        self.delay_for_recording()
+        try:
+            self.assertTrue(self.browser.find_element_by_xpath("//input[@value='confirmation' "
+                                                               "and @type='hidden']"))
+        except:
+            self.fail("Exceptions raised. Failed to add New Box in function " + fname)
+        # Start off in Manual Box Management page
+        # Start off in Manual Box Management page
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
+        self.assertIn("Manual Box Management", self.browser.title)
+        # Test 'Add a new box to inventory' link with valid new box number
+        self.delay_for_recording()
         self.browser.find_element_by_link_text("Checkin a box").click()
         self.delay_for_recording()
+        self.assertIn("Checkin a box", self.browser.title)
+
         box_number = self.browser.find_element_by_id("id_box_number")
         # Must be empty box and in database
         box_number.send_keys("77777")
+        self.delay_for_recording()
+        select_button = add_button = self.browser.find_element_by_xpath("//input[@value='Select Box']")
+        select_button.submit()
+        self.delay_for_recording()
 
 
 
