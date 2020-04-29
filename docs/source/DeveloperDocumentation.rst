@@ -18,6 +18,8 @@ Developer Documentation
 
    JavaScript And JQuery <DevDocs/JavaScriptAndJQuery>
 
+   Django Extensions <DevDocs/DjangoExtensions>
+
    Outstanding Tasks <OutstandingTasks>
 
 Getting Started
@@ -76,6 +78,15 @@ PostgreSQL Documentation
 Documentation about PostgreSQL that is specific to this project.
 
     :doc:`PostgreSQL Guidelines <DevDocs/PostgreSQLGuidelines>`
+
+A graph of the database tables and their relationships is shown here.
+
+.. image:: DevDocs/InventoryProjectModelsGrouped.png
+
+A bigger, sharper image of this graph can be downloaded from here.
+
+    :download:`Inventory Tables and Relationships
+    <DevDocs/InventoryProjectModelsGrouped.pdf>`
 
 Git Documentation
 =================
