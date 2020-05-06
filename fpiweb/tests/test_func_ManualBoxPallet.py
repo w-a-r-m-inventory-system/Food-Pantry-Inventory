@@ -25,7 +25,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
     fixtures = ['BoxType.json', 'LocBin.json', 'LocRow.json', 'LocTier.json',
                 'Location.json', 'ProductCategory.json', 'Product.json',
-                'Box.json', 'Pallet.json','PalletBox.json']
+                'Box.json', 'Pallet.json','PalletBox.json', 'Constraints.json']
 
     test_user = ""
 
@@ -80,7 +80,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         super().tearDownClass()
 
 
-    def test_LogIn(self):
+    def test_1LogIn(self):
         self.browser.get(self.live_server_url)
         self.assertIn("Login", self.browser.title)
         login = self.browser.find_element_by_tag_name("form")
@@ -99,8 +99,8 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
         # lets also test logout
 
-    '''
-    def test_ManualBoxPalletManagementPage(self):
+
+    def test_2ManualBoxPalletManagementPage(self):
         # Start off in main page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
         self.assertIn("Welcome to Food Pantry Inventory System", self.browser.title)
@@ -120,7 +120,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.assertIn("Welcome to Food Pantry Inventory System", self.browser.title)
 
 
-    def test_ManualStatusBox(self):
+    def test_3ManualStatusBox(self):
         fname="test_ManualStatusBox"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
@@ -151,7 +151,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
             self.fail("Test fails when entering invalid Box Number, 500 page displayed in " +
                       fname)
 
-    def test_AddNewBox(self):
+    def test_4AddNewBox(self):
         fname= "test_AddNewBox"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
@@ -192,44 +192,176 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
         self.assertIn("Manual Box Management", self.browser.title)
 
-    '''
-    def test_CheckinBox(self):
 
+    def test_5CheckinBox(self):
+        fname = "test_CheckinBox"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
-        # Test 'Add a new box to inventory' link with valid new box number
-        self.browser.find_element_by_link_text("Add a new box to inventory").click()
-        self.delay_for_recording()
-        box_number = self.browser.find_element_by_id("id_box_number")
-        box_number.send_keys("77777")
-        box_type_select = Select(self.browser.find_element_by_id("id_box_type"))
-        box_type_select.select_by_index(self.select_random_dropdown(2))
-        add_button = self.browser.find_element_by_xpath("//input[@value='Add Box']")
-        add_button.submit()
-        self.delay_for_recording()
-        try:
-            self.assertTrue(self.browser.find_element_by_xpath("//input[@value='confirmation' "
-                                                               "and @type='hidden']"))
-        except:
-            self.fail("Exceptions raised. Failed to add New Box in function " + fname)
-        # Start off in Manual Box Management page
-        # Start off in Manual Box Management page
-        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
-        self.assertIn("Manual Box Management", self.browser.title)
-        # Test 'Add a new box to inventory' link with valid new box number
-        self.delay_for_recording()
+        # Test 'Check in a box' link with valid new box number
         self.browser.find_element_by_link_text("Checkin a box").click()
         self.delay_for_recording()
-        self.assertIn("Checkin a box", self.browser.title)
+        self.assertIn("Checkin a Box", self.browser.title)
+        box_number = self.browser.find_element_by_id("id_box_number")
+        box_number.send_keys("12345")
+        select_product = Select(self.browser.find_element_by_id("id_product"))
+        select_product.select_by_index(self.select_random_dropdown(19))
+
+        row_location = Select(self.browser.find_element_by_id("id_loc_row"))
+        row_location.select_by_index(self.select_random_dropdown(4))
+        bin_location = Select(self.browser.find_element_by_id("id_loc_bin"))
+        bin_location.select_by_index(self.select_random_dropdown(9))
+        tier_location = Select(self.browser.find_element_by_id("id_loc_tier"))
+        tier_location.select_by_index(self.select_random_dropdown(6))
+
+        exp_year = Select(self.browser.find_element_by_id("id_exp_year"))
+        exp_year.select_by_index(self.select_random_dropdown(4))
+        exp_month_start = Select(self.browser.find_element_by_id("id_exp_month_start"))
+        exp_month_start.select_by_index(1)
+        exp_month_end = Select(self.browser.find_element_by_id("id_exp_month_end"))
+        exp_month_end.select_by_index(self.select_random_dropdown(12))
+
+        set_box_checkin_button = self.browser.find_element_by_xpath("//input[@value='Set Box Checkin Information']")
+        set_box_checkin_button.submit()
+        self.delay_for_recording()
+        self.browser.find_element_by_xpath("//div[contains(text(),'has been successfully')]")
+        self.browser.find_element_by_link_text("Return to Manual Box Menu").click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box Management", self.browser.title)
+        self.delay_for_recording()
+
+        # Verify that invalid box number handled
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manual_checkin_box/'))
+        self.assertIn("Checkin a Box", self.browser.title)
+        box_number = self.browser.find_element_by_id("id_box_number")
+        box_number.send_keys("77777")
+        select_product = Select(self.browser.find_element_by_id("id_product"))
+        select_product.select_by_index(self.select_random_dropdown(19))
+
+        row_location = Select(self.browser.find_element_by_id("id_loc_row"))
+        row_location.select_by_index(self.select_random_dropdown(4))
+        bin_location = Select(self.browser.find_element_by_id("id_loc_bin"))
+        bin_location.select_by_index(self.select_random_dropdown(9))
+        tier_location = Select(self.browser.find_element_by_id("id_loc_tier"))
+        tier_location.select_by_index(self.select_random_dropdown(6))
+
+        exp_year = Select(self.browser.find_element_by_id("id_exp_year"))
+        exp_year.select_by_index(self.select_random_dropdown(4))
+        exp_month_start = Select(self.browser.find_element_by_id("id_exp_month_start"))
+        exp_month_start.select_by_index(1)
+        exp_month_end = Select(self.browser.find_element_by_id("id_exp_month_end"))
+        exp_month_end.select_by_index(self.select_random_dropdown(12))
+
+        set_box_checkin_button = self.browser.find_element_by_xpath("//input[@value='Set Box Checkin Information']")
+        set_box_checkin_button.submit()
+        self.delay_for_recording()
+        # find <li> item that contains 'Invalid box number' text
+        self.browser.find_element_by_xpath("//li[contains(text(),'Invalid box number')]")
+        # find class with name  'invalid feedback'
+        self.browser.find_element_by_class_name("invalid-feedback")
+        # Cancel Box Check in
+        self.browser.find_element_by_link_text("Cancel Box Check In").click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box Management", self.browser.title)
+
+
+    def test_6Checkout_a_box(self):
+        fname = "test_CheckinBox"
+        # Start out in Manual Box Management
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
+        self.assertIn("Manual Box Management", self.browser.title)
+        # Test 'Checkout (consume product in) a box' link
+        self.browser.find_element_by_link_text("Checkout (consume product in) a box").click()
+        self.delay_for_recording()
+        self.assertIn("Consume Box", self.browser.title)
 
         box_number = self.browser.find_element_by_id("id_box_number")
-        # Must be empty box and in database
+        # Use box number from fixtures/Box.json
+        box_number.send_keys("12345")
+        search_button = self.browser.find_element_by_xpath("//input[@value='Search']")
+        search_button.submit()
+        self.delay_for_recording()
+
+        consume_button = self.browser.find_element_by_xpath("//input[@value='Consume']")
+        consume_button.submit()
+        self.delay_for_recording()
+
+        return_to_manual_box_menu = self.browser.find_element_by_link_text("Return to Manual Box Menu")
+        return_to_manual_box_menu.click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box Management", self.browser.title)
+
+        # Test for Empty Box & 'Cancel Box Consumption' link
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
+        self.assertIn("Manual Box Management", self.browser.title)
+        self.browser.find_element_by_link_text("Checkout (consume product in) a box").click()
+        self.delay_for_recording()
+        self.assertIn("Consume Box", self.browser.title)
+        box_number = self.browser.find_element_by_id("id_box_number")
+        # Use box number from above
+        box_number.send_keys("12345")
+        search_button = self.browser.find_element_by_xpath("//input[@value='Search']")
+        search_button.submit()
+        self.delay_for_recording()
+        # find <li> item that contains the following text
+        self.browser.find_element_by_xpath("//li[contains(text(),'Box number missing or box is empty')]")
+        # find class with name  'invalid feedback'
+        self.browser.find_element_by_class_name("invalid-feedback")
+        self.browser.find_element_by_link_text("Cancel Box Consumption").click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box Management", self.browser.title)
+
+
+    def test_7Move_a_box(self):
+        fname = "test_Move_a_box"
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
+        self.assertIn("Manual Box Management", self.browser.title)
+        self.browser.find_element_by_link_text("Move a box").click()
+        self.delay_for_recording()
+        self.assertIn("Move Box", self.browser.title)
+
+        box_number = self.browser.find_element_by_id("id_box_number")
+        # Use box number from fixtures/Box.json
+        box_number.send_keys("12345")
+        search_button = self.browser.find_element_by_xpath("//input[@value='Search']")
+        search_button.submit()
+        self.delay_for_recording()
+
+        # Test does not check if moved to same location, uses random choices
+        row_location = Select(self.browser.find_element_by_id("id_loc_row"))
+        row_location.select_by_index(self.select_random_dropdown(4))
+        bin_location = Select(self.browser.find_element_by_id("id_loc_bin"))
+        bin_location.select_by_index(self.select_random_dropdown(9))
+        tier_location = Select(self.browser.find_element_by_id("id_loc_tier"))
+        tier_location.select_by_index(self.select_random_dropdown(6))
+
+        move_button = self.browser.find_element_by_xpath("//input[@value='Move']")
+        move_button.submit()
+        self.delay_for_recording()
+
+        self.browser.find_element_by_xpath("//div[contains(text(),'has been successfully')]")
+        self.browser.find_element_by_link_text("Return to Manual Box Menu").click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box Management", self.browser.title)
+
+        # Check for invalid box number
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manual_move_box/'))
+        self.assertIn("Move Box", self.browser.title)
+        box_number = self.browser.find_element_by_id("id_box_number")
         box_number.send_keys("77777")
+        search_button = self.browser.find_element_by_xpath("//input[@value='Search']")
+        search_button.submit()
         self.delay_for_recording()
-        select_button = add_button = self.browser.find_element_by_xpath("//input[@value='Select Box']")
-        select_button.submit()
+        # Find <li> item that contains 'Box number invalid' text
+        self.browser.find_element_by_xpath("//li[contains(text(),'Box number invalid')]")
+        # find class with name  'invalid feedback'
+        self.browser.find_element_by_class_name("invalid-feedback")
+        self.browser.find_element_by_link_text("Cancel Box Move").click()
         self.delay_for_recording()
+        self.assertIn("Manual Box Management", self.browser.title)
+
+
+
 
 
 
