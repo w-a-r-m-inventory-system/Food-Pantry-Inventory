@@ -7,9 +7,18 @@ from django.test import TransactionTestCase
 from django.utils.timezone import now
 from pytest import raises
 
-from fpiweb.constants import InvalidActionAttemptedError, InvalidValueError
-from fpiweb.models import Box, Activity, Location, BoxType, Product, Pallet, \
-    BoxNumber, PalletBox
+from fpiweb.constants import \
+    InvalidActionAttemptedError, \
+    InvalidValueError
+from fpiweb.models import \
+    Box, \
+    Activity, \
+    Location, \
+    BoxType, \
+    Product, \
+    Pallet, \
+    BoxNumber, \
+    PalletBox
 from fpiweb.support.BoxManagement import BoxManagementClass
 
 __author__ = 'Travis Risner'
