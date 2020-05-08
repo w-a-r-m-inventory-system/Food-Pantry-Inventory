@@ -88,6 +88,7 @@ from fpiweb.forms import \
     ExpMoStartForm, \
     ExpMoEndForm, \
     validation_exp_months_bool
+
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 
@@ -1592,6 +1593,7 @@ class ManualPalletMoveView(LoginRequiredMixin, View):
                     prefix=self.FORM_PREFIX_FROM_LOCATION,
                 ),
                 errors=["Missing mode parameter"],
+
                 status=HTTP_STATUS.BAD_REQUEST,
             )
 
