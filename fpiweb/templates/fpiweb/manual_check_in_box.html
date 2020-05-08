@@ -4,20 +4,22 @@
 
 CONTEXT VARIABLES
 -----------------
-mode                string indicating mode.  Constants are defined for this in
-                    the ManualCheckinBoxView class.
-box_number_form     An EmptyBoxNumberForm
-box                 A Box instance
-product_form        An ExistingProductForm
-product             A Product instance
-location_form       An ExistingLocationForm
-location            A Location instance
-exp_year_form       A form for selecting the expiration year
-exp_year            The selected expiratioh year
-exp_mo_start        Starting month of expiration range - if specified
-exp_mo_end          Ending month of expiration range - if specified
-view_class          Reference to ManualCheckinBoxView
-errors              A list of errors.
+mode                   string indicating mode.  Constants are defined
+                       for this in the ManualCheckinBoxView class.
+box_number_form        An ExtantBoxNumberForm
+box                    A Box instance
+product_form           An ExistingProductForm
+product                A Product instance
+location_form          An ExistingLocationForm
+location               A Location instance
+exp_year_form          A form for selecting the expiration year
+exp_year               The selected expiratioh year
+exp_moonth_start_form  A form for selecting the expiration starting month
+exp_month_start        Starting month of expiration range - if specified
+exp_month_end_form     A form for selecting the expiration ending month
+exp_month_end          Ending month of expiration range - if specified
+view_class             Reference to ManualCheckinBoxView
+errors                 A list of errors.
 
 {% endcomment %}
 
@@ -44,139 +46,61 @@ errors              A list of errors.
         {% csrf_token %}
         <input type="hidden" name="mode" value="{{ mode }}"/>
 
-        {% if mode == view_class.MODE_ENTER_BOX_NUMBER %}
-            {% bootstrap_field box_number_form.box_number show_help=False %}
-            <input type="submit" class="btn btn-primary" value="Select Box"/>
+        {% if mode == view_class.MODE_ENTER_BOX_INFO %}
 
-        {% elif mode == view_class.MODE_ENTER_PRODUCT %}
-            {% if not box %}
-                <div class="alert alert-danger">box not defined</div>
-            {% else %}
-                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Box Number:</label> {{ box.box_number }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Box Type:</label>
-                        {{ box.box_type.box_type_descr }}
-                        ({{ box.box_type.box_type_qty }})
-                    </div>
-                </div>
+            <h3>What number is on the box?</h3>
+            <div class="row">
+                {% bootstrap_field box_number_form.box_number show_help=False %}
+            </div>
 
-                <h2>Choose Product in Box</h2>
+            <h3>What product is in box?</h3>
 
-                <div class="row">
-                    {% bootstrap_field product_form.product show_help=False %}
+            <div class="row">
+                {% bootstrap_field product_form.product show_help=False %}
+            </div>
 
-                </div>
-                <div class="row">
-                    <input type="submit" class="btn btn-primary"
-                           value="Select Product"/>
-                </div>
-            {% endif %}
+            <h3>Where will the box go (pallet location)?</h3>
 
-        {% elif mode == view_class.MODE_ENTER_LOCATION %}
-            {% if not box %}
-                <div class="alert alert-danger">box not defined</div>
-            {% elif not product %}
-                <div class="alert alert-danger">product not defined</div>
-            {% else %}
-                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
-                <input type="hidden" name="product_pk"
-                       value="{{ product.pk }}"/>
+            <div class="row">
+                {% bootstrap_field location_form.loc_row show_help=False %}
+            </div>
+            <div class="row">
+                {% bootstrap_field location_form.loc_bin show_help=False %}
+            </div>
+            <div class="row">
+                {% bootstrap_field location_form.loc_tier show_help=False %}
+            </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Box Number:</label> {{ box.box_number }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Box Type:</label>
-                        {{ box.box_type.box_type_descr }}
-                        ({{ box.box_type.box_type_qty }})
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Product:</label>
-                        {{ product.prod_name }}
-                    </div>
-                </div>
+            <h3>What expiration year is on the box?</h3>
 
-                <h2>Choose New Location</h2>
+            <div class="row">
+                {% bootstrap_field exp_year_form.exp_year show_help=False %}
+            </div>
 
-               <div class="row">{% bootstrap_field location_form.loc_row show_help=False %}</div>
-                <div class="row">{% bootstrap_field location_form.loc_bin show_help=False %}</div>
-                <div class="row">{% bootstrap_field location_form.loc_tier show_help=False %}</div>
-                <div class="row">
-                    <input type="submit" class="btn btn-primary"
-                           value="Choose Location"/>
-                </div>
-            {% endif %}
-        {% elif mode == view_class.MODE_ENTER_EXP_YEAR %}
-            {% if not box %}
-                <div class="alert alert-danger">box not defined</div>
-            {% elif not product %}
-                <div class="alert alert-danger">product not defined</div>
-            {% elif not location %}
-                <div class="alert alert-danger">location not defined</div>
-            {% else %}
-                <input type="hidden" name="box_pk" value="{{ box.pk }}"/>
-                <input type="hidden" name="product_pk"
-                       value="{{ product.pk }}"/>
-                <input type="hidden" name="location_pk"
-                       value="{{ location.pk }}"/>
+            <h3>If a month range label is on the box, what are the starting
+                and ending months?</h3>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Box Number:</label> {{ box.box_number }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Box Type:</label>
-                        {{ box.box_type.box_type_descr }}
-                        ({{ box.box_type.box_type_qty }})
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Product:</label>
-                        {{ product.prod_name }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Location:</label>
-                        {{ location.loc_row.loc_row }} /&nbsp;
-                        {{ location.loc_bin.loc_bin }} /&nbsp;
-                        {{ location.loc_tier.loc_tier }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Expiration Year</label>
-                        {{ exp_year_form }}
-                    </div>
-                </div>
-                <div class="row">
-                    {% bootstrap_field exp_year_form.exp_year show_help=False %}
-                </div>
-                <div class="row">
-                    <input type="submit" class="btn btn-primary"
-                           value="Choose Expiration Year"/>
-                </div>
-             {% endif %}
+            <div class="row">
+                {% bootstrap_field exp_month_start_form.exp_month_start show_help=False %}
+            </div>
+
+            <div class="row">
+                {% bootstrap_field exp_month_end_form.exp_month_end show_help=False %}
+            </div>
+
+            <div class="row">
+                <input type="submit" class="btn btn-primary"
+                       value="Set Box Checkin Information"/>
+            </div>
+
         {% elif mode == view_class.MODE_CONFIRMATION %}
-            <div class="row">Box {{ box.box_number }} has been successfully
+            <div class="row">
+                Confirmed:
+                Box {{ box.box_number }} has been successfully
                 filled with {{ product.prod_name }}
-                which expires {{ exp_year }}
-                {% if exp_mo_start %}
-                    ({{ exp_mo_start }} - {{ exp_mo_end }})
+                which expires {{ box.exp_year }}
+                {% if box.exp_month_start %}
+                    ({{ box.exp_month_start }} to {{ box.exp_month_end }})
                 {% endif %}
                 and is now located at {{ location.loc_descr }},
             </div>
@@ -193,6 +117,7 @@ errors              A list of errors.
                 {% else %}
                     Cancel Box Check In
                 {% endif %}
+            </a>
         </div>
     </form>
 

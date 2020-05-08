@@ -1,5 +1,5 @@
 """
-Admin.py - Identify what can be mangaged by administrators.
+Admin.py - Identify what can be managed by administrators.
 """
 
 from django.contrib import admin
