@@ -15,6 +15,7 @@ Subpackages
    fpiweb.migrations
    fpiweb.support
    fpiweb.templatetags
+   fpiweb.tests
 
 Submodules
 ----------

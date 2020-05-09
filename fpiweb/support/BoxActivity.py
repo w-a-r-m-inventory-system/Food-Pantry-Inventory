@@ -135,6 +135,7 @@ class BoxActivityClass:
         # consumed.  If it was, start a new one.  If not, mark the product
         # in the old activity record as consumed and start a new activity
         # record for the product just added to the box.
+        self.activity = None
         try:
             self.activity = Activity.objects.filter(
                 box_number__exact=self.box.box_number).latest(
@@ -182,7 +183,6 @@ class BoxActivityClass:
         created.
 
         :param box_id: internal box ID of box being moved
-        :param new_loc: internal location ID of new location
         :return:
         """
 
@@ -206,21 +206,48 @@ class BoxActivityClass:
         self.prod_cat = self.product.prod_cat
 
         # find the prior open activity record
+        # note: there should be only one box, but with bad data there may be
+        # more than one activity record that qualifies.  Deal with it by
+        # picking one to move and fill all the others.
         try:
-            self.activity = Activity.objects.get(
+            act_for_box = Activity.objects.filter(
                 box_number=self.box.box_number,
                 date_filled=self.box.date_filled.date(),
                 date_consumed=None,
             )
-            logger.debug(
-                f'Act Box Move: Activity found: '
-                f'{self.activity.box_number}, '
-                f'filled:{self.activity.date_filled}'
-            )
 
-            logger.debug(
-                f'Act Box Move: Activity not consumed - proceeding...'
-            )
+            # look for one closely matching activity record and consume all
+            # the others with an adjustment code
+            self.activity = None
+            for act in act_for_box:
+                if (not self.activity) and (
+                            act.box_type == self.box_type.box_type_code and
+                            act.loc_row == self.loc_row.loc_row and
+                            act.loc_bin == self.loc_bin.loc_bin and
+                            act.loc_tier == self.loc_tier.loc_tier and
+                            act.prod_name == self.product.prod_name and
+                            act.exp_year == self.box.exp_year and
+                            act.exp_month_start == self.box.exp_month_start and
+                            act.exp_month_end == self.box.exp_month_end
+                        ):
+                    self.activity = act
+                else:
+                    # consume the contents of the box now
+                    date_consumed, duration = self.compute_duration_days(
+                        act.date_filled)
+                    act.date_consumed = date_consumed
+                    act.duration = duration
+                    act.adjustment_code = Activity.MOVE_CONSUMED
+            if self.activity:
+                logger.debug(
+                    f'Act Box Move: Activity found: '
+                    f'{self.activity.box_number}, '
+                    f'filled:{self.activity.date_filled}'
+                )
+            else:
+                logger.debug(
+                    f'Act Box Move: Activity not consumed - proceeding...')
+                raise Activity.DoesNotExist
         except Activity.DoesNotExist:
             # oops - box has no open activity record so create one
             self.activity = None
@@ -269,7 +296,6 @@ class BoxActivityClass:
         self.product = self.box.product
         self.prod_cat = self.product.prod_cat
         logger.debug(f'Act Box Empty: box received: Box ID: {box_id}')
-
 
         # determine if there is a prior open activity record
         try:
@@ -407,8 +433,8 @@ class BoxActivityClass:
         try:
             with transaction.atomic():
                 # update activity record
-                date_consumed = now().date()
-                duration = (date_consumed - self.activity.date_filled).days
+                date_consumed, duration = self.compute_duration_days(
+                    self.activity.date_filled)
                 self.activity.date_consumed = date_consumed
                 self.activity.duration = duration
                 # if this is not an adjustment, preserve previous entry
@@ -442,10 +468,21 @@ class BoxActivityClass:
         self.activity = None
         return
 
+    def compute_duration_days(self, date_filled: date) -> tuple:
+        """
+        compute the days between the date filled and today
+
+        :param date_filled:
+        :return: tuple of date consumed and number of days in box
+        """
+        date_consumed = now().date()
+        duration = (date_consumed - date_filled).days
+        return date_consumed, duration
+
     def _report_internal_error(self, exc: Exception, action: str):
         """
         Report details of an internal error
-        :param exp: original exeception
+        :param exc: original exeception
         :param action: additional message
         :return: (no return, ends by raising an additional exception
         """

@@ -23,22 +23,6 @@ CURRENT_YEAR = date.today().year
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-class HTTP_STATUS(IntEnum):
-    """
-    Status response codes (subset used by this application)
-
-    These status codes are defined in
-    `RFC 7231 <https://tools.ietf.org/html/rfc7231.html>`_
-    """
-    OK = 200
-    BAD_REQUEST = 400
-    UNAUTHORIZED = 401
-    FORBIDDEN = 403
-    NOT_FOUND = 404
-    I_AM_A_TEAPOT = 418
-    INTERNAL_SERVER_ERROR = 500
-    NOT_IMPLEMENTED = 501
-
 # # # # # # # # # # # # # # #
 # Project specific exceptions
 # # # # # # # # # # # # # # #
