@@ -29,7 +29,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
     test_user = ""
 
-    RECORD = False
+    RECORD = True
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
@@ -66,12 +66,6 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.browser.add_cookie({'name': 'sessionid', 'value': cookie.value,
                                  'secure': False, 'path': '/'})
 
-        ####################################################################
-        #
-        # LOAD TEST DATA into the Test DB in this section.
-        # The DB will be taken down after each test
-        #
-        ######################################################################
 
 
     @classmethod
