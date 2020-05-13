@@ -208,13 +208,12 @@ class BoxActivityClass:
         # find the prior open activity record
         # note: there should be only one box, but with bad data there may be
         # more than one activity record that qualifies.  Deal with it by
-        # picking one to move and fill all the others.
+        # keeping a matching one (if found) and fill all the others.
         try:
             act_for_box = Activity.objects.filter(
                 box_number=self.box.box_number,
-                date_filled=self.box.date_filled.date(),
                 date_consumed=None,
-            )
+            ).order_by('-date_filled')
 
             # look for one closely matching activity record and consume all
             # the others with an adjustment code
@@ -222,25 +221,32 @@ class BoxActivityClass:
             for act in act_for_box:
                 if (not self.activity) and (
                             act.box_type == self.box_type.box_type_code and
-                            act.loc_row == self.loc_row.loc_row and
-                            act.loc_bin == self.loc_bin.loc_bin and
-                            act.loc_tier == self.loc_tier.loc_tier and
+                            # cannot compare location because the box has
+                            # already been marked as moved
                             act.prod_name == self.product.prod_name and
+                            act.date_filled == self.box.date_filled.date() and
                             act.exp_year == self.box.exp_year and
                             act.exp_month_start == self.box.exp_month_start and
                             act.exp_month_end == self.box.exp_month_end
                         ):
                     self.activity = act
                 else:
-                    # consume the contents of the box now
+                    # consume this bogus open activity record now
                     date_consumed, duration = self.compute_duration_days(
                         act.date_filled)
                     act.date_consumed = date_consumed
                     act.duration = duration
                     act.adjustment_code = Activity.MOVE_CONSUMED
+                    logger.debug(
+                        f'Act Box Move: Bogus open activity found for: '
+                        f'{act.box_number}, '
+                        f'filled:{act.date_filled}, '
+                        f'Forced to be consumed now'
+                    )
+                    act.save()
             if self.activity:
                 logger.debug(
-                    f'Act Box Move: Activity found: '
+                    f'Act Box Move: Activity found to move: '
                     f'{self.activity.box_number}, '
                     f'filled:{self.activity.date_filled}'
                 )
@@ -414,6 +420,7 @@ class BoxActivityClass:
                     f'Act Box_Upd: Just updated activity ID: '
                     f'{self.activity.id}'
                 )
+                self.activity.save()
         except IntegrityError as exc:
             # report an internal error
             self._report_internal_error(
