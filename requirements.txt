@@ -1,6 +1,6 @@
 alabaster==0.7.12
 apipkg==1.5
-appdirs==1.4.3
+appdirs==1.4.4
 args==0.1.0
 asgiref==3.2.7
 astroid==2.4.1
@@ -59,7 +59,7 @@ pytzdata==2019.3
 PyYAML==5.3.1
 qrcode==6.1
 recommonmark==0.6.0
-regex==2020.5.7
+regex==2020.5.13
 reportlab==3.5.42
 requests==2.23.0
 selenium==3.141.0
@@ -82,7 +82,7 @@ sphinxcontrib-plantuml==0.18
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
 sphinxcontrib-websupport==1.2.2
-SQLAlchemy==1.3.16
+SQLAlchemy==1.3.17
 sqlparse==0.3.1
 toml==0.10.0
 typed-ast==1.4.1
