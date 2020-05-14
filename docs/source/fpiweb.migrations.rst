@@ -225,3 +225,11 @@ fpiweb.migrations.0027\_set\_constraint\_name\_choices module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.migrations.0028\_add\_activity\_adj\_code module
+-------------------------------------------------------
+
+.. automodule:: fpiweb.migrations.0028_add_activity_adj_code
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
