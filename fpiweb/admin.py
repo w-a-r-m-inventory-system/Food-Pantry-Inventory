@@ -28,9 +28,23 @@ __creation_date__ = "04/01/2019"
 
 
 # Register the models for which we want default admin pages to be built.
-admin.site.register(Activity)
 admin.site.register(ProductCategory)
 admin.site.register(ProductExample)
+
+
+@admin.register(Activity)
+class ActivityAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'box_number',
+        'date_filled',
+        'date_consumed',
+        'adjustment_code',
+    )
+    list_filter = (
+        'adjustment_code',
+    )
+
 
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):

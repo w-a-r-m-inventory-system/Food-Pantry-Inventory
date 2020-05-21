@@ -719,6 +719,10 @@ class TestScanView(LoginRequiredMixin, TemplateView):
         }
 
 
+class BuildPalletError(RuntimeError):
+    pass
+
+
 class BuildPalletView(View):
     """Set action in view"""
 
@@ -824,6 +828,7 @@ class BuildPalletView(View):
                     status_code=HTTPStatus.BAD_REQUEST,
                 )
             pallet = pallet_select_form.cleaned_data.get('pallet')
+            pallet.pallet_status = Pallet.FILL
 
         if form_name == self.PALLET_NAME_FORM_NAME:
             pallet_name_form = PalletNameForm(request.POST)
@@ -833,6 +838,7 @@ class BuildPalletView(View):
                     pallet_name_form=pallet_name_form,
                     status_code=HTTPStatus.BAD_REQUEST,
                 )
+            pallet_name_form.instance.pallet_status = Pallet.FILL
             pallet = pallet_name_form.save()
 
         if not pallet:
@@ -884,64 +890,28 @@ class BuildPalletView(View):
             status=HTTPStatus.OK,
         )
 
-    def process_build_pallet_forms(self, request):
-
-        build_pallet_form = BuildPalletForm(
-            request.POST,
-            prefix=self.build_pallet_form_prefix
-        )
-        box_forms = self.BoxFormFactory(
-            request.POST,
-            prefix=self.formset_prefix,
-        )
-        pallet_form = HiddenPalletForm(
-            request.POST,
-            prefix=self.hidden_pallet_form_prefix,
-        )
-
-        build_pallet_form_valid = build_pallet_form.is_valid()
-        if not build_pallet_form_valid:
-            logger.debug("BuildPalletForm not valid")
-
-        box_forms_valid = box_forms.is_valid()
-        if not box_forms_valid:
-            logger.debug("BoxForms not valid")
-
-        pallet_form_valid = pallet_form.is_valid()
-        if not pallet_form_valid:
-            logger.debug("HiddenPalletForm not valid")
-
-        if not all([
-            build_pallet_form_valid,
-            box_forms_valid,
-            pallet_form_valid
-        ]):
-            return self.show_forms_response(
-                request,
-                build_pallet_form,
-                box_forms,
-                pallet_form,
-            )
-
+    @staticmethod
+    def prepare_pallet_and_pallet_boxes(
+        pallet_form,
+        build_pallet_form,
+        box_forms,
+    ):
         location = build_pallet_form.instance
 
         pallet = pallet_form.cleaned_data.get('pallet')
         pallet.location = location
+        pallet.pallet_status = Pallet.FILL
         pallet.save()
 
         # Update box records and
         boxes_by_box_number = OrderedDict()
         duplicate_box_numbers = set()
-        forms_missing_box_number = 0
         for i, box_form in enumerate(box_forms):
             cleaned_data = box_form.cleaned_data
             if not cleaned_data:
                 continue
 
             box_number = cleaned_data.get('box_number')
-            if not isinstance(box_number, str):
-                logger.error(f"box_number {box_number} is a {type(box_number)}")
-                continue
 
             # Is this a duplicate box_id?
             if box_number in boxes_by_box_number:
@@ -985,9 +955,47 @@ class BuildPalletView(View):
                 box_management = BoxManagementClass()
                 box_management.box_consume(pallet_box.box)
 
-        if forms_missing_box_number > 0:
-            # error reported on box_form
-            logger.debug("forms_missing_box_number > 0")
+        if duplicate_box_numbers:
+            duplicate_box_numbers = [str(k) for k in duplicate_box_numbers]
+            message = f"Duplicate box numbers: {', '.join(duplicate_box_numbers)}"
+            logger.debug(message)
+            build_pallet_form.add_error(None, message)
+            raise BuildPalletError(message)
+
+        return pallet, location, boxes_by_box_number
+
+    def process_build_pallet_forms(self, request):
+
+        build_pallet_form = BuildPalletForm(
+            request.POST,
+            prefix=self.build_pallet_form_prefix
+        )
+        box_forms = self.BoxFormFactory(
+            request.POST,
+            prefix=self.formset_prefix,
+        )
+        pallet_form = HiddenPalletForm(
+            request.POST,
+            prefix=self.hidden_pallet_form_prefix,
+        )
+
+        build_pallet_form_valid = build_pallet_form.is_valid()
+        if not build_pallet_form_valid:
+            logger.debug("BuildPalletForm not valid")
+
+        box_forms_valid = box_forms.is_valid()
+        if not box_forms_valid:
+            logger.debug("BoxForms not valid")
+
+        pallet_form_valid = pallet_form.is_valid()
+        if not pallet_form_valid:
+            logger.debug("HiddenPalletForm not valid")
+
+        if not all([
+            build_pallet_form_valid,
+            box_forms_valid,
+            pallet_form_valid
+        ]):
             return self.show_forms_response(
                 request,
                 build_pallet_form,
@@ -995,13 +1003,14 @@ class BuildPalletView(View):
                 pallet_form,
             )
 
-        if duplicate_box_numbers:
-            duplicate_box_numbers = [str(k) for k in duplicate_box_numbers]
-            message = (
-                f"Duplicate box numbers: {', '.join(duplicate_box_numbers)}"
-            )
-            logger.debug(message)
-            build_pallet_form.add_error(None, message)
+        try:
+            pallet, location, boxes_by_box_number = \
+                self.prepare_pallet_and_pallet_boxes(
+                    pallet_form,
+                    build_pallet_form,
+                    box_forms,
+                )
+        except BuildPalletError:
             return self.show_forms_response(
                 request,
                 build_pallet_form,

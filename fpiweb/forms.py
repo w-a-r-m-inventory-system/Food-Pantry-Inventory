@@ -220,6 +220,7 @@ def validate_exp_month_start_end(
         )
     return True
 
+
 def validation_exp_months_bool(
         exp_month_start: Optional[int],
         exp_month_end: Optional[int]
@@ -243,8 +244,25 @@ def validation_exp_months_bool(
     return validation
 
 
+def box_number_validator(value) -> None:
+    if BoxNumber.validate(value):
+        return
+    raise ValidationError(f"{value} is not a valid Box Number")
+
+
 class Html5DateInput(DateInput):
     input_type = 'date'
+
+
+class BoxNumberField(CharField):
+    def __init__(self, **kwargs):
+        default_kwargs = {
+            'max_length': Box.box_number_max_length,
+            'min_length': Box.box_number_min_length,
+            'validators': [box_number_validator]
+        }
+        default_kwargs.update(kwargs)
+        super().__init__(**default_kwargs)
 
 
 class LogoutForm(Form):
@@ -700,9 +718,7 @@ class BoxItemForm(forms.Form):
 
     # This is a read only field.  In the page a box number is displayed in
     # an input element with no name or id
-    box_number = forms.CharField(
-        max_length=Box.box_number_max_length,
-        min_length=Box.box_number_min_length,
+    box_number = BoxNumberField(
         widget=forms.HiddenInput,
     )
 
