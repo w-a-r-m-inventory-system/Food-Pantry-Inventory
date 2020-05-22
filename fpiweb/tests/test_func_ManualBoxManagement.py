@@ -49,6 +49,8 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         super().setUpClass()
         cls.browser = webdriver.Firefox()
         cls.browser.delete_all_cookies()
+        cls.browser.set_window_position(0, 0)
+        cls.browser.set_window_size(2100, 1181)
 
 
     def setUp(self):
@@ -65,7 +67,6 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
         self.browser.add_cookie({'name': 'sessionid', 'value': cookie.value,
                                  'secure': False, 'path': '/'})
-
 
 
     @classmethod
