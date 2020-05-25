@@ -39,6 +39,8 @@ Contributors are noted in [Contributors](Contributors.md)
 
     pip3 install -r requirements.txt
     
+    Note: if you are on Windows 10 and only plan to run it locally, then remove uWSGI and change Pendulum to 2.0.3 in order for             all the requirements to successfully install. 
+    
 5.  Note - this project defaults to using PostgreSQL.  If you choose to use
 some other database, now would be a good time to install any additional
 libraries to support it.
