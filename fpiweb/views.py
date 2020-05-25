@@ -14,7 +14,9 @@ from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.core.serializers import serialize
 from django.db import transaction
 from django.db.models import Max
@@ -723,8 +725,11 @@ class BuildPalletError(RuntimeError):
     pass
 
 
-class BuildPalletView(View):
-    """Set action in view"""
+class BuildPalletView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.build_pallet',
+    )
 
     form_template = 'fpiweb/build_pallet.html'
     confirmation_template = 'fpiweb/build_pallet_confirmation.html'
@@ -1198,7 +1203,11 @@ class PrintLabelsView(View):
         return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
 
 
-class BoxItemFormView(LoginRequiredMixin, View):
+class BoxItemFormView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.add_box',
+    )
 
     template_name = 'fpiweb/box_form.html'
 

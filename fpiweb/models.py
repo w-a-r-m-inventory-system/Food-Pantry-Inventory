@@ -25,6 +25,7 @@ MONTH_VALIDATORS = [
     MaxValueValidator(12),
 ]
 
+
 class LocRow(models.Model):
     """
     Location Row in warehouse.
@@ -654,6 +655,9 @@ class Pallet(models.Model):
         ordering = ('name',)
         app_label = 'fpiweb'
         verbose_name_plural = 'Pallets'
+        permissions = [
+            ('build_pallet', 'Build pallet')
+        ]
 
     # Pallet Status Names
     FILL: str = 'Fill'
