@@ -33,7 +33,10 @@ Contributors are noted in [Contributors](Contributors.md)
 
 3.  Create a python virtual environment for this project.
 
-    e.g. virtualenv venv
+    e.g. virtualenv venv 
+    while in the root directory of the project, and then 
+    source venv/bin/activate
+    to activate the venv
     
 4.  Install the various libraries needed.
 
