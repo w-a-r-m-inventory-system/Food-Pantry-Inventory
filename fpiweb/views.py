@@ -148,7 +148,6 @@ class IndexView(LoginRequiredMixin, TemplateView):
         return context
 
 
-
 class AboutView(TemplateView):
     """
     The About View for this application.
@@ -217,27 +216,40 @@ class LogoutView(TemplateView):
         return nothing
 
 
-class MaintenanceView(LoginRequiredMixin, TemplateView):
+class MaintenanceView(PermissionRequiredMixin, TemplateView):
     """
     Default web page (/index)
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/maintenance.html'
 
 
-class LocRowListView(LoginRequiredMixin, ListView):
+class LocRowListView(PermissionRequiredMixin, ListView):
     """
     List of existing rows using a generic ListView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_list.html'
     context_object_name = 'loc_row_list_content'
 
 
-class LocRowCreateView(LoginRequiredMixin, CreateView):
+class LocRowCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a row using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_edit.html'
@@ -249,10 +261,14 @@ class LocRowCreateView(LoginRequiredMixin, CreateView):
     fields = ['loc_row', 'loc_row_descr', ]
 
 
-class LocRowUpdateView(LoginRequiredMixin, UpdateView):
+class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a row using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_edit.html'
@@ -261,10 +277,14 @@ class LocRowUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('fpiweb:loc_row_view')
 
 
-class LocRowDeleteView(LoginRequiredMixin, DeleteView):
+class LocRowDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a row using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_delete.html'
@@ -287,20 +307,29 @@ class LocRowDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class LocBinListView(LoginRequiredMixin, ListView):
+class LocBinListView(PermissionRequiredMixin, ListView):
     """
     List of existing bins using a generic ListView.
     """
+
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_list.html'
     context_object_name = 'loc_bin_list_content'
 
 
-class LocBinCreateView(LoginRequiredMixin, CreateView):
+class LocBinCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a bin using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_edit.html'
@@ -312,10 +341,14 @@ class LocBinCreateView(LoginRequiredMixin, CreateView):
     fields = ['loc_bin', 'loc_bin_descr', ]
 
 
-class LocBinUpdateView(LoginRequiredMixin, UpdateView):
+class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a bin using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_edit.html'
@@ -338,10 +371,14 @@ class LocBinUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class LocBinDeleteView(LoginRequiredMixin, DeleteView):
+class LocBinDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a bin using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_delete.html'
@@ -364,20 +401,28 @@ class LocBinDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class LocTierListView(LoginRequiredMixin, ListView):
+class LocTierListView(PermissionRequiredMixin, ListView):
     """
     List of existing tiers using a generic ListView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_list.html'
     context_object_name = 'loc_tier_list_content'
 
 
-class LocTierCreateView(LoginRequiredMixin, CreateView):
+class LocTierCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a tier using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_edit.html'
@@ -389,10 +434,14 @@ class LocTierCreateView(LoginRequiredMixin, CreateView):
     fields = ['loc_tier', 'loc_tier_descr', ]
 
 
-class LocTierUpdateView(LoginRequiredMixin, UpdateView):
+class LocTierUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a tier using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_edit.html'
@@ -415,10 +464,14 @@ class LocTierUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class LocTierDeleteView(LoginRequiredMixin, DeleteView):
+class LocTierDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a tier using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_delete.html'
@@ -441,10 +494,14 @@ class LocTierDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class ConstraintsListView(LoginRequiredMixin, ListView):
+class ConstraintsListView(PermissionRequiredMixin, ListView):
     """
     List of existing constraints.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraints_list.html'
@@ -474,10 +531,14 @@ class ConstraintsListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ConstraintCreateView(LoginRequiredMixin, CreateView):
+class ConstraintCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a constraint using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
@@ -490,10 +551,14 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
               'constraint_min', 'constraint_max', 'constraint_list', ]
 
 
-class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
+class ConstraintUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a constraint using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
@@ -524,10 +589,14 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
         return results
 
 
-class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
+class ConstraintDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a constraint using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraint_delete.html'
@@ -550,8 +619,13 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class BoxNewView(LoginRequiredMixin, View):
+class BoxNewView(PermissionRequiredMixin, View):
     # model = Box
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/box_new.html'
 
     # context_object_name = 'box'
@@ -613,7 +687,12 @@ class BoxNewView(LoginRequiredMixin, View):
         return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
-class BoxEditView(LoginRequiredMixin, UpdateView):
+class BoxEditView(PermissionRequiredMixin, UpdateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     model = Box
     template_name = 'fpiweb/box_edit.html'
     context_object_name = 'box'
@@ -621,7 +700,12 @@ class BoxEditView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('fpiweb:index')
 
 
-class BoxDetailsView(LoginRequiredMixin, DetailView):
+class BoxDetailsView(PermissionRequiredMixin, DetailView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     model = Box
     template_name = 'fpiweb/box_detail.html'
     context_object_name = 'box'
@@ -632,25 +716,42 @@ class BoxDetailsView(LoginRequiredMixin, DetailView):
         return context
 
 
-class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
+class BoxEmptyMoveView(PermissionRequiredMixin, TemplateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
         return {}
 
 
-class BoxMoveView(LoginRequiredMixin, TemplateView):
+class BoxMoveView(PermissionRequiredMixin, TemplateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
         return {}
 
 
-class BoxEmptyView(LoginRequiredMixin, View):
-    pass
+class BoxEmptyView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
 
-class BoxScannedView(LoginRequiredMixin, View):
+class BoxScannedView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     def get(self, request, **kwargs):
         box_number = kwargs.get('number')
@@ -666,7 +767,12 @@ class BoxScannedView(LoginRequiredMixin, View):
         return redirect('fpiweb:build_pallet', args=(box.pk,))
 
 
-class TestScanView(LoginRequiredMixin, TemplateView):
+class TestScanView(PermissionRequiredMixin, TemplateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/test_scan.html'
 
     @staticmethod
@@ -1040,7 +1146,11 @@ class ScannerViewError(RuntimeError):
     pass
 
 
-class ScannerView(View):
+class ScannerView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     @staticmethod
     def response(
@@ -1154,7 +1264,11 @@ class ScannerView(View):
         )
 
 
-class PrintLabelsView(View):
+class PrintLabelsView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     template_name = 'fpiweb/print_labels.html'
 
@@ -1268,10 +1382,15 @@ class BoxItemFormView(PermissionRequiredMixin, View):
         )
 
 
-class ManualMenuView(TemplateView):
+class ManualMenuView(PermissionRequiredMixin, TemplateView):
     """
     Menu to choose between manual pallet or manual box management
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/manual_menu.html'
 
     def get_context_data(self, **kwargs):
@@ -1315,10 +1434,15 @@ class ManualMenuView(TemplateView):
         return context
 
 
-class ManualPalletMenuView(TemplateView):
+class ManualPalletMenuView(PermissionRequiredMixin, TemplateView):
     """
     Menu of choices for manual pallet management.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/manual_pallet_menu.html'
 
     def get_context_data(self, **kwargs):
@@ -1368,7 +1492,7 @@ class ManualPalletMenuView(TemplateView):
         return context
 
 
-class ManualBoxMenuView(TemplateView):
+class ManualBoxMenuView(LoginRequiredMixin, TemplateView):
     """
     Menu of choices for manual individual box management.
     """
@@ -1524,10 +1648,14 @@ class ManualPalletNew(LoginRequiredMixin, TemplateView):
         return target
 
 
-class ManualPalletStatus(LoginRequiredMixin, ListView):
+class ManualPalletStatus(PermissionRequiredMixin, ListView):
     """
     Establish a new pallet for this user.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = Pallet
     template_name = 'fpiweb/manual_pallet_status.html'
@@ -1580,7 +1708,11 @@ class ManualPalletStatus(LoginRequiredMixin, ListView):
         return context
 
 
-class ManualPalletMoveView(LoginRequiredMixin, View):
+class ManualPalletMoveView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     MODE_ENTER_FROM_LOCATION = 'enter from location'
     MODE_ENTER_TO_LOCATION = 'enter to location'
@@ -1817,7 +1949,11 @@ class ManualPalletMoveView(LoginRequiredMixin, View):
         )
 
 
-class ActivityDownloadView(LoginRequiredMixin, View):
+class ActivityDownloadView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     date_format = '%m/%d/%Y'
 
@@ -1886,7 +2022,12 @@ class ActivityDownloadView(LoginRequiredMixin, View):
         return response
 
 
-class ManualBoxStatusView(LoginRequiredMixin, View):
+class ManualBoxStatusView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/manual_box_status.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -1982,7 +2123,12 @@ class ManualBoxStatusView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class ManualNewBoxView(LoginRequiredMixin, View):
+class ManualNewBoxView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/manual_new_box.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -2080,8 +2226,13 @@ class ManualNewBoxView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class ManualCheckinBoxView(LoginRequiredMixin, View):
+class ManualCheckinBoxView(PermissionRequiredMixin, View):
     """ Manually check a box into inventory. """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/manual_check_in_box.html'
 
     MODE_ENTER_BOX_INFO = 'enter_box_info'
@@ -2296,7 +2447,12 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class ManualConsumeBoxView(LoginRequiredMixin, View):
+class ManualConsumeBoxView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/manual_check_out_box.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -2426,7 +2582,12 @@ class ManualConsumeBoxView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class ManualMoveBoxView(LoginRequiredMixin, View):
+class ManualMoveBoxView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/manual_move_box.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -2572,8 +2733,12 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class PalletManagementView(LoginRequiredMixin, View):
+class PalletManagementView(PermissionRequiredMixin, View):
     """Select current pallet, add new pallet, delete pallet"""
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     template_name = 'fpiweb/pallet_management.html'
 
@@ -2605,10 +2770,12 @@ class PalletManagementView(LoginRequiredMixin, View):
         return self.show_page(request)
 
 
+class PalletSelectView(PermissionRequiredMixin, FormView):
 
-# TODO: Might be able to convert this into FormView
-class PalletSelectView(LoginRequiredMixin, FormView):
-
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+    
     template_name = 'fpiweb/pallet_select.html'
     success_url = reverse_lazy('fpiweb:index')
     form_class = PalletSelectForm

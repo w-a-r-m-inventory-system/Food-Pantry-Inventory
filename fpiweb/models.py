@@ -481,6 +481,9 @@ class Box(models.Model):
         ordering = ['box_number']
         app_label = 'fpiweb'
         verbose_name_plural = 'Boxes'
+        permissions = [
+            ('print_labels_box', 'Print Labels'),
+        ]
 
     id_help_text = 'Internal record identifier for box.'
     id = models.AutoField(
@@ -1250,6 +1253,9 @@ class Profile(models.Model):
 
     class Meta:
         app_label = 'fpiweb'
+        permissions = [
+            ('dummy_profile', 'Dummy permission (do not grant to anyone!)'),
+        ]
 
     user = models.OneToOneField(
         User,

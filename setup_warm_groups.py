@@ -34,14 +34,15 @@ else:
 print(f"Clearing {group_name} permissions.")
 group.permissions.clear()
 
-model_codename_pairs = (
-    ('pallet', 'build_pallet'),
-    ('box', 'add_box'),
+app_labels_models_and_codenames = (
+    ('fpiweb', 'pallet', 'build_pallet'),
+    ('fpiweb', 'box', 'add_box'),
 )
 
-for model, codename in model_codename_pairs:
+for app_label, model, codename in app_labels_models_and_codenames:
     try:
         permission = fpiweb_permissions.get(
+            content_type__app_label=app_label,
             content_type__model=model,
             codename=codename
         )
