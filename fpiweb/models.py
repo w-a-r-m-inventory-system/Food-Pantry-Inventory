@@ -841,12 +841,14 @@ class Activity(models.Model):
     # Adjustment Reasons
     FILL_EMPTIED: str = 'Fill Emptied'
     MOVE_ADDED: str = 'Move Added'
+    MOVE_CONSUMED: str = 'Move Consumed'
     CONSUME_ADDED: str = 'Consume Added'
     CONSUME_EMPTIED: str = 'Consume Emptied'
 
     ADJUSTMENT_CODE_CHOICES: list = (
         (FILL_EMPTIED, 'Fill emptied previous contents'),
         (MOVE_ADDED, 'Move added box'),
+        (MOVE_CONSUMED, 'Move consumed the box'),
         (CONSUME_ADDED, 'Consume added box'),
         (CONSUME_EMPTIED, 'Consume emptied previous contents')
     )

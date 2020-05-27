@@ -77,6 +77,21 @@ class BoxItemFormTest(TestCase):
 
     fixtures = ('BoxType', 'Product', 'ProductCategory', 'Constraints')
 
+    def test_box_number_validation(self):
+        box_number = 'blerg123'
+        post_data = {
+            'box_number': box_number,
+            'product': Product.objects.first().pk,
+            'exp_year': 2022,
+        }
+
+        form = BoxItemForm(post_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            f'{box_number} is not a valid Box Number',
+            form.errors.get('box_number'),
+        )
+
     def test_expire_months(self):
         """
         Ensure that start month <= end month

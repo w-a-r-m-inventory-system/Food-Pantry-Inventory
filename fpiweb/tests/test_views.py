@@ -4,7 +4,7 @@ __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
 from bs4 import BeautifulSoup
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib.auth.models import User
 from django.forms.formsets import BaseFormSet
@@ -45,9 +45,14 @@ from fpiweb.tests.utility import \
     logged_in_user
 from fpiweb.views import \
     BoxItemFormView, \
+    BuildPalletError, \
     BuildPalletView, \
     ManualMoveBoxView, \
     ManualPalletMoveView
+
+
+def add_prefix(post_data, prefix):
+    return {f'{prefix}-{k}': v for k, v in post_data.items()}
 
 
 def management_form_post_data(
@@ -56,13 +61,15 @@ def management_form_post_data(
         initial_forms=0,
         min_num_forms=0,
         max_num_forms=100):
-    post_data = {
-        'TOTAL_FORMS': total_forms,
-        'INITIAL_FORMS': initial_forms,
-        'MIN_NUM_FORMS': min_num_forms,
-        'MAX_NUM_FORMS': max_num_forms,
-    }
-    return {f'{prefix}-{k}': v for k, v in post_data.items()}
+    return add_prefix(
+        {
+            'TOTAL_FORMS': total_forms,
+            'INITIAL_FORMS': initial_forms,
+            'MIN_NUM_FORMS': min_num_forms,
+            'MAX_NUM_FORMS': max_num_forms,
+        },
+        prefix
+    )
 
 
 def formset_form_post_data(prefix, form_index, form_data):
@@ -403,7 +410,10 @@ class BuildPalletViewTest(TestCase):
             PalletSelectForm,
         )
 
-        pallet = Pallet.objects.create()
+        # -------------------------------------------------
+        # Pallet selected
+        # -------------------------------------------------
+        pallet = Pallet.objects.create(name="test pallet")
 
         response = client.post(
             self.url,
@@ -424,10 +434,10 @@ class BuildPalletViewTest(TestCase):
 
         pallet_form = response.context.get('pallet_form')
         self.assertIsInstance(pallet_form, HiddenPalletForm)
-        self.assertEqual(
-            pallet,
-            pallet_form.initial.get('pallet')
-        )
+
+        pallet_from_context = pallet_form.initial.get('pallet')
+        self.assertEqual(pallet, pallet_from_context)
+        self.assertEqual(Pallet.FILL, pallet_from_context.pallet_status)
 
     def test_post_pallet_name_form(self):
 
@@ -451,6 +461,9 @@ class BuildPalletViewTest(TestCase):
             PalletNameForm,
         )
 
+        # -------------------------------------------------
+        # pallet name supplied
+        # -------------------------------------------------
         pallet_name = "nuevo palet"
         response = client.post(
             self.url,
@@ -471,10 +484,13 @@ class BuildPalletViewTest(TestCase):
 
         pallet_form = response.context.get('pallet_form')
         self.assertIsInstance(pallet_form, HiddenPalletForm)
+
+        pallet = pallet_form.initial.get('pallet')
         self.assertEqual(
             Pallet.objects.get(name=pallet_name),
-            pallet_form.initial.get('pallet'),
+            pallet,
         )
+        self.assertEqual(Pallet.FILL, pallet.pallet_status)
 
     def test_post_process_box_forms(self):
 
@@ -552,6 +568,200 @@ class BuildPalletViewTest(TestCase):
                 box_number__in={b.box_number for b in boxes}
             )
         )
+
+    @staticmethod
+    def get_pallet_form(pallet):
+        return HiddenPalletForm(
+            add_prefix(
+                {'pallet': pallet.pk},
+                BuildPalletView.hidden_pallet_form_prefix
+            ),
+            prefix=BuildPalletView.hidden_pallet_form_prefix,
+        )
+
+    @staticmethod
+    def get_build_pallet_form(location):
+        return BuildPalletForm(
+            add_prefix(
+                {
+                    'loc_row': location.loc_row.pk,
+                    'loc_bin': location.loc_bin.pk,
+                    'loc_tier': location.loc_tier.pk,
+                },
+                BuildPalletView.build_pallet_form_prefix
+            ),
+            prefix=BuildPalletView.build_pallet_form_prefix
+        )
+
+    @staticmethod
+    def get_box_item_form_data(box_number, product, exp_year=None):
+        if not exp_year:
+            exp_year = timezone.now().year + 2
+
+        return {
+            'box_number': box_number,
+            'product': product.pk,
+            'exp_year': exp_year,
+        }
+
+    def test_prepare_pallet_and_pallet_boxes__duplicate_box_numbers(self):
+
+        pallet = Pallet.objects.create(
+            name='duplicate_box_numbers'
+        )
+
+        location = Location.get_location('01', '02', 'B1')
+
+        box_number = BoxNumber.get_next_box_number()
+
+        product1, product2 = Product.objects.all()[:2]
+
+        pallet_form = self.get_pallet_form(pallet)
+        build_pallet_form = self.get_build_pallet_form(location)
+
+        post_data = management_form_post_data(
+            BuildPalletView.formset_prefix,
+            2
+        )
+
+        post_data.update(
+            formset_form_post_data(
+                BuildPalletView.formset_prefix,
+                0,
+                self.get_box_item_form_data(
+                    box_number,
+                    product1,
+                )
+            )
+        )
+
+        post_data.update(
+            formset_form_post_data(
+                BuildPalletView.formset_prefix,
+                1,
+                self.get_box_item_form_data(
+                    box_number,
+                    product2,
+                )
+            )
+        )
+
+        box_forms = BuildPalletView.BoxFormFactory(
+            post_data,
+            prefix=BuildPalletView.formset_prefix
+        )
+
+        self.assertTrue(pallet_form.is_valid())
+        self.assertTrue(build_pallet_form.is_valid())
+        self.assertTrue(box_forms.is_valid())
+
+        view = BuildPalletView()
+        pattern = f"Duplicate box numbers: {box_number}"
+        with self.assertRaisesRegex(BuildPalletError, pattern):
+            view.prepare_pallet_and_pallet_boxes(
+                pallet_form,
+                build_pallet_form,
+                box_forms,
+            )
+
+    def test_prepare_pallet_and_pallet_boxes__successful_run(self):
+
+        pallet = Pallet.objects.create(
+            name='prepare pallet & boxes'
+        )
+
+        location = Location.get_location('01', '02', 'C1')
+
+        pallet_form = self.get_pallet_form(pallet)
+        build_pallet_form = self.get_build_pallet_form(location)
+
+        product1, product2 = Product.objects.all()[2:4]
+
+        box_number1 = BoxNumber.get_next_box_number()
+        Box.objects.create(
+            box_number=box_number1,
+            box_type=Box.box_type_default(),
+        )
+        exp_year1 = timezone.now().year + 1
+
+        box_number2 = BoxNumber.get_next_box_number()
+        Box.objects.create(
+            box_number=box_number2,
+            box_type=Box.box_type_default(),
+        )
+        exp_year2 = timezone.now().year + 2
+
+        post_data = management_form_post_data(
+            BuildPalletView.formset_prefix,
+            2
+        )
+
+        post_data.update(
+            formset_form_post_data(
+                BuildPalletView.formset_prefix,
+                0,
+                self.get_box_item_form_data(
+                    box_number1,
+                    product1,
+                    exp_year=exp_year1,
+                )
+            )
+        )
+
+        post_data.update(
+            formset_form_post_data(
+                BuildPalletView.formset_prefix,
+                1,
+                self.get_box_item_form_data(
+                    box_number2,
+                    product2,
+                    exp_year=exp_year2,
+                )
+            )
+        )
+
+        box_forms = BuildPalletView.BoxFormFactory(
+            post_data,
+            prefix=BuildPalletView.formset_prefix
+        )
+
+        self.assertTrue(pallet_form.is_valid())
+        self.assertTrue(build_pallet_form.is_valid())
+        self.assertTrue(box_forms.is_valid())
+
+        self.assertNotEqual(box_number1, box_number2)
+
+        view = BuildPalletView()
+        pallet_out, location_out, boxes_by_box_number = \
+            view.prepare_pallet_and_pallet_boxes(
+                pallet_form,
+                build_pallet_form,
+                box_forms,
+            )
+
+        self.assertEqual(location, pallet_out.location)
+        self.assertEqual(Pallet.FILL, pallet_out.pallet_status)
+
+        self.assertEqual(location, location_out)
+
+        self.assertEqual(
+            {box_number1, box_number2},
+            boxes_by_box_number.keys(),
+        )
+
+        pallet_box1 = boxes_by_box_number[box_number1]
+        self.assertEqual(box_number1, pallet_box1.box_number)
+        self.assertEqual(pallet, pallet_box1.pallet)
+        self.assertEqual(box_number1, pallet_box1.box.box_number)
+        self.assertEqual(product1, pallet_box1.product)
+        self.assertEqual(exp_year1, pallet_box1.exp_year)
+
+        pallet_box2 = boxes_by_box_number[box_number2]
+        self.assertEqual(box_number2, pallet_box2.box_number)
+        self.assertEqual(pallet, pallet_box2.pallet)
+        self.assertEqual(box_number2, pallet_box2.box.box_number)
+        self.assertEqual(product2, pallet_box2.product)
+        self.assertEqual(exp_year2, pallet_box2.exp_year)
 
 
 class ManualMoveBoxViewTest(TestCase):
@@ -878,11 +1088,14 @@ class ManualPalletMoveViewTest(TestCase):
         from_location = Location.get_location('01', '03', 'A1')
         to_location = Location.get_location('01', '03', 'A2')
 
+        box_type = Box.box_type_default()
         box = Box.objects.create(
-            box_type=Box.box_type_default(),
+            box_type=box_type,
             location=from_location,
             product=Product.objects.first(),
             exp_year=timezone.now().year + 2,
+            date_filled=timezone.now() - timedelta(days=30),
+            quantity=box_type.box_type_qty
         )
 
         response = client.post(
@@ -963,11 +1176,14 @@ class ManualPalletMoveViewTest(TestCase):
         from_location = Location.get_location('02', '02', 'A1')
         to_location = Location.get_location('02', '02', 'C1')
 
+        box_type = Box.box_type_default()
         box = Box.objects.create(
-            box_type=Box.box_type_default(),
+            box_type=box_type,
             location=from_location,
             product=Product.objects.first(),
-            exp_year=timezone.now().year + 2
+            exp_year=timezone.now().year + 2,
+            date_filled=timezone.now() - timedelta(days=5),
+            quantity=box_type.box_type_qty,
         )
 
         response = client.post(
@@ -990,4 +1206,41 @@ class ManualPalletMoveViewTest(TestCase):
             box.location_id,
         )
         self.assertContains(response, '1 boxes moved to: row 02, bin 02, tier C1.')
+
+    def test_get_pallet_and_box_count(self):
+
+        from_location = Location.get_location('01', '01', 'A1')
+        to_location = Location.get_location('01', '01', 'A2')
+
+        box_type = Box.box_type_default()
+        box = Box.objects.create(
+            box_type=box_type,
+            location=from_location,
+            product=Product.objects.first(),
+            exp_year=timezone.now().year + 3,
+            date_filled=timezone.now() - timedelta(days=60),
+            quantity=box_type.box_type_qty,
+        )
+
+        pallet, box_count = ManualPalletMoveView.get_pallet_and_box_count(
+            from_location,
+            to_location,
+        )
+
+        self.assertEqual(1, box_count)
+        self.assertIsInstance(pallet, Pallet)
+        self.assertEqual(
+            to_location.pk,
+            pallet.location_id
+        )
+        self.assertRegex(
+            pallet.name,
+            r'temp\d+',
+        )
+        self.assertEqual(
+            Pallet.MOVE,
+            pallet.pallet_status,
+        )
+
+
 

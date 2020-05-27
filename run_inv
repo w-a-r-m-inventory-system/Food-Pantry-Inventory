@@ -31,7 +31,7 @@ fi
 run_server() {
   cd $ROOT/log
   # echo "My PID is $$ "
-  $PYTHON $MANAGE_CMD runserver $HOST_IP:$SERVER_PORT > root.log 2>%1
+  $PYTHON $MANAGE_CMD runserver $HOST_IP:$SERVER_PORT > root.log 2>&1
 }
 
 # start Django server as a background task
@@ -40,7 +40,7 @@ run_server &
 
 # capture pid of the background tasks
 ROOT_PID=$!
-SERVER_PID=$(ps -f | grep runserver | awk "\$3 = $ROOT_PID { print \$2 }") >/dev/null 2>%1
+SERVER_PID=$(ps -f | grep runserver | awk "\$3 = $ROOT_PID { print \$2 }") >/dev/null 2>&1
 # echo "root: $ROOT_PID, task: $SERVER_PID"
 
 # wait a moment for the server to start up
