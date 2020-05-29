@@ -1259,6 +1259,7 @@ class Profile(models.Model):
         app_label = 'fpiweb'
         permissions = [
             ('dummy_profile', 'Dummy permission (do not grant to anyone!)'),
+            ('view_system_maintenance', 'View System Maintenance'),
         ]
 
     user = models.OneToOneField(

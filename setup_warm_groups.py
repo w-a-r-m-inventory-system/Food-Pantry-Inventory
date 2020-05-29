@@ -12,20 +12,49 @@ from django.contrib.auth.models import Group, Permission
 
 
 GROUPS_AND_PERMISSIONS = {
-    'Volunteers': (
-        ('fpiweb', 'box', 'add_box'),
-        ('fpiweb', 'box', 'check_in_box'),
-        ('fpiweb', 'box', 'check_out_box'),
-        ('fpiweb', 'box', 'move_box'),
-        ('fpiweb', 'box', 'view_box'),
-        ('fpiweb', 'pallet', 'build_pallet'),
-        ('fpiweb', 'pallet', 'move_pallet'),
-        ('fpiweb', 'pallet', 'view_pallet'),
-    ),
-    'Staff': (
-        
-    ),
+    'Volunteers': {
+        'fpiweb': {
+            'box': [
+                'add_box',
+                'check_in_box',
+                'check_out_box',
+                'move_box',
+                'view_box'
+            ],
+            'pallet': [
+                'build_pallet',
+                'move_pallet',
+                'view_pallet',
+            ],
+        },
+    },
+    'Staff': {
+        'fpiweb': {
+            'locbin': [
+                'add_locbin',
+                'change_locbin',
+                'delete_locbin',
+                'view_locbin',
+            ],
+            'locrow': [
+                'add_locrow',
+                'change_locrow',
+                'delete_locrow',
+                'view_locrow',
+            ],
+            'profile': [
+                'view_system_maintenance',
+            ],
+        },
+    },
 }
+
+
+def iterate_permissions(permissions):
+    for app_label, models in permissions.items():
+        for model, model_permissions in models.items():
+            for permission in model_permissions:
+                yield app_label, model, permission
 
 
 def setup_group_permissions(group, permissions):
@@ -33,7 +62,7 @@ def setup_group_permissions(group, permissions):
     print(f"Clearing {group.name} permissions.")
     group.permissions.clear()
 
-    for app_label, model, codename in permissions:
+    for app_label, model, codename in iterate_permissions(permissions):
         try:
             permission = Permission.objects.get(
                 content_type__app_label=app_label,

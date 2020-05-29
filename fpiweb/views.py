@@ -222,7 +222,7 @@ class MaintenanceView(PermissionRequiredMixin, TemplateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_system_maintenance',
     )
 
     template_name = 'fpiweb/maintenance.html'
@@ -234,7 +234,7 @@ class LocRowListView(PermissionRequiredMixin, ListView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_locrow',
     )
 
     model = LocRow
@@ -248,7 +248,7 @@ class LocRowCreateView(PermissionRequiredMixin, CreateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.add_locrow',
     )
 
     model = LocRow
@@ -267,7 +267,7 @@ class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.change_locrow',
     )
 
     model = LocRow
@@ -283,7 +283,7 @@ class LocRowDeleteView(PermissionRequiredMixin, DeleteView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.delete_locrow',
     )
 
     model = LocRow
@@ -311,10 +311,8 @@ class LocBinListView(PermissionRequiredMixin, ListView):
     """
     List of existing bins using a generic ListView.
     """
-
-
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_locbin',
     )
 
     model = LocBin
@@ -328,7 +326,7 @@ class LocBinCreateView(PermissionRequiredMixin, CreateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.add_locbin',
     )
 
     model = LocBin
@@ -347,7 +345,7 @@ class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.change_locbin',
     )
 
     model = LocBin
@@ -377,7 +375,7 @@ class LocBinDeleteView(PermissionRequiredMixin, DeleteView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.delete_locbin',
     )
 
     model = LocBin
