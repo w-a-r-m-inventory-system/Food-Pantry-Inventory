@@ -1388,7 +1388,7 @@ class ManualMenuView(PermissionRequiredMixin, TemplateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_pallet',
     )
 
     template_name = 'fpiweb/manual_menu.html'
@@ -1440,7 +1440,7 @@ class ManualPalletMenuView(PermissionRequiredMixin, TemplateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_pallet',
     )
 
     template_name = 'fpiweb/manual_pallet_menu.html'
@@ -1492,10 +1492,14 @@ class ManualPalletMenuView(PermissionRequiredMixin, TemplateView):
         return context
 
 
-class ManualBoxMenuView(LoginRequiredMixin, TemplateView):
+class ManualBoxMenuView(PermissionRequiredMixin, TemplateView):
     """
     Menu of choices for manual individual box management.
     """
+    permission_required = (
+        'fpiweb.view_box',
+    )
+
     template_name = 'fpiweb/manual_ind_box_menu.html'
 
     def get_context_data(self, **kwargs):
@@ -1711,7 +1715,7 @@ class ManualPalletStatus(PermissionRequiredMixin, ListView):
 class ManualPalletMoveView(PermissionRequiredMixin, View):
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.move_pallet',
     )
 
     MODE_ENTER_FROM_LOCATION = 'enter from location'
@@ -2025,7 +2029,7 @@ class ActivityDownloadView(PermissionRequiredMixin, View):
 class ManualBoxStatusView(PermissionRequiredMixin, View):
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_box',
     )
 
     template_name = 'fpiweb/manual_box_status.html'
@@ -2126,7 +2130,7 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
 class ManualNewBoxView(PermissionRequiredMixin, View):
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.add_box',
     )
 
     template_name = 'fpiweb/manual_new_box.html'
@@ -2230,7 +2234,7 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
     """ Manually check a box into inventory. """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.check_in_box',
     )
 
     template_name = 'fpiweb/manual_check_in_box.html'
@@ -2450,7 +2454,7 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
 class ManualConsumeBoxView(PermissionRequiredMixin, View):
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.check_out_box',
     )
 
     template_name = 'fpiweb/manual_check_out_box.html'
@@ -2585,7 +2589,7 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
 class ManualMoveBoxView(PermissionRequiredMixin, View):
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.move_box',
     )
 
     template_name = 'fpiweb/manual_move_box.html'
@@ -2775,7 +2779,7 @@ class PalletSelectView(PermissionRequiredMixin, FormView):
     permission_required = (
         'fpiweb.dummy_profile',
     )
-    
+
     template_name = 'fpiweb/pallet_select.html'
     success_url = reverse_lazy('fpiweb:index')
     form_class = PalletSelectForm
