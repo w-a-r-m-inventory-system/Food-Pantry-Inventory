@@ -2,24 +2,34 @@
 Individual Box Instructions
 ###########################
 
-Describe how to manage individual boxes of product.
-
-Start
-++++++
-After logging on click on **Manual Box and Pallet Maintence** as shown below to begin processing
-a pallet. You will be directed to the **Manual Box and Pallet Management** screen.
+After logging in click on the blue **Manual Box and Pallet Maintence** button as shown
+below to begin processing a box or a pallet. You will be directed to the
+**Manual Box and Pallet Management** screen.
 
 .. image:: manual_box_images/ManualBoxStart_0_00_06.png
+
 
 Manual Box and Pallet Management Screen
 ++++++++++++++++++++++++++++++++++++++++
 
-To continue to manage individual boxes of product click on **Manage an individual
-box manually**.
+To manage a pallet manually click on the **Manage a pallet manually** link.
+*Add screen here showing where to click. Currently screen below is not implemented
+correctly. Its just there as a placeholder.*
 
 .. image:: manual_box_images/ManageManualBox_0_00_19.png
 
-Manual Box Management Screen
+To continue to manage individual boxes of product click on **Manage an individual
+box manually** link
+
+.. image:: manual_box_images/ManageManualBox_0_00_19.png
+
+Manual Pallet Screens
++++++++++++++++++++++
+
+**This section will cover managing a pallet manually**
+
+
+Manual Box Management Screens
 +++++++++++++++++++++++++++++
 
 You will come to the **Manual Box Management** screen.
@@ -38,7 +48,7 @@ Of course you can also 'Return to manual menu'. Each of the 5 menu items will be
 below.
 
 Manual Status a Box Screen
-++++++++++++++++++++++++++++
+============================
 
 From Manual Box Management clicking on **Check the status of a box** will bring you to the
 **Manual Status a Box** screen. Here you can check th box status by entering a 5 digit
@@ -55,7 +65,7 @@ number.
 From this screen you can click on **Check another box** or **Return to Manual Box Menu**.
 
 New Box Screen
-++++++++++++++++
+================
 
 With this screen you add a new box following the 4 steps listed below.
 
@@ -77,7 +87,7 @@ another box** or **Return to Manual Box Menu**.
 .. image:: manual_box_images/AddNewBoxFailure_0_01_14.png
 
 Checkin a Box Screen
-++++++++++++++++++++++
+=====================
 
 With this screen you will add all the information needed to check in a box of food
 items to warehouse inventory. The blank **Checkin Box** screen is shown below.
@@ -135,7 +145,7 @@ Management** screen to start over.
 .. image:: manual_box_images/CheckinBoxFailure_0_03_05.png
 
 Consume (Empty) a Box Screen
-++++++++++++++++++++++++++++++
+=============================
 
 To consume or empty a box enter a 5 digit box number in the **Box Number** field. Then
 click on the blue **Search** button.
@@ -162,4 +172,28 @@ page
 .. image:: manual_box_images/ConsumeBoxFailure_0_03_40.png
 
 Move Box Screen
-+++++++++++++++++
+================
+
+To move a box to a different pallet enter the 5 digit box number in the **Box Number**
+field and then click on the blue **Search** button.
+
+.. image:: manual_box_images/MoveBox_0_03_55.png
+
+The next **Move Box** screen contains all the box information. In this screen
+you can choose a new location by entering new **Row**, **Bin**, **Tier** locations. Click
+on the small triangle to the right of each **Row**, **Bin**, **Tier** to get your drop down
+list choices. After choosing your new location entries click on the blue **Move**
+button to change the information in the database.
+
+.. image:: manual_box_images/MoveBoxFillIn_0_04_19.png
+
+If there are no errors you should see a screen similar to the one below. Click on the
+**Return to Manual Box Menu** link to return to the **Manual Box Management**
+screen.
+
+.. image:: manual_box_images/MoveBoxSuccess_0_04_23.png
+
+In case of error you will see a screen similar to this with an error message. Click on
+the **Cancel Box Move** link to return to the **Return to Manual Box Menu**.
+
+.. image:: manual_box_images/MoveBoxFailure_0_04_32.png
