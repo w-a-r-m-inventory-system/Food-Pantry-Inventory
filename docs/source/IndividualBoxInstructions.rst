@@ -117,9 +117,49 @@ sure it is a later month in the year than the **Exp month start** field. So if y
 **April** in the **Exp month start** field, then you must enter **May** or a later month
 in the **Exp month end** field.
 
+When you are through with the **Exp month** fields click on the blue **Set Box Checkin
+Information** button to enter all the Checkin data.
+
+.. image:: manual_box_images/CheckinBoxExpMonth_0_02_08.png
+
+If everything has worked correctly you should see the following screen below. Simply click
+on the **Return to Manual Box Menu** to continue.
+
+.. image:: manual_box_images/CheckinBoxSuccess_0_02_12.png
+
+If everything has not worked correctly you should see a screen like the one below. The
+red arrows point to what has to be fixed before a box can be Checked in. Click on the
+**Cancel Box Checkin** link at the bottom of the page to go back to the **Manual Box
+Management** screen to start over.
+
+.. image:: manual_box_images/CheckinBoxFailure_0_03_05.png
 
 Consume (Empty) a Box Screen
 ++++++++++++++++++++++++++++++
+
+To consume or empty a box enter a 5 digit box number in the **Box Number** field. Then
+click on the blue **Search** button.
+
+.. image:: manual_box_images/ConsumeBox_0_03_15.png
+
+If everything went ok you should see the box information on the next screen. The box
+information includes the Box Number, the Box Type, the Box Contents, the year the
+Contents Expire and the location- Row, Bin, Tier. Click on the blue **Consume** button
+to continue if all the information seems correct.
+
+.. image:: manual_box_images/ConsumeBoxMessage_0_03_22.png
+
+The next screen should contain a message stating that a box 'has been succesfully
+consumed'. Click on the **Return to Manual Box Menu** link to return to the **Manual
+Box Management** page.
+
+.. image:: manual_box_images/ConsumeBoxSuccess_0_03_22.png
+
+In case of error you should see a screen similar to the one below listing the error.
+Click on the **Cancel Box Consumption** link to return to the **Manual Box Management**
+page
+
+.. image:: manual_box_images/ConsumeBoxFailure_0_03_40.png
 
 Move Box Screen
 +++++++++++++++++
