@@ -33,7 +33,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
-            time.sleep(10)
+            time.sleep(5)
         else:
             time.sleep(2)
 
@@ -50,6 +50,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         cls.browser = webdriver.Firefox()
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
+        # wierd size is so I can get entire web page recorded
         cls.browser.set_window_size(2100, 1181)
 
 
@@ -73,6 +74,21 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
     def tearDownClass(cls):
         cls.browser.quit()
         super().tearDownClass()
+
+    # tests row, bin, tier location settings
+    def set_location_test(self):
+        self.browser.find_element_by_xpath("//*[@id='id_loc_row']").click()
+        self.delay_for_recording()
+        row_location = Select(self.browser.find_element_by_id("id_loc_row"))
+        row_location.select_by_index(self.select_random_dropdown(4))
+        self.browser.find_element_by_xpath("//*[@id='id_loc_bin']").click()
+        self.delay_for_recording()
+        bin_location = Select(self.browser.find_element_by_id("id_loc_bin"))
+        bin_location.select_by_index(self.select_random_dropdown(9))
+        self.browser.find_element_by_xpath("//*[@id='id_loc_tier']").click()
+        self.delay_for_recording()
+        tier_location = Select(self.browser.find_element_by_id("id_loc_tier"))
+        tier_location.select_by_index(self.select_random_dropdown(6))
 
 
     def test_1LogIn(self):
@@ -156,6 +172,8 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
         box_number = self.browser.find_element_by_id("id_box_number")
         box_number.send_keys("77777")
+        self.browser.find_element_by_xpath("//*[@id='id_box_type']").click()
+        self.delay_for_recording()
         box_type_select = Select(self.browser.find_element_by_id("id_box_type"))
         box_type_select.select_by_index(self.select_random_dropdown(2))
         add_button = self.browser.find_element_by_xpath("//input[@value='Add Box']")
@@ -171,6 +189,8 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.browser.find_element_by_link_text("Add another box").click()
         box_number = self.browser.find_element_by_id("id_box_number")
         box_number.send_keys("77777")
+        self.browser.find_element_by_xpath("//*[@id='id_box_type']").click()
+        self.delay_for_recording()
         box_type_select = Select(self.browser.find_element_by_id("id_box_type"))
         box_type_select.select_by_index(self.select_random_dropdown(2))
         add_button = self.browser.find_element_by_xpath("//input[@value='Add Box']")
@@ -199,20 +219,24 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.assertIn("Checkin a Box", self.browser.title)
         box_number = self.browser.find_element_by_id("id_box_number")
         box_number.send_keys("12345")
+        # line below is to show drop down for recording purposes
+        self.browser.find_element_by_xpath("//*[@id='id_product']").click()
+        self.delay_for_recording()
         select_product = Select(self.browser.find_element_by_id("id_product"))
         select_product.select_by_index(self.select_random_dropdown(19))
 
-        row_location = Select(self.browser.find_element_by_id("id_loc_row"))
-        row_location.select_by_index(self.select_random_dropdown(4))
-        bin_location = Select(self.browser.find_element_by_id("id_loc_bin"))
-        bin_location.select_by_index(self.select_random_dropdown(9))
-        tier_location = Select(self.browser.find_element_by_id("id_loc_tier"))
-        tier_location.select_by_index(self.select_random_dropdown(6))
+        self.set_location_test()
 
+        self.browser.find_element_by_xpath("//*[@id='id_exp_year']").click()
+        self.delay_for_recording()
         exp_year = Select(self.browser.find_element_by_id("id_exp_year"))
         exp_year.select_by_index(self.select_random_dropdown(4))
+        self.browser.find_element_by_xpath("//*[@id='id_exp_month_end']").click()
+        self.delay_for_recording()
         exp_month_start = Select(self.browser.find_element_by_id("id_exp_month_start"))
         exp_month_start.select_by_index(1)
+        self.browser.find_element_by_xpath("//*[@id='id_exp_month_end']").click()
+        self.delay_for_recording()
         exp_month_end = Select(self.browser.find_element_by_id("id_exp_month_end"))
         exp_month_end.select_by_index(self.select_random_dropdown(12))
 
@@ -230,20 +254,23 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.assertIn("Checkin a Box", self.browser.title)
         box_number = self.browser.find_element_by_id("id_box_number")
         box_number.send_keys("77777")
+        self.browser.find_element_by_xpath("//*[@id='id_product']").click()
+        self.delay_for_recording()
         select_product = Select(self.browser.find_element_by_id("id_product"))
         select_product.select_by_index(self.select_random_dropdown(19))
 
-        row_location = Select(self.browser.find_element_by_id("id_loc_row"))
-        row_location.select_by_index(self.select_random_dropdown(4))
-        bin_location = Select(self.browser.find_element_by_id("id_loc_bin"))
-        bin_location.select_by_index(self.select_random_dropdown(9))
-        tier_location = Select(self.browser.find_element_by_id("id_loc_tier"))
-        tier_location.select_by_index(self.select_random_dropdown(6))
+        self.set_location_test()
 
+        self.browser.find_element_by_xpath("//*[@id='id_exp_year']").click()
+        self.delay_for_recording()
         exp_year = Select(self.browser.find_element_by_id("id_exp_year"))
         exp_year.select_by_index(self.select_random_dropdown(4))
+        self.browser.find_element_by_xpath("//*[@id='id_exp_month_start']").click()
+        self.delay_for_recording()
         exp_month_start = Select(self.browser.find_element_by_id("id_exp_month_start"))
         exp_month_start.select_by_index(1)
+        self.browser.find_element_by_xpath("//*[@id='id_exp_month_end']").click()
+        self.delay_for_recording()
         exp_month_end = Select(self.browser.find_element_by_id("id_exp_month_end"))
         exp_month_end.select_by_index(self.select_random_dropdown(12))
 
@@ -261,7 +288,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
 
     def test_6Checkout_a_box(self):
-        fname = "test_CheckinBox"
+        fname = "test_Checkout_a_box"
         # Start out in Manual Box Management
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
@@ -323,12 +350,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
 
         # Test does not check if moved to same location, uses random choices
-        row_location = Select(self.browser.find_element_by_id("id_loc_row"))
-        row_location.select_by_index(self.select_random_dropdown(4))
-        bin_location = Select(self.browser.find_element_by_id("id_loc_bin"))
-        bin_location.select_by_index(self.select_random_dropdown(9))
-        tier_location = Select(self.browser.find_element_by_id("id_loc_tier"))
-        tier_location.select_by_index(self.select_random_dropdown(6))
+        self.set_location_test()
 
         move_button = self.browser.find_element_by_xpath("//input[@value='Move']")
         move_button.submit()
