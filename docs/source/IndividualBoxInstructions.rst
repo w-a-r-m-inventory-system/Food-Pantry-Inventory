@@ -18,34 +18,34 @@ correctly. Its just there as a placeholder.*
 
 .. image:: manual_box_images/ManageManualBox_0_00_19.png
 
-To continue to manage individual boxes of product click on **Manage an individual
-box manually** link
+To manage individual boxes of product click on the **Manage an individual box manually**
+link.
 
 .. image:: manual_box_images/ManageManualBox_0_00_19.png
 
-Manual Pallet Screens
-+++++++++++++++++++++
+Manual Pallet Management Screens
+++++++++++++++++++++++++++++++++
 
-**This section will cover managing a pallet manually**
-
+*Add screen here showing where to click.*
 
 Manual Box Management Screens
 +++++++++++++++++++++++++++++
 
 You will come to the **Manual Box Management** screen.
+Here you will see 5 menu items.
+
++ **Check the status of a box**
++ **Add a new box to inventory**
++ **Checkin a new box**
++ **Checkout (consume product in) a box**
++ **Move a box**
 
 .. image:: manual_box_images/ManualBox5Items_0_00_30.png
 
-Here you will see 5 menu items.
-
-+ Check the status of a box
-+ Add a new box to inventory
-+ Checkin a new box
-+ Checkout (consume product in) a box
-+ Move a box
-
-Of course you can also 'Return to manual menu'. Each of the 5 menu items will be discussed
+Of course you can also **Return to manual menu**. Each of the 5 menu items will be discussed
 below.
+
+|
 
 Manual Status a Box Screen
 ============================
@@ -64,57 +64,63 @@ number.
 
 From this screen you can click on **Check another box** or **Return to Manual Box Menu**.
 
+|
+
 New Box Screen
 ================
 
-With this screen you add a new box following the 4 steps listed below.
+With this screen you can add a new box following the 4 steps listed below.
 
-    (1) Enter a 5 digit box number
-    (2) Click on the drop down list triangle at the far right
-    (3) Choose an item from the drop down list
-    (4) Finally click on the **Add Box** button- hidden from view in the below graphic
+    (1) Enter a 5 digit box number.
+    (2) Click on the drop down list triangle at the far right.
+    (3) Choose an item from the drop down list.
+    (4) Finally click on the **Add Box** button (hidden from view in the below graphic).
 
 .. image:: manual_box_images/AddNewBox_0_00_58.png
 
-After clicking on **Add Box** you should see the following screen. From there ...
+After clicking on **Add Box** you should see the following screen. From there you can
+**Add another box** or **Return to Manual Box Menu** by clicking on the links in the
+**New Box** screen.
 
 .. image:: manual_box_images/AddNewBoxSuccess_0_01_05.png
 
 If there was an error you will see the following screen. Simply click on **Cancel Adding
-a Box** to return to the **Manual Box Management** screen. From there you can click on **Add
-another box** or **Return to Manual Box Menu**.
+a Box** to return to the **Manual Box Management** screen.
 
 .. image:: manual_box_images/AddNewBoxFailure_0_01_14.png
+
+|
 
 Checkin a Box Screen
 =====================
 
-With this screen you will add all the information needed to check in a box of food
+With this screen you can add all the information needed to check in a box of food
 items to warehouse inventory. The blank **Checkin Box** screen is shown below.
 
 .. image:: manual_box_images/CheckinBox_0_01_26.png
 
-The first two items to enter are the box number and product selection. After entering
-the box number click on the small triangle int the circle at the right of the **Product**
-drop down list of Product Selections
+The first two items to enter are the **Box number** and **Product**. With the keyboard
+enter a 5 digit 'Box number' in the **Box number** field. Then click on the small
+triangle int the circle at the right of the **Product** drop down list to select a
+product with your mouse.
 
 .. image:: manual_box_images/CheckinBoxSelectProduct_0_01_31.png
 
-After entering the **Product** then enter the pallet locatio. You will have to enter
-3 different entries.
+After entering the **Product** the next step is to  enter the pallet location.
+You will have to select 3 different entries with your mouse.
 
     (1) Row number
-    (2) Bin number (number in a row)
+    (2) Bin number ( Bin number in the length of a row)
     (3) Tier number (level up or down
 
 Each entry uses a drop down list and you will make a choice from the drop down list.
 In the graphic below the **Row** and **Bin** numbers have been chosen and the drop down
-list is shown to the **Tier** number.
+list is shown with the **Tier** number.
 
 .. image:: manual_box_images/CheckinBoxLocation_0_01_49.png
 
 After entering the location enter the expiration year by clicking on the small triangle
-and making a selection from the drop down list.
+to the right of the **Exp year** field and making a selection from the drop down list.
 
 .. image:: manual_box_images/CheckinBoxExpYear_0_01_55.png
 
@@ -133,16 +139,18 @@ Information** button to enter all the Checkin data.
 .. image:: manual_box_images/CheckinBoxExpMonth_0_02_08.png
 
 If everything has worked correctly you should see the following screen below. Simply click
-on the **Return to Manual Box Menu** to continue.
+on the **Return to Manual Box Menu** link to continue.
 
 .. image:: manual_box_images/CheckinBoxSuccess_0_02_12.png
 
-If everything has not worked correctly you should see a screen like the one below. The
+If there is an error you should see a screen like the one below. The
 red arrows point to what has to be fixed before a box can be Checked in. Click on the
 **Cancel Box Checkin** link at the bottom of the page to go back to the **Manual Box
 Management** screen to start over.
 
 .. image:: manual_box_images/CheckinBoxFailure_0_03_05.png
+
+|
 
 Consume (Empty) a Box Screen
 =============================
@@ -167,9 +175,11 @@ Box Management** page.
 
 In case of error you should see a screen similar to the one below listing the error.
 Click on the **Cancel Box Consumption** link to return to the **Manual Box Management**
-page
+page.
 
 .. image:: manual_box_images/ConsumeBoxFailure_0_03_40.png
+
+|
 
 Move Box Screen
 ================
@@ -193,7 +203,7 @@ screen.
 
 .. image:: manual_box_images/MoveBoxSuccess_0_04_23.png
 
-In case of error you will see a screen similar to this with an error message. Click on
-the **Cancel Box Move** link to return to the **Return to Manual Box Menu**.
+In case of error you will see a screen similar to the one below with an error message.
+Click onthe **Cancel Box Move** link to return to the **Return to Manual Box Menu**.
 
 .. image:: manual_box_images/MoveBoxFailure_0_04_32.png
