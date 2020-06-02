@@ -13,25 +13,25 @@ Manual Box and Pallet Management Screen
 ++++++++++++++++++++++++++++++++++++++++
 
 To manage a pallet manually click on the **Manage a pallet manually** link.
-*Add screen here showing where to click. Currently screen below is not implemented
-correctly. Its just there as a placeholder.*
-
-.. image:: manual_box_images/ManageManualBox_0_00_19.png
+**Add screen here showing where to click. Currently the user documentation is not
+implmented for this section.**
 
 To manage individual boxes of product click on the **Manage an individual box manually**
-link.
+link as shown below.
 
 .. image:: manual_box_images/ManageManualBox_0_00_19.png
 
 Manual Pallet Management Screens
 ++++++++++++++++++++++++++++++++
 
-*Add screen here showing where to click.*
+**Add screen here showing where to click for manual Pallet Management. Also this
+section should include Manual Pallet Management Screens**
 
 Manual Box Management Screens
 +++++++++++++++++++++++++++++
 
-You will come to the **Manual Box Management** screen.
+If you clicked on the **Manage an individual box manually** link you should be
+directed to the **Manual Box Management** screen.
 Here you will see 5 menu items.
 
 + **Check the status of a box**

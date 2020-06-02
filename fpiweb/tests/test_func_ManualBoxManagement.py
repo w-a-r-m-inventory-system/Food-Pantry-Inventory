@@ -2,6 +2,13 @@ __author__ = 'Mike Rehner'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/21/20"
 
+# This functional test covers  all the Manual Box Management web pages.
+# Basic login is also covered in this functional test.
+# Not all edge cases are covered but I hope I covered the main cases.
+# Test function names  have numbers in them to force order on how they run
+# for video recording.
+# Video recording is used to implement User Documentation.
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from . import utility
@@ -21,7 +28,7 @@ import time
 import random
 import string
 
-class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
+class ManualBoxManagement(StaticLiveServerTestCase):
 
     fixtures = ['BoxType.json', 'LocBin.json', 'LocRow.json', 'LocTier.json',
                 'Location.json', 'ProductCategory.json', 'Product.json',
@@ -29,15 +36,16 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
     test_user = ""
 
-    RECORD = True
+    RECORD = False
     def delay_for_recording(self):
-        # Need to delay for (1) wait for page load (2) recording
+        # Need to delay for (1) recording or  (2) wait for new page to load
         if self.RECORD:
             time.sleep(5)
         else:
             time.sleep(2)
 
 
+    # used to select a random element from a dropdown list
     def select_random_dropdown(self, dropdown_int):
         random.seed()
         # return ''.join(random.choice(string.digits) for _i in range(dropdown_int))
@@ -50,12 +58,13 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         cls.browser = webdriver.Firefox()
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
-        # wierd size is so I can get entire web page recorded
+        # weird size is so I can get the entire web page recorded without scrolling
         cls.browser.set_window_size(2100, 1181)
 
 
+    # sets up user to login with StaticLIveServerTestCase
     def setUp(self):
-        super(ManualBoxPalletMaintenance, self).setUp()
+        super(ManualBoxManagement, self).setUp()
         test_user = utility.create_user('test', 'user')
         test_user.set_password(utility.default_password)
         test_user.save()
@@ -75,7 +84,9 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         cls.browser.quit()
         super().tearDownClass()
 
-    # tests row, bin, tier location settings
+
+    # tests row, bin, tier location settings by setting location from the dropdown
+    # lists presented.
     def set_location_test(self):
         self.browser.find_element_by_xpath("//*[@id='id_loc_row']").click()
         self.delay_for_recording()
@@ -91,6 +102,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         tier_location.select_by_index(self.select_random_dropdown(6))
 
 
+    # Tests login
     def test_1LogIn(self):
         self.browser.get(self.live_server_url)
         self.assertIn("Login", self.browser.title)
@@ -108,7 +120,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.browser.get(self.browser.current_url)
         self.assertIn("Welcome to Food Pantry Inventory System", self.browser.title)
 
-        # lets also test logout
+        # Should also test logout sometime in the future.
 
 
     def test_2ManualBoxPalletManagementPage(self):
@@ -132,7 +144,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
 
     def test_3ManualStatusBox(self):
-        fname="test_ManualStatusBox"
+        fname="test_3ManualStatusBox"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
@@ -161,6 +173,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         if self.browser.title.__contains__("Server Error"):
             self.fail("Test fails when entering invalid Box Number, 500 page displayed in " +
                       fname)
+
 
     def test_4AddNewBox(self):
         fname= "test_AddNewBox"
@@ -209,7 +222,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
 
     def test_5CheckinBox(self):
-        fname = "test_CheckinBox"
+        fname = "test_5CheckinBox"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
@@ -288,7 +301,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
 
     def test_6Checkout_a_box(self):
-        fname = "test_Checkout_a_box"
+        fname = "test_6Checkout_a_box"
         # Start out in Manual Box Management
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
@@ -335,7 +348,7 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
 
 
     def test_7Move_a_box(self):
-        fname = "test_Move_a_box"
+        fname = "test_7Move_a_box"
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
         self.browser.find_element_by_link_text("Move a box").click()
@@ -376,14 +389,4 @@ class ManualBoxPalletMaintenance(StaticLiveServerTestCase):
         self.browser.find_element_by_link_text("Cancel Box Move").click()
         self.delay_for_recording()
         self.assertIn("Manual Box Management", self.browser.title)
-
-
-
-
-
-
-
-
-
-
 
