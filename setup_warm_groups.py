@@ -30,6 +30,18 @@ GROUPS_AND_PERMISSIONS = {
     },
     'Staff': {
         'fpiweb': {
+            'activity': [
+                'view_activity',
+            ],
+            'box': [
+                'print_labels_box',
+            ],
+            'constraints': [
+                'add_constraints',
+                'change_constraints',
+                'delete_constraints',
+                'view_constraints',
+            ],
             'locbin': [
                 'add_locbin',
                 'change_locbin',
@@ -41,6 +53,12 @@ GROUPS_AND_PERMISSIONS = {
                 'change_locrow',
                 'delete_locrow',
                 'view_locrow',
+            ],
+            'loctier': [
+                'add_loctier',
+                'change_loctier',
+                'delete_loctier',
+                'view_loctier',
             ],
             'profile': [
                 'view_system_maintenance',

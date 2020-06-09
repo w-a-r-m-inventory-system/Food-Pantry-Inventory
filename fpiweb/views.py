@@ -405,7 +405,7 @@ class LocTierListView(PermissionRequiredMixin, ListView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_loctier',
     )
 
     model = LocTier
@@ -419,7 +419,7 @@ class LocTierCreateView(PermissionRequiredMixin, CreateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.add_loctier',
     )
 
     model = LocTier
@@ -438,7 +438,7 @@ class LocTierUpdateView(PermissionRequiredMixin, UpdateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.change_loctier',
     )
 
     model = LocTier
@@ -468,7 +468,7 @@ class LocTierDeleteView(PermissionRequiredMixin, DeleteView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.delete_loctier',
     )
 
     model = LocTier
@@ -498,7 +498,7 @@ class ConstraintsListView(PermissionRequiredMixin, ListView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_constraints',
     )
 
     model = Constraints
@@ -535,7 +535,7 @@ class ConstraintCreateView(PermissionRequiredMixin, CreateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.add_constraints',
     )
 
     model = Constraints
@@ -555,7 +555,7 @@ class ConstraintUpdateView(PermissionRequiredMixin, UpdateView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.change_constraints',
     )
 
     model = Constraints
@@ -593,7 +593,7 @@ class ConstraintDeleteView(PermissionRequiredMixin, DeleteView):
     """
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.delete_constraints',
     )
 
     model = Constraints
@@ -1265,7 +1265,7 @@ class ScannerView(PermissionRequiredMixin, View):
 class PrintLabelsView(PermissionRequiredMixin, View):
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.print_labels_box',
     )
 
     template_name = 'fpiweb/print_labels.html'
@@ -1954,7 +1954,7 @@ class ManualPalletMoveView(PermissionRequiredMixin, View):
 class ActivityDownloadView(PermissionRequiredMixin, View):
 
     permission_required = (
-        'fpiweb.dummy_profile',
+        'fpiweb.view_activity',
     )
 
     date_format = '%m/%d/%Y'
