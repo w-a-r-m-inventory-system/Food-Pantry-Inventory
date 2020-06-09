@@ -17,34 +17,28 @@ from django.utils.html import escape
 from fpiweb.forms import \
     BuildPalletForm, \
     ConfirmMergeForm, \
-    ExtantBoxNumberForm, \
-    ExistingLocationForm, \
     ExistingLocationWithBoxesForm, \
     FilledBoxNumberForm, \
     HiddenPalletForm, \
     MoveToLocationForm, \
     PalletNameForm, \
     PalletSelectForm
-
 from fpiweb.models import \
     Box, \
     BoxNumber, \
     BoxType, \
     Location, \
-    LocRow, \
-    LocBin, \
-    LocTier, \
     Pallet, \
     PalletBox, \
     Product, \
     Activity, \
     Profile
 from fpiweb.tests.utility import \
-    create_user, \
-    default_password, \
+    grant_required_permissions, \
     logged_in_user
 from fpiweb.views import \
     BoxItemFormView, \
+    BoxNewView, \
     BuildPalletError, \
     BuildPalletView, \
     ManualMoveBoxView, \
@@ -112,6 +106,8 @@ class BoxNewViewTest(TestCase):
             title='Test User',
             user=user,
         )
+
+        grant_required_permissions(user, BoxNewView)
 
         # Client sends HTTP requests and receives HTTP responses like a user's
         # browser.  It doesn't run any JavaScript, for that you need to use
@@ -279,6 +275,14 @@ class BuildPalletViewTest(TestCase):
     url = reverse_lazy('fpiweb:build_pallet')
 
     @staticmethod
+    def setup_user_and_client(first_name: str, last_name: str) -> Client:
+        return logged_in_user(
+            first_name,
+            last_name,
+            BuildPalletView
+        )
+
+    @staticmethod
     def get_build_pallet_form_post_data(location):
         post_data = {
             'loc_row': location.loc_row.pk,
@@ -348,11 +352,7 @@ class BuildPalletViewTest(TestCase):
         return {key: pallet.pk}
 
     def test_get(self):
-
-        user = create_user('bob', 'shrock')
-
-        client = Client()
-        client.force_login(user)
+        client = self.setup_user_and_client('bob', 'shrock')
 
         response = client.get(self.url)
         self.assertEqual(200, response.status_code)
@@ -364,12 +364,7 @@ class BuildPalletViewTest(TestCase):
         self.assertIsInstance(pallet_name_form, PalletNameForm)
 
     def test_post_bad_form_name(self):
-
-        user = create_user('cindy', 'state')
-
-        client = Client()
-        client.force_login(user)
-
+        client = self.setup_user_and_client('cindy', 'state')
         form_name = 'cindy'
         response = client.post(
             self.url,
@@ -385,11 +380,7 @@ class BuildPalletViewTest(TestCase):
         )
 
     def test_post_pallet_select_name_form(self):
-
-        user = create_user('alice', 'shrock')
-
-        client = Client()
-        client.force_login(user)
+        client = self.setup_user_and_client('alice', 'shrock')
 
         # -------------------
         # No pallet selected
@@ -440,11 +431,7 @@ class BuildPalletViewTest(TestCase):
         self.assertEqual(Pallet.FILL, pallet_from_context.pallet_status)
 
     def test_post_pallet_name_form(self):
-
-        user = create_user('doug', 'state')
-
-        client = Client()
-        client.force_login(user)
+        client = self.setup_user_and_client('doug', 'state')
 
         # -----------------------
         # No pallet name entered
@@ -532,10 +519,7 @@ class BuildPalletViewTest(TestCase):
             )
         )
 
-        user = create_user('alan', 'turing')
-
-        client = Client()
-        client.force_login(user)
+        client = self.setup_user_and_client('alan', 'turing')
 
         response = client.post(
             self.url,
@@ -778,11 +762,16 @@ class ManualMoveBoxViewTest(TestCase):
 
     url = reverse_lazy('fpiweb:manual_move_box')
 
-    def test_get(self):
-        user = User.objects.create_user('jdoe3', 'jdoe2@foo.com', 'abc123')
+    @staticmethod
+    def setup_user_and_client(first_name: str, last_name: str) -> Client:
+        return logged_in_user(
+            first_name,
+            last_name,
+            ManualMoveBoxView,
+        )
 
-        client = Client()
-        client.force_login(user)
+    def test_get(self):
+        client = self.setup_user_and_client('john', 'doe3')
 
         response = client.get(self.url)
         self.assertEqual(200, response.status_code)
@@ -798,10 +787,7 @@ class ManualMoveBoxViewTest(TestCase):
         self.assertIsNone(response.context['errors'])
 
     def test_post_box_number_form(self):
-        user = User.objects.create_user('jdoe4', 'jdoe4@foo.com', 'abc123')
-
-        client = Client()
-        client.force_login(user)
+        client = self.setup_user_and_client('john', 'doe4')
 
         box_number = BoxNumber.get_next_box_number()
 
@@ -850,10 +836,7 @@ class ManualMoveBoxViewTest(TestCase):
         # )
 
     def test_post_location_form(self):
-        user = User.objects.create_user('jdoe5', 'jdoe5@foo.com', 'abc123')
-
-        client = Client()
-        client.force_login(user)
+        client = self.setup_user_and_client('john', 'doe5')
 
         box = Box.objects.create(
             box_number=BoxNumber.get_next_box_number(),
@@ -923,9 +906,17 @@ class ManualPalletMoveViewTest(TestCase):
 
     url = reverse_lazy('fpiweb:manual_pallet_move')
 
+    @staticmethod
+    def setup_user_and_client(first_name, last_name):
+        return logged_in_user(
+            first_name,
+            last_name,
+            ManualPalletMoveView,
+        )
+
     def test_get(self):
 
-        client = logged_in_user('fred', 'roush')
+        client = self.setup_user_and_client('fred', 'roush')
 
         response = client.get(self.url)
         self.assertEqual(200, response.status_code)
@@ -942,7 +933,7 @@ class ManualPalletMoveViewTest(TestCase):
 
     def test_post__missing_mode(self):
 
-        client = logged_in_user('emily', 'franzese')
+        client = self.setup_user_and_client('emily', 'franzese')
 
         response = client.post(self.url)
         self.assertContains(response, "Missing mode parameter", status_code=400)
@@ -959,7 +950,7 @@ class ManualPalletMoveViewTest(TestCase):
 
     def test_post__unrecognized_mode(self):
 
-        client = logged_in_user('kaitlin', 'kostiv')
+        client = self.setup_user_and_client('kaitlin', 'kostiv')
 
         mode = 'A suffusion of yellow'
         response = client.post(self.url, {'mode': mode})
@@ -971,7 +962,7 @@ class ManualPalletMoveViewTest(TestCase):
 
     def test_post_from_location_form__form_invalid(self):
 
-        client = logged_in_user('Jerlene', 'Elder')
+        client = self.setup_user_and_client('Jerlene', 'Elder')
 
         mode = ManualPalletMoveView.MODE_ENTER_FROM_LOCATION
 
@@ -993,7 +984,7 @@ class ManualPalletMoveViewTest(TestCase):
         )
 
     def test_post_from_location_form__form_valid(self):
-        client = logged_in_user('Jerlene', 'Elder')
+        client = self.setup_user_and_client('Jerlene', 'Elder')
 
         mode = ManualPalletMoveView.MODE_ENTER_FROM_LOCATION
 
@@ -1027,7 +1018,7 @@ class ManualPalletMoveViewTest(TestCase):
         self.assertIsInstance(form, MoveToLocationForm)
 
     def test_post_to_location_form__form_invalid(self):
-        client = logged_in_user('Jerlene', 'Elder')
+        client = self.setup_user_and_client('Jerlene', 'Elder')
 
         mode = ManualPalletMoveView.MODE_ENTER_TO_LOCATION
 
@@ -1058,7 +1049,7 @@ class ManualPalletMoveViewTest(TestCase):
         }
 
     def test_post_to_location_form__boxes_in_to_location(self):
-        client = logged_in_user('Jerlene', 'Elder')
+        client = self.setup_user_and_client('Jerlene', 'Elder')
 
         from_location = Location.get_location('01', '01', 'B1')
         to_location = Location.get_location('02', '02', 'B1')
@@ -1083,7 +1074,7 @@ class ManualPalletMoveViewTest(TestCase):
         )
 
     def test_post_to_location_form__move_complete(self):
-        client = logged_in_user('Jerlene', 'Elder')
+        client = self.setup_user_and_client('Jerlene', 'Elder')
 
         from_location = Location.get_location('01', '03', 'A1')
         to_location = Location.get_location('01', '03', 'A2')
@@ -1118,7 +1109,7 @@ class ManualPalletMoveViewTest(TestCase):
         )
 
     def test_post_confirm_merge_form__form_invalid(self):
-        client = logged_in_user('Jeremy', 'Bearimy')
+        client = self.setup_user_and_client('Jeremy', 'Bearimy')
 
         mode = ManualPalletMoveView.MODE_CONFIRM_MERGE
 
@@ -1146,7 +1137,7 @@ class ManualPalletMoveViewTest(TestCase):
         }
 
     def test_post_confirm_merge_form__action_change_location(self):
-        client = logged_in_user('Jeremy', 'Bearimy')
+        client = self.setup_user_and_client('Jeremy', 'Bearimy')
 
         from_location = Location.get_location('02', '02', 'A1')
         to_location = Location.get_location('02', '02', 'C1')
@@ -1171,7 +1162,7 @@ class ManualPalletMoveViewTest(TestCase):
         )
 
     def test_post_confirm_merge_form__action_merge_pallets(self):
-        client = logged_in_user('Jeremy', 'Bearimy')
+        client = self.setup_user_and_client('Jeremy', 'Bearimy')
 
         from_location = Location.get_location('02', '02', 'A1')
         to_location = Location.get_location('02', '02', 'C1')
