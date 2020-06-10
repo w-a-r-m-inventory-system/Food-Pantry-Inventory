@@ -25,6 +25,7 @@ MONTH_VALIDATORS = [
     MaxValueValidator(12),
 ]
 
+
 class LocRow(models.Model):
     """
     Location Row in warehouse.
@@ -480,6 +481,12 @@ class Box(models.Model):
         ordering = ['box_number']
         app_label = 'fpiweb'
         verbose_name_plural = 'Boxes'
+        permissions = [
+            ('check_in_box', 'Check In Box'),
+            ('check_out_box', 'Check Out (Consume) Box'),
+            ('move_box', 'Move Box'),
+            ('print_labels_box', 'Print Labels'),
+        ]
 
     id_help_text = 'Internal record identifier for box.'
     id = models.AutoField(
@@ -654,6 +661,10 @@ class Pallet(models.Model):
         ordering = ('name',)
         app_label = 'fpiweb'
         verbose_name_plural = 'Pallets'
+        permissions = [
+            ('build_pallet', 'Build pallet'),
+            ('move_pallet', 'Move pallet'),
+        ]
 
     # Pallet Status Names
     FILL: str = 'Fill'
@@ -1246,6 +1257,10 @@ class Profile(models.Model):
 
     class Meta:
         app_label = 'fpiweb'
+        permissions = [
+            ('dummy_profile', 'Dummy permission (do not grant to anyone!)'),
+            ('view_system_maintenance', 'View System Maintenance'),
+        ]
 
     user = models.OneToOneField(
         User,
