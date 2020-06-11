@@ -1,6 +1,41 @@
 #!/usr/bin/env python
 
+"""
+setup_warm_groups.py - Establish the groups and permissions for WARM users.
+
+Overview and Group Definitions
+------------------------------
+
+This program sets up the group and their permissions for the WARM
+database.  WARM is expected to have three levels occess to use this system.
+
+Volunteer
+    Most users will have this level.  It allows the user to
+    checkin and out boxes of product into the system.
+
+Staff
+    Staff users can create and manage volunteer and staff users, as well as
+    manage the application data such as product, category, location,
+    etc.  They also have all the privileges of a volunteer.
+
+Admin
+    Admin users are Django superusers.  They can manage any table in the
+    database directly via the Django admin web interface.  In addition to
+    having all the privileges of a staff user, the application provides the
+    ability to add and manage other admins.
+
+Requirements
+------------
+
+This program will not work as expected until the migration
+0029_add_model_permissions.py has been applied to the database.
+
+In turn, this program must be run before the application will work properly.
+"""
+
 # Boilerplate for stand-alone Django scripts
+from typing import Dict, List
+
 from django import setup
 setup()
 
@@ -11,8 +46,8 @@ from sys import stderr
 from django.contrib.auth.models import Group, Permission
 
 
-GROUPS_AND_PERMISSIONS = {
-    'Volunteers': {
+GROUPS_AND_PERMISSIONS: Dict[str, Dict[str, Dict[str, List[str]]]] = {
+    'Volunteer': {
         'fpiweb': {
             'box': [
                 'add_box',
@@ -69,6 +104,12 @@ GROUPS_AND_PERMISSIONS = {
 
 
 def iterate_permissions(permissions):
+    """
+    Generator to pick up the needed foreign keys for a given permisison.
+
+    :param permissions: attributes associated with this permission
+    :return:
+    """
     for app_label, models in permissions.items():
         for model, model_permissions in models.items():
             for permission in model_permissions:
@@ -76,6 +117,13 @@ def iterate_permissions(permissions):
 
 
 def setup_group_permissions(group, permissions):
+    """
+    For a given group, create or replace the permisisons for it.
+
+    :param group: group to be created or replaced
+    :param permissions: list of permissions to be applied to this group
+    :return:
+    """
 
     print(f"Clearing {group.name} permissions.")
     group.permissions.clear()
@@ -96,6 +144,12 @@ def setup_group_permissions(group, permissions):
 
 
 def setup_groups_and_permissions(groups_and_permissions):
+    """
+    Create or replace groups and add permissions.
+
+    :param groups_and_permissions: table of groups and associated permissions
+    :return:
+    """
     for group_name, permissions in groups_and_permissions.items():
         group, created = Group.objects.get_or_create(name=group_name)
         if created:
@@ -106,11 +160,7 @@ def setup_groups_and_permissions(groups_and_permissions):
         setup_group_permissions(group, permissions)
         print()
 
+if __name__ == '__main__':
+    setup_groups_and_permissions(GROUPS_AND_PERMISSIONS)
 
-setup_groups_and_permissions(GROUPS_AND_PERMISSIONS)
-
-
-
-
-
-
+# EOF
