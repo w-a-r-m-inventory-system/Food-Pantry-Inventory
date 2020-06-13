@@ -115,3 +115,10 @@ This system is planned to be deployed in a "cloud" platform.
 See :doc:`Deployment Documentation <DevDocs/DeploymentDocumentation>` for
 both an overview of the deployment plans and details as
 they are implemented.
+
+Other Developer Resources
+=========================
+
+Additional developer resources:
+
+    :doc:`Additional Developer Resources <DevDocs/DevResources>`

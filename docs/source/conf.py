@@ -140,6 +140,9 @@ autodoc_default_options = {
 # allow markdown documents to be included via the recommonmark library
 source_suffix = ['.rst', '.md']
 
+# path to possible processing tool to convert images from one format to another
+# image_converter = '/usr/local/bin/convert'
+
 # automatically generate autodoc stub files for any new modules
 autosummary_generate = True
 
