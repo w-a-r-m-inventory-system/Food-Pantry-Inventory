@@ -18,6 +18,8 @@ Developer Documentation
 
    JavaScript And JQuery <DevDocs/JavaScriptAndJQuery>
 
+   Django Extensions <DevDocs/DjangoExtensions>
+
    Outstanding Tasks <OutstandingTasks>
 
 Getting Started
@@ -77,6 +79,15 @@ Documentation about PostgreSQL that is specific to this project.
 
     :doc:`PostgreSQL Guidelines <DevDocs/PostgreSQLGuidelines>`
 
+A graph of the database tables and their relationships is shown here.
+
+.. image:: DevDocs/InventoryProjectModelsGrouped.png
+
+A bigger, sharper image of this graph can be downloaded from here.
+
+    :download:`Inventory Tables and Relationships
+    <DevDocs/InventoryProjectModelsGrouped.pdf>`
+
 Git Documentation
 =================
 
@@ -104,3 +115,10 @@ This system is planned to be deployed in a "cloud" platform.
 See :doc:`Deployment Documentation <DevDocs/DeploymentDocumentation>` for
 both an overview of the deployment plans and details as
 they are implemented.
+
+Other Developer Resources
+=========================
+
+Additional developer resources:
+
+    :doc:`Additional Developer Resources <DevDocs/DevResources>`

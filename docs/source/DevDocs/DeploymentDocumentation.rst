@@ -5,7 +5,7 @@ Deployment Documentation
 Deployment Overview
 *******************
 
-..  figure:: Deployment Overview.png
+..  figure:: Deployment Overview.pdf
 
 Django and Nginx Interaction
 ****************************
