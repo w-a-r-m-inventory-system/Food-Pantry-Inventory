@@ -179,7 +179,7 @@ page.
 
 .. image:: manual_box_images/ConsumeBoxFailure_0_03_40.png
 
-|
+
 
 Move Box Screen
 ================
