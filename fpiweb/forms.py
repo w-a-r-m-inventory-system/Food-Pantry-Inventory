@@ -2,8 +2,13 @@
 forms.py - provide validation of a forms.
 """
 
-from logging import getLogger, debug, error
-from typing import Union, Optional
+from logging import \
+    getLogger, \
+    debug, \
+    error
+from typing import \
+    Union, \
+    Optional
 
 from django import forms
 from django.forms import \
@@ -17,7 +22,11 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from fpiweb.constants import \
-    CURRENT_YEAR
+    CURRENT_YEAR, \
+    MONTHS, \
+    InvalidValueError, \
+    ValidOrErrorResponse, \
+    ProjectError
 from fpiweb.models import \
     Box, \
     BoxNumber, \
@@ -45,16 +54,14 @@ def add_no_selection_choice(other_choices, dash_count=2):
 
 
 def month_choices():
-    return add_no_selection_choice(
-        [(str(i), str(i)) for i in range(1, 13)]
-    )
+    list_with_zero_month: list = [(0, 'No Label')] + \
+        list([(str(nbr), name) for nbr, name in enumerate(MONTHS, 1)])
+    # print(f'{list_with_zero_month=}')
+    return list_with_zero_month
+
 
 def expire_year_choices():
     current_year = CURRENT_YEAR
-    exp_year_limit_key = Constraints.FUTURE_EXP_YEAR_LIMIT
-    years_ahead_constraint_rec = Constraints.objects.get(
-        constraint_name=exp_year_limit_key
-    )
     years_ahead_list = Constraints.get_values(
         Constraints.FUTURE_EXP_YEAR_LIMIT
     )
@@ -163,8 +170,10 @@ def validate_int_list(char_list: list) -> bool:
     return valid_int_list
 
 
-def validate_exp_month_start_end(exp_month_start: Optional[int],
-                                 exp_month_end: Optional[int]) -> bool:
+def validate_exp_month_start_end(
+        exp_month_start: Optional[int],
+        exp_month_end: Optional[int]
+) -> bool:
     """
     Validate the start and end month, if given.
 
@@ -172,23 +181,25 @@ def validate_exp_month_start_end(exp_month_start: Optional[int],
     :param exp_month_end: number 1-12 (integer or string)
     :return:
     """
-    if exp_month_start is None and exp_month_end is None:
+    exp_month_start = 0 if exp_month_start is None else exp_month_start
+    exp_month_end = 0 if exp_month_end is None else exp_month_end
+    if exp_month_start == 0 and exp_month_end == 0 :
         return True
 
     error_msg = (
         "If Exp {} month is specified, Exp {} month must also be specified"
     )
 
-    if exp_month_start is not None and exp_month_end is None:
-        raise ValidationError(error_msg.format('start', 'end'))
+    if exp_month_start != 0 and exp_month_end == 0:
+        raise InvalidValueError(error_msg.format('start', 'end'))
 
-    if exp_month_end is not None and exp_month_start is None:
-        raise ValidationError(error_msg.format('end', 'start'))
+    if exp_month_end != 0 and exp_month_start == 0:
+        raise InvalidValueError(error_msg.format('end', 'start'))
 
     try:
         exp_month_start = int(exp_month_start)
     except (TypeError, ValueError):
-        raise ValidationError(
+        raise InvalidValueError(
             "Exp month start {} is not an integer".format(
                 repr(exp_month_start),
             )
@@ -197,20 +208,61 @@ def validate_exp_month_start_end(exp_month_start: Optional[int],
     try:
         exp_month_end = int(exp_month_end)
     except (TypeError, ValueError):
-        raise ValidationError(
+        raise InvalidValueError(
             "Exp month end {} is not an integer".format(
                 repr(exp_month_end)
             )
         )
 
     if exp_month_end < exp_month_start:
-        raise ValidationError(
+        raise InvalidValueError(
             'Exp month end must be later than or equal to Exp month start'
         )
     return True
 
+
+def validation_exp_months_bool(
+        exp_month_start: Optional[int],
+        exp_month_end: Optional[int]
+) -> ValidOrErrorResponse:
+    """
+    Validate the expiration months returning only a boolean.
+
+    ..  note: This function can be removed if views.ManualCheckinBoxView can
+        be made to trap exceptions properly.
+
+    :param exp_month_start:
+    :param exp_month_end:
+    :return: True if valid, False if not
+    """
+    validation = ValidOrErrorResponse()
+    try:
+        validate_exp_month_start_end(exp_month_start, exp_month_end)
+    except ProjectError as xcp:
+        error_msg = xcp.message
+        validation.add_error(error_msg)
+    return validation
+
+
+def box_number_validator(value) -> None:
+    if BoxNumber.validate(value):
+        return
+    raise ValidationError(f"{value} is not a valid Box Number")
+
+
 class Html5DateInput(DateInput):
     input_type = 'date'
+
+
+class BoxNumberField(CharField):
+    def __init__(self, **kwargs):
+        default_kwargs = {
+            'max_length': Box.box_number_max_length,
+            'min_length': Box.box_number_min_length,
+            'validators': [box_number_validator]
+        }
+        default_kwargs.update(kwargs)
+        super().__init__(**default_kwargs)
 
 
 class LogoutForm(Form):
@@ -343,7 +395,6 @@ class LocBinForm(forms.ModelForm):
                 'A description of this bin must be provided'
             )
         return
-
 
     def clean(self):
         """
@@ -667,9 +718,7 @@ class BoxItemForm(forms.Form):
 
     # This is a read only field.  In the page a box number is displayed in
     # an input element with no name or id
-    box_number = forms.CharField(
-        max_length=Box.box_number_max_length,
-        min_length=Box.box_number_min_length,
+    box_number = BoxNumberField(
         widget=forms.HiddenInput,
     )
 
@@ -791,6 +840,10 @@ class ExistingLocationForm(LocationForm):
         loc_bin = cleaned_data.get('loc_bin')
         loc_tier = cleaned_data.get('loc_tier')
 
+        if not all([loc_row, loc_bin, loc_tier]):
+            # Location form will have already raised validation error
+            return cleaned_data
+
         try:
             location = Location.objects.get(
                 loc_row=loc_row,
@@ -799,15 +852,90 @@ class ExistingLocationForm(LocationForm):
             )
         except Location.DoesNotExist:
             raise ValidationError(
-                f"Location {loc_bin.loc_bin}, {loc_row.loc_row}, {loc_tier.loc_tier} does not exist."
+                f"Location {loc_row.loc_row}, {loc_bin.loc_bin}, "
+                f"{loc_tier.loc_tier} does not exist."
             )
         except Location.MultipleObjectsReturned:
             raise ValidationError(
-                r"Multiple {loc_bin.loc_bin}, {loc_row.loc_row}, {loc_tier.loc_tier} locations found"
+                f"Multiple {loc_row.loc_row}, {loc_bin.loc_bin}, "
+                f"{loc_tier.loc_tier} locations found"
             )
 
         cleaned_data['location'] = location
         return cleaned_data
+
+
+class ExistingLocationWithBoxesForm(ExistingLocationForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+        location = cleaned_data.get('location')
+        if not location:
+            # If ExistingLocationform fails validation, Location will not be
+            # in cleaned_data.  ExistingLocationForm will have already raised
+            # a ValidationError
+            return cleaned_data
+        if Box.objects.filter(location=location).exists():
+            return cleaned_data
+        raise ValidationError(
+            "Location {}, {}, {} doesn't have any boxes".format(
+                location.loc_row.loc_row,
+                location.loc_bin.loc_bin,
+                location.loc_tier.loc_tier,
+            )
+        )
+
+
+class MoveToLocationForm(ExistingLocationForm):
+    from_location = ModelChoiceField(
+        queryset=Location.objects.all(),
+        widget=forms.HiddenInput
+    )
+
+
+class ConfirmMergeForm(forms.Form):
+
+    ACTION_CHANGE_LOCATION = 'C'
+    ACTION_MERGE_PALLETS = 'M'
+
+    ACTION_CHOICES = (
+        (ACTION_CHANGE_LOCATION, 'Change To Location'),
+        (ACTION_MERGE_PALLETS, 'Merge Pallets'),
+    )
+
+    from_location = ModelChoiceField(
+        queryset=Location.objects.all(),
+        widget=forms.HiddenInput,
+    )
+
+    to_location = ModelChoiceField(
+        queryset=Location.objects.all(),
+        widget=forms.HiddenInput,
+    )
+
+    boxes_at_to_location = forms.IntegerField(
+        disabled=True,
+        required=False,
+        widget=forms.HiddenInput,
+    )
+
+    action = forms.ChoiceField(
+        choices=ACTION_CHOICES,
+    )
+
+    def boxes_at_to_location_int(self):
+        return self.initial.get('boxes_at_to_location', -1)
+
+    def to_location_str(self):
+        field_name = 'to_location'
+        location = self.initial.get(field_name)
+        if not location:
+            return f"{field_name} not found in initial"
+        return "{}, {}, {}".format(
+            location.loc_row.loc_row,
+            location.loc_bin.loc_bin,
+            location.loc_tier.loc_tier,
+        )
 
 
 class ExpYearForm(forms.Form):
@@ -816,6 +944,28 @@ class ExpYearForm(forms.Form):
         choices=expire_year_choices,
         coerce=int,
         help_text=Box.exp_year_help_text,
+    )
+
+
+class ExpMoStartForm(forms.Form):
+    """A form for use whenever you need to select a starting month."""
+    valid_months = month_choices()
+    exp_month_start = forms.TypedChoiceField(
+        choices=valid_months,
+        coerce=int,
+        empty_value=valid_months[0][0],
+        help_text=Box.exp_month_start_help_text,
+    )
+
+
+class ExpMoEndForm(forms.Form):
+    """A form for use whenever you need to select an ending month."""
+    valid_months = month_choices()
+    exp_month_end = forms.TypedChoiceField(
+        choices=valid_months,
+        coerce=int,
+        empty_value=valid_months[0][0],
+        help_text=Box.exp_month_end_help_text,
     )
 
 

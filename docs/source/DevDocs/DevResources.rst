@@ -1,8 +1,16 @@
-:orphan:
-
 *******************
 Developer Resources
 *******************
+
+Table Relationships
+===================
+
+Image expressed as a png file.
+
+.. image:: InventoryProjectModelsGrouped.png
+
+Documentation Tools
+===================
 
 Some good possible sources to learn things:
 

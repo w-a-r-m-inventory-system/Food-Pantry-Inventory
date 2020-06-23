@@ -5,6 +5,7 @@ views.py - establish the views (pages) for the F. P. I. web application.
 from collections import OrderedDict
 from csv import writer as csv_writer
 from enum import Enum
+from http import HTTPStatus
 from io import BytesIO
 from json import loads
 from logging import getLogger, debug, info
@@ -13,9 +14,13 @@ from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.core.serializers import serialize
+from django.db import transaction
 from django.db.models import Max
+from django.db.models.functions import Substr
 from django.forms import formset_factory
 from django.http import \
     FileResponse, \
@@ -37,6 +42,9 @@ from django.views.generic import \
 
 from sqlalchemy.engine.url import URL
 
+from fpiweb.constants import \
+    ProjectError, \
+    InvalidValueError
 from fpiweb.models import \
     Activity, \
     Box, \
@@ -53,28 +61,35 @@ from fpiweb.models import \
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
-from fpiweb.forms import BoxItemForm, \
-    EmptyBoxNumberForm, \
-    FilledBoxNumberForm, \
-    ExtantBoxNumberForm, \
-    BuildPalletForm, \
+from fpiweb.forms import \
+    BoxItemForm, \
+    BoxTypeForm, \
+    ConfirmMergeForm, \
     ConstraintsForm, \
+    BuildPalletForm, \
+    EmptyBoxNumberForm, \
+    ExistingBoxTypeForm, \
     ExistingLocationForm, \
+    ExistingLocationWithBoxesForm, \
+    ExistingProductForm, \
+    ExtantBoxNumberForm, \
+    ExpYearForm, \
+    FilledBoxNumberForm, \
     HiddenPalletForm, \
     LocRowForm, \
     LocBinForm, \
     LocTierForm, \
     LoginForm, \
+    MoveToLocationForm, \
     NewBoxForm, \
+    NewBoxNumberForm, \
     PalletNameForm, \
     PalletSelectForm, \
     PrintLabelsForm, \
-    ExistingProductForm, \
     ProductForm, \
-    ExpYearForm, \
-    NewBoxNumberForm, \
-    BoxTypeForm, \
-    ExistingBoxTypeForm
+    ExpMoStartForm, \
+    ExpMoEndForm, \
+    validation_exp_months_bool
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 
@@ -89,7 +104,7 @@ def error_page(
         request,
         message=None,
         message_list=tuple(),
-        status=400):
+        status=HTTPStatus.BAD_REQUEST):
 
     return render(
         request,
@@ -131,7 +146,6 @@ class IndexView(LoginRequiredMixin, TemplateView):
             'email': current_user.email
         }
         return context
-
 
 
 class AboutView(TemplateView):
@@ -202,27 +216,40 @@ class LogoutView(TemplateView):
         return nothing
 
 
-class MaintenanceView(LoginRequiredMixin, TemplateView):
+class MaintenanceView(PermissionRequiredMixin, TemplateView):
     """
     Default web page (/index)
     """
+
+    permission_required = (
+        'fpiweb.view_system_maintenance',
+    )
+
     template_name = 'fpiweb/maintenance.html'
 
 
-class LocRowListView(LoginRequiredMixin, ListView):
+class LocRowListView(PermissionRequiredMixin, ListView):
     """
     List of existing rows using a generic ListView.
     """
+
+    permission_required = (
+        'fpiweb.view_locrow',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_list.html'
     context_object_name = 'loc_row_list_content'
 
 
-class LocRowCreateView(LoginRequiredMixin, CreateView):
+class LocRowCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a row using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.add_locrow',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_edit.html'
@@ -234,10 +261,14 @@ class LocRowCreateView(LoginRequiredMixin, CreateView):
     fields = ['loc_row', 'loc_row_descr', ]
 
 
-class LocRowUpdateView(LoginRequiredMixin, UpdateView):
+class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a row using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.change_locrow',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_edit.html'
@@ -246,10 +277,14 @@ class LocRowUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('fpiweb:loc_row_view')
 
 
-class LocRowDeleteView(LoginRequiredMixin, DeleteView):
+class LocRowDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a row using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.delete_locrow',
+    )
 
     model = LocRow
     template_name = 'fpiweb/loc_row_delete.html'
@@ -272,20 +307,27 @@ class LocRowDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class LocBinListView(LoginRequiredMixin, ListView):
+class LocBinListView(PermissionRequiredMixin, ListView):
     """
     List of existing bins using a generic ListView.
     """
+    permission_required = (
+        'fpiweb.view_locbin',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_list.html'
     context_object_name = 'loc_bin_list_content'
 
 
-class LocBinCreateView(LoginRequiredMixin, CreateView):
+class LocBinCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a bin using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.add_locbin',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_edit.html'
@@ -297,10 +339,14 @@ class LocBinCreateView(LoginRequiredMixin, CreateView):
     fields = ['loc_bin', 'loc_bin_descr', ]
 
 
-class LocBinUpdateView(LoginRequiredMixin, UpdateView):
+class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a bin using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.change_locbin',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_edit.html'
@@ -323,10 +369,14 @@ class LocBinUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class LocBinDeleteView(LoginRequiredMixin, DeleteView):
+class LocBinDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a bin using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.delete_locbin',
+    )
 
     model = LocBin
     template_name = 'fpiweb/loc_bin_delete.html'
@@ -349,20 +399,28 @@ class LocBinDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class LocTierListView(LoginRequiredMixin, ListView):
+class LocTierListView(PermissionRequiredMixin, ListView):
     """
     List of existing tiers using a generic ListView.
     """
+
+    permission_required = (
+        'fpiweb.view_loctier',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_list.html'
     context_object_name = 'loc_tier_list_content'
 
 
-class LocTierCreateView(LoginRequiredMixin, CreateView):
+class LocTierCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a tier using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.add_loctier',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_edit.html'
@@ -374,10 +432,14 @@ class LocTierCreateView(LoginRequiredMixin, CreateView):
     fields = ['loc_tier', 'loc_tier_descr', ]
 
 
-class LocTierUpdateView(LoginRequiredMixin, UpdateView):
+class LocTierUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a tier using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.change_loctier',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_edit.html'
@@ -400,10 +462,14 @@ class LocTierUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class LocTierDeleteView(LoginRequiredMixin, DeleteView):
+class LocTierDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a tier using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.delete_loctier',
+    )
 
     model = LocTier
     template_name = 'fpiweb/loc_tier_delete.html'
@@ -426,10 +492,14 @@ class LocTierDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class ConstraintsListView(LoginRequiredMixin, ListView):
+class ConstraintsListView(PermissionRequiredMixin, ListView):
     """
     List of existing constraints.
     """
+
+    permission_required = (
+        'fpiweb.view_constraints',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraints_list.html'
@@ -459,10 +529,14 @@ class ConstraintsListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ConstraintCreateView(LoginRequiredMixin, CreateView):
+class ConstraintCreateView(PermissionRequiredMixin, CreateView):
     """
     Create a constraint using a generic CreateView.
     """
+
+    permission_required = (
+        'fpiweb.add_constraints',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
@@ -475,10 +549,14 @@ class ConstraintCreateView(LoginRequiredMixin, CreateView):
               'constraint_min', 'constraint_max', 'constraint_list', ]
 
 
-class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
+class ConstraintUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Update a constraint using a generic UpdateView.
     """
+
+    permission_required = (
+        'fpiweb.change_constraints',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
@@ -509,10 +587,14 @@ class ConstraintUpdateView(LoginRequiredMixin, UpdateView):
         return results
 
 
-class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
+class ConstraintDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a constraint using a generic DeleteView.
     """
+
+    permission_required = (
+        'fpiweb.delete_constraints',
+    )
 
     model = Constraints
     template_name = 'fpiweb/constraint_delete.html'
@@ -535,8 +617,13 @@ class ConstraintDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class BoxNewView(LoginRequiredMixin, View):
+class BoxNewView(PermissionRequiredMixin, View):
     # model = Box
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/box_new.html'
 
     # context_object_name = 'box'
@@ -598,7 +685,12 @@ class BoxNewView(LoginRequiredMixin, View):
         return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
 
 
-class BoxEditView(LoginRequiredMixin, UpdateView):
+class BoxEditView(PermissionRequiredMixin, UpdateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     model = Box
     template_name = 'fpiweb/box_edit.html'
     context_object_name = 'box'
@@ -606,7 +698,12 @@ class BoxEditView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('fpiweb:index')
 
 
-class BoxDetailsView(LoginRequiredMixin, DetailView):
+class BoxDetailsView(PermissionRequiredMixin, DetailView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     model = Box
     template_name = 'fpiweb/box_detail.html'
     context_object_name = 'box'
@@ -617,25 +714,42 @@ class BoxDetailsView(LoginRequiredMixin, DetailView):
         return context
 
 
-class BoxEmptyMoveView(LoginRequiredMixin, TemplateView):
+class BoxEmptyMoveView(PermissionRequiredMixin, TemplateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
         return {}
 
 
-class BoxMoveView(LoginRequiredMixin, TemplateView):
+class BoxMoveView(PermissionRequiredMixin, TemplateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
         return {}
 
 
-class BoxEmptyView(LoginRequiredMixin, View):
-    pass
+class BoxEmptyView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
 
-class BoxScannedView(LoginRequiredMixin, View):
+class BoxScannedView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     def get(self, request, **kwargs):
         box_number = kwargs.get('number')
@@ -651,7 +765,12 @@ class BoxScannedView(LoginRequiredMixin, View):
         return redirect('fpiweb:build_pallet', args=(box.pk,))
 
 
-class TestScanView(LoginRequiredMixin, TemplateView):
+class TestScanView(PermissionRequiredMixin, TemplateView):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
+
     template_name = 'fpiweb/test_scan.html'
 
     @staticmethod
@@ -706,8 +825,15 @@ class TestScanView(LoginRequiredMixin, TemplateView):
         }
 
 
-class BuildPalletView(View):
-    """Set action in view"""
+class BuildPalletError(RuntimeError):
+    pass
+
+
+class BuildPalletView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.build_pallet',
+    )
 
     form_template = 'fpiweb/build_pallet.html'
     confirmation_template = 'fpiweb/build_pallet_confirmation.html'
@@ -732,7 +858,7 @@ class BuildPalletView(View):
             build_pallet_form,
             box_forms,
             pallet_form,
-            status=400):
+            status=HTTPStatus.BAD_REQUEST):
         """
         Display page with BuildPalletForm and BoxItemForms
         :param request:
@@ -759,7 +885,7 @@ class BuildPalletView(View):
             request,
             pallet_select_form=None,
             pallet_name_form=None,
-            status_code=200):
+            status_code=HTTPStatus.OK):
 
         return PalletManagementView.show_page(
             request,
@@ -798,7 +924,7 @@ class BuildPalletView(View):
             return error_page(
                 request,
                 message=message,
-                status=500
+                status=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
         pallet = None
@@ -808,9 +934,10 @@ class BuildPalletView(View):
                 return self.show_pallet_management_page(
                     request,
                     pallet_select_form=pallet_select_form,
-                    status_code=400,
+                    status_code=HTTPStatus.BAD_REQUEST,
                 )
             pallet = pallet_select_form.cleaned_data.get('pallet')
+            pallet.pallet_status = Pallet.FILL
 
         if form_name == self.PALLET_NAME_FORM_NAME:
             pallet_name_form = PalletNameForm(request.POST)
@@ -818,8 +945,9 @@ class BuildPalletView(View):
                 return self.show_pallet_management_page(
                     request,
                     pallet_name_form=pallet_name_form,
-                    status_code=400,
+                    status_code=HTTPStatus.BAD_REQUEST,
                 )
+            pallet_name_form.instance.pallet_status = Pallet.FILL
             pallet = pallet_name_form.save()
 
         if not pallet:
@@ -828,7 +956,7 @@ class BuildPalletView(View):
             return error_page(
                 request,
                 message=message,
-                status=500,
+                status=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
         # Load boxes (PalletBox records) for pallet
@@ -868,67 +996,31 @@ class BuildPalletView(View):
             build_pallet_form,
             box_forms,
             pallet_form,
-            status=200,
+            status=HTTPStatus.OK,
         )
 
-    def process_build_pallet_forms(self, request):
-
-        build_pallet_form = BuildPalletForm(
-            request.POST,
-            prefix=self.build_pallet_form_prefix
-        )
-        box_forms = self.BoxFormFactory(
-            request.POST,
-            prefix=self.formset_prefix,
-        )
-        pallet_form = HiddenPalletForm(
-            request.POST,
-            prefix=self.hidden_pallet_form_prefix,
-        )
-
-        build_pallet_form_valid = build_pallet_form.is_valid()
-        if not build_pallet_form_valid:
-            logger.debug("BuildPalletForm not valid")
-
-        box_forms_valid = box_forms.is_valid()
-        if not box_forms_valid:
-            logger.debug("BoxForms not valid")
-
-        pallet_form_valid = pallet_form.is_valid()
-        if not pallet_form_valid:
-            logger.debug("HiddenPalletForm not valid")
-
-        if not all([
-            build_pallet_form_valid,
-            box_forms_valid,
-            pallet_form_valid
-        ]):
-            return self.show_forms_response(
-                request,
-                build_pallet_form,
-                box_forms,
-                pallet_form,
-            )
-
+    @staticmethod
+    def prepare_pallet_and_pallet_boxes(
+        pallet_form,
+        build_pallet_form,
+        box_forms,
+    ):
         location = build_pallet_form.instance
 
         pallet = pallet_form.cleaned_data.get('pallet')
         pallet.location = location
+        pallet.pallet_status = Pallet.FILL
         pallet.save()
 
         # Update box records and
         boxes_by_box_number = OrderedDict()
         duplicate_box_numbers = set()
-        forms_missing_box_number = 0
         for i, box_form in enumerate(box_forms):
             cleaned_data = box_form.cleaned_data
             if not cleaned_data:
                 continue
 
             box_number = cleaned_data.get('box_number')
-            if not isinstance(box_number, str):
-                logger.error(f"box_number {box_number} is a {type(box_number)}")
-                continue
 
             # Is this a duplicate box_id?
             if box_number in boxes_by_box_number:
@@ -972,9 +1064,47 @@ class BuildPalletView(View):
                 box_management = BoxManagementClass()
                 box_management.box_consume(pallet_box.box)
 
-        if forms_missing_box_number > 0:
-            # error reported on box_form
-            logger.debug("forms_missing_box_number > 0")
+        if duplicate_box_numbers:
+            duplicate_box_numbers = [str(k) for k in duplicate_box_numbers]
+            message = f"Duplicate box numbers: {', '.join(duplicate_box_numbers)}"
+            logger.debug(message)
+            build_pallet_form.add_error(None, message)
+            raise BuildPalletError(message)
+
+        return pallet, location, boxes_by_box_number
+
+    def process_build_pallet_forms(self, request):
+
+        build_pallet_form = BuildPalletForm(
+            request.POST,
+            prefix=self.build_pallet_form_prefix
+        )
+        box_forms = self.BoxFormFactory(
+            request.POST,
+            prefix=self.formset_prefix,
+        )
+        pallet_form = HiddenPalletForm(
+            request.POST,
+            prefix=self.hidden_pallet_form_prefix,
+        )
+
+        build_pallet_form_valid = build_pallet_form.is_valid()
+        if not build_pallet_form_valid:
+            logger.debug("BuildPalletForm not valid")
+
+        box_forms_valid = box_forms.is_valid()
+        if not box_forms_valid:
+            logger.debug("BoxForms not valid")
+
+        pallet_form_valid = pallet_form.is_valid()
+        if not pallet_form_valid:
+            logger.debug("HiddenPalletForm not valid")
+
+        if not all([
+            build_pallet_form_valid,
+            box_forms_valid,
+            pallet_form_valid
+        ]):
             return self.show_forms_response(
                 request,
                 build_pallet_form,
@@ -982,11 +1112,14 @@ class BuildPalletView(View):
                 pallet_form,
             )
 
-        if duplicate_box_numbers:
-            duplicate_box_numbers = [str(k) for k in duplicate_box_numbers]
-            message = f"Duplicate box numbers: {', '.join(duplicate_box_numbers)}"
-            logger.debug(message)
-            build_pallet_form.add_error(None, message)
+        try:
+            pallet, location, boxes_by_box_number = \
+                self.prepare_pallet_and_pallet_boxes(
+                    pallet_form,
+                    build_pallet_form,
+                    box_forms,
+                )
+        except BuildPalletError:
             return self.show_forms_response(
                 request,
                 build_pallet_form,
@@ -1011,10 +1144,18 @@ class ScannerViewError(RuntimeError):
     pass
 
 
-class ScannerView(View):
+class ScannerView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     @staticmethod
-    def response(success, data=None, errors=None, status=200):
+    def response(
+            success,
+            data=None,
+            errors=None, status=HTTPStatus.OK,
+    ):
         return JsonResponse(
             {
                 'success': success,
@@ -1025,7 +1166,7 @@ class ScannerView(View):
         )
 
     @staticmethod
-    def error_response(errors, status=400):
+    def error_response(errors, status=HTTPStatus.BAD_REQUEST):
         return ScannerView.response(
             False,
             errors,
@@ -1114,10 +1255,18 @@ class ScannerView(View):
             logger.error(error_message)
             return self.error_response([error_message])
 
-        return self.response(True, data=box_data, status=200)
+        return self.response(
+            True,
+            data=box_data,
+            status=HTTPStatus.OK,
+        )
 
 
-class PrintLabelsView(View):
+class PrintLabelsView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.print_labels_box',
+    )
 
     template_name = 'fpiweb/print_labels.html'
 
@@ -1166,7 +1315,11 @@ class PrintLabelsView(View):
         return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
 
 
-class BoxItemFormView(LoginRequiredMixin, View):
+class BoxItemFormView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.add_box',
+    )
 
     template_name = 'fpiweb/box_form.html'
 
@@ -1194,14 +1347,14 @@ class BoxItemFormView(LoginRequiredMixin, View):
         except ScannerViewError as sve:
             error = str(sve)
             logger.error(error)
-            return HttpResponse("Scan failed.", status=404)
+            return HttpResponse("Scan failed.", status=HTTPStatus.NOT_FOUND)
 
         try:
             pallet = Pallet.objects.get(pk=pallet_pk)
         except Pallet.DoesNotExist as dne:
             error = f"Pallet pk={pallet_pk} not found"
             logger.error(error)
-            return HttpResponse(error, status=404)
+            return HttpResponse(error, status=HTTPStatus.NOT_FOUND)
 
         # If box is filled, empty it before continuing
         if box.is_filled():
@@ -1227,10 +1380,15 @@ class BoxItemFormView(LoginRequiredMixin, View):
         )
 
 
-class ManualMenuView(TemplateView):
+class ManualMenuView(PermissionRequiredMixin, TemplateView):
     """
     Menu to choose between manual pallet or manual box management
     """
+
+    permission_required = (
+        'fpiweb.view_pallet',
+    )
+
     template_name = 'fpiweb/manual_menu.html'
 
     def get_context_data(self, **kwargs):
@@ -1274,10 +1432,15 @@ class ManualMenuView(TemplateView):
         return context
 
 
-class ManualPalletMenuView(TemplateView):
+class ManualPalletMenuView(PermissionRequiredMixin, TemplateView):
     """
     Menu of choices for manual pallet management.
     """
+
+    permission_required = (
+        'fpiweb.view_pallet',
+    )
+
     template_name = 'fpiweb/manual_pallet_menu.html'
 
     def get_context_data(self, **kwargs):
@@ -1294,10 +1457,15 @@ class ManualPalletMenuView(TemplateView):
         # get the current user and related profile
         current_user = self.request.user
         profile = current_user.profile
-        if profile:
+        if profile and profile.active_pallet:
             active_pallet = profile.active_pallet
+            pallet_boxes = PalletBox.objects.filter(pallet=active_pallet)
+            box_set = list()
+            for box in pallet_boxes:
+                box_set.append(box)
         else:
             active_pallet = None
+            box_set = None
 
         # does user have active pallet?  if so get info
         if active_pallet:
@@ -1316,15 +1484,20 @@ class ManualPalletMenuView(TemplateView):
         context['current_user'] = current_user
         context['user_profile'] = profile
         context['active_pallet'] = active_pallet
+        context['box_set'] = box_set
         context['new_target'] = new_target
         context['pallet_target'] = pallet_target
         return context
 
 
-class ManualBoxMenuView(TemplateView):
+class ManualBoxMenuView(PermissionRequiredMixin, TemplateView):
     """
     Menu of choices for manual individual box management.
     """
+    permission_required = (
+        'fpiweb.view_box',
+    )
+
     template_name = 'fpiweb/manual_ind_box_menu.html'
 
     def get_context_data(self, **kwargs):
@@ -1383,7 +1556,8 @@ def manual_generic_notification(
         yes_url: str = 'fpiweb:about',
         no_url: str = 'fpiweb:about',
         return_url: str = 'fpiweb:about',
-        status: int = 200):
+        status: int = HTTPStatus.OK,
+):
     """
     Provide a generic notification screen for the manual box subsystem.
 
@@ -1411,8 +1585,7 @@ def manual_generic_notification(
     context['no_url'] = no_url
     context['return_url'] = return_url
 
-    # content_type: use default
-    # status: 200 = OK, 400 = Bad Request, 418 = I am a teapot
+    # content_type: use response status from HTTPStatus
     template_info = render(
         request,
         'fpiweb/manual_generic_notification.html',
@@ -1477,10 +1650,14 @@ class ManualPalletNew(LoginRequiredMixin, TemplateView):
         return target
 
 
-class ManualPalletStatus(LoginRequiredMixin, ListView):
+class ManualPalletStatus(PermissionRequiredMixin, ListView):
     """
     Establish a new pallet for this user.
     """
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     model = Pallet
     template_name = 'fpiweb/manual_pallet_status.html'
@@ -1533,7 +1710,252 @@ class ManualPalletStatus(LoginRequiredMixin, ListView):
         return context
 
 
-class ActivityDownloadView(LoginRequiredMixin, View):
+class ManualPalletMoveView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.move_pallet',
+    )
+
+    MODE_ENTER_FROM_LOCATION = 'enter from location'
+    MODE_ENTER_TO_LOCATION = 'enter to location'
+    MODE_CONFIRM_MERGE = 'confirm merge'
+    MODE_COMPLETE = 'complete'
+
+    FORM_PREFIX_FROM_LOCATION = 'from'
+    FORM_PREFIX_TO_LOCATION = 'to'
+    FORM_PREFIX_CONFIRM_MERGE = 'confirm_merge'
+
+    template = 'fpiweb/manual_pallet_move.html'
+
+    def get(self, request):
+        return self.build_response(
+            request,
+            self.MODE_ENTER_FROM_LOCATION,
+            from_location_form=ExistingLocationWithBoxesForm(
+                prefix=self.FORM_PREFIX_FROM_LOCATION,
+            )
+        )
+
+    def post(self, request):
+        mode = request.POST.get('mode')
+        if not mode:
+            return self.build_response(
+                request,
+                self.MODE_ENTER_FROM_LOCATION,
+                from_location_form=ExistingLocationWithBoxesForm(
+                    prefix=self.FORM_PREFIX_FROM_LOCATION,
+                ),
+                errors=["Missing mode parameter"],
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        if mode == self.MODE_ENTER_FROM_LOCATION:
+            return self.post_from_location_form(request)
+        if mode == self.MODE_ENTER_TO_LOCATION:
+            return self.post_to_location_form(request)
+        if mode == self.MODE_CONFIRM_MERGE:
+            return self.post_confirm_merge_form(request)
+        return error_page(
+            request,
+            f"Unrecognized mode {mode} in ManualPalletMoveView"
+        )
+
+    def post_from_location_form(self, request):
+        from_location_form = ExistingLocationWithBoxesForm(
+            request.POST,
+            prefix=self.FORM_PREFIX_FROM_LOCATION,
+        )
+        if not from_location_form.is_valid():
+            return self.build_response(
+                request,
+                self.MODE_ENTER_FROM_LOCATION,
+                from_location_form=from_location_form,
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        from_location = from_location_form.cleaned_data.get('location')
+        return self.show_to_location_form(
+            request,
+            from_location,
+        )
+
+    def show_to_location_form(self, request, from_location):
+        return self.build_response(
+            request,
+            self.MODE_ENTER_TO_LOCATION,
+            to_location_form=MoveToLocationForm(
+                prefix=self.FORM_PREFIX_TO_LOCATION,
+                initial={
+                    'from_location': from_location,
+                }
+            )
+        )
+
+    def post_to_location_form(self, request):
+        to_location_form = MoveToLocationForm(
+            request.POST,
+            prefix=self.FORM_PREFIX_TO_LOCATION,
+        )
+        if not to_location_form.is_valid():
+            return self.build_response(
+                request,
+                self.MODE_ENTER_TO_LOCATION,
+                to_location_form=to_location_form,
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        from_location = to_location_form.cleaned_data['from_location']
+        to_location = to_location_form.cleaned_data['location']
+
+        boxes_at_to_location = \
+            Box.objects.filter(location=to_location).count()
+
+        if boxes_at_to_location == 0:
+            return self.move_boxes(request, from_location, to_location)
+
+        return self.build_response(
+            request,
+            self.MODE_CONFIRM_MERGE,
+            confirm_merge_form=ConfirmMergeForm(
+                prefix=self.FORM_PREFIX_CONFIRM_MERGE,
+                initial={
+                    'from_location': from_location,
+                    'to_location': to_location,
+                    'boxes_at_to_location': boxes_at_to_location,
+                },
+            ),
+        )
+
+    def post_confirm_merge_form(self, request):
+        confirm_merge_form = ConfirmMergeForm(
+            request.POST,
+            prefix=self.FORM_PREFIX_CONFIRM_MERGE,
+        )
+        if not confirm_merge_form.is_valid():
+            return self.build_response(
+                request,
+                self.MODE_CONFIRM_MERGE,
+                confirm_merge_form=confirm_merge_form,
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        from_location = \
+            confirm_merge_form.cleaned_data['from_location']
+        to_location = confirm_merge_form.cleaned_data['to_location']
+        action = confirm_merge_form.cleaned_data['action']
+
+        if action == ConfirmMergeForm.ACTION_CHANGE_LOCATION:
+            # this method sets mode appropriately
+            return self.show_to_location_form(
+                request,
+                from_location,
+            )
+
+        return self.move_boxes(request, from_location, to_location)
+
+    @staticmethod
+    def get_next_temp_name():
+        numbers = Pallet.objects.filter(
+            name__startswith='temp'
+        ).annotate(
+            number=Substr('name', 5),
+        ).values_list(
+            'number',
+            flat=True,
+        )
+
+        if not numbers:
+            return 'temp1'
+
+        max_number = 0
+        for n in numbers:
+            try:
+                n = int(n)
+            except (TypeError, ValueError):
+                continue
+            if n > max_number:
+                max_number = n
+        return f"temp{max_number + 1}"
+
+    def move_boxes(self, request, from_location, to_location):
+
+        pallet, box_count = self.get_pallet_and_box_count(
+            from_location,
+            to_location
+        )
+
+        box_manager = BoxManagementClass()
+        box_manager.pallet_finish(pallet)
+
+        return self.build_response(
+            request,
+            self.MODE_COMPLETE,
+            boxes_moved=box_count,
+            to_location=to_location,
+        )
+
+    @staticmethod
+    def get_pallet_and_box_count(from_location, to_location):
+        # Create temporary Pallet and PalletBox records in order to use
+        # pallet_finish
+        with transaction.atomic():
+            pallet = Pallet.objects.create(
+                name=ManualPalletMoveView.get_next_temp_name(),
+                location=to_location,
+                pallet_status=Pallet.MOVE,
+            )
+
+        boxes_to_move = Box.objects.filter(location=from_location)
+
+        pallet_boxes = []
+        for box in boxes_to_move:
+            pallet_box = PalletBox(
+                pallet=pallet,
+                box=box,
+                product=box.product,
+                exp_year=box.exp_year,
+                exp_month_start=box.exp_month_start,
+                exp_month_end=box.exp_month_end,
+            )
+            pallet_boxes.append(pallet_box)
+
+        PalletBox.objects.bulk_create(pallet_boxes)
+        return pallet, len(pallet_boxes)
+
+    def build_response(
+            self,
+            request,
+            mode,
+            from_location_form=None,
+            to_location_form=None,
+            confirm_merge_form=None,
+            boxes_moved=0,
+            to_location=None,
+            errors=None,
+            status=HTTPStatus.OK):
+
+        return render(
+            request,
+            self.template,
+            {
+                'mode': mode,
+                'view_class': self.__class__,
+                'from_location_form': from_location_form,
+                'to_location_form': to_location_form,
+                'confirm_merge_form': confirm_merge_form,
+                'boxes_moved': boxes_moved,
+                'to_location': to_location,
+                'errors': errors or [],
+            },
+            status=status,
+        )
+
+
+class ActivityDownloadView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.view_activity',
+    )
 
     date_format = '%m/%d/%Y'
 
@@ -1602,7 +2024,12 @@ class ActivityDownloadView(LoginRequiredMixin, View):
         return response
 
 
-class ManualBoxStatusView(LoginRequiredMixin, View):
+class ManualBoxStatusView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.view_box',
+    )
+
     template_name = 'fpiweb/manual_box_status.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -1663,7 +2090,7 @@ class ManualBoxStatusView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 box_number_failed_context,
-                status=404,
+                status=HTTPStatus.NOT_FOUND,
             )
 
         box_number = box_number_form.cleaned_data.get('box_number')
@@ -1698,7 +2125,12 @@ class ManualBoxStatusView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class ManualNewBoxView(LoginRequiredMixin, View):
+class ManualNewBoxView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.add_box',
+    )
+
     template_name = 'fpiweb/manual_new_box.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -1725,7 +2157,7 @@ class ManualNewBoxView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         """
-        Prepare to display consume box number form for the first time.
+        Prepare to display add new box number form for the first time.
 
         :param request:
         :param args:
@@ -1754,13 +2186,13 @@ class ManualNewBoxView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 box_number_failed_context,
-                status=404,
+                status=HTTPStatus.NOT_FOUND,
             )
 
         box_number = box_number_form.cleaned_data.get('box_number')
 
         if not box_type_form.is_valid():
-            box_type_failed__context = self.build_context(
+            box_type_failed_context = self.build_context(
                 mode=self.MODE_ENTER_BOX_NUMBER,
                 box_number_form=box_number_form,
                 box_type_form=box_type_form,
@@ -1768,8 +2200,8 @@ class ManualNewBoxView(LoginRequiredMixin, View):
             return render(
                 request,
                 self.template_name,
-                box_type_failed__context,
-                status=404,
+                box_type_failed_context,
+                status=HTTPStatus.NOT_FOUND,
             )
         box_type = box_type_form.cleaned_data['box_type']
 
@@ -1796,13 +2228,16 @@ class ManualNewBoxView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class ManualCheckinBoxView(LoginRequiredMixin, View):
+class ManualCheckinBoxView(PermissionRequiredMixin, View):
+    """ Manually check a box into inventory. """
+
+    permission_required = (
+        'fpiweb.check_in_box',
+    )
+
     template_name = 'fpiweb/manual_check_in_box.html'
 
-    MODE_ENTER_BOX_NUMBER = 'enter_box_number'
-    MODE_ENTER_PRODUCT = 'enter_product'
-    MODE_ENTER_LOCATION = 'enter_location'
-    MODE_ENTER_EXP_YEAR = 'enter_exp_year'
+    MODE_ENTER_BOX_INFO = 'enter_box_info'
     MODE_CONFIRMATION = 'confirmation'
 
     @staticmethod
@@ -1810,6 +2245,8 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
             *,
             mode,
             box_number_form=None,
+            box_number=None,
+            box_form=None,
             box=None,
             product_form=None,
             product=None,
@@ -1817,10 +2254,15 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
             location=None,
             exp_year_form=None,
             exp_year=None,
+            exp_month_start_form=None,
+            exp_month_start=None,
+            exp_month_end_form=None,
+            exp_month_end=None,
             errors: Optional[list]=None):
         return {
             'mode': mode,
             'box_number_form': box_number_form,
+            'box_number': box_number,
             'box': box,
             'product_form': product_form,
             'product': product,
@@ -1828,230 +2270,154 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
             'location': location,
             'exp_year_form': exp_year_form,
             'exp_year': exp_year,
+            'exp_month_start_form': exp_month_start_form,
+            'exp_month_start': exp_month_start,
+            'exp_month_end_form': exp_month_end_form,
+            'exp_month_end': exp_month_end,
             'view_class': ManualCheckinBoxView,
             'errors': errors,
         }
 
     def get(self, request, *args, **kwargs):
         get_context = self.build_context(
-            mode=self.MODE_ENTER_BOX_NUMBER,
+            mode=self.MODE_ENTER_BOX_INFO,
             box_number_form=EmptyBoxNumberForm(),
+            product_form=ExistingProductForm(),
+            location_form=ExistingLocationForm(),
+            exp_year_form=ExpYearForm(),
+            exp_month_start_form=ExpMoStartForm(),
+            exp_month_end_form=ExpMoEndForm(),
         )
         return render(request, self.template_name, get_context)
 
-    def post_box_number(self, request):
-        box_number_form = EmptyBoxNumberForm(request.POST)
+    def post_box_info(self, request):
+        """
+        Validate the posted information.
+
+        :param request: container of initial or latest post
+        :return:
+        """
+        # initialize variables that will be filled in later
+        box_number = None
+        box = None
+        product = None
+        location = None
+        exp_year = None
+        exp_month_start = None
+        exp_month_end = None
+
+        # start by hoping everything is ok -- then validate
+        status = HTTPStatus.OK
+        error_msgs = list()
+
+        # validate box number
+        box_number_form = ExtantBoxNumberForm(request.POST)
         if not box_number_form.is_valid():
-            box_number_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_NUMBER,
-                box_number_form=box_number_form,
-                errors=[(
-                    f'Invalid box number'
-                )],
-            )
-            return render(
-                request,
-                self.template_name,
-                box_number_failed_context,
-                status=404,
-            )
+            status = HTTPStatus.NOT_FOUND
+            error_msgs.append(f'Invalid box number')
+        else:
+            box_number = box_number_form.cleaned_data.get('box_number')
+            box = Box.objects.get(box_number=box_number)
 
-        box_number = box_number_form.cleaned_data.get('box_number')
-        box = Box.objects.get(box_number=box_number)
-
-        pre_product_context = self.build_context(
-            mode=self.MODE_ENTER_PRODUCT,
-            box=box,
-            product_form=ExistingProductForm(),
-        )
-        return render(
-            request,
-            self.template_name,
-            pre_product_context,
-        )
-
-    def post_product(self, request):
-        box_pk = request.POST.get('box_pk')
-        if not box_pk:
-            box_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_NUMBER,
-                box_number_form=EmptyBoxNumberForm(),
-                errors=['Missing box_pk']
-            ),
-            return render(
-                request,
-                self.template_name,
-                box_failed_context,
-                status=400,
-            )
-        box = Box.objects.get(pk=box_pk)
-
+        # Validate product
         product_form = ExistingProductForm(request.POST)
         if not product_form.is_valid():
-            product_failed_context = self.build_context(
-                mode=self.MODE_ENTER_PRODUCT,
-                box=box,
-                product_form=product_form,
-                errors=['Missing product']
-            ),
-            return render(
-                request,
-                self.template_name,
-                product_failed_context,
-                status=400,
-            )
-        product = product_form.cleaned_data.get('product')
+            status = HTTPStatus.BAD_REQUEST
+            error_msgs.append('Missing product')
+        else:
+            product = product_form.cleaned_data.get('product')
 
-        pre_location_context = self.build_context(
-            mode=self.MODE_ENTER_LOCATION,
-            box=box,
-            product=product,
-            location_form=ExistingLocationForm(),
-        )
-        return render(
-            request,
-            self.template_name,
-            pre_location_context,
-        )
-
-    def post_location(self, request):
-        box_pk = request.POST.get('box_pk')
-        if not box_pk:
-            box_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_NUMBER,
-                box_number_form=EmptyBoxNumberForm(),
-                errors=['Missing box_pk']
-            ),
-            return render(
-                request,
-                self.template_name,
-                box_failed_context,
-                status=400,
-            )
-        box = Box.objects.get(pk=box_pk)
-
-        product_pk = request.POST.get('product_pk')
-        if not product_pk:
-            product_failed_context = self.build_context(
-                mode=self.MODE_ENTER_PRODUCT,
-                box=box,
-                product_form=ProductForm(),
-                errors=['Missing product_pk'],
-            ),
-            return render(
-                request,
-                self.template_name,
-                product_failed_context,
-                status=400,
-            )
-        product = Product.objects.get(pk=product_pk)
-
+        # validate location
         location_form = ExistingLocationForm(request.POST)
         if not location_form.is_valid():
-            location_failed_context = self.build_context(
-                mode=self.MODE_ENTER_LOCATION,
-                box=box,
-                product=product,
-                location_form=location_form,
-                errors=['Missing location']
-            ),
-            return render(
-                request,
-                self.template_name,
-                location_failed_context,
-                status=404
-            )
-        location = location_form.cleaned_data.get('location')
+            status = HTTPStatus.BAD_REQUEST
+            error_msgs.append('Missing location')
+        else:
+            location = location_form.cleaned_data.get('location')
 
-        pre_exp_year_context = self.build_context(
-            mode=self.MODE_ENTER_EXP_YEAR,
-            box=box,
-            product=product,
-            location=location,
-            exp_year_form=ExpYearForm(),
-        )
-        return render(
-            request,
-            self.template_name,
-            pre_exp_year_context,
-        )
-
-    def post_exp_year(self, request):
-        box_pk = request.POST.get('box_pk')
-        if not box_pk:
-            box_failed_context = self.build_context(
-                mode=self.MODE_ENTER_BOX_NUMBER,
-                box_number_form=EmptyBoxNumberForm(),
-                errors=['Missing box_pk']
-            ),
-            return render(
-                request,
-                self.template_name,
-                box_failed_context,
-                status=400,
-            )
-        box = Box.objects.get(pk=box_pk)
-
-        product_pk = request.POST.get('product_pk')
-        if not product_pk:
-            product_failed_context = self.build_context(
-                mode=self.MODE_ENTER_PRODUCT,
-                box=box,
-                product_form=ProductForm(),
-                errors=['Missing product_pk'],
-            ),
-            return render(
-                request,
-                self.template_name,
-                product_failed_context,
-                status=400,
-            )
-        product = Product.objects.get(pk=product_pk)
-
-        location_pk = request.POST.get('location_pk')
-        if not location_pk:
-            location_failed_context = self.build_context(
-                mode=self.MODE_ENTER_LOCATION,
-                box=box,
-                product=product,
-                location_form=ExistingLocationForm,
-                errors=['Missing location']
-            ),
-            return render(
-                request,
-                self.template_name,
-                location_failed_context,
-                status=400,
-            )
-        location = Location.objects.get(pk=location_pk)
-
+        # validate expiration year
         exp_year_form = ExpYearForm(request.POST)
         if not exp_year_form.is_valid():
-            exp_year_failed_context = self.build_context(
-                mode=self.MODE_ENTER_EXP_YEAR,
-                box=box,
-                product=product,
-                location=location,
+            status = HTTPStatus.BAD_REQUEST
+            error_msgs.append('invalid expiration year')
+        exp_year = exp_year_form.cleaned_data.get('exp_year')
+
+        # validate expiration months
+        exp_month_start_form = ExpMoStartForm(request.POST)
+        exp_month_end_form = ExpMoEndForm(request.POST)
+
+        if (not exp_month_start_form.is_valid()) or \
+                (not exp_month_end_form.is_valid()):
+            status = HTTPStatus.BAD_REQUEST
+            error_msgs.append('invalid expiration month start')
+        else:
+            exp_month_start = exp_month_start_form.cleaned_data.get(
+                'exp_month_start')
+
+            exp_month_end = exp_month_end_form.cleaned_data.get(
+                'exp_month_end')
+            validation = validation_exp_months_bool(
+                exp_month_start,
+                exp_month_end
+            )
+            if not validation.is_valid:
+                status = HTTPStatus.BAD_REQUEST
+                error_msgs = error_msgs + validation.error_msg_list
+
+        # Was everything valid?  If not, report it
+        if status != HTTPStatus.OK:
+            validation_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_INFO,
+                box_number_form=box_number_form,
+                product_form=product_form,
+                location_form=location_form,
                 exp_year_form=exp_year_form,
-                errors=['invalid expiration year']
-            ),
+                exp_month_start_form=exp_month_start_form,
+                exp_month_end_form=exp_month_end_form,
+                errors=error_msgs,
+            )
             return render(
                 request,
                 self.template_name,
-                exp_year_failed_context,
-                status=400,
+                validation_failed_context,
+                status=status
             )
-        exp_year = exp_year_form.cleaned_data.get('exp_year')
 
         # apply fill box to database
         box_mgmt = BoxManagementClass()
-        box = box_mgmt.box_fill(
-            box=box,
-            location=location,
-            product=product,
-            exp_year=exp_year,
+        try:
+            box = box_mgmt.box_fill(
+                box=box,
+                location=location,
+                product=product,
+                exp_year=exp_year,
+                exp_mo_start=exp_month_start,
+                exp_mo_end=exp_month_end,
         )
-        # go get the final box info
+        except ProjectError as xcp:
+            modify_box_failed_context = self.build_context(
+                mode=self.MODE_ENTER_BOX_INFO,
+                box_number_form=box_number_form,
+                box=box,
+                product_form=product_form,
+                product=product,
+                location_form=location_form,
+                location=location,
+                # exp_month_start_form=exp_month_start_form,
+                # exp_month_start=exp_month_start,
+                # exp_month_end_form=exp_month_end_form,
+                # exp_month_end=exp_month_end,
+                errors=[xcp],
+            )
+            return render(
+                request,
+                self.template_name,
+                modify_box_failed_context,
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        # go get box info for the final display
+        # box_form = BoxItem()
         filled_box = Box.objects.select_related(
             'box_type',
             'product',
@@ -2065,28 +2431,30 @@ class ManualCheckinBoxView(LoginRequiredMixin, View):
             self.template_name,
             self.build_context(
                 mode=self.MODE_CONFIRMATION,
-                box=box,
+                box=filled_box,
                 product=product,
                 location=location,
                 exp_year=exp_year,
+                exp_month_start=exp_month_start,
+                exp_month_end=exp_month_end,
+                errors=[],
             ),
         )
 
     def post(self, request, *args, **kwargs):
         mode = request.POST.get('mode')
-        if mode == self.MODE_ENTER_BOX_NUMBER:
-            return self.post_box_number(request)
-        if mode == self.MODE_ENTER_PRODUCT:
-            return self.post_product(request)
-        if mode == self.MODE_ENTER_LOCATION:
-            return self.post_location(request)
-        if mode == self.MODE_ENTER_EXP_YEAR:
-            return self.post_exp_year(request)
+        if mode == self.MODE_ENTER_BOX_INFO:
+            return self.post_box_info(request)
         print(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
-class ManualConsumeBoxView(LoginRequiredMixin, View):
+class ManualConsumeBoxView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.check_out_box',
+    )
+
     template_name = 'fpiweb/manual_check_out_box.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -2145,7 +2513,7 @@ class ManualConsumeBoxView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 box_number_failed_context,
-                status=400,
+                status=HTTPStatus.BAD_REQUEST,
             )
 
         box_number = box_number_form.cleaned_data.get('box_number')
@@ -2183,7 +2551,7 @@ class ManualConsumeBoxView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 box_failed_context,
-                status=400,
+                status=HTTPStatus.BAD_REQUEST,
             )
         box = Box.objects.get(pk=box_pk)
 
@@ -2216,7 +2584,12 @@ class ManualConsumeBoxView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class ManualMoveBoxView(LoginRequiredMixin, View):
+class ManualMoveBoxView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.move_box',
+    )
+
     template_name = 'fpiweb/manual_move_box.html'
 
     MODE_ENTER_BOX_NUMBER = 'enter_box_number'
@@ -2259,7 +2632,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                 request,
                 self.template_name,
                 context,
-                status=404,
+                status=HTTPStatus.NOT_FOUND,
             )
 
         box_number = box_number_form.cleaned_data.get('box_number')
@@ -2288,7 +2661,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                     mode=self.MODE_ENTER_BOX_NUMBER,
                     errors=['Missing box_pk']
                 ),
-                status=400,
+                status=HTTPStatus.BAD_REQUEST,
             )
 
         try:
@@ -2303,7 +2676,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                     mode=self.MODE_ENTER_BOX_NUMBER,
                     errors=[message]
                 ),
-                status=404,
+                status=HTTPStatus.NOT_FOUND,
             )
 
         location_form = ExistingLocationForm(request.POST)
@@ -2317,7 +2690,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                     location_form=location_form,
                     errors=['invalid or missing location'],
                 ),
-                status=404
+                status=HTTPStatus.NOT_FOUND
             )
 
         location = location_form.cleaned_data.get('location')
@@ -2333,7 +2706,7 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
                     location_form=location_form,
                     errors=['invalid or missing location'],
                 ),
-                status=404
+                status=HTTPStatus.NOT_FOUND
             )
 
         # apply location change to database
@@ -2362,8 +2735,12 @@ class ManualMoveBoxView(LoginRequiredMixin, View):
         return render(request, self.template_name, {})
 
 
-class PalletManagementView(LoginRequiredMixin, View):
+class PalletManagementView(PermissionRequiredMixin, View):
     """Select current pallet, add new pallet, delete pallet"""
+
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     template_name = 'fpiweb/pallet_management.html'
 
@@ -2375,7 +2752,7 @@ class PalletManagementView(LoginRequiredMixin, View):
             prompt=None,
             pallet_select_form=None,
             pallet_name_form=None,
-            status_code=200):
+            status_code=HTTPStatus.OK):
 
         context = {
             'page_title': page_title,
@@ -2395,9 +2772,11 @@ class PalletManagementView(LoginRequiredMixin, View):
         return self.show_page(request)
 
 
+class PalletSelectView(PermissionRequiredMixin, FormView):
 
-# TODO: Might be able to convert this into FormView
-class PalletSelectView(LoginRequiredMixin, FormView):
+    permission_required = (
+        'fpiweb.dummy_profile',
+    )
 
     template_name = 'fpiweb/pallet_select.html'
     success_url = reverse_lazy('fpiweb:index')

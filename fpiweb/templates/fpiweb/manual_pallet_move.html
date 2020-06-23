@@ -1,0 +1,83 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+mode:                   The mode this template is running in.  Defined in view class
+view_class:             The class of the View
+from_location_form:     ExistingLocationForm for from Location.  May be None
+                        depending on mode
+to_location_form:       MoveToLocationForm.  May be None depending on mode
+confirm_merge_form:     ConfirmMergeForm.  May be None depending on mode
+boxes_moved:            Number of boxes moved.  Only used in MODE_COMPLETE.
+to_location:            Location boxes moved to.  Only used in MODE_COMPLETE.
+errors:                 Iterable of non-form errors
+
+
+{% endcomment %}
+{% block title %}
+    Move Pallet
+{% endblock %}
+
+{% block content %}
+
+    <h1>Move Pallet</h1>
+
+    <div>
+        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+    </div>
+    <div style="margin-bottom: 1rem;">
+        <a href="{% url 'fpiweb:manual_pallet_menu' %}">
+            Return to Manual Pallet Menu
+        </a>
+    </div>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="mode" value="{{ mode }}"/>
+        {% if mode == view_class.MODE_ENTER_FROM_LOCATION %}
+            <h2>Enter location to move pallet from</h2>
+            {% bootstrap_form_errors from_location_form %}
+            {% bootstrap_field from_location_form.loc_row show_help=False %}
+            {% bootstrap_field from_location_form.loc_bin show_help=False %}
+            {% bootstrap_field from_location_form.loc_tier show_help=False %}
+            <input type="submit" class="btn btn-primary"/>
+        {% elif mode == view_class.MODE_ENTER_TO_LOCATION %}
+            <h2>Enter location to move pallet to</h2>
+            {% bootstrap_form_errors to_location_form %}
+            {{ to_location_form.from_location }}
+            {% bootstrap_field to_location_form.loc_row show_help=False %}
+            {% bootstrap_field to_location_form.loc_bin show_help=False %}
+            {% bootstrap_field to_location_form.loc_tier show_help=False %}
+            <input type="submit" class="btn btn-primary"/>
+        {% elif mode == view_class.MODE_CONFIRM_MERGE %}
+            {% bootstrap_form_errors confirm_merge_form %}
+            {{ confirm_merge_form.from_location }}
+            {{ confirm_merge_form.to_location }}
+            {{ confirm_merge_form.boxes_at_to_location }}
+            <p>There are {{ confirm_merge_form.boxes_at_to_location_int }}
+                boxes at {{ confirm_merge_form.to_location_str }}.</p>
+            {% bootstrap_field confirm_merge_form.action %}
+            <input type="submit" class="btn btn-primary"/>
+        {% elif mode == view_class.MODE_COMPLETE %}
+            <p>{{ boxes_moved }} boxes moved to: row {{ to_location.loc_row }}, bin {{ to_location.loc_bin }}, tier {{ to_location.loc_tier }}.</p>
+        {% else %}
+            <div class="alert alert-danger">Unrecognized mode '{{ mode }}' in
+            manual_pallet_move.html</div>
+        {% endif %}
+    </form>
+
+
+
+{% endblock %}

@@ -225,3 +225,19 @@ fpiweb.migrations.0027\_set\_constraint\_name\_choices module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.migrations.0028\_add\_activity\_adj\_code module
+-------------------------------------------------------
+
+.. automodule:: fpiweb.migrations.0028_add_activity_adj_code
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.migrations.0029\_add\_model\_permissions module
+------------------------------------------------------
+
+.. automodule:: fpiweb.migrations.0029_add_model_permissions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+

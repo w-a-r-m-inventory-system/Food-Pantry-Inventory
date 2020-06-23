@@ -2,6 +2,7 @@
 models.py - Define the database tables using ORM models.
 """
 from enum import Enum, unique
+from typing import Union
 
 # import as to avoid conflict with built-in function compile
 from re import compile as re_compile
@@ -23,6 +24,7 @@ MONTH_VALIDATORS = [
     MinValueValidator(1),
     MaxValueValidator(12),
 ]
+
 
 class LocRow(models.Model):
     """
@@ -180,7 +182,6 @@ class Location(models.Model):
     """
 
     class Meta:
-        ordering = ['loc_code']
         app_label = 'fpiweb'
         verbose_name_plural = 'Locations'
 
@@ -251,6 +252,42 @@ class Location(models.Model):
         if self.loc_in_warehouse:
             display += (f' ({self.loc_row}/{self.loc_bin}/{self.loc_tier})')
         return display
+
+    @staticmethod
+    def get_location(
+            loc_row: Union[LocRow, int, str],
+            loc_bin: Union[LocBin, int, str],
+            loc_tier: Union[LocTier, int, str],
+    ):
+        """
+        This method originated as convenient way to retrieve a Location from
+        the database inside a test.
+        :param loc_row:
+        :param loc_bin:
+        :param loc_tier:
+        :return: Location or None
+        """
+
+        row_key = 'loc_row__loc_row' if isinstance(loc_row, str) else 'loc_row'
+        bin_key = 'loc_bin__loc_bin' if isinstance(loc_bin, str) else 'loc_bin'
+
+        if isinstance(loc_tier, str):
+            tier_key = 'loc_tier__loc_tier'
+        else:
+            tier_key = 'loc_tier'
+
+        kwargs = {
+            row_key: loc_row,
+            bin_key: loc_bin,
+            tier_key: loc_tier,
+        }
+
+        try:
+            return Location.objects.get(**kwargs)
+        except Location.DoesNotExist:
+            return None
+        # Note: I'm deliberately letting MultipleObjectsReturned exception
+        # percolate up the stack.
 
 
 class BoxType(models.Model):
@@ -444,6 +481,12 @@ class Box(models.Model):
         ordering = ['box_number']
         app_label = 'fpiweb'
         verbose_name_plural = 'Boxes'
+        permissions = [
+            ('check_in_box', 'Check In Box'),
+            ('check_out_box', 'Check Out (Consume) Box'),
+            ('move_box', 'Move Box'),
+            ('print_labels_box', 'Print Labels'),
+        ]
 
     id_help_text = 'Internal record identifier for box.'
     id = models.AutoField(
@@ -618,6 +661,10 @@ class Pallet(models.Model):
         ordering = ('name',)
         app_label = 'fpiweb'
         verbose_name_plural = 'Pallets'
+        permissions = [
+            ('build_pallet', 'Build pallet'),
+            ('move_pallet', 'Move pallet'),
+        ]
 
     # Pallet Status Names
     FILL: str = 'Fill'
@@ -805,12 +852,14 @@ class Activity(models.Model):
     # Adjustment Reasons
     FILL_EMPTIED: str = 'Fill Emptied'
     MOVE_ADDED: str = 'Move Added'
+    MOVE_CONSUMED: str = 'Move Consumed'
     CONSUME_ADDED: str = 'Consume Added'
     CONSUME_EMPTIED: str = 'Consume Emptied'
 
     ADJUSTMENT_CODE_CHOICES: list = (
         (FILL_EMPTIED, 'Fill emptied previous contents'),
         (MOVE_ADDED, 'Move added box'),
+        (MOVE_CONSUMED, 'Move consumed the box'),
         (CONSUME_ADDED, 'Consume added box'),
         (CONSUME_EMPTIED, 'Consume emptied previous contents')
     )
@@ -1119,7 +1168,7 @@ class Constraints(models.Model):
     def get_values(constraint_name):
         try:
             constraint = Constraints.objects.get(
-                constraint_name__iexact=constraint_name)
+                constraint_name=constraint_name)
         except Constraints.DoesNotExist:
             return None
 
@@ -1208,6 +1257,10 @@ class Profile(models.Model):
 
     class Meta:
         app_label = 'fpiweb'
+        permissions = [
+            ('dummy_profile', 'Dummy permission (do not grant to anyone!)'),
+            ('view_system_maintenance', 'View System Maintenance'),
+        ]
 
     user = models.OneToOneField(
         User,

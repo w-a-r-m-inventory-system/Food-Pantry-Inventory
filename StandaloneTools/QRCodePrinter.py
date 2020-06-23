@@ -21,7 +21,7 @@ import logging.config
 from dataclasses import dataclass, astuple, InitVar
 from logging import getLogger, debug, error
 from pathlib import Path
-from typing import Any, Union, Optional, NamedTuple
+from typing import Any, Union, Optional, NamedTuple, List
 
 from docopt import docopt
 import pyqrcode
@@ -159,7 +159,7 @@ class QRCodePrinterClass:
         self.box: Table = None
 
         # label locations on the page
-        self.label_locations: list(LabelPosition) = list()
+        self.label_locations: List[LabelPosition] = list()
         self.compute_box_dimensions()
 
         # set this to the last position in the list to force a new page
