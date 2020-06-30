@@ -1344,6 +1344,13 @@ class UserInfoForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if args:
+            self.arg1 = args[0]
+            self.mode = self.arg1.get('mode')
+        else:
+            self.mode = None
+        self.user_model = get_user_model()
+        self.my_user = self.user_model()
 
         # prepare to interact with user info in db
         self.pm = ManageUserPermissions()
@@ -1364,6 +1371,34 @@ class UserInfoForm(forms.Form):
                 f'{norm_un} or pick some other user name',
             )
 
+        # TODO Jun 22 2020 travis - later move to clean()
+        try:
+            user = get_user_model().objects.get(username__exact=init_un)
+            user_found = True
+        except BaseException as excp:
+            if excp.args[0] == 'User matching query does not exist.':
+                user_found = False
+            else:
+                print(excp)
+                raise excp
+        if self.mode == str(UserInfoModes.MODE_ADD_USER):
+            if user_found:
+                self.add_error(
+                    'username',
+                    'Username taken, please pick a different username'
+                )
+        elif self.mode == str(UserInfoModes.MODE_UPDATE_USER):
+            if not user_found:
+                self.add_error(
+                    'username',
+                    'Username not found, please pick an existing username'
+                )
+        else:
+            self.add_error(
+                None,
+                f'Internal Error: Invalid mode {self.mode} for '
+                f'{user_found=} at clean_username',
+            )
         final_un = init_un
         return final_un
 
