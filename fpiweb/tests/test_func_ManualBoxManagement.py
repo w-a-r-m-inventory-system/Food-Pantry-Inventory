@@ -15,6 +15,7 @@ import geckodriver_autoinstaller  # https://pypi.org/project/geckodriver-autoins
 from selenium.webdriver.support.ui import Select
 from . import utility
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium.webdriver.firefox.options import Options  # headless mode
 import time
 import random
 
@@ -50,7 +51,10 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists
                                             # and if it doesn't exist, download it automatically,
                                             # then add geckodriver to path
-        cls.browser = webdriver.Firefox()
+        options = Options()         # headless mode
+        options.headless = True     # headless mode
+        cls.browser = webdriver.Firefox(options=options)    # headless mode
+        # cls.browser = webdriver.Firefox()     # browser head mode
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
         # weird size is so I can get the entire web page video recorded without scrolling
