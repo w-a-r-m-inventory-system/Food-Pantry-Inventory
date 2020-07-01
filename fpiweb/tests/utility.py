@@ -22,6 +22,9 @@ def create_user(first_name, last_name):
             first_name[0] + last_name,
             f"{first_name}.{last_name}",
             default_password,
+            # Added this line 6/22/20 per conversation with Travis
+            # Required to run Selenium tests
+            is_superuser=True,
         )
 
     Profile.objects.get_or_create(
