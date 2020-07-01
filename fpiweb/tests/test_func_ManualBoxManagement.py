@@ -4,19 +4,19 @@ __creation_date__ = "04/21/20"
 
 # This functional test covers  all the Manual Box Management web pages.
 # Basic login is also covered in this functional test.
+# Default Browser is FireFox
 # Not all edge cases are covered but I hope I covered the main cases.
 # Test function names  have numbers in them to force order on how they run
 # for video recording.
 # Video recording is used to implement User Documentation.
 
 from selenium import webdriver
-import geckodriver_autoinstaller
+import geckodriver_autoinstaller  # https://pypi.org/project/geckodriver-autoinstaller/
 from selenium.webdriver.support.ui import Select
 from . import utility
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import time
 import random
-
 
 
 
@@ -53,7 +53,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         cls.browser = webdriver.Firefox()
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
-        # weird size is so I can get the entire web page recorded without scrolling
+        # weird size is so I can get the entire web page video recorded without scrolling
         cls.browser.set_window_size(2100, 1181)
 
 
