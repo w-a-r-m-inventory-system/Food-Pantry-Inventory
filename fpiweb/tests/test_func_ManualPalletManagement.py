@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import Select
 from . import utility
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.firefox.options import Options  # headless mode
+from selenium.common.exceptions import NoSuchElementException
 import time
 import random
 
@@ -20,25 +21,17 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     test_user = ""
 
-    # run in headless modw- check this works
-    def run_headless_browser(self, cls):
+    # sets browser to run in headless mode or browser mode
+    # depending on True/False value of HEADLESS_MODE
+    HEADLESS_MODE = False
+    @classmethod
+    def run_headless_mode(cls):
         options = Options()  # headless mode
-        options.headless = True  # headless mode
-        cls.browser = webdriver.Firefox(options=options)  # headless mode
-
-    RECORD = False
-    def delay_for_recording(self):
-        # Need to delay for (1) wait for page load (2) recording
-        if self.RECORD:
-            time.sleep(10)
+        options.headless = cls.HEADLESS_MODE  # headless mode True or False
+        if options.headless:
+            return webdriver.Firefox(options=options)  # headless mode
         else:
-            time.sleep(5)
-
-
-    def select_random_dropdown(self, dropdown_int):
-        random.seed()
-        # return ''.join(random.choice(string.digits) for _i in range(dropdown_int))
-        return random.randint(1,dropdown_int)
+            return webdriver.Firefox()
 
 
     @classmethod
@@ -47,10 +40,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists
                                             # and if it doesn't exist, download it automatically,
                                             # then add geckodriver to path
-        # options = Options()  # headless mode
-        # options.headless = True  # headless mode
-        # cls.browser = webdriver.Firefox(options=options)  # headless mode
-        cls.browser = webdriver.Firefox()     # browser head mode
+        cls.browser = cls.run_headless_mode()   # True = run in headless mode
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
         # weird size is so I can get the entire web page video recorded without scrolling
@@ -74,84 +64,114 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
                                  'secure': False, 'path': '/'})
 
 
-
     @classmethod
     def tearDownClass(cls):
         cls.browser.quit()
         super().tearDownClass()
 
 
+    RECORD = False
+    def delay_for_recording(self):
+        # Need to delay for (1) wait for page load (2) recording
+        if self.RECORD:
+            time.sleep(10)
+        else:
+            time.sleep(5)
+
+    def select_random_dropdown(self, dropdown_int):
+        random.seed()
+        # return ''.join(random.choice(string.digits) for _i in range(dropdown_int))
+        return random.randint(1, dropdown_int)
+
+    START_LOCATION = True,
+    def set_pallet_location(self, row, bin, tier, start_location):
+        if start_location:
+            self.browser.find_element_by_id("id_from-loc_row").click()
+            row_location = Select(self.browser.find_element_by_id("id_from-loc_row"))
+            row_location.select_by_index(row)
+            self.browser.find_element_by_id("id_from-loc_bin").click()
+            bin_location = Select(self.browser.find_element_by_id("id_from-loc_bin"))
+            bin_location.select_by_index(bin)
+            self.browser.find_element_by_id("id_from-loc_tier").click()
+            tier_location = Select(self.browser.find_element_by_id("id_from-loc_tier"))
+            tier_location.select_by_index(tier)
+        else:
+            self.browser.find_element_by_id("id_to-loc_row").click()
+            row_location = Select(self.browser.find_element_by_id("id_to-loc_row"))
+            row_location.select_by_index(row)
+            self.browser.find_element_by_id("id_to-loc_bin").click()
+            bin_location = Select(self.browser.find_element_by_id("id_to-loc_bin"))
+            bin_location.select_by_index(bin)
+            self.browser.find_element_by_id("id_to-loc_tier").click()
+            tier_location = Select(self.browser.find_element_by_id("id_to-loc_tier"))
+            tier_location.select_by_index(tier)
+
+        submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
+        submit_query_button.submit()
+        self.delay_for_recording()
+
 
     # Move box to empty pallet
-    # def test_1A_Move_a_pallet(self):
-    #     fname = "test_Move_a_pallet"
-    #     self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
-    #     self.assertIn("Manual Box and Pallet Management", self.browser.title)
-    #     self.browser.find_element_by_link_text("Manage a pallet manually").click()
-    #     self.delay_for_recording()
-    #     self.assertIn("Manual Box and Pallet Management", self.browser.title)
-    #     self.browser.find_element_by_link_text("Move a pallet").click()
-    #     self.delay_for_recording()
-    #     self.assertIn("Move Pallet", self.browser.title)
-    #
-    #     row_location = Select(self.browser.find_element_by_id("id_from-loc_row"))
-    #     row_location.select_by_index(1)
-    #     bin_location = Select(self.browser.find_element_by_id("id_from-loc_bin"))
-    #     bin_location.select_by_index(1)
-    #     tier_location = Select(self.browser.find_element_by_id("id_from-loc_tier"))
-    #     tier_location.select_by_index(1)
-    #
-    #     submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-    #     submit_query_button.submit()
-    #     self.delay_for_recording()
-    #     self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
-    #
-    #     row_location = Select(self.browser.find_element_by_id("id_to-loc_row"))
-    #     row_location.select_by_index(1)
-    #     bin_location = Select(self.browser.find_element_by_id("id_to-loc_bin"))
-    #     bin_location.select_by_index(3)
-    #     tier_location = Select(self.browser.find_element_by_id("id_to-loc_tier"))
-    #     tier_location.select_by_index(2)
-    #
-    #     submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-    #     submit_query_button.submit()
-    #     self.delay_for_recording()
+    def test_1A_Move_a_pallet(self):
+        fname = "test_Move_a_pallet"
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
+        self.assertIn("Manual Box and Pallet Management", self.browser.title)
+        self.browser.find_element_by_link_text("Manage a pallet manually").click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box and Pallet Management", self.browser.title)
+        self.browser.find_element_by_link_text("Move a pallet").click()
+        self.delay_for_recording()
+        self.assertIn("Move Pallet", self.browser.title)
+
+        # get a box is from this location
+        self.set_pallet_location(1,1,1, self.START_LOCATION)
+        self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
+
+        # send a box to this empty location
+        self.set_pallet_location(1, 3, 2, not self.START_LOCATION)
 
 
-    # Move box to pallet with boxes
-    # def test_1B_MovePallet(self):
-    #     fname = "test_Move_a_pallet"
-    #     self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
-    #     self.assertIn("Manual Box and Pallet Management", self.browser.title)
-    #     self.browser.find_element_by_link_text("Manage a pallet manually").click()
-    #     self.delay_for_recording()
-    #     self.assertIn("Manual Box and Pallet Management", self.browser.title)
-    #     self.browser.find_element_by_link_text("Move a pallet").click()
-    #     self.delay_for_recording()
-    #     self.assertIn("Move Pallet", self.browser.title)
-    #
-    #     row_location = Select(self.browser.find_element_by_id("id_from-loc_row"))
-    #     row_location.select_by_index(1)
-    #     bin_location = Select(self.browser.find_element_by_id("id_from-loc_bin"))
-    #     bin_location.select_by_index(1)
-    #     tier_location = Select(self.browser.find_element_by_id("id_from-loc_tier"))
-    #     tier_location.select_by_index(1)
-    #
-    #     submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-    #     submit_query_button.submit()
-    #     self.delay_for_recording()
-    #     self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
-    #
-    #     row_location = Select(self.browser.find_element_by_id("id_to-loc_row"))
-    #     row_location.select_by_index(1)
-    #     bin_location = Select(self.browser.find_element_by_id("id_to-loc_bin"))
-    #     bin_location.select_by_index(3)
-    #     tier_location = Select(self.browser.find_element_by_id("id_to-loc_tier"))
-    #     tier_location.select_by_index(6)
-    #
-    #     submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-    #     submit_query_button.submit()
-    #     self.delay_for_recording()
+    # Move box to pallet that has boxes
+    def test_1B_MovePallet(self):
+        fname = "test_Move_a_pallet"
+        # setup to move directory to "Move a pallet"?
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
+        self.assertIn("Manual Box and Pallet Management", self.browser.title)
+        self.browser.find_element_by_link_text("Manage a pallet manually").click()
+        self.delay_for_recording()
+        self.assertIn("Manual Box and Pallet Management", self.browser.title)
+        self.browser.find_element_by_link_text("Move a pallet").click()
+        self.delay_for_recording()
+        self.assertIn("Move Pallet", self.browser.title)
+
+        ## get a box is from this location
+        self.set_pallet_location(1, 1, 1, self.START_LOCATION)
+        self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
+
+        # send a box to this location where there are box(es)
+        self.set_pallet_location(1, 3, 6, not self.START_LOCATION)
+
+        # check the merge option
+        self.browser.find_element_by_id("id_confirm_merge-action").click()
+        self.delay_for_recording()
+        action = Select(self.browser.find_element_by_id("id_confirm_merge-action"))
+        action.select_by_index(1)
+        self.delay_for_recording()
+        submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
+        submit_query_button.submit()
+        self.delay_for_recording()
+
+        # check the go to new location option
+        self.browser.back()
+        self.browser.find_element_by_id("id_confirm_merge-action").click()
+        self.delay_for_recording()
+        action = Select(self.browser.find_element_by_id("id_confirm_merge-action"))
+        action.select_by_index(0)
+        self.delay_for_recording()
+        submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
+        submit_query_button.submit()
+        self.delay_for_recording()
+        self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
 
 
     # Attempt to move box from empty pallet
@@ -166,22 +186,16 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
         self.assertIn("Move Pallet", self.browser.title)
 
-        row_location = Select(self.browser.find_element_by_id("id_from-loc_row"))
-        row_location.select_by_index(1)
-        bin_location = Select(self.browser.find_element_by_id("id_from-loc_bin"))
-        bin_location.select_by_index(3)
-        tier_location = Select(self.browser.find_element_by_id("id_from-loc_tier"))
-        tier_location.select_by_index(2)
-
-        submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-        submit_query_button.submit()
-        self.delay_for_recording()
+        # Select an empty pallet as determined from Location.json
+        self.set_pallet_location(1, 3, 2, self.START_LOCATION)
 
         self.browser.find_element_by_xpath("//div[@role='alert']")
-        dismiss_x_button = self.browser.find_element_by_xpath("//button[@aria-label='close']")
-        dismiss_x_button.click()
-        # self assert label closed not in window
+        self.browser.find_element_by_xpath("//button[@aria-label='close']").click()
+        # verify alert has closed
+        try:
+            self.browser.find_element_by_xpath("//div[@role='alert']")
+        except NoSuchElementException:
+            print("Alert from Move Box From Empty Pallet has closed- verified")
 
-        self.browser.find_element_by_xpath("//a[contains(text(), 'Return to Manual Pallet Menu')]").click()
 
 
