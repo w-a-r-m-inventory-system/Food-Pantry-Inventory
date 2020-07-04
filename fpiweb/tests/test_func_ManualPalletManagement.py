@@ -2,6 +2,13 @@ __author__ = 'Mike Rehner'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "05/5/20"
 
+# This functional test covers  'Move a pallet' web pages.
+# Default Browser is FireFox and can run in headless mode
+# Not all edge cases are covered but I hope I covered the main cases.
+# Test function names  have numbers in them to force order on how they run
+# for video recording.
+# Video recording is used to implement User Documentation.
+
 from selenium import webdriver
 import geckodriver_autoinstaller  # https://pypi.org/project/geckodriver-autoinstaller/
 from selenium.webdriver.support.ui import Select
@@ -23,7 +30,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -74,16 +81,19 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
-            time.sleep(10)
-        else:
             time.sleep(5)
+        else:
+            time.sleep(2)
+
 
     def select_random_dropdown(self, dropdown_int):
         random.seed()
         # return ''.join(random.choice(string.digits) for _i in range(dropdown_int))
         return random.randint(1, dropdown_int)
 
-    START_LOCATION = True,
+
+    # 'START_LOCATION = True' means use 'id_from-loc' while not True means use 'id_to-loc'
+    START_LOCATION = True
     def set_pallet_location(self, row, bin, tier, start_location):
         if start_location:
             self.browser.find_element_by_id("id_from-loc_row").click()
@@ -129,6 +139,9 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
         # send a box to this empty location
         self.set_pallet_location(1, 3, 2, not self.START_LOCATION)
+        self.assertIn(
+            self.browser.find_element_by_tag_name('p').text, '1 boxes moved to: row 01, bin 03, tier A2.'
+        )
 
 
     # Move box to pallet that has boxes
@@ -144,7 +157,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
         self.assertIn("Move Pallet", self.browser.title)
 
-        ## get a box is from this location
+        # get a box is from this location
         self.set_pallet_location(1, 1, 1, self.START_LOCATION)
         self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
 
@@ -160,6 +173,9 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
         submit_query_button.submit()
         self.delay_for_recording()
+        self.assertIn(
+            self.browser.find_element_by_tag_name('p').text, '1 boxes moved to: row 01, bin 03, tier C2.'
+        )
 
         # check the go to new location option
         self.browser.back()
@@ -176,7 +192,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # Attempt to move box from empty pallet
     def test_1C_MovePallet(self):
-        fname = "test_Move_a_pallet"
+        fname = "test_1C_Move_a_pallet testing fpiweb/manual_pallet_move"
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
         self.assertIn("Manual Box and Pallet Management", self.browser.title)
         self.browser.find_element_by_link_text("Manage a pallet manually").click()
@@ -195,7 +211,4 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         try:
             self.browser.find_element_by_xpath("//div[@role='alert']")
         except NoSuchElementException:
-            print("Alert from Move Box From Empty Pallet has closed- verified")
-
-
-
+            print(f"\nAlert from {fname} has closed as expected- verified.\n")

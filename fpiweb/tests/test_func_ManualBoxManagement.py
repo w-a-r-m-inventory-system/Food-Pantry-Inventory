@@ -4,7 +4,7 @@ __creation_date__ = "04/21/20"
 
 # This functional test covers  all the Manual Box Management web pages.
 # Basic login is also covered in this functional test.
-# Default Browser is FireFox
+# Default Browser is FireFox and can run in headless mode
 # Not all edge cases are covered but I hope I covered the main cases.
 # Test function names  have numbers in them to force order on how they run
 # for video recording.
@@ -20,7 +20,6 @@ import time
 import random
 
 
-
 class ManualBoxManagement(StaticLiveServerTestCase):
 
     fixtures = ['BoxType.json', 'LocBin.json', 'LocRow.json', 'LocTier.json',
@@ -29,20 +28,17 @@ class ManualBoxManagement(StaticLiveServerTestCase):
 
     test_user = ""
 
-    RECORD = False
-    def delay_for_recording(self):
-        # Need to delay for (1) recording or  (2) wait for new page to load
-        if self.RECORD:
-            time.sleep(5)
+    # sets browser to run in headless mode or browser mode
+    # depending on True/False value of HEADLESS_MODE
+    HEADLESS_MODE = True
+    @classmethod
+    def get_browser_mode(cls):
+        options = Options()  # headless mode
+        options.headless = cls.HEADLESS_MODE  # headless mode True or False
+        if options.headless:
+            return webdriver.Firefox(options=options)  # headless mode
         else:
-            time.sleep(2)
-
-
-    # used to select a random element from a dropdown list
-    def select_random_dropdown(self, dropdown_int):
-        random.seed()
-        # return ''.join(random.choice(string.digits) for _i in range(dropdown_int))
-        return random.randint(1,dropdown_int)
+            return webdriver.Firefox()      # use Firefox browser
 
 
     @classmethod
@@ -51,10 +47,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists
                                             # and if it doesn't exist, download it automatically,
                                             # then add geckodriver to path
-        options = Options()         # headless mode
-        options.headless = True     # headless mode
-        cls.browser = webdriver.Firefox(options=options)    # headless mode
-        # cls.browser = webdriver.Firefox()     # browser head mode
+        cls.browser = cls.get_browser_mode()
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
         # weird size is so I can get the entire web page video recorded without scrolling
@@ -82,6 +75,22 @@ class ManualBoxManagement(StaticLiveServerTestCase):
     def tearDownClass(cls):
         cls.browser.quit()
         super().tearDownClass()
+
+
+    RECORD = False
+    def delay_for_recording(self):
+        # Need to delay for (1) recording or  (2) wait for new page to load
+        if self.RECORD:
+            time.sleep(5)
+        else:
+            time.sleep(2)
+
+
+    # used to select a random element from a dropdown list
+    def select_random_dropdown(self, dropdown_int):
+        random.seed()
+        # return ''.join(random.choice(string.digits) for _i in range(dropdown_int))
+        return random.randint(1, dropdown_int)
 
 
     # tests row, bin, tier location settings by setting location from the dropdown
@@ -136,14 +145,14 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         self.assertIn("Manual Box Management", self.browser.title)
         self.browser.back()
         self.delay_for_recording()
-        # Test 'Retrun to main page.' form ManualBox and Pallet Management page
+        # Test 'Return to main page.' form ManualBox and Pallet Management page
         self.browser.find_element_by_link_text("Return to main page.").click()
         self.delay_for_recording()
         self.assertIn("Welcome to Food Pantry Inventory System", self.browser.title)
 
 
     def test_3ManualStatusBox(self):
-        fname="test_3ManualStatusBox"
+        fname="test_3ManualStatusBox testing fpiweb/manual_box_status"
         # Start off in Manual Box Management page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualboxmenu/'))
         self.assertIn("Manual Box Management", self.browser.title)
@@ -170,8 +179,8 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         search_button.submit()
         self.delay_for_recording()
         if self.browser.title.__contains__("Server Error"):
-            self.fail("Test fails when entering invalid Box Number, 500 page displayed in " +
-                      fname)
+            print(f"\n*** {fname} fails when entering invalid box number or 6+ digit box "
+                  f"number.*** \n")
 
 
     def test_4AddNewBox(self):
