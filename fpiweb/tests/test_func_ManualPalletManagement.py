@@ -30,7 +30,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = True
+    HEADLESS_MODE = False
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -50,8 +50,8 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         cls.browser = cls.run_headless_mode()   # True = run in headless mode
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
-        # weird size is so I can get the entire web page video recorded without scrolling
-        cls.browser.set_window_size(2100, 1181)
+        # size is so I can get the entire web page video recorded without scrolling
+        cls.browser.set_window_size(1920, 1080)
 
 
     # setup user, login and  set sessionid for user
@@ -77,11 +77,11 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         super().tearDownClass()
 
 
-    RECORD = False
+    RECORD = True
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
-            time.sleep(5)
+            time.sleep(10)
         else:
             time.sleep(2)
 
