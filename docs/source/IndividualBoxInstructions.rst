@@ -79,15 +79,15 @@ to move pallet **to**". Enter the Row, Bin, and Tier location for where the pall
 and it's boxes will be moved to. The screen below shows the new Tier location being
 chosen.
 
-.. image:: manual_box_images/SelectTierTo_0_00_34.png
+.. image:: manual_box_images/SelectTierTo2_0_00_20.png
 
 Once the **Enter location to move pallet to** screen has been filled out click on the
-blue **Submit Query** button. If the new "Enter location to move pallet to" is empty
+blue **Submit Query** button. If the new location you want to move the pallet is empty
 and has no boxes you should see a screen similar to the one shown immediately below.
 
 .. image:: manual_box_images/MovePalletFinish_0_00_39.png
 
-If the "Enter location to move pallet to" is NOT empty then you will see a screen like
+If the "Enter location to move pallet to" is NOT EMPTY then you will see a screen like
 the one shown in the next section below.
 
 Move a Pallet and Its Boxes to a Non-Empty Pallet Location
@@ -110,12 +110,13 @@ move the pallet to.
 
 If you click on **Merge Pallets** both pallets along with their boxes will be merged
 into the new location you picked from the **Enter location to move pallet to** screen.
+You will see a screen stating "boxes move to row, bin, tier".
 
 Attempt to Move an Empty Pallet
 ---------------------------------
 
 If you attempt "Enter location to move pallet from" and there are no boxes recorded
-in the database for that pallet you will see a screen similar to the one shown
+in the database for that pallet location you will see a screen similar to the one shown
 below.
 
 .. image:: manual_box_images/MoveEmptyPallet_0_03_01.png

@@ -30,7 +30,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -77,11 +77,11 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         super().tearDownClass()
 
 
-    RECORD = True
+    RECORD = False
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
-            time.sleep(10)
+            time.sleep(5)
         else:
             time.sleep(2)
 
@@ -114,7 +114,10 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
             bin_location.select_by_index(bin)
             self.browser.find_element_by_id("id_to-loc_tier").click()
             tier_location = Select(self.browser.find_element_by_id("id_to-loc_tier"))
+            if self.RECORD:
+                self.delay_for_recording()      # needed for a screenshot
             tier_location.select_by_index(tier)
+
 
         submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
         submit_query_button.submit()
