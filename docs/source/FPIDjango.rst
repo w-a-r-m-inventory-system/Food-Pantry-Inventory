@@ -6,14 +6,6 @@ FPIDjango package
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   FPIDjango.private
-
 Submodules
 ----------
 
