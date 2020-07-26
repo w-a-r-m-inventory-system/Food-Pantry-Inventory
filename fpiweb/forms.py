@@ -885,15 +885,6 @@ class BoxItemForm(forms.Form):
         }
 
 
-class PrintLabelsForm(forms.Form):
-
-    starting_number = forms.IntegerField()
-
-    number_to_print = forms.IntegerField(
-        initial=10,
-    )
-
-
 class BoxTypeForm(forms.Form):
     """A form to use whenever a box type selection is needed."""
     box_type = forms.ModelChoiceField(

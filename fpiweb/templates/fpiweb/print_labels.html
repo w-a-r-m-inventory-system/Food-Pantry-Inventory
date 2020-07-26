@@ -5,16 +5,49 @@
 
 {% block content %}
 
-<form action="{% url 'fpiweb:print_labels' %}" method="post">
-  {% csrf_token %}
-  {% bootstrap_field form.starting_number %}
-  {% bootstrap_field form.number_to_print %}
-  <input type="submit" value="Generate PDF"/>
-</form>
+    <h1>Print QR Codes</h1>
 
-    <hr/>
-    <div>
-        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+    <h2>
+        {{ this_user_info.user.first_name }} &nbsp;
+        {{ this_user_info.user.last_name }}
+    </h2>
+    <h3>
+        {{ this_user_info.profile.title }}
+        ({{ this_user_info.highest_access_level.name }})
+    </h3>
+    <br/>
+    <div class="h4">
+        This program generates a pdf file that can subsequently be
+        printed on labels or plain paper.  There are four rows of three
+        QR codes per page.
     </div>
+    <br/>
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+    <form action="{% url 'fpiweb:print_labels' %}" method="post">
+      {% csrf_token %}
+      {% bootstrap_field form.starting_number %}
+      {% bootstrap_field form.number_to_print %}
+        <div>
+            {{ labels_per_page }} QR codes are printed per page
+        </div>
+      <input type="submit" value="Generate QR Code Labels"/>
+    </form>
+
+    <div>
+        <a href="{% url 'fpiweb:index' %}">
+           Return to Main Menu
+        </a>
+    </div>
+
 
 {% endblock %}
