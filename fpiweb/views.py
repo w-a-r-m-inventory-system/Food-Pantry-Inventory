@@ -2081,10 +2081,7 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
             box_number_failed_context = self.build_context(
                 mode=self.MODE_ENTER_BOX_NUMBER,
                 box_number_form=box_number_form,
-                errors=[(
-                    f"Box {box_number_form.get('box_number')} not in "
-                    f"inventory"
-                )],
+                errors=box_number_form.errors,
             )
             return render(
                 request,

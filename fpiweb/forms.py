@@ -1017,54 +1017,6 @@ class NewBoxNumberForm(forms.Form):
     )
 
 
-class EmptyBoxNumberField(BoxNumberField):
-    """Checks whether there's a Box with the specified box number in the
-    database.  If a matching Box is found, this Box is stored in the
-    field's box attribute"""
-
-    def clean(self, value):
-        value = super().clean(value)
-        if not Box.objects.filter(box_number=value).exists():
-            raise ValidationError(
-                f"Box number {value} is not present in the database.",
-            )
-        box = Box.objects.get(box_number=value)
-        if box.product:
-            raise ValidationError(f'Box number {value} is not empty.')
-        return value
-
-
-class EmptyBoxNumberForm(forms.Form):
-
-    box_number = EmptyBoxNumberField(
-        max_length=Box.box_number_max_length,
-    )
-
-
-class FilledBoxNumberField(BoxNumberField):
-    """Checks whether there's a Box with the specified box number in the
-    database.  If a matching Box is found, this Box is stored in the
-    field's box attribute"""
-
-    def clean(self, value):
-        value = super().clean(value)
-        if not Box.objects.filter(box_number=value).exists():
-            raise ValidationError(
-                f"Box number {value} is not present in the database.",
-            )
-        box = Box.objects.get(box_number=value)
-        if not box.product:
-            raise ValidationError(f'Box number {value} is empty.')
-        return value
-
-
-class FilledBoxNumberForm(forms.Form):
-
-    box_number = FilledBoxNumberField(
-        max_length=Box.box_number_max_length,
-    )
-
-
 class ExtantBoxNumberField(BoxNumberField):
     """Checks whether there's a Box with the specified box number in the
     database.  If a matching Box is found, this Box is stored in the
@@ -1083,6 +1035,46 @@ class ExtantBoxNumberField(BoxNumberField):
 class ExtantBoxNumberForm(forms.Form):
 
     box_number = ExtantBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
+class EmptyBoxNumberField(ExtantBoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        box = Box.objects.get(box_number=value)
+        if box.product:
+            raise ValidationError(f'Box number {value} is not empty.')
+        return value
+
+
+class EmptyBoxNumberForm(forms.Form):
+
+    box_number = EmptyBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
+class FilledBoxNumberField(ExtantBoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        box = Box.objects.get(box_number=value)
+        if not box.product:
+            raise ValidationError(f'Box number {value} is empty.')
+        return value
+
+
+class FilledBoxNumberForm(forms.Form):
+
+    box_number = FilledBoxNumberField(
         max_length=Box.box_number_max_length,
     )
 
