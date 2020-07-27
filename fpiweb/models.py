@@ -462,7 +462,7 @@ class BoxNumber:
 
     @staticmethod
     def validate(box_number: str) -> bool:
-        """ validate that a atring is of the form 'BOXnnnnn' """
+        """ validate that a string is of the form 'BOXnnnnn' """
         is_valid_box_number = \
             bool(BoxNumber.box_number_regex.match(box_number))
         return is_valid_box_number
