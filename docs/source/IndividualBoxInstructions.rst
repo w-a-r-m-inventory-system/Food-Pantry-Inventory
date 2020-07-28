@@ -12,9 +12,10 @@ below to begin processing a box or a pallet. You will be directed to the
 Manual Box and Pallet Management Screen
 ++++++++++++++++++++++++++++++++++++++++
 
-To manage a pallet manually click on the **Manage a pallet manually** link.
-**Add screen here showing where to click. Currently the user documentation is not
-implmented for this section.**
+To manually manage a pallet click on the **Manage a pallet manually** link as shown
+below.
+
+.. image:: manual_box_images/ManualBoxPalletManagement_0_00_01.png
 
 To manage individual boxes of product click on the **Manage an individual box manually**
 link as shown below.
@@ -24,8 +25,101 @@ link as shown below.
 Manual Pallet Management Screens
 ++++++++++++++++++++++++++++++++
 
-**Add screen here showing where to click for manual Pallet Management. Also this
-section should include Manual Pallet Management Screens**
+If you clicked on the **Manage a pallet manuallyy** link you should be
+directed to the **Manual Pallet Management** screen.
+Here you will see 3 menu items.
+
++ **Start a New Pallet**
++ **Select a pallet in progress**
++ **Move a pallet**
+
+Currently the only link that is working is the **Move a pallet** link. To change the
+location of a pallet click on **Move a pallet** as shown below.
+
+.. image:: manual_box_images/MovePallet_0_00_05.png
+
+Move a Pallet Screens
+======================
+
+After clicking on **Move a pallet** you should see a screen like the one below. This
+screen allows you to move the location of each pallet along with its boxes in the
+database records. Basically if you move a pallet you are also moving the boxes the pallet
+contains.
+
+.. image:: manual_box_images/MovePalletStart_0_00_11.png
+
+When moving a pallet (with its boxes) three different conditions can occur.
+
+1. Move a pallet and its boxes to an empty pallet location.
+#. Move a pallet and its boxes to non-empty pallet location.
+#. Attempt to move an empty pallet with no boxes.
+
+All three conditions will be shown below.
+
+Move a Pallet to an Empty Pallet Location
+------------------------------------------
+
+When moving a pallet and its boxes to a new location the first thing you need to
+do is to "Enter location to move pallet from". You enter the position of the pallet
+by selecting the Row, Bin, and Tier dropdown lists by using the mouse to click on the down
+arrow at the right of each dropdown list. Selecting the down arrow as shown below in the
+Row dropdown list brings a set of choices. Simply click on the current Row location choice
+to "Enter the location to move pallet from".
+
+.. image:: manual_box_images/SelectRowFromDropDownList_0_00_21.png
+
+Do the same with the Row and Tier locations. Once that is done you should see the
+**Move Pallet** screen as filled out below with Row, Bin, and Tier locations filled out.
+Then click on the blue **Submit Query** button.
+
+.. image:: manual_box_images/SubmitQuery_0_00_23.png
+
+This will bring you to a similar screen but this new screen will say "Enter location
+to move pallet **to**". Enter the Row, Bin, and Tier location for where the pallet
+and it's boxes will be moved to. The screen below shows the new Tier location being
+chosen.
+
+.. image:: manual_box_images/SelectTierTo2_0_00_20.png
+
+Once the **Enter location to move pallet to** screen has been filled out click on the
+blue **Submit Query** button. If the new location you want to move the pallet is empty
+and has no boxes you should see a screen similar to the one shown immediately below.
+
+.. image:: manual_box_images/MovePalletFinish_0_00_39.png
+
+If the "Enter location to move pallet to" is NOT EMPTY then you will see a screen like
+the one shown in the next section below.
+
+Move a Pallet and Its Boxes to a Non-Empty Pallet Location
+-----------------------------------------------------------
+
+The screen below shows up when you try to move a pallet to a location where a pallet is
+already located. Notice that the message states "There are 2 boxes at 01,03,C2".
+
+.. image:: manual_box_images/BoxesAtLocation_0_01_21.png
+
+This means you will have to make a decision, either (1) choose a new location by clicking
+the **Change To Location** choice or (2) merge the pallets by clicking the **Merge Pallets**
+choice.
+
+.. image:: manual_box_images/SelectOptionLocationMerge_0_01_30.png
+
+If you click on **Change to Location** you will be directed back to the **Enter location
+to move pallet to** screen as shown above. From there you can select another location to
+move the pallet to.
+
+If you click on **Merge Pallets** both pallets along with their boxes will be merged
+into the new location you picked from the **Enter location to move pallet to** screen.
+You will see a screen stating "boxes move to row, bin, tier".
+
+Attempt to Move an Empty Pallet
+---------------------------------
+
+If you attempt "Enter location to move pallet from" and there are no boxes recorded
+in the database for that pallet location you will see a screen similar to the one shown
+below.
+
+.. image:: manual_box_images/MoveEmptyPallet_0_03_01.png
 
 Manual Box Management Screens
 +++++++++++++++++++++++++++++

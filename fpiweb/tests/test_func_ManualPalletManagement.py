@@ -50,8 +50,8 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         cls.browser = cls.run_headless_mode()   # True = run in headless mode
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
-        # weird size is so I can get the entire web page video recorded without scrolling
-        cls.browser.set_window_size(2100, 1181)
+        # size is so I can get the entire web page video recorded without scrolling
+        cls.browser.set_window_size(1920, 1080)
 
 
     # setup user, login and  set sessionid for user
@@ -114,7 +114,10 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
             bin_location.select_by_index(bin)
             self.browser.find_element_by_id("id_to-loc_tier").click()
             tier_location = Select(self.browser.find_element_by_id("id_to-loc_tier"))
+            if self.RECORD:
+                self.delay_for_recording()      # needed for a screenshot
             tier_location.select_by_index(tier)
+
 
         submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
         submit_query_button.submit()
