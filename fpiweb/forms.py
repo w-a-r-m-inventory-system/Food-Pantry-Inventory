@@ -13,7 +13,6 @@ from typing import \
 from django import forms
 from django.forms import \
     CharField, \
-    DateInput, \
     Form, \
     ModelChoiceField, \
     PasswordInput, \
@@ -250,11 +249,10 @@ def box_number_validator(value) -> None:
     raise ValidationError(f"{value} is not a valid Box Number")
 
 
-class Html5DateInput(DateInput):
+class Html5DateInput(forms.DateInput):
     input_type = 'date'
 
-
-class BoxNumberField(CharField):
+class BoxNumberField(forms.CharField):
     def __init__(self, **kwargs):
         default_kwargs = {
             'max_length': Box.box_number_max_length,
@@ -969,30 +967,45 @@ class ExpMoEndForm(forms.Form):
     )
 
 
-class BoxNumberField(forms.CharField):
-    """Accepts box number with or without BOX prefix.
-    Returns BoxNumber with BOX prefix and leading zeros"""
+class RelaxedBoxNumberField(forms.CharField):
+    """
+    Define box nummber field that allows all numberics.
 
-    def clean(self, value):
+    Accepts box number with or without BOX prefix.
+    Returns BoxNumber with BOX prefix and leading zeros
+    """
+
+    def __init__(self, **kwargs):
+        default_kwargs = {
+            'max_length': Box.box_number_max_length,
+        }
+        default_kwargs.update(kwargs)
+        super().__init__(**default_kwargs)
+
+    def clean(self, value: str) -> str:
         value = super().clean(value)
-
+        formal_box_number = 'BOX0000'
+        raise_error = False
         if BoxNumber.validate(value):
-            return value.upper()
-
-        # Did the user just enter digit?  Try and turn this
-        # into a valid box number
-        try:
-            value = int(value)
-        except (TypeError, ValueError):
+            formal_box_number = value.upper()
+        elif value.isdigit():
+            # Did the user just enter digit?  Try and turn this
+            # into a valid box number
+            formal_box_number = BoxNumber.format_box_number(int(value))
+            if not BoxNumber.validate(formal_box_number):
+                raise_error = True
+        else:
+            raise_error = True
+        if raise_error:
             raise ValidationError(
                 '%(value)s is not a valid box number',
                 params={'value': value},
             )
 
-        return BoxNumber.format_box_number(value)
+        return formal_box_number
 
 
-class NewBoxNumberField(BoxNumberField):
+class NewBoxNumberField(RelaxedBoxNumberField):
     """
     Add a new box number to the database.
 
@@ -1017,55 +1030,7 @@ class NewBoxNumberForm(forms.Form):
     )
 
 
-class EmptyBoxNumberField(BoxNumberField):
-    """Checks whether there's a Box with the specified box number in the
-    database.  If a matching Box is found, this Box is stored in the
-    field's box attribute"""
-
-    def clean(self, value):
-        value = super().clean(value)
-        if not Box.objects.filter(box_number=value).exists():
-            raise ValidationError(
-                f"Box number {value} is not present in the database.",
-            )
-        box = Box.objects.get(box_number=value)
-        if box.product:
-            raise ValidationError(f'Box number {value} is not empty.')
-        return value
-
-
-class EmptyBoxNumberForm(forms.Form):
-
-    box_number = EmptyBoxNumberField(
-        max_length=Box.box_number_max_length,
-    )
-
-
-class FilledBoxNumberField(BoxNumberField):
-    """Checks whether there's a Box with the specified box number in the
-    database.  If a matching Box is found, this Box is stored in the
-    field's box attribute"""
-
-    def clean(self, value):
-        value = super().clean(value)
-        if not Box.objects.filter(box_number=value).exists():
-            raise ValidationError(
-                f"Box number {value} is not present in the database.",
-            )
-        box = Box.objects.get(box_number=value)
-        if not box.product:
-            raise ValidationError(f'Box number {value} is empty.')
-        return value
-
-
-class FilledBoxNumberForm(forms.Form):
-
-    box_number = FilledBoxNumberField(
-        max_length=Box.box_number_max_length,
-    )
-
-
-class ExtantBoxNumberField(BoxNumberField):
+class ExtantBoxNumberField(RelaxedBoxNumberField):
     """Checks whether there's a Box with the specified box number in the
     database.  If a matching Box is found, this Box is stored in the
     field's box attribute"""
@@ -1083,6 +1048,46 @@ class ExtantBoxNumberField(BoxNumberField):
 class ExtantBoxNumberForm(forms.Form):
 
     box_number = ExtantBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
+class EmptyBoxNumberField(ExtantBoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        box = Box.objects.get(box_number=value)
+        if box.product:
+            raise ValidationError(f'Box number {value} is not empty.')
+        return value
+
+
+class EmptyBoxNumberForm(forms.Form):
+
+    box_number = EmptyBoxNumberField(
+        max_length=Box.box_number_max_length,
+    )
+
+
+class FilledBoxNumberField(ExtantBoxNumberField):
+    """Checks whether there's a Box with the specified box number in the
+    database.  If a matching Box is found, this Box is stored in the
+    field's box attribute"""
+
+    def clean(self, value):
+        value = super().clean(value)
+        box = Box.objects.get(box_number=value)
+        if not box.product:
+            raise ValidationError(f'Box number {value} is empty.')
+        return value
+
+
+class FilledBoxNumberForm(forms.Form):
+
+    box_number = FilledBoxNumberField(
         max_length=Box.box_number_max_length,
     )
 

@@ -27,6 +27,7 @@ MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 # Project specific exceptions
 # # # # # # # # # # # # # # #
 
+
 class ProjectError(ValidationError):
     """
     All exceptions unique to this project wil be based on this class.
@@ -53,8 +54,9 @@ class InternalError(ProjectError):
     The error is raised when there is some interal logic problem.
     """
 
+
 @dataclass
-class ValidOrErrorResponse():
+class ValidOrErrorResponse:
     """
     A constructed response denoting either valid or has error messages.
     """
@@ -73,7 +75,6 @@ class ValidOrErrorResponse():
         return
 
     def __repr__(self):
-        display = ''
         if self.is_valid:
             display = "Valid"
         else:
