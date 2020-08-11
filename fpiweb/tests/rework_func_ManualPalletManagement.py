@@ -57,7 +57,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     # setup user, login and  set sessionid for user
     def setUp(self):
         super(ManualPalletMaintenance, self).setUp()
-        test_user = utility.create_user('test', 'user')
+        test_user = utility.create_user(username=user)
         test_user.set_password(utility.default_password)
         test_user.save()
 

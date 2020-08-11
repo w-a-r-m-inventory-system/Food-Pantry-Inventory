@@ -1,43 +1,74 @@
-
-
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission, User
 from django.test import Client
 from django.views import View
 
+from fpiweb.constants import AccessLevel, TargetUser
 from fpiweb.models import Profile
 
 default_password = 'abc123'
 
 
-def create_user(first_name, last_name):
+class ManageUserPermissions(object):
+    pass
+
+
+
+def create_user(*,
+                username: str,
+                first_name: str = 'first',
+                last_name: str = 'last',
+                title: str = 'title',
+                password: str = default_password,
+                access: AccessLevel = AccessLevel.Volunteer,
+                ):
+    user_model = get_user_model()
+    username = username.lower()
     first_name = first_name.lower()
     last_name = last_name.lower()
+
+    # Try to find an existing user with this username. If no match, create a
+    # user, but with separate code so the real code can be properly tested.
     try:
-        user = User.objects.get(
-            first_name__iexact=first_name,
-            last_name__iexact=last_name,
+        user = user_model.objects.get(
+            username__exact=username,
         )
-    except User.DoesNotExist:
-        user = User.objects.create_user(
-            first_name[0] + last_name,
-            f"{first_name}.{last_name}",
-            default_password,
-            # Added this line 6/22/20 per conversation with Travis
-            # Required to run Selenium tests
-            is_superuser=True,
+    except user_model.DoesNotExist:
+        user = user_model.objects.create_user(
+            username=username,
+            first_name=first_name,
+            last_name= last_name,
+        )
+        user.save()
+
+    # add or update the user's profile
+    try:
+        profile = Profile.objects.get(
+            user=user,
+        )
+        profile.title = title
+        profile.save()
+    except Profile.DoesNotExist:
+        profile = Profile.objects.create(
+            user = user,
+            title = title,
         )
 
-    Profile.objects.get_or_create(
-        user=user,
-        defaults={
-            'title': 'User',
-        }
-    )
+    # fix up group permissions
+    grp_vol = Group.objects.get(name=AccessLevel.Volunteer._name_)
+    grp_staff = Group.objects.get(name=AccessLevel.Staff._name_)
+    grp_admin = Group.objects.get(name=AccessLevel.Admin._name_)
+    user.groups.clear()
+    user.groups.add(grp_vol)
+    if access > AccessLevel.Volunteer:
+        user.groups.add(grp_staff)
+        if access > AccessLevel.Staff:
+            user.groups.add(grp_admin)
     return user
 
 
 def logged_in_user(first_name: str, last_name: str, view=None) -> Client:
-    user = create_user(first_name, last_name)
+    user = create_user(username='user')
     if view is not None:
         grant_required_permissions(user, view)
     client = Client()

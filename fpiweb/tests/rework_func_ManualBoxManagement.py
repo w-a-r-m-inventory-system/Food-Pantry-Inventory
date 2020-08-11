@@ -1,3 +1,6 @@
+from .AddPermissionData import setup_groups_and_permissions
+from ..constants import AccessLevel
+
 _author__ = 'Mike Rehner'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/21/20"
@@ -56,10 +59,22 @@ class ManualBoxManagement(StaticLiveServerTestCase):
 
     # sets up user to login with StaticLIveServerTestCase
     def setUp(self):
-        super(ManualBoxManagement, self).setUp()
-        test_user = utility.create_user('test', 'user')
-        test_user.set_password(utility.default_password)
-        test_user.save()
+        """
+        Prepare for StaticLiveServerTestCase
+        :return:
+        """
+        # first invoke inherited setup
+        super().setUp()
+
+        # provide the permission support needed
+        setup_groups_and_permissions()
+
+        # establish a user for testing
+        # test_user = utility.create_user('test', 'user')
+        # test_user.set_password(utility.default_password)
+        # test_user.save()
+        test_user = utility.create_user(first_name='test', last_name='user',
+                                        username='user')
 
         # Login the user
         self.assertTrue(self.client.login(username=test_user,

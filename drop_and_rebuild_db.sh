@@ -17,6 +17,7 @@ sudo -u postgres psql -c "CREATE DATABASE \"WARM\""
   Product \
   Location \
   BoxType \
+  Profile \
   Constraints
 
 

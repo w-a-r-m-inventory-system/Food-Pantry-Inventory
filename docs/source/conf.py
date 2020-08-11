@@ -72,7 +72,7 @@ copyright = '2020, (See Contributors)'
 author = '(See Contributors)'
 
 # The version identifier (major and minor only)
-version = '0.1'
+version = '0.9.1'
 # The full release identifier, including alpha/beta/rc tags
 release = '0.1.1a1'
 

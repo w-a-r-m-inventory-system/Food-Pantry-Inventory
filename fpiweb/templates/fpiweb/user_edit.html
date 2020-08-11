@@ -1,0 +1,160 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+mode                   enum indicating mode.  Constants are defined
+                       for this in the UserInfoModes class
+username               user id - used for login
+userpswd               used for authentication
+confirm_pwd            confirmation that the above password is known by user
+force_password         force the user to change the password on next login
+first_name             first name of person using this username
+last_name              last name of person
+email                  email address - fake or real
+title                  nominal or real title of person
+access_level           access level (defined in constants.AccessLevel)
+is_active              is this person an active user?
+is_superuser           is this person an administrator
+errors                 A list of errors, if any
+
+RELATIONSHIPS
+-------------
+View_class             UserCreateview
+Template               user_edit.html
+Access URL             {% url 'fpiweb:user_new' %}"
+Exit URL               {% url 'fpiweb:user_management' %} or
+                       {% url 'fpiweb:maintenance' %}
+
+{% endcomment %}
+
+{% block title %}
+    {% if target_user.id %}
+        Edit User
+    {% else %}
+        Add User
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <h2>
+        {{ this_user_info.user.first_name }} &nbsp;
+        {{ this_user_info.user.last_name }}
+    </h2>
+    <h3>
+        {{ this_user_info.profile.title }}
+        ({{ this_user_info.highest_access_level.name }})
+    </h3>
+
+    <div class="row">
+        <div class="col-md-4-6 text-center">
+            <h3>
+                {% if target_user.id %}
+                    Edit User
+                {% else %}
+                    Add User
+                {% endif %}
+                Account
+            </h3>
+        </div>
+    </div>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="mode" value="{{ mode }}"/>
+        <input type="hidden" name="key" value="{{ key }}"/>
+        <input type="hidden" name="userid" value="{{ this_user_info.user.id }}">
+
+        {% if mode == all_modes.MODE_ADD_USER %}
+            Adding User
+            <div>
+                {%  bootstrap_field target_user_form.username %}
+{#                {%  bootstrap_field target_user_form.userpswd %}#}
+{#                {%  bootstrap_field target_user_form.confirm_pwd %}#}
+                {%  bootstrap_field target_user_form.force_password %}
+                {%  bootstrap_field target_user_form.first_name %}
+                {%  bootstrap_field target_user_form.last_name %}
+                {%  bootstrap_field target_user_form.email %}
+                {%  bootstrap_field target_user_form.title %}
+                {%  bootstrap_field target_user_form.access_level %}
+                {%  bootstrap_field target_user_form.is_active %}
+            </div>
+            <div class="row">
+                <button type="submit">Submit</button>
+            </div>
+
+        {% elif mode == all_modes.MODE_UPDATE_USER %}
+            Updating User
+            <div>
+                {%  bootstrap_field target_user_form.username %}
+                {%  bootstrap_field target_user_form.force_password %}
+                {%  bootstrap_field target_user_form.first_name %}
+                {%  bootstrap_field target_user_form.last_name %}
+                {%  bootstrap_field target_user_form.email %}
+                {%  bootstrap_field target_user_form.title %}
+                {%  bootstrap_field target_user_form.access_level %}
+                {%  bootstrap_field target_user_form.is_active %}
+            </div>
+            <div class="row">
+                <button type="submit">Submit</button>
+            </div>
+
+        {% elif mode == all_modes.MODE_CONFIRM %}
+            <div class="row">
+                Confirmed - this person now has the following attributes:  <br/>
+                Name (user name) {{ target_user.first_name }}
+                {{ target_user.last_name }}
+                ({{ target_user.username }}) <br/>
+                Title: {{ target_user.title }} <br/>
+                Force Password Change? {{ target_user.force_password }} <br/>
+                Email Address: {{ target_user.email }} <br/>
+                Permission Level: {{ target_user.access_level }} <br/>
+                Active User? {{ target_user.is_active }} <br/>
+            </div>
+        {% else %}
+            Internal Error
+            <div class="alert alert-danger">Mode is &quot;{{ mode }}&quot;
+            </div>
+        {% endif %}
+
+        <div>
+            &nbsp;
+        </div>
+
+        <div>
+            <a href="{% url 'fpiweb:user_management' %}">
+{#                {% if mode == all_modes.MODE_CONFIRM %}#}
+{#                    Return to User Account Management#}
+                  {% if mode == all_modes.MODE_ADD_USER %}
+                    Cancel User Add?
+                  {% elif mode == all_modes.MODE_UPDATE_USER %}
+                    Cancel User Change?
+                {% endif %}
+            </a>
+        </div>
+    </form>
+
+    <br/>
+
+    <a href="{% url 'fpiweb:user_management' %}">
+        Return to User Account Management
+    </a>
+    <br/>
+    <a href="{% url 'fpiweb:index' %}">
+        Return to Main Menu
+    </a>
+
+{% endblock %}

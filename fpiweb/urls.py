@@ -3,6 +3,7 @@ Manage the urls for the F. P. I. application.
 """
 
 from django.urls import path
+from django.contrib import admin
 from django.views.generic import TemplateView
 
 
@@ -36,6 +37,8 @@ from fpiweb.views import \
     LocTierListView, \
     LocTierUpdateView, \
     LoginView, \
+    ChangePasswordView, \
+    ConfirmPasswordChangeView, \
     LogoutView, \
     MaintenanceView, \
     ManualBoxMenuView, \
@@ -53,8 +56,10 @@ from fpiweb.views import \
     PalletSelectView, \
     PrintLabelsView, \
     ScannerView, \
-    TestScanView
-# from fpiweb.views import ConstraintDetailView
+    TestScanView, \
+    UserManagementView, \
+    UserCreateview, \
+    UserUpdateView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -77,6 +82,18 @@ urlpatterns = [
     # login page
     # e.g. /fpiweb/login/
     path('login/', LoginView.as_view(), name='login'),
+
+    # change password page
+    # e.g. /fpiweb/change_pswd/
+    path('change_pswd/', ChangePasswordView.as_view(), name='change_pswd'),
+
+    # confirm password page
+    # e.g. /fpiweb/confirm_pswd/
+    path(
+        'confirm_pswd/',
+        ConfirmPasswordChangeView.as_view(),
+        name='confirm_pwsd',
+    ),
 
     # logout page
     # e.g. /fpiweb/logout/
@@ -249,7 +266,7 @@ urlpatterns = [
         'manual_pallet_new/',
         ManualPalletNew.as_view(),
         name='manual_pallet_new'
-    ) ,
+    ),
 
     path(
         'manual_pallet_move/',
@@ -264,14 +281,6 @@ urlpatterns = [
         ManualPalletStatus.as_view(),
         name='manual_pallet_status'
     ),
-
-    # Manually ask a question or notify user
-    # e.g. /fpiweb/manual_note/ = Ask a question or post a note
-    # path(
-    #     'manual_question/',
-    #     ManualNotification.as_view(),
-    #     name='manual_question'
-    # ),
 
     path(
         'pallet/management/',
@@ -333,4 +342,22 @@ urlpatterns = [
         ManualBoxStatusView.as_view(),
         name='manual_box_status',
     ),
+
+    # Choose a user account to add or modify
+    # e.g. /fpiweb/user_mgmt/ = determine the status of a box manually
+    path('user_mgmt/', UserManagementView.as_view(),
+         name='user_management'),
+
+    # Add a new user account
+    # e.g. /fpiweb/user_mgmt/add/ = add a new user
+    path('user_mgmt/add/', UserCreateview.as_view(),
+         name='user_new'),
+
+    # Edit an existing user
+    # e.g. /fpiweb/user_mgmt/edit/5/ = update an existing user
+    path('user_mgmt/edit/<int:pk>', UserUpdateView.as_view(),
+         name='user_edit'),
+
 ]
+
+# EOF

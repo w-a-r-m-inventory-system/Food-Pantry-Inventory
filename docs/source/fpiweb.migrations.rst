@@ -241,3 +241,10 @@ fpiweb.migrations.0029\_add\_model\_permissions module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.migrations.0030\_AddPermissionData module
+------------------------------------------------
+
+.. automodule:: fpiweb.migrations.0030_AddPermissionData
+   :members:
+   :undoc-members:
+   :show-inheritance:

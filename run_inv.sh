@@ -67,7 +67,7 @@ fi
 
 # tell user how to kill the server
 echo  "\nInstead of typing a CONTROL-C to kill the server, type"
-echo  "\tkill $SERVER_PID"
+echo  "\tkill -QUIT $SERVER_PID"
 echo  "instead when you are done with the server."
 
 # EOF

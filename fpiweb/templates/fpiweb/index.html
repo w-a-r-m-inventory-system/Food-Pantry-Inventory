@@ -15,23 +15,15 @@
     <br/>
 
     <div class="text-center">
-        <strong>{{ first_name }} {{ last_name }} ({{ title }})</strong>
-        <br/>
-        <strong>{{ email }}</strong>
-    </div>
 
-    <hr/>
-
-    <h2>User Management</h2>
-
-    <div class="row">
-        <a class="btn btn-primary" href="{% url 'fpiweb:login' %}">Login</a>
-    </div>
-
-    <br/>
-
-    <div class="row">
-        <a class="btn btn-primary" href="{% url 'fpiweb:logout' %}">Logout</a>
+    <h2>
+        {{ user_info.user.first_name }} &nbsp;
+        {{ user_info.user.last_name }}
+    </h2>
+    <h3>
+        {{ user_info.profile.title }}
+        ({{ user_info.highest_access_level.name }})
+    </h3>
     </div>
 
     <hr/>
@@ -40,52 +32,106 @@
 
     <div class="row">
         <a class="btn btn-primary" href="
+            {% url 'fpiweb:manual_box_status' %}">Check the status of a box
+        </a>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <a class="btn btn-primary" href="
+            {% url 'fpiweb:manual_checkin_box' %}">Checkin a Box
+        </a>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <a class="btn btn-primary" href="
+            {% url 'fpiweb:manual_checkout_box' %}">
+            Checkout (Consume Product in) a Box
+        </a>
+    </div>
+
+    <br/>
+    <div class="row">
+        <a class="btn btn-primary" href="
             {% url 'fpiweb:build_pallet' %}">Build a Pallet
         </a>
     </div>
 
     <br/>
-    {#    <div class="row">#}
-    {#        <a class="btn btn-primary" href="">Move Box</a>#}
-    {#    </div>#}
+    <a href="
+        {% url 'fpiweb:manual_pallet_move' %}">Move a Pallet
+    </a>
+
+    <br/>
+    <a href="{% url 'fpiweb:manual_move_box' %}">
+        Move a box
+    </a>
+
+    <br/>
+    <br/>
+    <a href="{% url 'fpiweb:manual_add_box' %}">
+        Add a new box to inventory
+    </a>
+
+    <hr/>
+
+    <h2>User Management</h2>
+
     <div class="row">
-        <a class="btn btn-primary" href="">Move a Pallet</a>
+        <a class="btn btn-primary" href="{% url 'fpiweb:login' %}">Login
+        </a>
     </div>
 
     <br/>
-
     <div class="row">
-        <a class="btn btn-primary" href="{% url 'fpiweb:manual_menu' %}">
-            Manual Box and Pallet Maintenance
+        <a class="btn btn-primary" href="
+            {% url 'fpiweb:about' %}">Change Password
+        </a>
+    </div>
+
+    <br/>
+    <div class="row">
+        <a class="btn btn-primary" href="{% url 'fpiweb:logout' %}">Logout
         </a>
     </div>
 
     <hr/>
 
-    <h2>System Management</h2>
+    {% if user_access == access_level.Volunteer %}
 
-    <strong>
-        <a href='/warmadmin/'>(Admin)</a>
-    </strong>
+        &nbsp;
 
-    <br/>
+    {% else %}
 
-    <strong>
-        <a href="{% url 'fpiweb:maintenance' %}">System Maintenance</a>
-    </strong>
+        <h2>System Management</h2>
 
-    <br/>
+        <strong>
+            <a href="/warmadmin/">(Admin)</a>
+        </strong>
 
-    <strong>
-        <a href="{% url 'fpiweb:print_labels' %}">Print Labels</a>
-    </strong>
+        <br/>
 
-    <br/>
+        <strong>
+            <a href="{% url 'fpiweb:maintenance' %}">System Maintenance</a>
+        </strong>
 
-    <strong>
-        <a href="{% url 'fpiweb:download_activities' %}">
-            Download Activity Log
-        </a>
-    </strong>
+        <br/>
+
+        <strong>
+            <a href="{% url 'fpiweb:print_labels' %}">Print Labels</a>
+        </strong>
+
+        <br/>
+
+        <strong>
+            <a href="{% url 'fpiweb:download_activities' %}">
+                Download Activity Log
+            </a>
+        </strong>
+
+    {% endif %}
 
 {% endblock %}

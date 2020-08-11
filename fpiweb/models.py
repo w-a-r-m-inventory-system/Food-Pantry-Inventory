@@ -8,8 +8,11 @@ from typing import Union
 from re import compile as re_compile
 from re import IGNORECASE
 
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import \
+    MaxValueValidator, \
+    MinValueValidator
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
@@ -1263,11 +1266,11 @@ class Profile(models.Model):
         ]
 
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         related_name='profile',
         on_delete=models.CASCADE,
     )
-    """ Internal link to the default Django User table. """
+    """ Internal link to the default or custom Django User table. """
 
     title_help_text = 'Job title'
     title_max_length = 30

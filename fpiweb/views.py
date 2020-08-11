@@ -8,15 +8,27 @@ from enum import Enum
 from http import HTTPStatus
 from io import BytesIO
 from json import loads
-from logging import getLogger, debug, info
+from logging import getLogger, \
+    debug, \
+    info
+from operator import \
+    itemgetter, \
+    attrgetter, \
+    methodcaller
 from string import digits
 from typing import Optional
 
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import \
+    authenticate, \
+    get_user_model, \
+    login, \
+    logout, \
+    update_session_auth_hash
 from django.contrib.auth.mixins import \
     LoginRequiredMixin, \
     PermissionRequiredMixin
+from django.core.exceptions import ValidationError
 from django.core.serializers import serialize
 from django.db import transaction
 from django.db.models import Max
@@ -27,8 +39,12 @@ from django.http import \
     HttpResponse, \
     JsonResponse, \
     StreamingHttpResponse
-from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import \
+    redirect, \
+    render
+from django.urls import \
+    reverse, \
+    reverse_lazy
 from django.utils import timezone
 from django.views import View
 from django.views.generic import \
@@ -44,7 +60,11 @@ from sqlalchemy.engine.url import URL
 
 from fpiweb.constants import \
     ProjectError, \
-    InvalidValueError
+    InvalidValueError, \
+    UserInfo, \
+    TargetUser, \
+    AccessLevel, \
+    AccessDict
 from fpiweb.models import \
     Activity, \
     Box, \
@@ -89,13 +109,19 @@ from fpiweb.forms import \
     ProductForm, \
     ExpMoStartForm, \
     ExpMoEndForm, \
-    validation_exp_months_bool
+    validation_exp_months_bool, \
+    UserInfoForm, \
+    UserInfoModes as MODES, \
+    ChangePasswordForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
+from fpiweb.support.PermissionsManagement import ManageUserPermissions
+
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
+
 
 logger = getLogger('fpiweb')
 
@@ -138,12 +164,11 @@ class IndexView(LoginRequiredMixin, TemplateView):
         """
         context = super().get_context_data(**kwargs)
         current_user = self.request.user
-        profile=Profile.objects.get(user=current_user)
+        user_info = ManageUserPermissions().get_user_info(current_user.id)
         context={
-            'first_name': current_user.first_name,
-            'last_name': current_user.last_name,
-            'title': profile.title,
-            'email': current_user.email
+            'user_info': user_info,
+            'access_level': AccessLevel,
+            'user_access': user_info.highest_access_level,
         }
         return context
 
@@ -207,10 +232,118 @@ class LoginView(FormView):
         return super().form_valid(form)
 
 
+class ChangePasswordView(LoginRequiredMixin, FormView):
+    """
+    Allow a user to change their password.
+    """
+    template_name = 'fpiweb/change_password.html'
+    form_class = ChangePasswordForm
+    success_url = reverse_lazy('fpiweb:confirm_pwsd')
+
+    def __init__(self):
+        _ = super().__init__()
+        self.pm = ManageUserPermissions()
+        return
+
+    def get(self, request, *args, **kwargs):
+        """
+        Add user info for the template.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+
+        # get permission level and other info about current user
+        user = request.user
+        user_info: UserInfo = self.pm.get_user_info(user_id=user.id)
+        pswd_form = ChangePasswordForm()
+        context = dict()
+        context['user_info'] = user_info
+        context['access_level'] = AccessLevel
+        context['user_access'] = user_info.highest_access_level
+        context['pswd_form'] = pswd_form
+        return render(request, self.template_name, context)
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+
+        # user = authenticate(
+        #     request=self.request,
+        #     username=username,
+        #     password=password
+        # )
+        #
+        # if user is None:
+        #     form.add_error(None, "Invalid username and/or password")
+        #     return self.form_invalid(form)
+        #
+        # login(self.request, user)
+        # profile = Profile.objects.get_or_create(
+        #     user_id=user.id,
+        #     defaults={'title': 'User'},
+        # )
+
+        return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Process the user attempt to change passwords.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        user = request.user
+        form = ChangePasswordForm(request)
+
+        post_context = dict()
+
+        if form.is_valid():
+            # adjust session to reflect the new password
+            update_session_auth_hash(request, user)
+
+        else:
+            post_context['errors'] = form.errors
+
+        return render(request, self.template_name, post_context)
+
+
+class ConfirmPasswordChangeView(LoginRequiredMixin, View):
+    """
+    Confirm the password was successfully changed.
+    """
+
+    template_name = 'fpiweb/confirm_password_change.html'
+    success_url = reverse_lazy('fpiweb:index')
+
+    def get(self, request, *args, **kwargs):
+        """
+        Add user info for the template.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+
+        user = request.user
+        user_info = ManageUserPermissions().get_user_info(user.id)
+        context={
+            'user_info': user_info,
+            'access_level': AccessLevel,
+            'user_access': user_info.highest_access_level,
+        }
+        return render(request, self.template_name, context)
+
+
 class LogoutView(TemplateView):
     template_name = 'fpiweb/logout.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         logout(self.request)
         nothing = dict()
         return nothing
@@ -225,7 +358,7 @@ class MaintenanceView(PermissionRequiredMixin, TemplateView):
         'fpiweb.view_system_maintenance',
     )
 
-    template_name = 'fpiweb/maintenance.html'
+    template_name = 'fpiweb/system_maintenance.html'
 
 
 class LocRowListView(PermissionRequiredMixin, ListView):
@@ -572,7 +705,7 @@ class ConstraintUpdateView(PermissionRequiredMixin, UpdateView):
         :return:
         """
 
-        context = super(ConstraintUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['action'] = reverse('fpiweb:constraint_update',
                                     kwargs={'pk': self.get_object().id})
         return context
@@ -1357,6 +1490,8 @@ class BoxItemFormView(PermissionRequiredMixin, View):
             return HttpResponse(error, status=HTTPStatus.NOT_FOUND)
 
         # If box is filled, empty it before continuing
+        # TODO Jun 15 2020 travis - remove this check so activity is
+        #  recorded properly
         if box.is_filled():
             box_management = BoxManagementClass()
             box_management.box_consume(box)
@@ -2243,7 +2378,6 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
             mode,
             box_number_form=None,
             box_number=None,
-            box_form=None,
             box=None,
             product_form=None,
             product=None,
@@ -2795,5 +2929,366 @@ class PalletSelectView(PermissionRequiredMixin, FormView):
         profile.save()
 
         return super().form_valid(form)
+
+
+class UserManagementView(PermissionRequiredMixin, View):
+
+    """
+    Allow staff and administrators to manage any users access
+    """
+    permission_required = (
+        'fpiweb.view_system_maintenance',
+    )
+
+    template_name = 'fpiweb/user_management.html'
+
+    def __init__(self):
+        _ = super().__init__()
+        self.pm = ManageUserPermissions()
+        return
+
+    @staticmethod
+    def build_context(
+            *,
+            mode,
+            this_user_info=None,
+            target_user_info=None,
+            perm_level=None,
+            user_info_list=None,
+            user_list_count=None,
+            errors=None):
+        return {
+            'mode': mode,
+            'all_modes': MODES,
+            'view_class': UserManagementView,
+            'this_user_info': this_user_info,
+            'target_user_info': target_user_info,
+            'user_list_count': user_list_count,
+            'perm_level': perm_level,
+            'user_info_list': user_info_list,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        """
+        Prepare to display list of users to change.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # get permission level and other info about current user
+        this_user = request.user
+        this_user_info: UserInfo = self.pm.get_user_info(user_id=this_user.id)
+
+        # get all users to build user list
+        user_info_list = list()
+        user_model = get_user_model()
+        all_users = user_model.objects.all()
+        for user in all_users:
+            if user == this_user:
+                continue
+            user_info = self.pm.get_user_info(user.id)
+            if (user_info.highest_access_level <=
+                    this_user_info.highest_access_level):
+                user_info_list.append(user_info)
+        user_info_list.sort(key=methodcaller('get_sort_key'))
+
+        # prepare context for template
+        get_context = self.build_context(
+            mode=MODES.MODE_SHOW_USERS,
+            this_user_info=this_user_info,
+            perm_level=this_user_info.highest_access_level,
+            user_info_list=user_info_list,
+            user_list_count=len(user_info_list)
+        )
+        return render(request, self.template_name, get_context)
+
+
+class UserCreateview(PermissionRequiredMixin, CreateView):
+    """
+    Create a new user to this system.
+    """
+
+    permission_required = (
+        'fpiweb.view_system_maintenance',
+        # 'auth.view_user',
+        # 'auth.add_user',
+        # 'fpiweb.view_profile',
+        # 'fpiweb.add_profile',
+    )
+
+    model = settings.AUTH_USER_MODEL
+    template_name = 'fpiweb/user_edit.html'
+    success_url = reverse_lazy('fpiweb:user_management')
+
+    form_class = UserInfoForm
+
+    fields = [
+        'username',
+        'userpswd',
+        'confirm_pwd',
+        'force_password',
+        'first_name',
+        'last_name',
+        'email',
+        'title',
+        'access_level',
+        'is_active',
+        'is_superuser',
+    ]
+
+    def __init__(self):
+        super().__init__()
+        self.pm = ManageUserPermissions()
+        # self.target_user_form = UserInfoForm()
+        return
+
+    @staticmethod
+    def build_add_context(
+            *,
+            mode,
+            key=None,
+            this_user_info=None,
+            target_user=None,
+            target_user_form=None,
+            errors=None):
+        return {
+            'mode': mode,
+            'key': key,
+            'all_modes': MODES,
+            'view_class': UserCreateview,
+            'this_user_info': this_user_info,
+            'target_user': target_user,
+            'target_user_form': target_user_form,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        """
+        Prepare to display list of users to change.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # get permission level and other info about current user
+        this_user = request.user
+        this_user_info: UserInfo = self.pm.get_user_info(user_id=this_user.id)
+        target_user = TargetUser()
+        # target_user_form = UserInfoForm()
+
+        # prepare context for template
+        get_context: dict = self.build_add_context(
+            mode=MODES.MODE_ADD_USER,
+            this_user_info=this_user_info,
+            target_user=target_user,
+            target_user_form=UserInfoForm(),
+        )
+        return render(request, self.template_name, get_context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Validate the new user info.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        this_user = request.user
+        this_user_info: UserInfo = self.pm.get_user_info(user_id=this_user.id)
+        target_user_form = UserInfoForm(request.POST)
+        # convert access level text back to an enum
+        target_user_form.access_level = \
+            AccessDict[request.POST['access_level']].access_level
+        if not target_user_form.is_valid():
+            error_context: dict = self.build_add_context(
+                mode=MODES.MODE_ADD_USER,
+                this_user_info=this_user_info,
+                target_user_form=target_user_form,
+                errors=target_user_form.errors,
+            )
+            return render(request=request, template_name=self.template_name,
+                          context=error_context)
+        else:
+            cleaned_data = target_user_form.cleaned_data
+            target_user = TargetUser(
+                username=cleaned_data['username'],
+                force_password=cleaned_data['force_password'],
+                first_name=cleaned_data['first_name'],
+                last_name=cleaned_data['last_name'],
+                email=cleaned_data['email'],
+                title=cleaned_data['title'],
+                access_level=cleaned_data['access_level'],
+                is_active=cleaned_data['is_active'],
+            )
+            try:
+                valid_user = self.pm.add_a_user(target_user)
+            except ValidationError as exc:
+                errors = {None, str(exc)}
+                error_context: dict = self.build_add_context(
+                    mode=MODES.MODE_ADD_USER,
+                    this_user_info=this_user_info,
+                    target_user_form=target_user_form,
+                    errors=errors, )
+                return render(
+                    request=request,
+                    template_name=self.template_name,
+                    context=error_context
+                )
+
+            post_context: dict = self.build_add_context(
+                mode=MODES.MODE_CONFIRM,
+                this_user_info=this_user_info,
+                target_user=target_user,
+            )
+            return render(request, self.template_name, post_context)
+
+
+class UserUpdateView(PermissionRequiredMixin, View):
+    """
+    Update a user by someone else.
+    """
+
+    permission_required = (
+        'fpiweb.view_system_maintenance',
+        # 'auth.view_user',
+        # 'auth.change_user',
+        # 'fpiweb.view_profile',
+        # 'fpiweb.change_profile'
+    )
+
+    form_class = UserInfoForm
+    template_name = 'fpiweb/user_edit.html'
+    success_url = reverse_lazy('fpiweb:user_management')
+
+    def __init__(self):
+        super().__init__()
+        self.pm = ManageUserPermissions()
+        return
+
+    @staticmethod
+    def build_update_context(
+            *,
+            mode,
+            key=None,
+            this_user_info=None,
+            target_user=None,
+            target_user_form=None,
+            errors=None):
+        return {
+            'mode': mode,
+            'key': key,
+            'all_modes': MODES,
+            'view_class': UserCreateview,
+            'this_user_info': this_user_info,
+            'target_user': target_user,
+            'target_user_form': target_user_form,
+            'errors': errors,
+        }
+
+    def get(self, request, *args, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # get permission level and other info about current user
+        this_user = request.user
+        this_user_info: UserInfo = self.pm.get_user_info(user_id=this_user.id)
+        target_user_id = kwargs['pk']
+        # target_user = get_user_model().objects.select_related(
+        #     'profile').get(id=target_user_id)
+        target_user_info: UserInfo = \
+            self.pm.get_user_info(user_id=target_user_id)
+        target_user = TargetUser(
+            username=target_user_info.user.username,
+            # userpswd='',
+            # confirm_pwd='',
+            force_password=False,
+            first_name=target_user_info.user.first_name,
+            last_name=target_user_info.user.last_name,
+            email=target_user_info.user.email,
+            title=target_user_info.profile.title,
+            access_level=target_user_info.highest_access_level,
+            is_active=target_user_info.user.is_active,
+            # is_staff=target_user_info.user.is_staff,
+            # is_superuser=target_user_info.user.is_superuser,
+        )
+        target_user_form = UserInfoForm()
+        target_user_form.initial['username'] = target_user_info.user.username
+        target_user_form.initial['force_password'] = False,
+        target_user_form.initial['first_name'] = target_user_info.user.first_name
+        target_user_form.initial['last_name'] = target_user_info.user.last_name
+        target_user_form.initial['email'] = target_user_info.user.email
+        target_user_form.initial['title'] = target_user_info.profile.title
+        target_user_form.initial['access_level'] = \
+            target_user_info.highest_access_level.name
+        target_user_form.initial['is_active'] = target_user_info.user.is_active
+        # target_user_form.initial['is_staff'] = target_user_info.user.is_staff
+        # target_user_form.initial['is_superuser'] = \
+        #     target_user_info.user.is_superuser
+
+        # prepare context for template
+        get_context: dict = self.build_update_context(
+            mode=MODES.MODE_UPDATE_USER,
+            key=target_user_id,
+            this_user_info=this_user_info,
+            target_user=target_user,
+            target_user_form=target_user_form,
+        )
+        return render(request, self.template_name, get_context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Validate the new user info.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        this_user = request.user
+        this_user_info: UserInfo = self.pm.get_user_info(user_id=this_user.id)
+        key = request.POST['key']
+        target_user_form = UserInfoForm(request.POST)
+        # convert access level text back to an enum
+        target_user_form.access_level = \
+            AccessDict[request.POST['access_level']].access_level
+        if not target_user_form.is_valid():
+            error_context: dict = self.build_update_context(
+                mode=MODES.MODE_UPDATE_USER,
+                key=key,
+                this_user_info=this_user_info,
+                target_user_form=target_user_form,
+                errors=target_user_form.errors,
+            )
+            return render(request=request, template_name=self.template_name,
+                          context=error_context)
+        else:
+            cleaned_data = target_user_form.cleaned_data
+            target_user = TargetUser(
+                username=cleaned_data['username'],
+                force_password=cleaned_data['force_password'],
+                first_name=cleaned_data['first_name'],
+                last_name=cleaned_data['last_name'],
+                email=cleaned_data['email'],
+                title=cleaned_data['title'],
+                access_level=cleaned_data['access_level'],
+                is_active=cleaned_data['is_active'],
+            )
+            self.pm.change_a_user(userid=key, target_user=target_user)
+            post_context: dict = self.build_update_context(
+                mode=MODES.MODE_CONFIRM,
+                this_user_info=this_user_info,
+                target_user=target_user,
+            )
+            return render(request, self.template_name, post_context)
 
 # EOF
