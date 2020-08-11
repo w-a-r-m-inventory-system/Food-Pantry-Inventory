@@ -1,22 +1,32 @@
 """
 forms.py - provide validation of a forms.
 """
-
+from enum import Enum
 from logging import \
     getLogger, \
     debug, \
     error
 from typing import \
     Union, \
-    Optional
+    Optional, \
+    List, \
+    Dict, \
+    Any
 
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.forms import \
+    IntegerField, \
     CharField, \
     Form, \
     ModelChoiceField, \
     PasswordInput, \
-    ValidationError
+    ValidationError, \
+    BooleanField, \
+    ChoiceField, \
+    EmailField
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -25,7 +35,13 @@ from fpiweb.constants import \
     MONTHS, \
     InvalidValueError, \
     ValidOrErrorResponse, \
-    ProjectError
+    ProjectError, \
+    AccessLevel, \
+    MINIMUM_PASSWORD_LENGTH, \
+    EnumForDjango, \
+    AccessDict, \
+    AccessGroupsAndFlags, \
+    InternalError
 from fpiweb.models import \
     Box, \
     BoxNumber, \
@@ -38,6 +54,7 @@ from fpiweb.models import \
     Pallet, \
     Product, \
     ProductCategory
+from fpiweb.support.PermissionsManagement import ManageUserPermissions
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -252,7 +269,11 @@ def box_number_validator(value) -> None:
 class Html5DateInput(forms.DateInput):
     input_type = 'date'
 
+
 class BoxNumberField(forms.CharField):
+    """Accepts box number with or without BOX prefix.
+    Returns BoxNumber with BOX prefix and leading zeros"""
+
     def __init__(self, **kwargs):
         default_kwargs = {
             'max_length': Box.box_number_max_length,
@@ -261,6 +282,24 @@ class BoxNumberField(forms.CharField):
         }
         default_kwargs.update(kwargs)
         super().__init__(**default_kwargs)
+
+    def clean(self, value):
+        value = super().clean(value)
+
+        if BoxNumber.validate(value):
+            return value.upper()
+
+        # Did the user just enter digits?  Try and turn this
+        # into a valid box number
+        try:
+            value = int(value)
+        except (TypeError, ValueError):
+            raise ValidationError(
+                '%(value)s is not a valid box number',
+                params={'value': value},
+            )
+
+        return BoxNumber.format_box_number(value)
 
 
 class LogoutForm(Form):
@@ -271,10 +310,93 @@ class LogoutForm(Form):
 
 
 class LoginForm(Form):
-    username = CharField(label='Username', max_length=100, )
+    username = CharField(label='Username', max_length=150, )
 
-    password = CharField(label='Password', max_length=100,
+    password = CharField(label='Password', max_length=128,
                          widget=PasswordInput)
+
+
+class ChangePasswordForm(forms.Form):
+    """
+    Form to allow a user to change their own password.
+    """
+
+    class Meta:
+        fields = [
+            'current_pwsd',
+            'new_pswd',
+            'confirm_pswd',
+        ]
+    current_pswd = CharField(
+        label='Current Password',
+        max_length=128,
+        # widget=PasswordInput
+    )
+
+    new_pswd = CharField(
+        label='New Password',
+        max_length=128,
+        # widget=PasswordInput
+    )
+
+    confirm_pswd = CharField(
+        label='Confirm Password',
+        max_length=128,
+        # widget=PasswordInput
+    )
+
+    # def clean_current_pswd(self):
+    #     init_pwd = self.cleaned_data['current_pswd']
+    #     # validate later in clean()
+    #     final_pwd = init_pwd
+    #     return final_pwd
+    #
+    # def clean_new_pswd(self):
+    #     init_pwd = self.cleaned_data['new_pswd']
+    #     # validate later in clean()
+    #     final_pwd = init_pwd
+    #     return final_pwd
+    #
+    # def clean_confirm_pswd(self):
+    #     init_conf_pwd = self.cleaned_data['confirm_pswd']
+    #     # validate later in clean()
+    #     final_conf_pwd = init_conf_pwd
+    #     return final_conf_pwd
+    #
+    # def clean(self):
+    #     """
+    #     Validate the consistency across firlds.
+    #
+    #     :return:
+    #     """
+    #     cleaned_data = super().clean()
+    #
+    #     # extract user, mode, and id of target user
+    #     parm_dict = self.data
+    #     user_id = parm_dict['userid']
+    #
+    #     # check that the current password is valid
+    #
+    #
+    #     # check that both password fields match and password is valid
+    #     pwd = cleaned_data.get('userpswd')
+    #     conf_pwd = cleaned_data.get('confirm_pwd')
+    #     if pwd != conf_pwd:
+    #         msg = 'The password and the confirm password fields must match'
+    #         self.add_error('userpswd', msg)
+    #         self.add_error('confirm_pwd', msg)
+    #     else:
+    #         # validate password
+    #         username = cleaned_data.get('username')
+    #         email = cleaned_data.get('email')
+    #         user_model = get_user_model()
+    #         # user = user_model.objects.create_user(
+    #         #     username=username, password=pwd, email=email,
+    #         # )
+    #         # validators will raise ValidationError if problem found
+    #         # validate_password(pwd, user=user)
+    #
+    #     return
 
 
 class LocRowForm(forms.ModelForm):
@@ -521,6 +643,7 @@ class ConstraintsForm(forms.ModelForm):
         Validate the various constraint record fields.
 
         :param con_name: name of constraint
+        :param con_descr: description of constraint
         :param con_type: type of constraint
         :param con_min: minimum value, if given
         :param con_max: maximum value, if given
@@ -1111,5 +1234,309 @@ class HiddenPalletForm(forms.Form):
         queryset=Pallet.objects.all(),
         widget=forms.HiddenInput,
     )
+
+
+@EnumForDjango
+class UserInfoModes(Enum):
+    """
+    Mode identifiers used in both UserInfoForm and in multiple views.
+
+    These modes are used throughout the user management processing in an
+    attempt to minimize code duplication.  They are defined here (rather
+    than in the views) to eliminate circular references.
+    """
+    MODE_SHOW_USERS: str = 'show users'
+    MODE_ADD_USER: str = 'add user'
+    MODE_UPDATE_USER: str = 'update user'
+    MODE_CONFIRM: str = 'confirm action'
+
+    def __str__(self):
+        """
+        Display the information about the instance.
+        :return:
+        """
+        display = f'{self.name}({self.value})'
+        return display
+
+
+def NormalizeEmail(email):
+    """
+    Normalize an email address.
+
+    Django normalizes by lower-casing the domain portion of the address.
+
+    :param email:
+    :return:
+    """
+    # TODO Jun 16 2020 travis - code normalization
+    raw_email = email
+    final_email = raw_email
+    return final_email
+
+
+class UserInfoForm(forms.Form):
+    """
+    Define all the fields and modes needed to add or edit a user
+    """
+
+    class Meta:
+        fields = [
+            'userid',
+            'username',
+            'force_password',
+            'first_name',
+            'last_name',
+            'email',
+            'title',
+            'access_level',
+            'is_active',
+        ]
+    # # # # # # # # # # #
+    # Choice Definitions
+    # # # # # # # # # # #
+    LEVEL_CHOICES = list()
+    for level in AccessLevel:
+        level_entry = level.name, level.name
+        LEVEL_CHOICES.append(level_entry)
+
+    # # # # #
+    # Fields
+    # # # # #
+    # userid = IntegerField(label='Key',required=False)
+
+    username = CharField(label='Username', min_length=3, max_length=150,
+                         validators=[UnicodeUsernameValidator])
+
+    force_password = BooleanField(
+        label='Force Password Change on Next Login?', required=False,
+        initial=True,
+    )
+
+    first_name = CharField(label='First Name', min_length=3, max_length=30,
+                           required=True)
+
+    last_name = CharField(label='Last Name', min_length=3, max_length=150,
+                          required=True)
+
+    email = EmailField(
+        label='Email Address',
+        max_length=254,
+        required=True,
+        initial='',
+        error_messages={
+            'invalid': 'You can use "a@b.com" instead of your real email, '
+                       'but you will not be able to reset your password',
+            'required': 'You can use "a@b.com" instead of your real email, '
+                        'but you will not be able to reset your password'
+        },
+    )
+
+    title = CharField(label='Title', max_length=30, required=True)
+
+    access_level = ChoiceField(
+        choices=LEVEL_CHOICES, label='Permission Level?',
+        initial=AccessLevel.No_Access, required=True
+    )
+
+    is_active = BooleanField(
+        required=False, label='Active?', initial=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # prepare to interact with user info in db
+        self.pm = ManageUserPermissions()
+        return
+
+    def clean_username(self):
+        """ ensure that the username does not contain screwball characters """
+        init_un = self.cleaned_data['username']
+
+        # the value returned here is the full string of the enum member
+        mode = self.data['mode']
+        # validate this username
+        norm_un = get_user_model().normalize_username(init_un)
+        if init_un != norm_un:
+            self.add_error(
+                'username',
+                f'User name contains strange characters, change to '
+                f'{norm_un} or pick some other user name',
+            )
+
+        final_un = init_un
+        return final_un
+
+    # def clean_password(self):
+    #     init_pwd = self.cleaned_data['userpswd']
+    #     # validate later in clean()
+    #     final_pwd = init_pwd
+    #     return final_pwd
+
+    # def clean_confirm_pwd(self):
+    #     init_conf_pwd = self.cleaned_data['confirm_pwd']
+    #     # validate later in clean()
+    #     final_conf_pwd = init_conf_pwd
+    #     return final_conf_pwd
+
+    def clean_force_password(self):
+        init_force_pwd = self.cleaned_data['force_password']
+        # validate
+        ...
+        final_force_pwd = init_force_pwd
+        return final_force_pwd
+
+    def clean_first_name(self):
+        init_fn = self.cleaned_data['first_name']
+        # validate
+        ...
+        final_fn = init_fn
+        return final_fn
+
+    def clean_last_name(self):
+        init_ln = self.cleaned_data['last_name']
+        # validate
+        ...
+        final_ln = init_ln
+        return final_ln
+
+    def clean_email(self):
+        init_email = self.cleaned_data['email']
+        # validate this email
+        norm_email = NormalizeEmail(init_email)
+        if init_email != norm_email:
+            self.add_error(
+                'email',
+                f'Email contains strange characters, change to '
+                f'{norm_email}',
+            )
+        final_email = init_email
+        return final_email
+
+    def clean_title(self):
+        init_title = self.cleaned_data['title']
+        # validate
+        ...
+        final_title = init_title
+        return final_title
+
+    def clean_access_level(self):
+        init_acc_lvl = self.cleaned_data['access_level']
+        # validate
+        access: AccessGroupsAndFlags = AccessDict.get(init_acc_lvl, None)
+        if not access or access == AccessDict[AccessLevel.No_Access]:
+            self.add_error(
+                'access_level',
+                'Please choose a useful access level.  E.g. is this a '
+                'volunteer?'
+            )
+            final_acc_lvl = AccessLevel.Volunteer
+        else:
+
+            final_acc_lvl = access.access_level
+        return final_acc_lvl
+
+    def clean_is_active(self):
+        init_is_act = self.cleaned_data['is_active']
+        # validate
+        ...
+        final_is_act = init_is_act
+        return final_is_act
+
+    # def clean_is_superuser(self):
+    #     init_is_su = self.cleaned_data['is_superuser']
+    #     # validate
+    #     ...
+    #     final_is_su = init_is_su
+    #     return final_is_su
+
+    def clean(self):
+        """
+        Validate the consistency across firlds.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+
+        # extract user, mode, and id of target user
+        parm_dict = self.data
+        user_id = parm_dict['userid']
+        this_user_info = self.pm.get_user_info(user_id=user_id)
+        mode_str = parm_dict['mode']
+        if mode_str == str(UserInfoModes.MODE_ADD_USER):
+            mode = UserInfoModes.MODE_ADD_USER
+        elif mode_str == str(UserInfoModes.MODE_UPDATE_USER):
+            mode = UserInfoModes.MODE_UPDATE_USER
+        else:
+            raise InternalError(
+                f'Invalid mode of {mode_str} found in clean UserInfoForm'
+            )
+
+        key_str = parm_dict['key']
+        if key_str == 'None':
+            target_user_info = None
+        else:
+            key = int(key_str)
+            target_user_info = self.pm.get_user_info(user_id=key)
+
+        # check mode vs. vs existance/nonexistance of user or username
+        username = cleaned_data.get('username')
+        if mode == UserInfoModes.MODE_ADD_USER:
+            try:
+                other_user = get_user_model().objects.get(username=username)
+                if other_user:
+                    self.add_error(
+                        'username',
+                        'Username taken, please pick a different username'
+                    )
+            except get_user_model().DoesNotExist:
+                pass
+        elif mode == UserInfoModes.MODE_UPDATE_USER:
+            if not target_user_info:
+                self.add_error(
+                    'username',
+                    'Username not found, please pick an existing username'
+                )
+        else:
+            self.add_error(
+                None,
+                f'Internal Error: Invalid mode {mode_str} for '
+                f'{username} at clean_username',
+            )
+
+        # check that both password fields match and password is valid
+        # pwd = cleaned_data.get('userpswd')
+        # conf_pwd = cleaned_data.get('confirm_pwd')
+        # if pwd != conf_pwd:
+        #     msg = 'The password and the confirm password fields must match'
+        #     self.add_error('userpswd', msg)
+        #     self.add_error('confirm_pwd', msg)
+        # else:
+        #     # validate password
+        #     username = cleaned_data.get('username')
+        #     email = cleaned_data.get('email')
+        #     user_model = get_user_model()
+        #     # user = user_model.objects.create_user(
+        #     #     username=username, password=pwd, email=email,
+        #     # )
+        #     # validators will raise ValidationError if problem found
+        #     # validate_password(pwd, user=user)
+
+        # Check access level for this users vs. target user
+        this_user_assess = this_user_info.highest_access_level
+        attempted_access = cleaned_data['access_level']
+        if (this_user_assess == AccessLevel.Admin or
+                (this_user_assess == AccessLevel.Staff and
+                attempted_access <= AccessLevel.Staff)):
+            pass
+        else:
+            self.add_error(
+                'access_level',
+                f'You are not authoerized to set the target user to '
+                f'{attempted_access}.  Please choose another access level.'
+            )
+        # TODO Jul 08 2020 travis - do remaining cross field validation
+
+        return
 
 # EOF

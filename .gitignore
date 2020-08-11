@@ -262,6 +262,11 @@ db.sqlite3
 !log/placeholder.txt
 log/**
 
+# Keep static directory itself and the placeholder.txt file, but ignore
+# everything else.
+!static/placeholder.txt
+static/**
+
 # Flask stuff:
 instance/
 .webassets-cache

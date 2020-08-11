@@ -32,14 +32,17 @@ This program will not work as expected until the migration
 
 In turn, this program must be run before the application will work properly.
 """
+import os
 from typing import Dict, List
 from sys import stderr
 
 # ---------------------------------------------------------
+from django.contrib.auth import get_user_model
 
 if __name__ == '__main__':
 
     # Boilerplate for stand-alone Django scripts
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FPIDjango.settings')
 
     from django import setup
     setup()
@@ -101,6 +104,14 @@ if __name__ == '__main__':
                 ],
             },
         },
+        'Admin': {
+            'fpiweb': {
+                'profile': [
+                    'view_system_maintenance',
+                ],
+
+            }
+        }
     }
 
 
@@ -115,11 +126,12 @@ if __name__ == '__main__':
             for model, model_permissions in models.items():
                 for permission in model_permissions:
                     yield app_label, model, permission
+            return
 
 
     def setup_group_permissions(group, permissions):
         """
-        For a given group, create or replace the permisisons for it.
+        For a given group, create or replace the permissions for it.
 
         :param group: group to be created or replaced
         :param permissions: list of permissions to be applied to this group
@@ -142,6 +154,7 @@ if __name__ == '__main__':
 
             print(f"Granting {model} {codename} to {group.name}")
             group.permissions.add(permission)
+            return
 
 
     def setup_groups_and_permissions(groups_and_permissions):
@@ -160,8 +173,30 @@ if __name__ == '__main__':
 
             setup_group_permissions(group, permissions)
             print()
+            return
 
-    # run application
+    def add_groups_to_superusers():
+        """
+        Add all groups to any superusers found.
+
+        :return:
+        """
+        groups = Group.objects.all()
+        group_list = [group for group in groups]
+        superusers = get_user_model().objects.filter(is_superuser=True)
+        for user in superusers:
+            user.groups.clear()
+            display = f'Adding the following groups to {user.username}: '
+            for grp in groups:
+                user.groups.add(grp)
+                display += f' {grp.name}'
+            print(display)
+        return
+
+
+
+    # create and apply permissions
     setup_groups_and_permissions(GROUPS_AND_PERMISSIONS)
+    add_groups_to_superusers()
 
 # EOF

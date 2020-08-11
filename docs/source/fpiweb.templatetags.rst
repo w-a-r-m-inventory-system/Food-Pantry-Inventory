@@ -24,4 +24,3 @@ fpiweb.templatetags.qr\_codes module
    :members:
    :undoc-members:
    :show-inheritance:
-

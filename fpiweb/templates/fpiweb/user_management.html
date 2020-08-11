@@ -1,0 +1,193 @@
+{% extends 'fpiweb/base.html' %}
+{% load bootstrap4 %}
+{% comment %}
+
+CONTEXT VARIABLES
+-----------------
+mode                   enum indicating mode.  Constants are defined
+                       for this in UserInfoModes class.
+username               user id - used for login
+userpswd               used for authentication
+force_password         force the user to change the password on next login
+first_name             first name of person using this username
+last_name              last name of person
+email                  email address - fake or real
+title                  nominal or real title of person
+access_level           access level (defined in constants.AccessLevel)
+is_active              is this person an active user?
+errors                 A list of errors, if any
+
+RELATIONSHIPS
+-------------
+View_class             UserManagementView
+Template               user_management.html
+Access URL             {% url 'fpiweb:user_management' %}
+Add Person URL         {% url 'fpiweb:user_new' %}"
+Change Person URL      {% url 'fpiweb:user_edit' <person.user.id> %}
+Exit URL               {% url 'fpiweb:maintenance' %}
+
+{% endcomment %}
+
+{% block title %}
+    User Mgmt
+{% endblock %}
+
+{% block content %}
+
+    <h1>User Account Management</h1>
+
+    <h2>
+        {{ this_user_info.user.first_name }} &nbsp;
+        {{ this_user_info.user.last_name }}
+    </h2>
+    <h3>
+        {{ this_user_info.profile.title }}
+        ({{ this_user_info.highest_access_level.name }})
+    </h3>
+
+{#    All Modes (Enum): {{ all_modes }}#}
+{#    <br/>#}
+{#    <ul>#}
+{#        {% for one_mode in all_modes %}#}
+{#            <li>#}
+{#                One mode: {{ one_mode }},#}
+{#                name: {{ one_mode.name }},#}
+{#                value: {{ one_mode.value }}#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#    <br/>#}
+{#    Mode: {{ mode }}, name: {{ mode.name }}, value: {{ mode.value }}#}
+{#    <div>#}
+{#        Display all mode values {{ all_modes }}#}
+{#        <ul>#}
+{#            {% for disp_mode in all_modes %}#}
+{#                <li>#}
+{#                    Mode: #}
+{#                    {{ disp_mode }} #}
+{#                    ({{ disp_mode.member }} =#}
+{#                    {{ disp_mode.value }})#}
+{#                </li>#}
+{#            {% endfor %}#}
+{##}
+{#        </ul>#}
+{##}
+{#    </div>#}
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="mode" value="{{ mode }}"/>
+{##}
+        {% if mode == all_modes.MODE_SHOW_USERS %}
+
+            <div class="row">
+                <a class="btn btn-primary"
+                   role="button"
+                   href="
+                    {% url 'fpiweb:user_new' %}">
+                    Add a new user account
+                </a>
+            </div>
+
+            <div>
+                &nbsp;
+            </div>
+
+            <div class="row">
+                <h3>
+                    or edit one of the {{ user_list_count }} user accounts
+                    below
+                </h3>
+            </div>
+
+            <div>
+                &nbsp;
+            </div>
+
+            <div class="row">
+                <table id="userTable" border="2">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Select</th>
+                            <th rowspan="2">Name</th>
+                            <th rowspan="2">Title</th>
+                            <th rowspan="2">Access Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for person in user_info_list %}
+                            <tr>
+                                <td>
+                                    <a class="btn btn-primary"
+                                       role="button"
+                                       href="
+                                        {% url 'fpiweb:user_edit' pk=person.user.id %}">
+                                        Edit
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ person.user.first_name }} &nbsp;
+                                    {{ person.user.last_name }}
+                                </td>
+                                <td>
+                                    {{ person.profile.title }}
+                                </td>
+                                <td>
+                                    {{ person.highest_access_level.name }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% elif mode == all_modes.MODE_ADD_USER %}
+            Add user
+
+        {% elif mode == all_modes.MODE_EDIT_USER %}
+            Edit user
+
+        {% elif mode == all_modes.MODE_CONFIRMATION %}
+            <div class="row">
+                Confirmed - this person now has the following attributes: <br/>
+                Name (user name) {{ target_user.first_name }}
+                {{ target_user.last_name }}
+                ({{ target_user.username }}) <br/>
+                Email Address {{ target_user.email }} <br/>
+                Title {{ target_profile.title }} <br/>
+                Permission Level {{ target_perm }} <br/>
+                Active? {{ target_user.active }} <br/>
+                Must change password? {{ target_profile.force_password }} <br/>
+           </div>
+        {% else %}
+            <div class="alert alert-danger">Mode is
+                &quot;{{ mode }}&quot;
+            </div>
+        {% endif %}
+
+        <br/>
+
+        <div>
+            <a href="{% url 'fpiweb:maintenance' %}">
+                {% if mode == all_modes.MODE_CONFIRMATION %}
+                    Return to System Maintenance Menu
+                {% else %}
+                    Cancel User Add or Change
+                {% endif %}
+            </a>
+        </div>
+    </form>
+
+
+{% endblock %}

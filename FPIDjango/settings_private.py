@@ -35,6 +35,8 @@ DB_HOST = "localhost"  # can also be '127.0.0.1'
 # The port used by the database server
 DB_PORT = "5432"
 
+# location for a copy of all the static files on this computer\
+STATIC_ROOT = '<static root directory>'
 
 # Specify any additonal private parameters here.
 MY_SECRET_KEY = "<specify your own random  string of 50 characters>"
