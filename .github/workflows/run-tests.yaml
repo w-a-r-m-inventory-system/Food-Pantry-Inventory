@@ -28,6 +28,7 @@ jobs:
         echo "DB_HOST = 'localhost'" >> FPIDjango/private/settings_private.py
         echo "DB_PORT = '5432'" >> FPIDjango/private/settings_private.py
         echo "MY_SECRET_KEY = '<specify your own random  string of 50 characters>'" >> FPIDjango/private/settings_private.py
+        echo "STATIC_ROOT" = '<directory for collectstaticfile to use>'" >> FPIDjango/private/settings_private.py
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
