@@ -8,8 +8,11 @@ from typing import Union
 from re import compile as re_compile
 from re import IGNORECASE
 
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import \
+    MaxValueValidator, \
+    MinValueValidator
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
@@ -462,7 +465,7 @@ class BoxNumber:
 
     @staticmethod
     def validate(box_number: str) -> bool:
-        """ validate that a atring is of the form 'BOXnnnnn' """
+        """ validate that a string is of the form 'BOXnnnnn' """
         is_valid_box_number = \
             bool(BoxNumber.box_number_regex.match(box_number))
         return is_valid_box_number
@@ -1263,11 +1266,11 @@ class Profile(models.Model):
         ]
 
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         related_name='profile',
         on_delete=models.CASCADE,
     )
-    """ Internal link to the default Django User table. """
+    """ Internal link to the default or custom Django User table. """
 
     title_help_text = 'Job title'
     title_max_length = 30

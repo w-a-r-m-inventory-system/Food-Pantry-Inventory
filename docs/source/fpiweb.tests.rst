@@ -9,6 +9,30 @@ fpiweb.tests package
 Submodules
 ----------
 
+fpiweb.tests.AddPermissionData module
+-------------------------------------
+
+.. automodule:: fpiweb.tests.AddPermissionData
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.rework\_func\_ManualBoxManagement module
+-----------------------------------------------------
+
+.. automodule:: fpiweb.tests.rework_func_ManualBoxManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.rework\_func\_ManualPalletManagement module
+--------------------------------------------------------
+
+.. automodule:: fpiweb.tests.rework_func_ManualPalletManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 fpiweb.tests.test\_forms module
 -------------------------------
 
@@ -21,6 +45,14 @@ fpiweb.tests.test\_models module
 --------------------------------
 
 .. automodule:: fpiweb.tests.test_models
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.test\_setup module
+-------------------------------
+
+.. automodule:: fpiweb.tests.test_setup
    :members:
    :undoc-members:
    :show-inheritance:
@@ -48,4 +80,3 @@ fpiweb.tests.utility module
    :members:
    :undoc-members:
    :show-inheritance:
-

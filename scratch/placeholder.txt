@@ -1,0 +1,4 @@
+This file is just a placeholder file.  Its purpose is to force git to create
+this subdirectory in the root directory of the project.  All other files in
+this directory will be ignored because they are only copies of files from
+other locations.

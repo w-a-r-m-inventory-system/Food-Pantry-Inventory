@@ -5,8 +5,10 @@ Developer Documentation
 #######################
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Developer Table of Contents:
+   :caption: Developer Documentation
+   :name: DeveloperDocumentation
+
+   System Design <DevDocs/SystemDesign>
 
    UML Diagrams <UMLDiagrams>
 

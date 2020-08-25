@@ -25,3 +25,10 @@ fpiweb.support.BoxManagement module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.support.PermissionsManagement module
+-------------------------------------------
+
+.. automodule:: fpiweb.support.PermissionsManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
