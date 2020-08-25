@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
         "prod_example_name": "Flour",
-        "prod_id": 90
+        "product_id": 90
     }
 },
 {
@@ -12,7 +12,7 @@
     "pk": 2,
     "fields": {
         "prod_example_name": "Sugar",
-        "prod_id": 90
+        "product_id": 90
     }
 },
 {
@@ -20,7 +20,7 @@
     "pk": 3,
     "fields": {
         "prod_example_name": "Muffin Mix",
-        "prod_id": 90
+        "product_id": 90
     }
 },
 {
@@ -28,7 +28,7 @@
     "pk": 4,
     "fields": {
         "prod_example_name": "Baking Powder",
-        "prod_id": 97
+        "product_id": 97
     }
 },
 {
@@ -36,7 +36,7 @@
     "pk": 5,
     "fields": {
         "prod_example_name": "Baking Soda",
-        "prod_id": 97
+        "product_id": 97
     }
 },
 {
@@ -44,7 +44,7 @@
     "pk": 6,
     "fields": {
         "prod_example_name": "Salt",
-        "prod_id": 97
+        "product_id": 97
     }
 },
 {
@@ -52,7 +52,7 @@
     "pk": 7,
     "fields": {
         "prod_example_name": "Pepper",
-        "prod_id": 97
+        "product_id": 97
     }
 },
 {
@@ -60,7 +60,7 @@
     "pk": 8,
     "fields": {
         "prod_example_name": "Hot Cereal",
-        "prod_id": 75
+        "product_id": 75
     }
 },
 {
@@ -68,7 +68,7 @@
     "pk": 9,
     "fields": {
         "prod_example_name": "Cold Cereal",
-        "prod_id": 75
+        "product_id": 75
     }
 },
 {
@@ -76,7 +76,7 @@
     "pk": 10,
     "fields": {
         "prod_example_name": "Oatmeal",
-        "prod_id": 76
+        "product_id": 76
     }
 },
 {
@@ -84,7 +84,7 @@
     "pk": 11,
     "fields": {
         "prod_example_name": "Quinoa",
-        "prod_id": 48
+        "product_id": 48
     }
 },
 {
@@ -92,7 +92,7 @@
     "pk": 12,
     "fields": {
         "prod_example_name": "Barbeque Sauce",
-        "prod_id": 66
+        "product_id": 66
     }
 },
 {
@@ -100,7 +100,7 @@
     "pk": 13,
     "fields": {
         "prod_example_name": "Black-eyed Peas",
-        "prod_id": 84
+        "product_id": 84
     }
 },
 {
@@ -108,7 +108,7 @@
     "pk": 14,
     "fields": {
         "prod_example_name": "Baby Diapers",
-        "prod_id": 5
+        "product_id": 5
     }
 },
 {
@@ -116,7 +116,7 @@
     "pk": 15,
     "fields": {
         "prod_example_name": "Adult Diapers",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -124,7 +124,7 @@
     "pk": 16,
     "fields": {
         "prod_example_name": "Toothbrush",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -132,7 +132,7 @@
     "pk": 17,
     "fields": {
         "prod_example_name": "Tootpaste",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -140,7 +140,7 @@
     "pk": 18,
     "fields": {
         "prod_example_name": "Floss",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -148,7 +148,7 @@
     "pk": 19,
     "fields": {
         "prod_example_name": "Soap",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -156,7 +156,7 @@
     "pk": 20,
     "fields": {
         "prod_example_name": "Detergent",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -164,7 +164,7 @@
     "pk": 21,
     "fields": {
         "prod_example_name": "Chili",
-        "prod_id": 54
+        "product_id": 54
     }
 },
 {
@@ -172,7 +172,7 @@
     "pk": 22,
     "fields": {
         "prod_example_name": "Chili Beans",
-        "prod_id": 88
+        "product_id": 88
     }
 },
 {
@@ -180,7 +180,7 @@
     "pk": 23,
     "fields": {
         "prod_example_name": "Clothes",
-        "prod_id": 104
+        "product_id": 104
     }
 },
 {
@@ -188,7 +188,7 @@
     "pk": 24,
     "fields": {
         "prod_example_name": "Toys",
-        "prod_id": 104
+        "product_id": 104
     }
 },
 {
@@ -196,7 +196,7 @@
     "pk": 25,
     "fields": {
         "prod_example_name": "Pudding",
-        "prod_id": 94
+        "product_id": 94
     }
 },
 {
@@ -204,7 +204,7 @@
     "pk": 26,
     "fields": {
         "prod_example_name": "Wet Wipes",
-        "prod_id": 5
+        "product_id": 5
     }
 },
 {
@@ -212,7 +212,7 @@
     "pk": 27,
     "fields": {
         "prod_example_name": "Chick Peas",
-        "prod_id": 86
+        "product_id": 86
     }
 },
 {
@@ -220,7 +220,7 @@
     "pk": 28,
     "fields": {
         "prod_example_name": "Great Northern Beans",
-        "prod_id": 88
+        "product_id": 88
     }
 },
 {
@@ -228,7 +228,7 @@
     "pk": 29,
     "fields": {
         "prod_example_name": "Lima Beans",
-        "prod_id": 88
+        "product_id": 88
     }
 },
 {
@@ -236,7 +236,7 @@
     "pk": 30,
     "fields": {
         "prod_example_name": "Butter Beans",
-        "prod_id": 88
+        "product_id": 88
     }
 },
 {
@@ -244,7 +244,7 @@
     "pk": 31,
     "fields": {
         "prod_example_name": "Bottled Water",
-        "prod_id": 81
+        "product_id": 81
     }
 },
 {
@@ -252,7 +252,7 @@
     "pk": 32,
     "fields": {
         "prod_example_name": "Paper Towels",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -260,7 +260,7 @@
     "pk": 33,
     "fields": {
         "prod_example_name": "Bleach",
-        "prod_id": 8
+        "product_id": 8
     }
 },
 {
@@ -268,7 +268,7 @@
     "pk": 34,
     "fields": {
         "prod_example_name": "Cider",
-        "prod_id": 81
+        "product_id": 81
     }
 },
 {
@@ -276,7 +276,7 @@
     "pk": 35,
     "fields": {
         "prod_example_name": "Cocoa",
-        "prod_id": 81
+        "product_id": 81
     }
 },
 {
@@ -284,7 +284,7 @@
     "pk": 36,
     "fields": {
         "prod_example_name": "Toaster Pastries",
-        "prod_id": 76
+        "product_id": 76
     }
 },
 {
@@ -292,7 +292,7 @@
     "pk": 37,
     "fields": {
         "prod_example_name": "Spice",
-        "prod_id": 90
+        "product_id": 90
     }
 },
 {
@@ -300,7 +300,7 @@
     "pk": 38,
     "fields": {
         "prod_example_name": "Cinnamon",
-        "prod_id": 90
+        "product_id": 90
     }
 }
 ]
