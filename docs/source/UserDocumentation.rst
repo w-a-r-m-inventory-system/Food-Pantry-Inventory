@@ -8,6 +8,10 @@ User Documentation
 
    Overview
 
+   User Management <UserManagement>
+
+   Inventory Management <InventoryManagement>
+
    Individual Box Instructions <IndividualBoxInstructions>
 
    Pallet Instructions <PalletInstructions>

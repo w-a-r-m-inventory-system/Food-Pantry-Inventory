@@ -41,6 +41,22 @@ fpiweb.tests.test\_forms module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.tests.test\_func\_InventoryManagement module
+---------------------------------------------------
+
+.. automodule:: fpiweb.tests.test_func_InventoryManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.test\_func\_UserManagement module
+----------------------------------------------
+
+.. automodule:: fpiweb.tests.test_func_UserManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 fpiweb.tests.test\_models module
 --------------------------------
 
