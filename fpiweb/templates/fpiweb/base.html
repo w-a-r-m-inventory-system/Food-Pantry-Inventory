@@ -26,6 +26,91 @@
     <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
 
 </head>
+
+<div class = "contatiner">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">WARM</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+        <a class="navbar-brand brand-name">
+         <a href="{% url 'fpiweb:index' %}"> <img src="fpiweb/templates/fpiweb/img/warm.jpg" style="height:100%;display:inline-block">WARM</a>
+        </a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'fpiweb:index' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+
+         <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Box Management
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'fpiweb:manual_checkin_box' %}">Check In a Box</a>
+            <a class="dropdown-item" href="{% url 'fpiweb:manual_checkout_box' %}">Checkout (Consume Product in) a Box</a>
+            <a class="dropdown-item" href="{% url 'fpiweb:manual_box_status' %}">Check Status of a Box</a>
+            <a class="dropdown-item" href="{% url 'fpiweb:manual_add_box' %}">Add a New Box to Inventory</a>
+            <a class="dropdown-item" href="{% url 'fpiweb:manual_move_box' %}">Move a Box</a>
+
+        </div>
+      </li>
+
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Pallet Management
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'fpiweb:build_pallet' %}">Build a Pallet</a>
+          <a class="dropdown-item" href="{% url 'fpiweb:manual_pallet_move' %}">Move a Pallet</a>
+
+        </div>
+      </li>
+
+
+{% if user_access == access_level.Volunteer %}
+
+        &nbsp;
+
+    {% else %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          System Management
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'fpiweb:maintenance' %}">System Maintenance</a>
+            <a class="dropdown-item" href="{% url 'fpiweb:print_labels' %}">Print Labels</a>
+            <a class="dropdown-item" href="{% url 'fpiweb:download_activities' %}">Download Activity Log</a>
+            <a class="dropdown-item" href="/warmadmin/">Admin</a>
+        </div>
+      </li>
+    </ul>
+ {% endif %}
+      <ul class="nav navbar-nav navbar-right">
+
+<a>
+        {{ user_info.user.first_name }}
+        {{ user_info.user.last_name }}
+    </a>
+    <a>
+        {{ user_info.profile.title }}
+        ({{ user_info.highest_access_level.name }})
+    </a>
+           </div>
+    </ul>
+
+   <ul class="nav navbar-nav navbar-right">
+       <div class="row">
+        <a class="btn btn-primary" href="{% url 'fpiweb:logout' %}">Logout
+        </a>
+    </div>
+    </ul>
+
+</nav>
+
+</div>
+
 <body>
     <div class="container">
         {# Display django.contrib.messages as Bootstrap alerts #}
