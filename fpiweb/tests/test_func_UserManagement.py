@@ -25,7 +25,7 @@ class UserManagementTest(StaticLiveServerTestCase):
                 'Product.json', 'ProductCategory.json',
                 'Box.json', 'Pallet.json', ]
 
-    RECORD = False
+    RECORD = True
     def delay_for_recording(self):
         # Need a delay for (1) wait for next page load or (2) recording
         if self.RECORD:
@@ -56,12 +56,8 @@ class UserManagementTest(StaticLiveServerTestCase):
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
         # weird size is so I can get the entire web page video recorded without scrolling
-        cls.browser.set_window_size(2100, 1181)
-
-    # @classmethod
-    # def setUpClass(cls):  # class raises a cls_atmic attribute error
-    #     super().setUpClass()
-    #     cls.browser = webdriver.Firefox()
+        cls.browser.set_window_size(1920, 1080)
+        
 
     @classmethod
     def tearDownClass(cls):
