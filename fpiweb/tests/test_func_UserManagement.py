@@ -57,7 +57,7 @@ class UserManagementTest(StaticLiveServerTestCase):
         cls.browser.set_window_position(0, 0)
         # weird size is so I can get the entire web page video recorded without scrolling
         cls.browser.set_window_size(1920, 1080)
-        
+
 
     @classmethod
     def tearDownClass(cls):
