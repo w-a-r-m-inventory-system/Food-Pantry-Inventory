@@ -85,6 +85,7 @@ class UserManagementTest(StaticLiveServerTestCase):
 
         self.browser.get(self.live_server_url)
         self.assertIn("Login", self.browser.title)
+        self.delay_for_recording()
         login = self.browser.find_element_by_tag_name("form")
         username = self.browser.find_element_by_name("username")
         username.clear()
@@ -92,6 +93,7 @@ class UserManagementTest(StaticLiveServerTestCase):
         password = self.browser.find_element_by_id("id_password")
         password.clear()
         password.send_keys('test_password')
+        self.delay_for_recording()
         self.browser.find_element_by_tag_name("form").click()
         login.submit()
         self.delay_for_recording()
