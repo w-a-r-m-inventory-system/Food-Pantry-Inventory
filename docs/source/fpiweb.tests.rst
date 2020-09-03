@@ -41,6 +41,14 @@ fpiweb.tests.test\_forms module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.tests.test\_func\_CheckBoxStatus module
+----------------------------------------------
+
+.. automodule:: fpiweb.tests.test_func_CheckBoxStatus
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 fpiweb.tests.test\_func\_InventoryManagement module
 ---------------------------------------------------
 

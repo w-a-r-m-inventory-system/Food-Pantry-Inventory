@@ -5,19 +5,25 @@ Inventory Management
 Check the Status of a Box
 **************************
 
-From the Inventory Management section clicking on **Check the status of a box** will bring you to the
-**Manual Status a Box** screen. Here you can check th box status by entering a 5 digit
+From the Inventory Management section on the Manin screen clicking on
+**Check the status of a box** will bring you
+to the **Manual Status a Box** screen. Here you can check the box status by entering a 5 digit
 box number and then clicking on the **Search** button.
 
-.. image:: manual_box_images/ManualStatusABox_0_01_01.png
+.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_00_32_10.png
 
 After clicking on the **Search** button you should see a screen listing the Box Number,
 Box Type, Box Contents, Contents Expire (expiration date) and location- Row, Bin and Tier
 number.
 
-.. image:: manual_box_images/ManualStatusABox_0_01_06.png
+.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_00_44_26.png
 
 From this screen you can click on **Check another box** or **Return to Main Menu**.
+
+If you see the screen below that means the **Box Number** is invalid or has not been entered
+into inventory.
+
+.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_01_15_08.png
 
 Checkin a Box
 **************
@@ -25,14 +31,15 @@ Checkin a Box
 With this screen you can add all the information needed to check in a box of food
 items to warehouse inventory. The blank **Checkin a Box** screen is shown below.
 
-.. image:: manual_box_images/CheckinBox_0_01_26.png
+.. image:: InventoryManagementImages/CheckinBox_0_01_26.png
+
 
 The first two items to enter are the **Box number** and **Product**. With the keyboard
 enter a 5 digit 'Box number' in the **Box number** field. Then click on the small
-triangle int the circle at the right of the **Product** drop down list to select a
+triangle in the circle at the right of the **Product** drop down list to select a
 product with your mouse.
 
-.. image:: manual_box_images/CheckinBoxSelectProduct_0_01_31.png
+.. image:: InventoryManagementImages/CheckinBoxSelectProduct_0_01_31.png
 
 After entering the **Product** the next step is to  enter the pallet location.
 You will have to select 3 different entries with your mouse.
@@ -45,7 +52,7 @@ Each entry uses a drop down list and you will make a choice from the drop down l
 In the graphic below the **Row** and **Bin** numbers have been chosen and the drop down
 list is shown with the **Tier** number.
 
-.. image:: manual_box_images/CheckinBoxLocation_0_01_49.png
+.. image:: InventoryManagementImages/CheckinBoxLocation_0_01_49.png
 
 After entering the location enter the expiration year by clicking on the small triangle
 to the right of the **Exp year** field and making a selection from the drop down list.
