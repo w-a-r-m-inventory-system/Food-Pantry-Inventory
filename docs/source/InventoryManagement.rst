@@ -48,7 +48,7 @@ You will have to select 3 different entries with your mouse.
     (2) Bin number ( Bin number in the length of a row)
     (3) Tier number (level up or down
 
-Each entry uses a drop down list and you will make a choice from the drop down list.
+Each entry uses a drop down list and you will make a choice from each drop down list.
 In the graphic below the **Row** and **Bin** numbers have been chosen and the drop down
 list is shown with the **Tier** number.
 
@@ -57,7 +57,7 @@ list is shown with the **Tier** number.
 After entering the location enter the expiration year by clicking on the small triangle
 to the right of the **Exp year** field and making a selection from the drop down list.
 
-.. image:: manual_box_images/CheckinBoxExpYear_0_01_55.png
+.. image:: InventoryManagementImages/CheckinBoxExpYear_0_01_55.png
 
 The last selection you will have to make is the expiration month. There are 2 drop down
 list fields here **Exp month start** and **Exp month end**. These fields are optional and
@@ -71,19 +71,19 @@ in the **Exp month end** field.
 When you are through with the **Exp month** fields click on the blue **Set Box Checkin
 Information** button to enter all the Checkin data.
 
-.. image:: manual_box_images/CheckinBoxExpMonth_0_02_08.png
+.. image:: InventoryManagementImages/CheckinBoxExpMonth_0_02_08.png
 
 If everything has worked correctly you should see the following screen below. Simply click
 on the **Return to Main Menu** link to continue.
 
-.. image:: manual_box_images/CheckinBoxSuccess_0_02_12.png
+.. image:: InventoryManagementImages/CheckinBoxSuccessCrop_0_03_05_22.png
 
 If there is an error you should see a screen like the one below. The
 red arrows point to what has to be fixed before a box can be Checked in. Click on the
 **Cancel Box Checkin** link at the bottom of the page to go back to the **Main Menu**
 screen to start over.
 
-.. image:: manual_box_images/CheckinBoxFailure_0_03_05.png
+.. image:: InventoryManagementImages/CheckinBoxFailure_0_03_05.png
 
 
 Checkout (Consume Product in) a Box
