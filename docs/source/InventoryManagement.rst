@@ -92,26 +92,27 @@ Checkout (Consume Product in) a Box
 To consume or empty a box enter a 5 digit box number in the **Box Number** field. Then
 click on the blue **Search** button.
 
-.. image:: manual_box_images/ConsumeBox_0_03_15.png
+.. image:: InventoryManagementImages/ConsumeBox_0_03_15.png
 
 If everything went ok you should see the box information on the next screen. The box
 information includes the Box Number, the Box Type, the Box Contents, the year the
 Contents Expire and the location- Row, Bin, Tier. Click on the blue **Consume** button
 to continue if all the information seems correct.
 
-.. image:: manual_box_images/ConsumeBoxMessage_0_03_22.png
+.. image:: InventoryManagementImages/ConsumeBoxMessage_0_03_22.png
+
 
 The next screen should contain a message stating that a box 'has been succesfully
-consumed'. Click on the **Return to Manual Box Menu** link to return to the **Manual
-Box Management** page.
+consumed'. Click on the **Return to Main Menu** link to return to the **Main Menu**
+page.
 
-.. image:: manual_box_images/ConsumeBoxSuccess_0_03_22.png
+.. image:: InventoryManagementImages/ConsumeBoxSuccessScreenshot.png
 
 In case of error you should see a screen similar to the one below listing the error.
 Click on the **Cancel Box Consumption** link to return to the **Main Menu Page**
 page.
 
-.. image:: manual_box_images/ConsumeBoxFailure_0_03_40.png
+.. image:: InventoryManagementImages/ConsumeBoxFailure_0_03_40.png
 
 
 
@@ -132,48 +133,51 @@ shown below. Select one of the pallets from the drop down list.
 If there are no pallets available nothing will show on the drop down list.
 You will have to go the **Add** section.
 
-.. image:: pallet_images/SelectPallet.png
+.. image:: InventoryManagementImages/SelectPallet.png
 
 After selecting a pallet click on the **Select** button to go to the
-**Build Pallet** screen.
+**Build Pallet** screen as shown below.
 
-.. image:: pallet_images/SelectPalletButton.png
+.. image:: InventoryManagementImages/SelectPalletButton.png
 
 Add
 ====
 
-Enter or key in a pallet name. In the screen below the pallet the pallet name
+Enter or key in a pallet name. In the screen below the pallet name
 ‘purple’ has been entered. You can pick any name you choose. After keying in
-the new pallet name click on **Add** for the next screen.
+the new pallet name click on **Add** for the **Build Pallet** screen.
 
-.. image:: pallet_images/AddPallet.png
+.. image:: InventoryManagementImages/AddPallet.png
 
 Build Pallet Screen
-++++++++++++++++++++
+====================
 
 The next screen you will come to is the **Build Pallet** screen. On this
 screen the first thing you should do is to create a location for the pallet.
 
-.. image:: pallet_images/BuildPallet.png
+.. image:: InventoryManagementImages/BuildPallet.png
 
 You will create the pallets location for ‘Row’, ‘Bin’ and ‘Tier’. Row refers to
 which long row the pallet is on. Currently rows are 2 bins wide. Bin refers
 pallet bins located down the length of the row. Tier refers to the height level
 of the location. Use the drop down list boxes to enter ‘Row’, ‘Bin’ and ‘Tier’.
 
-.. image:: pallet_images/LocatePallet.png
+.. image:: InventoryManagementImages/LocatePallet.png
 
 Once you have entered the pallet location, click on the **Scan a Box** button
 in the middle of the **Build Pallet** page.
 
-.. image:: pallet_images/ScanABoxButton.png
+.. image:: InventoryManagementImages/ScanABoxButton.png
+
+Scan a Box Popup
+=================
 
 You will be directed to a **Scan a Box** popup window. If your computer has a
 camera you will be asked to enter a QR code. QR is short for Quick Response and
 is simply a funny looking label that can be read by computers.
 
 Scan a Box QR code popup (for computers with a camera)
-
+---------------------------------------------------------
 
 Use the camera on your computer to scan the QR code as shown below. Some
 computers may request your permission to use the computer camera. You will
@@ -188,20 +192,21 @@ can always add the QR code manually be entering or keying in the 5 digit box
 number manually in the pop up window at the bottom left. Then click the blue
 **Scan** button at the bottom right.
 
-.. image:: pallet_images/QRCode2.png
+.. image:: InventoryManagementImages/QRCode2.png
 
 Scan a Box popup (for computers without a camera)
------------------------------------------------------------
+--------------------------------------------------
 
 On this page you first have to enter or key in a 5 digit box number in the
 bottom left of the screen. You can enter any number but it must contain exactly
 5 digits. Once you have entered the number click on the **Scan** button in the
 bottom right of the popup window.
 
-.. image:: pallet_images/ScanBoxPopUp.png
+.. image:: InventoryManagementImages/ScanBoxPopUp.png
 
 Return to Build Pallet
-++++++++++++++++++++++++
+=======================
+
 After clicking on the **Scan Button** you will be returned to the **Build Pallet**
 screen. You should see the ‘Box Number’ you have entered as well as a small
 white ‘X’ in a red box at the left of your screen. On this screen you will
@@ -209,7 +214,7 @@ select a product to go in the box from a drop down product list. Click on
 the ‘Dropdown icon’ at the bottom right of the ‘Product’ rectangle’. Then
 choose an item from the list.
 
-.. image:: pallet_images/EnterProduct.png
+.. image:: InventoryManagementImages/EnterProduct.png
 
 Once you have entered the product, use the ‘Expiration Year’ drop down list
 to enter the ‘Expiration Year’.
@@ -223,21 +228,21 @@ month. This means the ‘End’ month **must not equal** the 'Start' month and
 an ‘Expiration Month’ with a ‘Start’ and an ‘End’ month.* Once you have
 entered everything on this page the page should look similar to what is below.
 
-.. image:: pallet_images/PalletCompleteBefore.png
+.. image:: InventoryManagementImages/PalletCompleteBefore.png
 
 From here if you click on **Scan a Box** you will be directed back to the
 **Scan a Box** popup window. There you can add another box in the same
 manner as you did before. If you click **Pallet Complete** you will be
 directed to the **Pallet Complete** screen.
 
-.. image:: pallet_images/PalletCompleteScanBoxButtons.png
+.. image:: InventoryManagementImages/PalletCompleteScanBoxButtons.png
 
 Pallet Complete
-++++++++++++++++
+================
 
 You should now see the **Pallet Complete** screen.
 
-.. image:: pallet_images/PalletCompleted.png
+.. image:: InventoryManagementImages/PalletCompleted.png
 
 From here you can return to the main screen by clicking ‘Return to main page’.
 
@@ -245,6 +250,11 @@ From here you can return to the main screen by clicking ‘Return to main page�
 
 Move a Pallet
 **************
+
+**Currently the Move Pallet screen has an error or bug in it. There is a link on
+the Move Pallet screen which states 'Return to Manual Pallet Menu'. This link should
+NOT be clicked and should be ignored. If you do not see this link then the bug has been
+fixed but the User Documentation has not been updated.**
 
 After clicking on **Move a Pallet** you should see a screen like the one below. This
 screen allows you to move the location of each pallet along with its boxes in the
