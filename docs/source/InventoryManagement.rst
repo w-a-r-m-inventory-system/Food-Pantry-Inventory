@@ -261,7 +261,7 @@ screen allows you to move the location of each pallet along with its boxes in th
 database records. Basically if you move a pallet you are also moving the boxes the pallet
 contains.
 
-.. image:: manual_box_images/MovePalletStart_0_00_11.png
+.. image:: InventoryManagementImages/MovePalletStart_0_00_11.png
 
 When moving a pallet (with its boxes) three different conditions can occur.
 
@@ -281,26 +281,26 @@ arrow at the right of each dropdown list. Selecting the down arrow as shown belo
 Row dropdown list brings a set of choices. Simply click on the current Row location choice
 to "Enter the location to move pallet from".
 
-.. image:: manual_box_images/SelectRowFromDropDownList_0_00_21.png
+.. image:: InventoryManagementImages/SelectRowFromDropDownList_0_00_21.png
 
 Do the same with the Row and Tier locations. Once that is done you should see the
 **Move Pallet** screen as filled out below with Row, Bin, and Tier locations filled out.
 Then click on the blue **Submit Query** button.
 
-.. image:: manual_box_images/SubmitQuery_0_00_23.png
+.. image:: InventoryManagementImages/SubmitQuery_0_00_23.png
 
 This will bring you to a similar screen but this new screen will say "Enter location
 to move pallet **to**". Enter the Row, Bin, and Tier location for where the pallet
 and it's boxes will be moved to. The screen below shows the new Tier location being
 chosen.
 
-.. image:: manual_box_images/SelectTierTo2_0_00_20.png
+.. image:: InventoryManagementImages/SelectTierTo2_0_00_20.png
 
 Once the **Enter location to move pallet to** screen has been filled out click on the
 blue **Submit Query** button. If the new location you want to move the pallet is empty
 and has no boxes you should see a screen similar to the one shown immediately below.
 
-.. image:: manual_box_images/MovePalletFinish_0_00_39.png
+.. image:: InventoryManagementImages/MovePalletFinish_0_00_39.png
 
 If the "Enter location to move pallet to" is NOT EMPTY then you will see a screen like
 the one shown in the next section below.
@@ -311,13 +311,13 @@ Move a Pallet and Its Boxes to a Non-Empty Pallet Location
 The screen below shows up when you try to move a pallet to a location where a pallet is
 already located. Notice that the message states "There are 2 boxes at 01,03,C2".
 
-.. image:: manual_box_images/BoxesAtLocation_0_01_21.png
+.. image:: InventoryManagementImages/BoxesAtLocation_0_01_21.png
 
 This means you will have to make a decision, either (1) choose a new location by clicking
 the **Change To Location** choice or (2) merge the pallets by clicking the **Merge Pallets**
 choice.
 
-.. image:: manual_box_images/SelectOptionLocationMerge_0_01_30.png
+.. image:: InventoryManagementImages/SelectOptionLocationMerge_0_01_30.png
 
 If you click on **Change to Location** you will be directed back to the **Enter location
 to move pallet to** screen as shown above. From there you can select another location to
@@ -334,7 +334,7 @@ If you attempt "Enter location to move pallet from" and there are no boxes recor
 in the database for that pallet location you will see a screen similar to the one shown
 below.
 
-.. image:: manual_box_images/MoveEmptyPallet_0_03_01.png
+.. image:: InventoryManagementImages/MoveEmptyPallet_0_03_01.png
 
 
 Move a Box
@@ -343,7 +343,7 @@ Move a Box
 To move a box to a different pallet enter the 5 digit box number in the **Box Number**
 field and then click on the blue **Search** button.
 
-.. image:: manual_box_images/MoveBox_0_03_55.png
+.. image:: InventoryManagementImages/MoveBox_0_03_55.png
 
 The next **Move Box** screen contains all the box information. In this screen
 you can choose a new location by entering new **Row**, **Bin**, **Tier** locations. Click
@@ -351,18 +351,18 @@ on the small triangle to the right of each **Row**, **Bin**, **Tier** to get you
 list choices. After choosing your new location entries click on the blue **Move**
 button to change the information in the database.
 
-.. image:: manual_box_images/MoveBoxFillIn_0_04_19.png
+.. image:: InventoryManagementImages/MoveBoxFillIn_0_04_19.png
 
 If there are no errors you should see a screen similar to the one below. Click on the
 **Return to Main Menu** link to return to the **Main Menu Page**
 screen.
 
-.. image:: manual_box_images/MoveBoxSuccess_0_04_23.png
+.. image:: InventoryManagementImages/MoveBoxSuccess.png
 
 In case of error you will see a screen similar to the one below with an error message.
 Click on the **Cancel Box Move** link to return to the **Main Menu** screen.
 
-.. image:: manual_box_images/MoveBoxFailure_0_04_32.png
+.. image:: InventoryManagementImages/MoveBoxFailure_0_04_32.png
 
 
 Add a New Box to Inventory
@@ -375,16 +375,16 @@ With this screen you can add a new box following the 4 steps listed below.
     (3) Choose an item from the drop down list.
     (4) Finally click on the **Add Box** button (hidden from view in the below graphic).
 
-.. image:: manual_box_images/AddNewBox_0_00_58.png
+.. image:: InventoryManagementImages/AddNewBox_0_00_58.png
 
 After clicking on **Add Box** you should see the following screen. From there you can
 **Add another box** or **Return to Main Menu** by clicking on the links in the
 **New Box** screen.
 
-.. image:: manual_box_images/AddNewBoxSuccess_0_01_05.png
+.. image:: InventoryManagementImages/AddNewBoxSuccess.png
 
 If there was an error you will see the following screen. Simply click on **Cancel Adding
 a Box** to return to the **Main Menu** screen.
 
-.. image:: manual_box_images/AddNewBoxFailure_0_01_14.png
+.. image:: InventoryManagementImages/AddNewBoxFailure_0_01_14.png
 
