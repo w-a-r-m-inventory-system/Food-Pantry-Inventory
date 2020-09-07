@@ -1515,165 +1515,6 @@ class BoxItemFormView(PermissionRequiredMixin, View):
         )
 
 
-class ManualMenuView(PermissionRequiredMixin, TemplateView):
-    """
-    Menu to choose between manual pallet or manual box management
-    """
-
-    permission_required = (
-        'fpiweb.view_pallet',
-    )
-
-    template_name = 'fpiweb/manual_menu.html'
-
-    def get_context_data(self, **kwargs):
-        """
-        Add User Information to Manual Menu page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super(ManualMenuView, self).get_context_data(**kwargs)
-
-        # get the current user and related profile
-        current_user = self.request.user
-        profile = current_user.profile
-        if profile:
-            active_pallet = profile.active_pallet
-        else:
-            active_pallet = None
-
-        # does user have active pallet?  if so get info
-        if active_pallet:
-            new_target = None
-            # pallet_rec = Pallet.objects.select_related().get(
-            #     id=profile.active_pallet)
-            pallet_id = active_pallet.id
-            pallet_target = reverse_lazy(
-                'fpiweb:manual_pallet_status', args=[pallet_id]
-            )
-        else:
-            new_target = reverse_lazy('fpiweb:manual_pallet_new')
-            pallet_target = None
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = profile
-        context['active_pallet'] = active_pallet
-        context['new_target'] = new_target
-        context['pallet_target'] = pallet_target
-        return context
-
-
-class ManualPalletMenuView(PermissionRequiredMixin, TemplateView):
-    """
-    Menu of choices for manual pallet management.
-    """
-
-    permission_required = (
-        'fpiweb.view_pallet',
-    )
-
-    template_name = 'fpiweb/manual_pallet_menu.html'
-
-    def get_context_data(self, **kwargs):
-        """
-        Add User Information to Manual Menu page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super().get_context_data(**kwargs)
-
-        # get the current user and related profile
-        current_user = self.request.user
-        profile = current_user.profile
-        if profile and profile.active_pallet:
-            active_pallet = profile.active_pallet
-            pallet_boxes = PalletBox.objects.filter(pallet=active_pallet)
-            box_set = list()
-            for box in pallet_boxes:
-                box_set.append(box)
-        else:
-            active_pallet = None
-            box_set = None
-
-        # does user have active pallet?  if so get info
-        if active_pallet:
-            new_target = None
-            # pallet_rec = Pallet.objects.select_related().get(
-            #     id=profile.active_pallet)
-            pallet_id = active_pallet.id
-            pallet_target = reverse_lazy(
-                'fpiweb:manual_pallet_status', args=[pallet_id]
-            )
-        else:
-            new_target = reverse_lazy('fpiweb:manual_pallet_new')
-            pallet_target = None
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = profile
-        context['active_pallet'] = active_pallet
-        context['box_set'] = box_set
-        context['new_target'] = new_target
-        context['pallet_target'] = pallet_target
-        return context
-
-
-class ManualBoxMenuView(PermissionRequiredMixin, TemplateView):
-    """
-    Menu of choices for manual individual box management.
-    """
-    permission_required = (
-        'fpiweb.view_box',
-    )
-
-    template_name = 'fpiweb/manual_ind_box_menu.html'
-
-    def get_context_data(self, **kwargs):
-        """
-        Add User Information to Manual Menu page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super().get_context_data(**kwargs)
-
-        # get the current user and related profile
-        current_user = self.request.user
-        profile = current_user.profile
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = profile
-        return context
-
-
-# class ManualNotification(LoginRequiredMixin, TemplateView):
-#     """
-#     Ask a question or notify the user of something.
-#     """
-#     template_name = 'fpiweb/manual_generic_notification.html'
-#
-#     def get_context_data(self, **kwargs):
-#         """
-#         Get info from reqest and populate context from it.
-#
-#         :param kwargs:
-#         :return:
-#         """
-#         context = super(ManualNotification, self.get_context_data(**kwargs))
-#         request = context.get_request()
-#         title = request.
-
-
 class MANUAL_NOTICE_TYPE(Enum):
     """
     Manual generic notice type.
@@ -1730,64 +1571,9 @@ def manual_generic_notification(
     return template_info
 
 
-class ManualPalletNew(LoginRequiredMixin, TemplateView):
-    """
-    Establish a new pallet for this user.
-    """
-    # use CreateView later
-
-    model = Profile
-    template_name = 'fpiweb/manual_pallet_add.html'
-    context_object_name = 'manual_pallet'
-
-    # success_url = reverse_lazy('fpiweb:manual_pallet_status')
-
-    def get_context_data(self, **kwargs):
-        """
-        Add Site Information to About page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super(ManualPalletNew, self).get_context_data(**kwargs)
-        current_user = self.request.user
-        user_profile = Profile.objects.select_related().get(
-            user_id=current_user.id)
-
-        # check if new pallet or other status
-        if user_profile.active_location_id:
-            # check status
-            ...
-        else:
-            # find new location
-            ...
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = user_profile
-        return context
-
-    def get_success_url(self, **kwargs) -> URL:
-        """
-
-        :param kwargs:
-        :return:
-        """
-
-        current_user = self.request.user
-        user_profile = Profile.objects.select_related().get(id=current_user.id)
-        pallet_rec = Pallet.objects.select_related().get(
-            user_id_id=current_user.id)
-        pallet_id = pallet_rec.id
-        target = reverse_lazy('fpiweb:manual_pallet_status', args=[pallet_id])
-        return target
-
-
 class ManualPalletStatus(PermissionRequiredMixin, ListView):
     """
-    Establish a new pallet for this user.
+    Show the status of a pallet.
     """
 
     permission_required = (
@@ -1797,7 +1583,7 @@ class ManualPalletStatus(PermissionRequiredMixin, ListView):
     model = Pallet
     template_name = 'fpiweb/manual_pallet_status.html'
     context_object_name = 'manual_pallet_status'
-    success_url = reverse_lazy('fpiweb:manual_menu')
+    success_url = reverse_lazy('fpiweb:index')
 
     def get_(self, **kwargs):
         """
@@ -3290,5 +3076,23 @@ class UserUpdateView(PermissionRequiredMixin, View):
                 target_user=target_user,
             )
             return render(request, self.template_name, post_context)
+
+
+# class ManualNotification(LoginRequiredMixin, TemplateView):
+#     """
+#     Ask a question or notify the user of something.
+#     """
+#     template_name = 'fpiweb/manual_generic_notification.html'
+#
+#     def get_context_data(self, **kwargs):
+#         """
+#         Get info from reqest and populate context from it.
+#
+#         :param kwargs:
+#         :return:
+#         """
+#         context = super(ManualNotification, self.get_context_data(**kwargs))
+#         request = context.get_request()
+#         title = request.
 
 # EOF

@@ -41,21 +41,13 @@ from fpiweb.views import \
     ConfirmPasswordChangeView, \
     LogoutView, \
     MaintenanceView, \
-    ManualBoxMenuView, \
     ManualBoxStatusView, \
     ManualCheckinBoxView, \
     ManualConsumeBoxView, \
-    ManualMenuView, \
     ManualMoveBoxView, \
     ManualNewBoxView, \
-    ManualPalletMenuView, \
     ManualPalletMoveView, \
-    ManualPalletNew, \
-    ManualPalletStatus, \
-    PalletManagementView, \
-    PalletSelectView, \
     PrintLabelsView, \
-    ScannerView, \
     TestScanView, \
     UserManagementView, \
     UserCreateview, \
@@ -240,74 +232,30 @@ urlpatterns = [
         name='build_pallet'
     ),
 
-    # Manual box management menu
-    # e.g. /fpiweb/manualmenu/ = show manual box management menu
-    path(
-        'manualmenu/',
-        ManualMenuView.as_view(),
-        name='manual_menu'
-    ),
-
-    # Manual pallet management menu
-    # e.g. /fpiweb/manualpalletmenu/ = show manual pallet management menu
-    path('manualpalletmenu/',
-         ManualPalletMenuView.as_view(),
-         name='manual_pallet_menu'),
-
-    # Manual box management menu
-    # e.g. /fpiweb/manualboxmenu/ = show manual box management menu
-    path('manualboxmenu/',
-         ManualBoxMenuView.as_view(),
-         name='manual_box_menu'),
-
-    # Manually start a new pallet
-    # e.g. /fpiweb/manualpalletnew = manually starting a new pallet
-    path(
-        'manual_pallet_new/',
-        ManualPalletNew.as_view(),
-        name='manual_pallet_new'
-    ),
-
+    # Move all boxes in one location to a different location
+    # e.g. /fpiweb/manual_pallet_move/
     path(
         'manual_pallet_move/',
         ManualPalletMoveView.as_view(),
         name='manual_pallet_move',
     ),
 
-    # Manually show the current pallet status
-    # e.g. /fpiweb/manualpalletstatus/5/ = current pallet status
-    path(
-        'manual_pallet_status/<int:pk>',
-        ManualPalletStatus.as_view(),
-        name='manual_pallet_status'
-    ),
-
-    path(
-        'pallet/management/',
-        PalletManagementView.as_view(),
-        name='palletManagement',
-    ),
-
+    # build a pallet of boxes and store in a given location
     path('build_pallet/', BuildPalletView.as_view(), name='build_pallet'),
 
-    path(
-        'build_pallet/<int:box_pk>/',
-        BuildPalletView.as_view(),
-        name='build_pallet_add_box'),
-
-    path('pallet/select/', PalletSelectView.as_view(), name='pallet_select'),
-
-    path('scanner/', ScannerView.as_view(), name='scanner'),
-
+    # generate a pdf of one or more pages of QR code labels to put on boxes
+    # e.g. /fpiweb/print_labels/
     path('print_labels/', PrintLabelsView.as_view(), name='print_labels'),
 
+    # Downlaod a csv file containinng all box activity
+    # e.g. /fpiweb/activity/download/
     path(
         'activity/download/',
         ActivityDownloadView.as_view(),
         name='download_activities'),
 
     # Manually add an empty box to the inventory system
-    # e.g. /fpiweb/manual_box_status/ = determine the status of a box manually
+    # e.g. /fpiweb/manual_box_status/ = add a box to the system
     path('manual_add_box/', ManualNewBoxView.as_view(),
          name='manual_add_box', ),
 
