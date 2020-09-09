@@ -53,7 +53,7 @@ class ManageUserPermissions:
         )
         return user_info
 
-    def get_highest_access_level(self, user)-> AccessLevel:
+    def get_highest_access_level(self, user) -> AccessLevel:
         """
         Determine the highest level of access this user currently has.
 
@@ -286,7 +286,7 @@ class ManageUserPermissions:
         profile.refresh_from_db()
         return user
 
-    def log_change(self, username: str, field: str, old: str, new:str):
+    def log_change(self, username: str, field: str, old: str, new: str):
         """
         write an entry to the log about the change made.
 

@@ -105,6 +105,7 @@ from fpiweb.forms import \
     NewBoxNumberForm, \
     PalletNameForm, \
     PalletSelectForm, \
+    PrintLabelsForm, \
     ProductForm, \
     ExpMoStartForm, \
     ExpMoEndForm, \
@@ -112,6 +113,7 @@ from fpiweb.forms import \
     UserInfoForm, \
     UserInfoModes as MODES, \
     ChangePasswordForm
+from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
 
@@ -1391,6 +1393,59 @@ class ScannerView(PermissionRequiredMixin, View):
             data=box_data,
             status=HTTPStatus.OK,
         )
+
+
+class PrintLabelsView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.print_labels_box',
+    )
+
+    template_name = 'fpiweb/print_labels.html'
+
+    @staticmethod
+    def get_base_url(meta):
+        protocol = meta.get('SERVER_PROTOCOL', 'HTTP/1.1')
+        protocol = protocol.split('/')[0].lower()
+
+        host = meta.get('HTTP_HOST')
+        return f"{protocol}://{host}/"
+
+    def get(self, request, *args, **kwargs):
+        max_box_number = Box.objects.aggregate(Max('box_number'))
+        print("max_box_number", max_box_number)
+
+        return render(
+            request,
+            self.template_name,
+            {'form': PrintLabelsForm()}
+        )
+
+    def post(self, request, *args, **kwargs):
+        base_url = self.get_base_url(request.META)
+
+        form = PrintLabelsForm(request.POST)
+        if not form.is_valid():
+            print("form invalid")
+            return render(
+                request,
+                self.template_name,
+                {'form': form},
+            )
+        print("form valid")
+
+        buffer = BytesIO()
+
+        QRCodePrinter(url_prefix='').print(
+            starting_number=form.cleaned_data.get('starting_number'),
+            count=form.cleaned_data.get('number_to_print'),
+            buffer=buffer,
+        )
+
+        # FileResponse sets the Content-Disposition header so that browsers
+        # present the option to save the file.
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
 
 
 class BoxItemFormView(PermissionRequiredMixin, View):
