@@ -12,8 +12,4 @@ User Documentation
 
    Inventory Management <InventoryManagement>
 
-   Individual Box Instructions <IndividualBoxInstructions>
-
-   Pallet Instructions <PalletInstructions>
-
    Other Tools <OtherTools>

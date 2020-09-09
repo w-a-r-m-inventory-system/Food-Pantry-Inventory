@@ -35,7 +35,8 @@ class UserManagementTest(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    # Requires HEADLESS_MODE for valid testing purposes when uploading to browserless server
+    HEADLESS_MODE = True
 
     @classmethod
     def get_browser_mode(cls):
@@ -55,7 +56,7 @@ class UserManagementTest(StaticLiveServerTestCase):
         cls.browser = cls.get_browser_mode()
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
-        # weird size is so I can get the entire web page video recorded without scrolling
+        # required size is so I can get the entire web page video recorded without scrolling
         cls.browser.set_window_size(1920, 1080)
 
 
