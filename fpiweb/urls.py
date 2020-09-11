@@ -48,10 +48,11 @@ from fpiweb.views import \
     ManualNewBoxView, \
     ManualPalletMoveView, \
     PrintLabelsView, \
+    ProductCategoryCreateView, \
     TestScanView, \
     UserManagementView, \
     UserCreateview, \
-    UserUpdateView
+    UserUpdateView, ProductCategoryListView, ProductCategoryUpdateView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -305,6 +306,23 @@ urlpatterns = [
     # e.g. /fpiweb/user_mgmt/edit/5/ = update an existing user
     path('user_mgmt/edit/<int:pk>', UserUpdateView.as_view(),
          name='user_edit'),
+
+    # ProductCategory List page
+    # e.g. /fpiweb/product_category/ = list of product_category
+    path('product_category/', ProductCategoryListView.as_view(),
+         name='product_category_view'),
+
+    # ProductCategory Add page
+    # e.g. /fpiweb/product_category/add/ = add a product_category
+    path('product_category/add/', ProductCategoryCreateView.as_view(),
+         name='product_category_new' ),
+
+    # ProductCategory Edit page
+    # e.g. /fpiweb/product_category/edit/4/ = edit product_category # 4
+    path('product_category/edit/<int:pk>/', ProductCategoryUpdateView.as_view(),
+         name='product_category_update' ),
+
+
 
 ]
 

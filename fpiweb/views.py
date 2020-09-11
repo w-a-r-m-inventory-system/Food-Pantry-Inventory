@@ -77,7 +77,7 @@ from fpiweb.models import \
     Product, \
     Profile, \
     Location, \
-    PalletBox
+    PalletBox, ProductCategory
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
@@ -112,7 +112,7 @@ from fpiweb.forms import \
     validation_exp_months_bool, \
     UserInfoForm, \
     UserInfoModes as MODES, \
-    ChangePasswordForm
+    ChangePasswordForm, ProductCategoryForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
@@ -3076,6 +3076,58 @@ class UserUpdateView(PermissionRequiredMixin, View):
                 target_user=target_user,
             )
             return render(request, self.template_name, post_context)
+
+
+class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product Category using a generic CreateView.
+    """
+
+    # Mike Rehner adding a permission here but its not set up elsewhere
+    permission_required = (
+        'fpiweb.add_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_edit.html'
+    context_object_name = 'product_category'
+    success_url = reverse_lazy('fpiweb:product_category_view')
+
+    formClass = ProductCategoryForm
+
+    fields = ['prod_cat_name', 'prod_cat_descr', ]
+
+class ProductCategoryListView(PermissionRequiredMixin, ListView):
+    """
+    List of existing rows using a generic ListView.
+    """
+
+    # by Mike Rehner- not sure how permission set up
+    permission_required = (
+        'fpiweb.view_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_list.html'
+    context_object_name = 'product_category_list_content'
+
+
+class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product Category using a generic UpdateView.
+    """
+
+    # by Mike Rehner- not sure how permission set up
+    permission_required = (
+        'fpiweb.change_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_edit.html'
+    context_object_name = 'product_category'
+    form_class = LocRowForm
+    success_url = reverse_lazy('fpiweb:product_category_view')
+
 
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
