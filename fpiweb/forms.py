@@ -1539,4 +1539,71 @@ class UserInfoForm(forms.Form):
 
         return
 
+
+class ProductCategoryForm(forms.ModelForm):
+    """
+    Manage Loction row details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = ProductCategory
+        fields = ['id', 'prod_cat_name', 'prod_cat_descr', ]
+
+    # following along from LocRowForm help text in models.ProductCatagory
+    # additional help text for id and prod_cat_descr
+    # not sure how its used yet
+    prod__cat_name = forms.CharField(
+        help_text=ProductCategory.prod_cat_name_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_prod_cat_fields(
+            prod_cat_name: str,
+            prod_cat_descr: str,
+    ):
+        """
+        Validate the various product category record fields.
+
+        :param prod_cat_name: name of product catagory
+        :param prod_cat_descr: description of product description
+        :return: True if valid
+        """
+        max_len: int = ProductCategory.prod_cat_name_max_length
+        min_len: int = 1    # did not see min_length in ProductCategory
+        if not prod_cat_name or not (len(prod_cat_name) > 0):
+            raise ValidationError(
+                'The Product Category Name must be specified'
+            )
+        if (len(prod_cat_name) <= max_len) \
+                and \
+                (len(prod_cat_name) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Product Category Name length must be between 1 and 30 characters long'
+            )
+        if not prod_cat_descr or not (len(prod_cat_descr) > 0):
+            raise ValidationError(
+                'A description of this Product Catagory must be provided'
+            )
+
+        return
+
+    def clean(self):
+        """
+        Clean and validate the data given for the constraint record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        prod_cat_name = cleaned_data.get('prod_cat_name')
+        prod_cat_descr = cleaned_data.get('prod_cat_descr')
+        self.validate_prod_cat_fields(prod_cat_name, prod_cat_descr)
+        return
+
+
 # EOF
