@@ -3125,7 +3125,7 @@ class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
     model = ProductCategory
     template_name = 'fpiweb/product_category_edit.html'
     context_object_name = 'product_category'
-    form_class = LocRowForm
+    form_class = ProductCategoryForm
     success_url = reverse_lazy('fpiweb:product_category_view')
 
 
