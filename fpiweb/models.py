@@ -362,12 +362,14 @@ class ProductCategory(models.Model):
         primary_key=True,
         help_text=id_help_text,
     )
+
     """ Internal record identifier for product category. """
 
     prod_cat_name_help_text = 'Name of this product category.'
+    prod_cat_name_max_length = 30
     prod_cat_name = models.CharField(
         'Product Category Name',
-        max_length=30,
+        max_length=prod_cat_name_max_length,
         unique=True,
         help_text=prod_cat_name_help_text,
     )
