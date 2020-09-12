@@ -11,9 +11,9 @@
 
 {% block content %}
     <div class="row">
-         <div class="col-md-4 text-center">
+         <div class="col-md-12 text-center">
             <h1 class="h1">
-                {% if prod_cat.id %}
+                {% if product_category.id %}
                     Edit Product Category
                 {% else %}
                     Add Product Category
@@ -42,7 +42,7 @@
 
     <br/>
     <a href="{% url 'fpiweb:product_category_view' %}">
-        Back to row list
+        Back to Product Category list
     </a>
 
     <hr class="style-one">
