@@ -1555,7 +1555,7 @@ class ProductCategoryForm(forms.ModelForm):
     # following along from LocRowForm help text in models.ProductCatagory
     # additional help text for id and prod_cat_descr
     # not sure how its used yet
-    prod__cat_name = forms.CharField(
+    prod_cat_name = forms.CharField(
         help_text=ProductCategory.prod_cat_name_help_text,
         required=True,
     )
