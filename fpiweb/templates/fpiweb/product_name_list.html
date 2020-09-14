@@ -1,18 +1,18 @@
 {% extends 'fpiweb/base.html' %}
 
-{# Purpose: List all Product Category rows #}
-{# URL Name: product_category_view #}
+{# Purpose: List all Product Name rows #}
+{# URL Name: product_name_view #}
 {# URL Response: GET #}
-{# Table: ProductCategory #}
-{# Form: None #}
+{# Table: Product #}
+{# Form: ProductName #}
 
-{% block title %} Product Category Row {% endblock %}
+{% block title %} Product Name Row {% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12 text-center">
             <h1 class="h1">
-                Product Category List
+                Product Name List
             </h1>
         </div>
     </div>
@@ -27,36 +27,37 @@
         <div class="col-md-12 text-center">
             <a class="btn alert-info"
                role="button"
-               href="{% url 'fpiweb:product_category_new' %}">
-                Add a Product Category
+               href="{% url 'fpiweb:product_name_new' %}">
+                Add a Product Name
             </a>
         </div>
     </div>
 
-    <div class="row">
-        &nbsp;
-    </div>
 
-       <div class="row text-center">
-        <div class="col-md-3"><strong>Product Category</strong></div>
-{#        <div class="col-md-4"><strong>Description</strong></div>#}
-        <div class="col-md-3 text-center">
-            <strong>Edit this Product Category</strong>
+    <div class="row">
+            &nbsp;
         </div>
-    </div>
+
+           <div class="row text-center">
+            <div class="col-md-3"><strong>Product Name</strong></div>
+            <div class="col-md-4"><strong>Product Name ID</strong></div>
+            <div class="col-md-3 text-center">
+                <strong>Edit this Product Name</strong>
+            </div>
+        </div>
 
     {% if object_list %}
-        {% for product_category in object_list %}
+        {% for product_name in object_list %}
             <div class="row text-center">
                 <div class="col-md-3">
-                    {{ product_category.prod_cat_name|safe }}
+                    {{ product_name.prod_name|safe }}
                 </div>
                 <div class="col-md-2">
                     <div class="text-center">
                         <a class="btn alert-info"
                            role="button"
                            href="
-                            {% url 'fpiweb:product_category_update' pk=product_category.id %}">
+                            {% url 'fpiweb:product_name_update' pk=product_name.id %}">
                             Edit
                         </a>
                     </div>
@@ -68,7 +69,7 @@
                     &nbsp;
                 </div>
                 <div class="col-md-11">
-                    {{ product_category.prod_cat_descr }}
+                    {{ product_name.prod_cat }}
                     <hr class="style-one"/>
                 </div>
             </div>
@@ -76,6 +77,10 @@
     {% else %}
         <p>No Product Categories are available.</p>
     {% endif %}
+
+
+
+
     <div class='row'>
         <a href="{% url 'fpiweb:maintenance' %}">
             Return to system maintenance
@@ -85,18 +90,17 @@
     <hr class="style-one"/>
 
     <h6>
-        Template: product_category_list.html
+        Template: product_name_list.html
     </h6>
     <h6>
-        View: ProductCategoryListView
+        View: ProductNameListView
     </h6>
     <h6>
-        Add URL: {% url 'fpiweb:product_category_new' %}
+        Add URL: {% url 'fpiweb:product_name_new' %}
     </h6>
     <h6>
-        Edit URL: {% url 'fpiweb:product_category_update' pk=1 %}
+        Edit URL: {% url 'fpiweb:product_name_update' pk=1 %}
     </h6>
 
 
 {% endblock %}
-
