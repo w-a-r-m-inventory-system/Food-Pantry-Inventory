@@ -38,7 +38,9 @@
       {% bootstrap_field form.starting_number %}
       {% bootstrap_field form.number_to_print %}
         <div>
-            {{ labels_per_page }} QR codes are printed per page
+            {{ labels_per_page }} QR codes are printed per page.  If the
+            number of labels requested is not a multiple of
+            {{ labels_per_page }}, the last page will have blank labels.
         </div>
       <input type="submit" value="Generate QR Code Labels"/>
     </form>

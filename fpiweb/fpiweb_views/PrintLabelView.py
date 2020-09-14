@@ -42,7 +42,9 @@ from fpiweb.support.PermissionsManagement import ManageUserPermissions
 """
 Assuming:
 -   letter size paper
+
     -   portrait orientation
+    
 -   1/2 inch outer margin on all sides
 -   all measurements in points (1 pt = 1/72 in)
 -   3 labels across
@@ -63,8 +65,10 @@ class Point:
 
 LABEL_SIZE: Point = Point(144, 144)  # 2 in x 2 in
 LABEL_MARGIN: Point = Point(18, 18)  # 1/4 in x 1/4 in
-BACKGROUND_SIZE: Point = Point(LABEL_SIZE.x + (LABEL_MARGIN.x * 2),
-                               LABEL_SIZE.y + (LABEL_MARGIN.y * 2))
+BACKGROUND_SIZE: Point = Point(
+    LABEL_SIZE.x + (LABEL_MARGIN.x * 2),
+    LABEL_SIZE.y + (LABEL_MARGIN.y * 2)
+)
 PAGE_OFFSET: Point = Point(36, 36)  # 1/2 in x 1/2 in
 TITLE_ADJUSTMENT: Point = Point(+20, -9)
 
@@ -177,7 +181,7 @@ class PrintLabelView(PermissionRequiredMixin, View):
         """
         Get the base URL to use as a prefix to the box number.
 
-        Change this code if we ever need a prefix to th box number.
+        Change this code if we ever need a prefix to the box number.
 
         :param meta:
         :return:

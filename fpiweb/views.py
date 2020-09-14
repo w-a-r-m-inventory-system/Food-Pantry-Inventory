@@ -6,7 +6,7 @@ from collections import OrderedDict
 from csv import writer as csv_writer
 from enum import Enum
 from http import HTTPStatus
-from io import BytesIO
+from io import BytesIO, SEEK_END
 from json import loads
 from logging import getLogger, \
     debug, \
@@ -64,7 +64,8 @@ from fpiweb.constants import \
     UserInfo, \
     TargetUser, \
     AccessLevel, \
-    AccessDict
+    AccessDict, \
+    QR_LABELS_PER_PAGE
 from fpiweb.models import \
     Activity, \
     Box, \
@@ -1402,23 +1403,56 @@ class PrintLabelsView(PermissionRequiredMixin, View):
     )
 
     template_name = 'fpiweb/print_labels.html'
+    success_url = reverse_lazy('fpiweb:index')
+
+    def __init__(self):
+        super().__init__()
+        self.pm = ManageUserPermissions()
+        return
 
     @staticmethod
-    def get_base_url(meta):
+    def get_base_url(meta) -> str:
+        """
+        Determine the URL prefix to add to each QR code for a box.
+
+        Modify this code as needed.
+
+        :param meta:
+        :return:
+        """
         protocol = meta.get('SERVER_PROTOCOL', 'HTTP/1.1')
         protocol = protocol.split('/')[0].lower()
 
         host = meta.get('HTTP_HOST')
-        return f"{protocol}://{host}/"
+        # Real return value perhaps? = f"{protocol}://{host}/"
+        return ""
 
     def get(self, request, *args, **kwargs):
+        """
+        Prepare to display request for starting box number and count.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        this_user = request.user
+        this_user_info: UserInfo = self.pm.get_user_info(user_id=this_user.id)
+
         max_box_number = Box.objects.aggregate(Max('box_number'))
         print("max_box_number", max_box_number)
+
+        # prepare additional context
+        get_context: dict = {
+                'form': PrintLabelsForm(),
+                'this_user_info': this_user_info,
+                'labels_per_page': QR_LABELS_PER_PAGE
+        }
 
         return render(
             request,
             self.template_name,
-            {'form': PrintLabelsForm()}
+            get_context
         )
 
     def post(self, request, *args, **kwargs):
@@ -1436,7 +1470,7 @@ class PrintLabelsView(PermissionRequiredMixin, View):
 
         buffer = BytesIO()
 
-        QRCodePrinter(url_prefix='').print(
+        QRCodePrinter(url_prefix=base_url).print(
             starting_number=form.cleaned_data.get('starting_number'),
             count=form.cleaned_data.get('number_to_print'),
             buffer=buffer,
@@ -1444,8 +1478,23 @@ class PrintLabelsView(PermissionRequiredMixin, View):
 
         # FileResponse sets the Content-Disposition header so that browsers
         # present the option to save the file.
+        buffer.flush()
+        # file_length = buffer.seek(0, whence=SEEK_END)
         buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
+        # buffer.close()
+        # response = FileResponse(
+        #     buffer,
+        #     as_attachment=True,
+        #     filename='QR_labels.pdf',
+        #     content_type="application/pdf"
+        # )
+        # response = StreamingHttpResponse(
+        #     buffer,
+        #     content_type="application/pdf"
+        # )
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = "attachment: filename=QR_labels.pdf"
+        return response
 
 
 class BoxItemFormView(PermissionRequiredMixin, View):

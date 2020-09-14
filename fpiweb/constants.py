@@ -68,6 +68,8 @@ MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 
 MINIMUM_PASSWORD_LENGTH: int = 10
 
+QR_LABELS_PER_PAGE = 12
+
 # # # # # # # # # # # # # # #
 # Project specific exceptions
 # # # # # # # # # # # # # # #

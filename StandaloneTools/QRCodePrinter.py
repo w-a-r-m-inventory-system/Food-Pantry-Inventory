@@ -45,7 +45,9 @@ __creation_date__ = "05/22/2019"
 """
 Assuming:
 -   letter size paper
+
     -   portrait orientation
+    
 -   1/2 inch outer margin on all sides
 -   all measurements in points (1 pt = 1/72 in)
 -   3 labels across

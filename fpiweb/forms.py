@@ -890,7 +890,7 @@ class PrintLabelsForm(forms.Form):
     starting_number = forms.IntegerField()
 
     number_to_print = forms.IntegerField(
-        initial=10,
+        initial=12,
     )
 
 
