@@ -112,7 +112,7 @@ from fpiweb.forms import \
     validation_exp_months_bool, \
     UserInfoForm, \
     UserInfoModes as MODES, \
-    ChangePasswordForm, ProductCategoryForm
+    ChangePasswordForm, ProductCategoryForm, ProductNameForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
@@ -3127,6 +3127,57 @@ class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
     context_object_name = 'product_category'
     form_class = ProductCategoryForm
     success_url = reverse_lazy('fpiweb:product_category_view')
+
+
+class ProductNameCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product Category using a generic CreateView.
+    """
+
+    # Mike Rehner adding a permission here but its not set up elsewhere
+    permission_required = (
+        'fpiweb.add_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_edit.html'
+    context_object_name = 'product_name'
+    success_url = reverse_lazy('fpiweb:product_name_view')
+
+    formClass = ProductNameForm
+
+    fields = ['prod_name', 'prod_cat', ]
+
+class ProductNameListView(PermissionRequiredMixin, ListView):
+    """
+    List of existing rows using a generic ListView.
+    """
+
+    # by Mike Rehner- not sure how permission set up
+    permission_required = (
+        'fpiweb.view_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_list.html'
+    context_object_name = 'product_name_list_content'
+
+
+class ProductNameUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product Category using a generic UpdateView.
+    """
+
+    # by Mike Rehner- not sure how permission set up
+    permission_required = (
+        'fpiweb.change_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_edit.html'
+    context_object_name = 'product_name'
+    form_class = ProductNameForm
+    success_url = reverse_lazy('fpiweb:product_name_view')
 
 
 
