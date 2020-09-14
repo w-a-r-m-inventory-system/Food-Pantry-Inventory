@@ -16,6 +16,36 @@ from django.core.exceptions import ValidationError
 
 from fpiweb.models import Profile
 
+
+# # # # # #
+# Constants
+# # # # # #
+
+CURRENT_YEAR = date.today().year
+""" The current year - used for validating expiration dates """
+
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+MINIMUM_PASSWORD_LENGTH: int = 10
+
+QR_LABELS_PER_PAGE = 12
+
+# # # # # # # # # # # # # # #
+# Box Number Format Constants
+#
+# The box number format is "BOXnnnnn" where nnnnn is a five digit number.
+# These canstants provide the programming constraints for validation.
+# # # # # # # # # # # # # # #
+BOX_PREFIX = 'BOX'
+BOX_PREFIX_SIZE = len(BOX_PREFIX)
+MIN_BOX_NUMBER = 1
+MAX_BOX_NUMBER = 99999
+MAX_BOX_NUMBER_DIGITS = len(str(MAX_BOX_NUMBER))
+BOX_NUMBER_SIZE = BOX_PREFIX_SIZE + MAX_BOX_NUMBER_DIGITS
+
+
+
 # # # # # # # # # # # #
 # Decorator Definitions
 # # # # # # # # # # # #
@@ -54,21 +84,6 @@ class OrderedEnum(Enum):
         if self.__class__ is other.__class__:
             return self.value < other.value
         return NotImplemented
-
-
-# # # # # #
-# Constants
-# # # # # #
-
-CURRENT_YEAR = date.today().year
-""" The current year - used for validating expiration dates """
-
-MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-MINIMUM_PASSWORD_LENGTH: int = 10
-
-QR_LABELS_PER_PAGE = 12
 
 # # # # # # # # # # # # # # #
 # Project specific exceptions
@@ -202,91 +217,6 @@ class AccessGroupsAndFlags:
             self.is_superuser_flag = True
         else:
             self.access_level = AccessLevel['No_Access']
-            self.name = self.access_level.name
-            self.value = self.access_level.value
-            self.is_volunteer_group = False
-            self.is_staff_group = False
-            self.is_admin_group = False
-            self.is_staff_flag = False
-            self.is_superuser_flag = False
-        return
-
-    def __str__(self) -> str:
-        """
-        Provide a printable representation of entry.
-
-        :return: printable representation
-        """
-        display = f'Access level: {self.name} ({self.value}), Groups: ' \
-                  f'Vol-{"Y" if self.is_volunteer_group else "N"}, ' \
-                  f'Staff-{"Y" if self.is_staff_group else "N"}, ' \
-                  f'Admin-{"Y" if self.is_admin_group else "N"} ' \
-                  f'Flags: Staff-{"Y" if self.is_staff_flag else "N"}, ' \
-                  f'Super-{"Y" if self.is_superuser_flag else "N"}'
-        return display
-
-def load_access_dict()-> Dict:
-    """
-    Load a multipurpose dictionary with all access level identifieres.
-
-    :return: a dictionary with lots of keys
-    """
-    ad = dict()
-    for access_level in AccessLevel:
-        access_group_flags = AccessGroupsAndFlags(access_level=access_level)
-        ad[access_level] = access_group_flags
-        ad[access_level.name] = access_group_flags
-        ad[access_level.value] = access_group_flags
-        ad[str(access_level)] = access_group_flags
-    return ad
-
-AccessDict = load_access_dict()
-
-
-# @dataclass
-class AccessGroupsAndFlags:
-    """
-    Unpacked attributes of an access level.
-    """
-    access_level: AccessLevel = None
-    name: str = None
-    value: int = None
-    is_volunteer_group: bool = None
-    is_staff_group: bool = None
-    is_admin_group: bool = None
-    is_staff_flag: bool = None
-    is_superuser_flag: bool = None
-
-    def __init__(self, access_level: AccessLevel):
-        if access_level == AccessLevel.Volunteer:
-            self.access_level = AccessLevel.Volunteer
-            self.name = self.access_level.name
-            self.value = self.access_level.value
-            self.is_volunteer_group = True
-            self.is_staff_group = False
-            self.is_admin_group = False
-            self.is_staff_flag = False
-            self.is_superuser_flag = False
-        elif access_level == AccessLevel.Staff:
-            self.access_level = AccessLevel.Staff
-            self.name = self.access_level.name
-            self.value = self.access_level.value
-            self.is_volunteer_group = True
-            self.is_staff_group = True
-            self.is_admin_group = False
-            self.is_staff_flag = True
-            self.is_superuser_flag = False
-        elif access_level == AccessLevel.Admin:
-            self.access_level = AccessLevel.Admin
-            self.name = self.access_level.name
-            self.value = self.access_level.value
-            self.is_volunteer_group = True
-            self.is_staff_group = True
-            self.is_admin_group = True
-            self.is_staff_flag = True
-            self.is_superuser_flag = True
-        else:
-            self.access_level = AccessLevel.No_Access
             self.name = self.access_level.name
             self.value = self.access_level.value
             self.is_volunteer_group = False

@@ -301,6 +301,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env.*
+*.env
 
 # Spyder project settings
 .spyderproject
@@ -407,3 +409,4 @@ data/
 #/fpiweb/templates/fpiweb/wordtrek_base.html
 #/work/data/
 /fpiweb/templates/fpiweb/travistest.html
+config/Docker/
