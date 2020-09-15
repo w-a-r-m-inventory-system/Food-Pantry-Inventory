@@ -1,0 +1,107 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: List all Product Example rows #}
+{# URL Name: product_example_view #}
+{# URL Response: GET #}
+{# Table: ProductExample #}
+{# Form: ProductExampleForm #}
+
+{% block title %} Product Example {% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Product Example List
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one"/>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a class="btn alert-info"
+               role="button"
+               href="{% url 'fpiweb:product_example_new' %}">
+                Add a Product Example
+            </a>
+        </div>
+    </div>
+
+     <div class="row">
+            &nbsp;
+        </div>
+
+           <div class="row text-center">
+            <div class="col-md-3"><strong>Product Name</strong></div>
+            <div class="col-md-4"><strong>Product Name ID</strong></div>
+            <div class="col-md-3 text-center">
+                <strong>Edit this Product Name</strong>
+            </div>
+        </div>
+
+    {% if object_list %}
+        {% for prod_example_name in object_list %}
+            <div class="row text-center">
+                <div class="col-md-3">
+                    {{ product_example.prod_example_name|safe }}
+                </div>
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:product_example_update' pk=product_example.id %}">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row text-left">
+                <div class="col-md-1">
+                    &nbsp;
+                </div>
+                <div class="col-md-11">
+                    {{ product_example.product }}
+                    <hr class="style-one"/>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No Product Examples are available.</p>
+    {% endif %}
+
+
+    <div class='row'>
+        <a href="{% url 'fpiweb:maintenance' %}">
+            Return to system maintenance
+        </a>
+    </div>
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: product_example_list.html
+    </h6>
+    <h6>
+        View: ProductExampleListView
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:product_example_new' %}
+    </h6>
+    <h6>
+        Edit URL: {% url 'fpiweb:product_example_update' pk=1 %}
+    </h6>
+     <h6>
+        Delete URL: {% url 'fpiweb:product_example_delete' pk=1 %}
+    </h6>
+
+
+
+{% endblock %}

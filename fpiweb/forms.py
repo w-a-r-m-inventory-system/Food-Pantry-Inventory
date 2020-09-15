@@ -1728,7 +1728,7 @@ class ProductExampleForm(forms.ModelForm):
         :return:
         """
         cleaned_data = super().clean()
-        product_example_name = cleaned_data.get('product_example_name')
+        product_example_name = cleaned_data.get('prod_example_name')
         product_id = cleaned_data.get('product')
         self.validate_loc_row_fields(product_example_name, product_id)
         return
