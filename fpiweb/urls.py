@@ -53,7 +53,8 @@ from fpiweb.views import \
     UserManagementView, \
     UserCreateview, \
     UserUpdateView, ProductCategoryListView, ProductCategoryUpdateView, ProductNameListView, ProductNameCreateView, \
-    ProductNameUpdateView
+    ProductNameUpdateView, ProductExampleUpdateView, ProductExampleCreateView, ProductExampleDeleteView, \
+    ProductExampleListView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -337,6 +338,27 @@ urlpatterns = [
     # e.g. /fpiweb/product/edit/4/ = edit product # 4
     path('product_name/edit/<int:pk>/', ProductNameUpdateView.as_view(),
          name='product_name_update' ),
+
+    # ProductExample List page
+    # e.g. /fpiweb/product_example/ = list of product examples
+    path('product_example/', ProductExampleListView.as_view(),
+         name='product_example_view'),
+
+    # PrdductExample Add page
+    # e.g. /fpiweb/product_example/add/ = add a product example
+    path('product_example/add/', ProductExampleCreateView.as_view(),
+         name='product_example_new', ),
+
+    # ProductExample Edit page
+    # e.g. /fpiweb/product_example/edit/4/ = edit product example # 4
+    path('product_example/edit/<int:pk>/', ProductExampleUpdateView.as_view(),
+         name='product_example_update', ),
+
+    # ProductExample Delete Page
+    # e.g. /fpiweb/product_example/delete/4/ = delete product_example # 4
+    path('product_example/delete/<int:pk>/', ProductExampleDeleteView.as_view(),
+         name='product_example_delete', ),
+
 
 
 
