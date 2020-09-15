@@ -6,14 +6,13 @@ from collections import OrderedDict
 from csv import writer as csv_writer
 from enum import Enum
 from http import HTTPStatus
-from io import BytesIO, SEEK_END
+from io import \
+    BufferedReader, \
+    BytesIO, \
+    DEFAULT_BUFFER_SIZE
 from json import loads
-from logging import getLogger, \
-    debug, \
-    info
+from logging import getLogger
 from operator import \
-    itemgetter, \
-    attrgetter, \
     methodcaller
 from string import digits
 from typing import Optional
@@ -56,11 +55,10 @@ from django.views.generic import \
     TemplateView, \
     UpdateView
 
-from sqlalchemy.engine.url import URL
-
 from fpiweb.constants import \
     ProjectError, \
     InvalidValueError, \
+    QR_LABELS_MAX, \
     UserInfo, \
     TargetUser, \
     AccessLevel, \
@@ -114,9 +112,12 @@ from fpiweb.forms import \
     UserInfoForm, \
     UserInfoModes as MODES, \
     ChangePasswordForm
-from fpiweb.qr_code_utilities import QRCodePrinter
-from fpiweb.support.BoxManagement import BoxManagementClass
-from fpiweb.support.PermissionsManagement import ManageUserPermissions
+from fpiweb.qr_code_utilities import \
+    QRCodePrinter
+from fpiweb.support.BoxManagement import \
+    BoxManagementClass
+from fpiweb.support.PermissionsManagement import \
+    ManageUserPermissions
 
 
 __author__ = '(Multiple)'
@@ -654,7 +655,7 @@ class ConstraintsListView(PermissionRequiredMixin, ListView):
         CHAR_RANGE = Constraints.CHAR_RANGE
         range_list = [INT_RANGE, CHAR_RANGE]
         context['range_list'] = range_list
-        info(
+        logger.info(
             f'Constraint extra info: INT_RANGE: {INT_RANGE}, '
             f'CHAR__RANGE: '
             f'{CHAR_RANGE}, range_list: {range_list}'
@@ -1105,7 +1106,7 @@ class BuildPalletView(PermissionRequiredMixin, View):
                 'exp_month_start': pallet_box.exp_month_start,
                 'exp_month_end': pallet_box.exp_month_end,
             }
-            print("adding {} to initial_data".format(form_data))
+            logger.debug("adding {} to initial_data".format(form_data))
             initial_data.append(form_data)
 
         build_pallet_form = BuildPalletForm(
@@ -1436,17 +1437,21 @@ class PrintLabelsView(PermissionRequiredMixin, View):
         :param kwargs:
         :return:
         """
-        this_user = request.user
-        this_user_info: UserInfo = self.pm.get_user_info(user_id=this_user.id)
+        this_user_info = ManageUserPermissions().get_user_info(
+            user_id=request.user.id
+        )
 
-        max_box_number = Box.objects.aggregate(Max('box_number'))
-        print("max_box_number", max_box_number)
+        max_box_number = Box.objects.aggregate(Max(
+            'box_number'))['box_number__max']
+        logger.debug(f"{max_box_number=}")
 
         # prepare additional context
         get_context: dict = {
                 'form': PrintLabelsForm(),
                 'this_user_info': this_user_info,
-                'labels_per_page': QR_LABELS_PER_PAGE
+                'max_box_number': max_box_number,
+                'labels_per_page': QR_LABELS_PER_PAGE,
+                'labels_max': QR_LABELS_MAX,
         }
 
         return render(
@@ -1460,40 +1465,39 @@ class PrintLabelsView(PermissionRequiredMixin, View):
 
         form = PrintLabelsForm(request.POST)
         if not form.is_valid():
-            print("form invalid")
+            logger.debug("form invalid")
             return render(
                 request,
                 self.template_name,
                 {'form': form},
             )
-        print("form valid")
+        logger.debug("form valid")
 
+        # use an in memeory buffer instead of a file so we don't have to
+        # fuss with scratch files
         buffer = BytesIO()
 
+        # generate the pages of QR codes in pdf format to the memory buffer
         QRCodePrinter(url_prefix=base_url).print(
             starting_number=form.cleaned_data.get('starting_number'),
             count=form.cleaned_data.get('number_to_print'),
             buffer=buffer,
         )
 
-        # FileResponse sets the Content-Disposition header so that browsers
-        # present the option to save the file.
+        # ensure that all of the pdf is in the memory buffer
         buffer.flush()
-        # file_length = buffer.seek(0, whence=SEEK_END)
+
+        # reset the pointer to the current position in the buffer back to
+        # the beginning
         buffer.seek(0)
-        # buffer.close()
-        # response = FileResponse(
-        #     buffer,
-        #     as_attachment=True,
-        #     filename='QR_labels.pdf',
-        #     content_type="application/pdf"
-        # )
-        # response = StreamingHttpResponse(
-        #     buffer,
-        #     content_type="application/pdf"
-        # )
-        response = HttpResponse(buffer, content_type='application/pdf')
-        response['Content-Disposition'] = "attachment: filename=QR_labels.pdf"
+
+        # let Django pass the (memory) file in optimal chunks to the browser
+        # as an attachment
+        response = FileResponse(
+            BufferedReader(buffer, buffer_size=DEFAULT_BUFFER_SIZE),
+            as_attachment=True,
+            filename="QR_labels.pdf"
+        )
         return response
 
 
@@ -2088,7 +2092,7 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
         mode = request.POST.get('mode')
         if mode == self.MODE_ENTER_BOX_NUMBER:
             return self.post_box_number(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2191,7 +2195,7 @@ class ManualNewBoxView(PermissionRequiredMixin, View):
         mode = request.POST.get('mode')
         if mode == self.MODE_ENTER_BOX_NUMBER:
             return self.post_box_number(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2411,7 +2415,7 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
         mode = request.POST.get('mode')
         if mode == self.MODE_ENTER_BOX_INFO:
             return self.post_box_info(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2546,7 +2550,7 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
             return self.post_box_number(request)
         if mode == self.MODE_CONSUME_BOX:
             return self.post_consume_box(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2697,7 +2701,7 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
             return self.post_box_number(request)
         if mode == self.MODE_ENTER_LOCATION:
             return self.post_location(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 

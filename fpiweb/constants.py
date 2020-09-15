@@ -30,6 +30,7 @@ MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 MINIMUM_PASSWORD_LENGTH: int = 10
 
 QR_LABELS_PER_PAGE = 12
+QR_LABELS_MAX = 120
 
 # # # # # # # # # # # # # # #
 # Box Number Format Constants

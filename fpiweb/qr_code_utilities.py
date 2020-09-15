@@ -1,16 +1,14 @@
 
+from dataclasses import dataclass, InitVar
 from io import BytesIO
-from logging import debug, getLogger
-from dataclasses import dataclass, astuple, InitVar
+from logging import getLogger
+from os import remove
 from typing import List
 
 import pyqrcode
-import png
 import qrcode.image.svg
-import reportlab
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
 from reportlab.platypus import Image
 
 from fpiweb.models import Box
@@ -250,6 +248,7 @@ class QRCodePrinter(object):
         # place image on page
         im = Image(file_name, LABEL_SIZE.x, LABEL_SIZE.y)
         im.drawOn(self.pdf, box_info.image_start.x, box_info.image_start.y)
+        remove(file_name)
 
         # place title above image
         self.pdf.setFont('Helvetica-Bold', 12)

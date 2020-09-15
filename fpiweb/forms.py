@@ -34,6 +34,8 @@ from fpiweb.constants import \
     CURRENT_YEAR, \
     MONTHS, \
     InvalidValueError, \
+    QR_LABELS_MAX, \
+    QR_LABELS_PER_PAGE, \
     ValidOrErrorResponse, \
     ProjectError, \
     AccessLevel, \
@@ -890,7 +892,9 @@ class PrintLabelsForm(forms.Form):
     starting_number = forms.IntegerField()
 
     number_to_print = forms.IntegerField(
-        initial=12,
+        initial=QR_LABELS_PER_PAGE,
+        min_value=1,
+        max_value=QR_LABELS_MAX,
     )
 
 
