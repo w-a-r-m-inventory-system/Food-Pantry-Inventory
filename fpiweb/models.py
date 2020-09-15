@@ -1231,10 +1231,11 @@ class ProductExample(models.Model):
     )
     """ Internal reccord identifier for product example"""
 
+    prod_example_name_max_length = 30
     prod_example_name_help_text = 'Name of example product.'
     prod_example_name = models.CharField(
         'Product Example Name',
-        max_length=30,
+        max_length=prod_example_name_max_length,
         unique=True,
         help_text=prod_example_name_help_text,
     )

@@ -53,7 +53,7 @@ from fpiweb.models import \
     LocTier, \
     Pallet, \
     Product, \
-    ProductCategory
+    ProductCategory, ProductExample
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
 
 __author__ = '(Multiple)'
@@ -1671,6 +1671,68 @@ class ProductNameForm(forms.ModelForm):
         prod_cat_id = cleaned_data.get('prod_cat_id')
         self.validate_product_fields(prod_name, prod_cat_id)
         return
+
+class ProductExampleForm(forms.ModelForm):
+    """
+    Manage Loction row details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = ProductExample
+        fields = ['id', 'prod_example_name', 'product', ]
+
+    product_example_name = forms.CharField(
+        help_text=ProductExample.prod_example_name_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_product_example_fields(
+            prod_example_name: str,
+            product: int,
+    ):
+        """
+        Validate the Product Example Name and Foreigh Key Product ID
+
+        :param product_example_name: name of product example
+        :param product: foreign key from products table
+        :return: True if valid
+        """
+        max_len: int = ProductExample.prod_example_name_max_length
+        min_len: int = 1
+        if not prod_example_name or not (len(prod_example_name) > 0):
+            raise ValidationError(
+                'The Product Example Name must be specified'
+            )
+        if (len(prod_example_name) <= max_len) \
+                and \
+                (len(prod_example_name) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Product Example Name is needed)'
+            )
+        if not product:
+            raise ValidationError(
+                'A Product ID is required to enter/edit a Product Example Name'
+            )
+        return
+
+    def clean(self):
+        """
+        Clean and validate the data given for the constraint record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        product_example_name = cleaned_data.get('product_example_name')
+        product_id = cleaned_data.get('product')
+        self.validate_loc_row_fields(product_example_name, product_id)
+        return
+
 
 
 # EOF
