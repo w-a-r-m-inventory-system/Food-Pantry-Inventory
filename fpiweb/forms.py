@@ -1622,7 +1622,7 @@ class ProductNameForm(forms.ModelForm):
         # additional help text for id and prod_cat_descr
         # not sure how its used yet
 
-    prod_cat_name = forms.CharField(
+    prod_name = forms.CharField(
         help_text=Product.prod_name_help_text,
         required=True,
     )
@@ -1655,7 +1655,7 @@ class ProductNameForm(forms.ModelForm):
             )
         if not prod_cat:
             raise ValidationError(
-                'A (foriegn key) id of product category needs to be provided'
+                'A (foreign key) id of product category needs to be provided'
             )
 
         return
@@ -1684,7 +1684,7 @@ class ProductExampleForm(forms.ModelForm):
         model = ProductExample
         fields = ['id', 'prod_example_name', 'product', ]
 
-    product_example_name = forms.CharField(
+    prod_example_name = forms.CharField(
         help_text=ProductExample.prod_example_name_help_text,
         required=True,
     )
@@ -1730,7 +1730,7 @@ class ProductExampleForm(forms.ModelForm):
         cleaned_data = super().clean()
         product_example_name = cleaned_data.get('prod_example_name')
         product_id = cleaned_data.get('product')
-        self.validate_loc_row_fields(product_example_name, product_id)
+        self.validate_product_example_fields(product_example_name, product_id)
         return
 
 
