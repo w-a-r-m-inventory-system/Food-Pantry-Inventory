@@ -1668,8 +1668,8 @@ class ProductNameForm(forms.ModelForm):
         """
         cleaned_data = super().clean()
         prod_name = cleaned_data.get('prod_name')
-        prod_cat_id = cleaned_data.get('prod_cat_id')
-        self.validate_product_fields(prod_name, prod_cat_id)
+        prod_cat = cleaned_data.get('prod_cat')
+        self.validate_product_fields(prod_name, prod_cat)
         return
 
 class ProductExampleForm(forms.ModelForm):
