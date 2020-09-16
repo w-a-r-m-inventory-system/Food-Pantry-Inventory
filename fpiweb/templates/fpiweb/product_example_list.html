@@ -43,10 +43,13 @@
             <div class="col-md-3 text-center">
                 <strong>Edit this Product Name</strong>
             </div>
+            <div class="col-md-2 text-center">
+                <strong>Delete this row</strong>
+            </div>
         </div>
 
     {% if object_list %}
-        {% for prod_example_name in object_list %}
+        {% for product_example in object_list %}
             <div class="row text-center">
                 <div class="col-md-3">
                     {{ product_example.prod_example_name|safe }}
@@ -58,6 +61,16 @@
                            href="
                             {% url 'fpiweb:product_example_update' pk=product_example.id %}">
                             Edit
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:product_example_delete' pk=product_example.id %}">
+                            Delete
                         </a>
                     </div>
                 </div>

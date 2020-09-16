@@ -3226,7 +3226,7 @@ class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'fpiweb/product_example_edit.html'
     context_object_name = 'product_example'
     form_class = ProductExampleForm
-    success_url = reverse_lazy('fpiweb:product_exampple_view')
+    success_url = reverse_lazy('fpiweb:product_example_view')
 
 
 class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
@@ -3240,7 +3240,7 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
 
     model = ProductExample
     template_name = 'fpiweb/product_example_delete.html'
-    context_object_name = 'loc_row'
+    context_object_name = 'product_example'
     success_url = reverse_lazy('fpiweb:product_example_view')
 
     form_class = ProductExampleForm
