@@ -51,7 +51,7 @@ from fpiweb.views import \
     UserManagementView, \
     UserCreateview, \
     UserUpdateView
-from fpiweb_views.PrintLabelsView import \
+from fpiweb.fpiweb_views.PrintLabelsView import \
     PrintLabelsView
 
 # from fpiweb.fpiweb_views.PrintLabelView import PrintLabelView

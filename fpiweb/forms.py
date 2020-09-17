@@ -252,7 +252,7 @@ def validation_exp_months_bool(
 def box_number_validator(value) -> None:
     if BoxNumber.validate(value):
         return
-    raise ValidationError(f"{value} is not a valid Box Number")
+    raise ValidationError(f"{value} is not a valid box number")
 
 
 class Html5DateInput(forms.DateInput):
