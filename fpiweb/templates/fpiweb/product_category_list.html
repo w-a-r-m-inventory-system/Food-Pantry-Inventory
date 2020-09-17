@@ -72,7 +72,9 @@
 
         {% endfor %}
     {% else %}
+        <div class="alert-success">
         <p>No Product Categories are available. Click on the Add Button above to Add a Product Example. </p>
+        </div>
     {% endif %}
     <div class='row'>
         <a href="{% url 'fpiweb:maintenance' %}">

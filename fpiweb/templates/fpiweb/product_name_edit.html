@@ -3,9 +3,9 @@
 
 {% block title %}
     {% if product_name.id %}
-        Edit Product Name
+        Edit Product
     (% else %}
-        Add Product Name
+        Add Product
     {% endif %}
 {% endblock %}
 
@@ -14,9 +14,9 @@
          <div class="col-md-12 text-center">
             <h1 class="h1">
                 {% if product_name.id %}
-                    Edit Product Name
+                    Edit Product
                 {% else %}
-                    Add Product Name
+                    Add Product
                 {% endif %}
             </h1>
          </div>
@@ -42,7 +42,7 @@
 
     <br/>
     <a href="{% url 'fpiweb:product_name_view' %}">
-        Back to Product Name list
+        Back to Product list
     </a>
 
     <hr class="style-one">

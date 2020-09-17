@@ -1,18 +1,18 @@
 {% extends 'fpiweb/base.html' %}
 
-{# Purpose: List all Product Name rows #}
+{# Purpose: List all Product rows #}
 {# URL Name: product_name_view #}
 {# URL Response: GET #}
 {# Table: Product #}
 {# Form: ProductName #}
 
-{% block title %} Product Name Row {% endblock %}
+{% block title %} Product List {% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12 text-center">
             <h1 class="h1">
-                Product Name List
+                Product List
             </h1>
         </div>
     </div>
@@ -28,7 +28,7 @@
             <a class="btn alert-info"
                role="button"
                href="{% url 'fpiweb:product_name_new' %}">
-                Add a Product Name
+                Add a Product
             </a>
         </div>
     </div>
@@ -39,10 +39,10 @@
         </div>
 
            <div class="row text-center">
-            <div class="col-md-3"><strong>Product Name</strong></div>
-            <div class="col-md-7"><strong>Product Name ID</strong></div>
+            <div class="col-md-3"><strong>Product</strong></div>
+            <div class="col-md-7"><strong>Product ID</strong></div>
             <div class="col-md-2 text-center">
-                <strong>Edit this Product Name</strong>
+                <strong>Edit this Product </strong>
             </div>
         </div>
 
@@ -74,7 +74,9 @@
 
         {% endfor %}
     {% else %}
-        <p>No Product Categories are available. Click the Add Button above to add a Product Name.</p>
+        <div class="alert-success">
+            <p>No Products are available. Click the Add Button above to add a Product.</p>
+        </div>
     {% endif %}
 
 
