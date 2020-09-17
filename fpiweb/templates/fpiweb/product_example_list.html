@@ -39,8 +39,9 @@
 
            <div class="row text-center">
             <div class="col-md-3"><strong>Product Name</strong></div>
-            <div class="col-md-4"><strong>Product Name ID</strong></div>
-            <div class="col-md-3 text-center">
+            <div class="col-md-5"><strong>Product Name ID</strong></div>
+
+            <div class="col-md-2 text-center">
                 <strong>Edit this Product Name</strong>
             </div>
             <div class="col-md-2 text-center">
@@ -50,10 +51,17 @@
 
     {% if object_list %}
         {% for product_example in object_list %}
-            <div class="row text-center">
+            <div class="row text-left">
                 <div class="col-md-3">
                     {{ product_example.prod_example_name|safe }}
                 </div>
+
+                <div class="col-md-5 text-left">
+                    {{ product_example.product }}
+                    <hr class="style-one"/>
+                </div>
+
+
                 <div class="col-md-2">
                     <div class="text-center">
                         <a class="btn alert-info"
@@ -64,6 +72,7 @@
                         </a>
                     </div>
                 </div>
+
                 <div class="col-md-2">
                     <div class="text-center">
                         <a class="btn alert-info"
@@ -74,20 +83,13 @@
                         </a>
                     </div>
                 </div>
+            </div>
 
-            </div>
-            <div class="row text-left">
-                <div class="col-md-1">
-                    &nbsp;
-                </div>
-                <div class="col-md-11">
-                    {{ product_example.product }}
-                    <hr class="style-one"/>
-                </div>
-            </div>
+
         {% endfor %}
     {% else %}
-        <p>No Product Examples are available.</p>
+            </br>
+            <p>No Product Examples are available. Click the Add Button above to create a Product Example.</p>
     {% endif %}
 
 
