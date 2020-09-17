@@ -2,7 +2,7 @@
 from django.template import Library
 from django.utils.safestring import mark_safe
 
-from fpiweb.qr_code_utilities import get_qr_code_svg
+from qr_code_utilities import get_qr_code_svg
 
 register = Library()
 

@@ -3,22 +3,15 @@ forms.py - provide validation of a forms.
 """
 from enum import Enum
 from logging import \
-    getLogger, \
-    debug, \
-    error
+    getLogger
 from typing import \
     Union, \
-    Optional, \
-    List, \
-    Dict, \
-    Any
+    Optional
 
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.forms import \
-    IntegerField, \
     CharField, \
     Form, \
     ModelChoiceField, \
@@ -27,19 +20,14 @@ from django.forms import \
     BooleanField, \
     ChoiceField, \
     EmailField
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 
 from fpiweb.constants import \
     CURRENT_YEAR, \
     MONTHS, \
     InvalidValueError, \
-    QR_LABELS_MAX, \
-    QR_LABELS_PER_PAGE, \
     ValidOrErrorResponse, \
     ProjectError, \
     AccessLevel, \
-    MINIMUM_PASSWORD_LENGTH, \
     EnumForDjango, \
     AccessDict, \
     AccessGroupsAndFlags, \
@@ -54,8 +42,7 @@ from fpiweb.models import \
     LocBin, \
     LocTier, \
     Pallet, \
-    Product, \
-    ProductCategory
+    Product
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
 
 __author__ = '(Multiple)'
@@ -885,17 +872,6 @@ class BoxItemForm(forms.Form):
         return {
             'box_number': box.box_number,
         }
-
-
-class PrintLabelsForm(forms.Form):
-
-    starting_number = forms.IntegerField()
-
-    number_to_print = forms.IntegerField(
-        initial=QR_LABELS_PER_PAGE,
-        min_value=1,
-        max_value=QR_LABELS_MAX,
-    )
 
 
 class BoxTypeForm(forms.Form):

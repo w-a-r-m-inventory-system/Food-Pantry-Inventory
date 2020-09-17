@@ -6,10 +6,6 @@ from collections import OrderedDict
 from csv import writer as csv_writer
 from enum import Enum
 from http import HTTPStatus
-from io import \
-    BufferedReader, \
-    BytesIO, \
-    DEFAULT_BUFFER_SIZE
 from json import loads
 from logging import getLogger
 from operator import \
@@ -30,11 +26,9 @@ from django.contrib.auth.mixins import \
 from django.core.exceptions import ValidationError
 from django.core.serializers import serialize
 from django.db import transaction
-from django.db.models import Max
 from django.db.models.functions import Substr
 from django.forms import formset_factory
 from django.http import \
-    FileResponse, \
     HttpResponse, \
     JsonResponse, \
     StreamingHttpResponse
@@ -44,7 +38,6 @@ from django.shortcuts import \
 from django.urls import \
     reverse, \
     reverse_lazy
-from django.utils import timezone
 from django.views import View
 from django.views.generic import \
     CreateView, \
@@ -57,13 +50,10 @@ from django.views.generic import \
 
 from fpiweb.constants import \
     ProjectError, \
-    InvalidValueError, \
-    QR_LABELS_MAX, \
     UserInfo, \
     TargetUser, \
     AccessLevel, \
-    AccessDict, \
-    QR_LABELS_PER_PAGE
+    AccessDict
 from fpiweb.models import \
     Activity, \
     Box, \
@@ -73,16 +63,13 @@ from fpiweb.models import \
     LocBin, \
     LocTier, \
     Pallet, \
-    Product, \
     Profile, \
-    Location, \
     PalletBox
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
 from fpiweb.forms import \
     BoxItemForm, \
-    BoxTypeForm, \
     ConfirmMergeForm, \
     ConstraintsForm, \
     BuildPalletForm, \
@@ -104,16 +91,12 @@ from fpiweb.forms import \
     NewBoxNumberForm, \
     PalletNameForm, \
     PalletSelectForm, \
-    PrintLabelsForm, \
-    ProductForm, \
     ExpMoStartForm, \
     ExpMoEndForm, \
     validation_exp_months_bool, \
     UserInfoForm, \
     UserInfoModes as MODES, \
     ChangePasswordForm
-from fpiweb.qr_code_utilities import \
-    QRCodePrinter
 from fpiweb.support.BoxManagement import \
     BoxManagementClass
 from fpiweb.support.PermissionsManagement import \
@@ -1395,110 +1378,6 @@ class ScannerView(PermissionRequiredMixin, View):
             data=box_data,
             status=HTTPStatus.OK,
         )
-
-
-class PrintLabelsView(PermissionRequiredMixin, View):
-
-    permission_required = (
-        'fpiweb.print_labels_box',
-    )
-
-    template_name = 'fpiweb/print_labels.html'
-    success_url = reverse_lazy('fpiweb:index')
-
-    def __init__(self):
-        super().__init__()
-        self.pm = ManageUserPermissions()
-        return
-
-    @staticmethod
-    def get_base_url(meta) -> str:
-        """
-        Determine the URL prefix to add to each QR code for a box.
-
-        Modify this code as needed.
-
-        :param meta:
-        :return:
-        """
-        protocol = meta.get('SERVER_PROTOCOL', 'HTTP/1.1')
-        protocol = protocol.split('/')[0].lower()
-
-        host = meta.get('HTTP_HOST')
-        # Real return value perhaps? = f"{protocol}://{host}/"
-        return ""
-
-    def get(self, request, *args, **kwargs):
-        """
-        Prepare to display request for starting box number and count.
-
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        this_user_info = ManageUserPermissions().get_user_info(
-            user_id=request.user.id
-        )
-
-        max_box_number = Box.objects.aggregate(Max(
-            'box_number'))['box_number__max']
-        logger.debug(f"{max_box_number=}")
-
-        # prepare additional context
-        get_context: dict = {
-                'form': PrintLabelsForm(),
-                'this_user_info': this_user_info,
-                'max_box_number': max_box_number,
-                'labels_per_page': QR_LABELS_PER_PAGE,
-                'labels_max': QR_LABELS_MAX,
-        }
-
-        return render(
-            request,
-            self.template_name,
-            get_context
-        )
-
-    def post(self, request, *args, **kwargs):
-        base_url = self.get_base_url(request.META)
-
-        form = PrintLabelsForm(request.POST)
-        if not form.is_valid():
-            logger.debug("form invalid")
-            return render(
-                request,
-                self.template_name,
-                {'form': form},
-            )
-        logger.debug("form valid")
-
-        # use an in memeory buffer instead of a file so we don't have to
-        # fuss with scratch files
-        buffer = BytesIO()
-
-        # generate the pages of QR codes in pdf format to the memory buffer
-        QRCodePrinter(url_prefix=base_url).print(
-            starting_number=form.cleaned_data.get('starting_number'),
-            count=form.cleaned_data.get('number_to_print'),
-            buffer=buffer,
-        )
-
-        # ensure that all of the pdf is in the memory buffer
-        buffer.flush()
-
-        # reset the pointer to the current position in the buffer back to
-        # the beginning
-        buffer.seek(0)
-
-        # let Django pass the (memory) file in optimal chunks to the browser
-        # as an attachment
-        response = FileResponse(
-            BufferedReader(buffer, buffer_size=DEFAULT_BUFFER_SIZE),
-            as_attachment=True,
-            filename="QR_labels.pdf"
-        )
-        return response
 
 
 class BoxItemFormView(PermissionRequiredMixin, View):

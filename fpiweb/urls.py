@@ -47,17 +47,18 @@ from fpiweb.views import \
     ManualMoveBoxView, \
     ManualNewBoxView, \
     ManualPalletMoveView, \
-    PrintLabelsView, \
     TestScanView, \
     UserManagementView, \
     UserCreateview, \
     UserUpdateView
+from fpiweb_views.PrintLabelsView import \
+    PrintLabelsView
 
-from fpiweb.fpiweb_views.PrintLabelView import PrintLabelView
+# from fpiweb.fpiweb_views.PrintLabelView import PrintLabelView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
-__creation_date__ = "04/01/2019"
+__creation_date__ = "09/15/2020"
 
 # set the namespace for the application
 app_name = 'fpiweb'
