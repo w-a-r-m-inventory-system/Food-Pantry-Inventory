@@ -27,24 +27,24 @@
 
 </head>
 
-<div class = "contatiner">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">WARM</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<div id="primary-nav nav-fill w-100">
+    <div class = "container-fluid">
+        <nav class="navbar navbar-expand-md navbar-dark " style="background-color: #811e33; color=#FFFFFF;">
+
+    <a class="navbar-brand nav-fill" href="#"> </a>
+    <button class="navbar-toggler display-flex " type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
         <a class="navbar-brand brand-name">
-         <a href="{% url 'fpiweb:index' %}"> <img src="fpiweb/templates/fpiweb/img/warm.jpg" style="height:100%;display:inline-block">WARM</a>
+         <a href="{% url 'fpiweb:index' %}"> <div class= "logo-image"> <img src="/static/Food_Pantry_Logo.jpg" alt="WARM logo" style="width:20em; height:7em; padding:1em 4em 1em 1em; float:left;"> </a>
         </a>
 
+    {% if user.is_authenticated %}
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'fpiweb:index' %}">Home <span class="sr-only">(current)</span></a>
-      </li>
+    <ul class="navbar-nav ">
 
          <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Box Management
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -58,7 +58,7 @@
       </li>
 
         <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Pallet Management
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -75,7 +75,7 @@
 
     {% else %}
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           System Management
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -85,31 +85,32 @@
             <a class="dropdown-item" href="/warmadmin/">Admin</a>
         </div>
       </li>
-    </ul>
- {% endif %}
-      <ul class="nav navbar-nav navbar-right">
 
-<a>
+ {% endif %}
+
+      <li class="nav-item dropdown">
+
+<a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style = "float:right">
         {{ user_info.user.first_name }}
         {{ user_info.user.last_name }}
-    </a>
-    <a>
+    <br>
+
         {{ user_info.profile.title }}
         ({{ user_info.highest_access_level.name }})
     </a>
-           </div>
-    </ul>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'fpiweb:about' %}">Change password</a>
+            <a class="dropdown-item" href="{% url 'fpiweb:logout' %}">Logout</a>
+        </div>
+          {% endif %}
 
-   <ul class="nav navbar-nav navbar-right">
-       <div class="row">
-        <a class="btn btn-primary" href="{% url 'fpiweb:logout' %}">Logout
-        </a>
-    </div>
-    </ul>
+    </li>
+
 
 </nav>
-
 </div>
+</div>
+
 
 <body>
     <div class="container">
