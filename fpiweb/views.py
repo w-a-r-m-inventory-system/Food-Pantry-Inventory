@@ -3083,7 +3083,7 @@ class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
     Create a Product Category using a generic CreateView.
     """
 
-    # Mike Rehner adding a permission here but its not set up elsewhere
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.add_product_category',
     )
@@ -3099,10 +3099,10 @@ class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
 
 class ProductCategoryListView(PermissionRequiredMixin, ListView):
     """
-    List of existing rows using a generic ListView.
+    List of existing Product Categories using a generic ListView.
     """
 
-    # by Mike Rehner- not sure how permission set up
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.view_product_category',
     )
@@ -3117,7 +3117,7 @@ class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
     Update a Product Category using a generic UpdateView.
     """
 
-    # by Mike Rehner- not sure how permission set up
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.change_product_category',
     )
@@ -3131,10 +3131,10 @@ class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
 
 class ProductNameCreateView(PermissionRequiredMixin, CreateView):
     """
-    Create a Product Category using a generic CreateView.
+    Create a Product using a generic CreateView.
     """
 
-    # Mike Rehner adding a permission here but its not set up elsewhere
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.add_product_name',
     )
@@ -3150,10 +3150,10 @@ class ProductNameCreateView(PermissionRequiredMixin, CreateView):
 
 class ProductNameListView(PermissionRequiredMixin, ListView):
     """
-    List of existing rows using a generic ListView.
+    List of Products using a generic ListView.
     """
 
-    # by Mike Rehner- not sure how permission set up
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.view_product_name',
     )
@@ -3165,10 +3165,10 @@ class ProductNameListView(PermissionRequiredMixin, ListView):
 
 class ProductNameUpdateView(PermissionRequiredMixin, UpdateView):
     """
-    Update a Product Category using a generic UpdateView.
+    Update a Product using a generic UpdateView.
     """
 
-    # by Mike Rehner- not sure how permission set up
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.change_product_name',
     )
@@ -3185,6 +3185,7 @@ class ProductExampleListView(PermissionRequiredMixin, ListView):
     List of existing Product Examples using a generic ListView.
     """
 
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.view_product_example',
     )
@@ -3199,6 +3200,7 @@ class ProductExampleCreateView(PermissionRequiredMixin, CreateView):
     Create a Product Example using a generic CreateView.
     """
 
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.add_product_example',
     )
@@ -3218,6 +3220,7 @@ class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
     Update a Product Example using a generic UpdateView.
     """
 
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.change_product_example_name',
     )
@@ -3234,6 +3237,7 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
     Delete a Product Example using a generic DeleteView.
     """
 
+    # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.delete_product_example_name',
     )

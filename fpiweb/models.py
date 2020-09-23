@@ -411,9 +411,10 @@ class Product(models.Model):
     """ Internal record identifier for product. """
 
     prod_name_help_text = 'Name of this product.'
+    prod_name_max_length = 30
     prod_name = models.CharField(
         'product Name',
-        max_length=30,
+        max_length=prod_name_max_length,
         unique=True,
         help_text=prod_name_help_text,
     )

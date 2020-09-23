@@ -1639,11 +1639,12 @@ class ProductNameForm(forms.ModelForm):
         :param prod_cat_id: foreign key from product category
         :return: True if valid
         """
-        max_len: int = 30  # Product.prod_name_max_length- fix this in model later
+
+        max_len: int = Product.prod_name_max_length
         min_len: int = 1
         if not prod_name or not (len(prod_name) > 0):
             raise ValidationError(
-                'The Product Category Name must be specified'
+                'The Product name must be specified'
             )
         if (len(prod_name) <= max_len) \
                 and \
@@ -1651,7 +1652,7 @@ class ProductNameForm(forms.ModelForm):
             ...
         else:
             raise ValidationError(
-                'A Product Category Name length must be between 1 and 30 characters long'
+                'A Product name length must be between 1 and 30 characters long'
             )
         if not prod_cat:
             raise ValidationError(
@@ -1705,7 +1706,7 @@ class ProductExampleForm(forms.ModelForm):
         min_len: int = 1
         if not prod_example_name or not (len(prod_example_name) > 0):
             raise ValidationError(
-                'The Product Example Name must be specified'
+                'The Product Example name must be specified'
             )
         if (len(prod_example_name) <= max_len) \
                 and \
@@ -1713,7 +1714,7 @@ class ProductExampleForm(forms.ModelForm):
             ...
         else:
             raise ValidationError(
-                'A Product Example Name is needed)'
+                'A Product Example name is needed)'
             )
         if not product:
             raise ValidationError(
