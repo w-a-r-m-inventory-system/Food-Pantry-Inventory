@@ -77,7 +77,9 @@ from fpiweb.models import \
     Product, \
     Profile, \
     Location, \
-    PalletBox, ProductCategory, ProductExample
+    PalletBox, \
+    ProductCategory, \
+    ProductExample
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
@@ -112,7 +114,10 @@ from fpiweb.forms import \
     validation_exp_months_bool, \
     UserInfoForm, \
     UserInfoModes as MODES, \
-    ChangePasswordForm, ProductCategoryForm, ProductNameForm, ProductExampleForm
+    ChangePasswordForm, \
+    ProductCategoryForm, \
+    ProductNameForm, \
+    ProductExampleForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 from fpiweb.support.PermissionsManagement import ManageUserPermissions

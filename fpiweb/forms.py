@@ -53,7 +53,8 @@ from fpiweb.models import \
     LocTier, \
     Pallet, \
     Product, \
-    ProductCategory, ProductExample
+    ProductCategory, \
+    ProductExample
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
 
 __author__ = '(Multiple)'

@@ -52,8 +52,15 @@ from fpiweb.views import \
     TestScanView, \
     UserManagementView, \
     UserCreateview, \
-    UserUpdateView, ProductCategoryListView, ProductCategoryUpdateView, ProductNameListView, ProductNameCreateView, \
-    ProductNameUpdateView, ProductExampleUpdateView, ProductExampleCreateView, ProductExampleDeleteView, \
+    UserUpdateView, \
+    ProductCategoryListView, \
+    ProductCategoryUpdateView, \
+    ProductNameListView, \
+    ProductNameCreateView, \
+    ProductNameUpdateView, \
+    ProductExampleUpdateView, \
+    ProductExampleCreateView, \
+    ProductExampleDeleteView, \
     ProductExampleListView
 
 __author__ = '(Multiple)'
