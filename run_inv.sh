@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # bash (only) shell script to run the Django-based inventory system
 
 # General assumptions:

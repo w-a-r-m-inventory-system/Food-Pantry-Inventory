@@ -22,17 +22,16 @@ dateparser==0.7.6
 Django==3.1.1
 django-bootstrap4==2.2.0
 django-db==0.0.7
-django-extensions==3.0.8
+django-extensions==3.0.9
 docopt==0.6.2
 docutils==0.16
 execnet==1.7.1
-geckodriver-autoinstaller==0.1.0
 gitdb==4.0.5
 GitPython==3.1.8
 humanize==2.6.0
 idna==2.10
 imagesize==1.2.0
-importlib-metadata==1.7.0
+importlib-metadata==2.0.0
 iniconfig==1.0.1
 Jinja2==2.11.2
 lazy-object-proxy==1.4.3
@@ -47,7 +46,7 @@ pluggy==0.13.1
 psycopg2-binary==2.8.6
 py==1.9.0
 pycparser==2.20
-Pygments==2.7.0
+Pygments==2.7.1
 PyMySQL==0.10.1
 pyparsing==2.4.7
 pypng==0.0.20
@@ -64,9 +63,8 @@ PyYAML==5.3.1
 qrcode==6.1
 recommonmark==0.6.0
 regex==2020.7.14
-reportlab==3.5.49
+reportlab==3.5.51
 requests==2.24.0
-selenium==3.141.0
 six==1.15.0
 smmap==3.0.4
 snaptime==0.2.4
@@ -97,4 +95,4 @@ uWSGI==2.0.19.1
 uwsgitop==0.11
 wcwidth==0.2.5
 wrapt==1.12.1
-zipp==3.1.0
+zipp==3.2.0
