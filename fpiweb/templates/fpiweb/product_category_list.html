@@ -1,0 +1,102 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: List all Product Category rows #}
+{# URL Name: product_category_view #}
+{# URL Response: GET #}
+{# Table: ProductCategory #}
+{# Form: None #}
+
+{% block title %} Product Category Row {% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Product Category List
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one"/>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a class="btn alert-info"
+               role="button"
+               href="{% url 'fpiweb:product_category_new' %}">
+                Add a Product Category
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+       <div class="row text-center">
+        <div class="col-md-3"><strong>Product Category</strong></div>
+        <div class="col-md-7"><strong>Description</strong></div>
+        <div class="col-md-2 text-center">
+            <strong>Edit this Product Category</strong>
+        </div>
+    </div>
+
+    {% if object_list %}
+        {% for product_category in object_list %}
+            <div class="row text-center">
+                <div class="col-md-3 text-left">
+                    {{ product_category.prod_cat_name|safe }}
+                </div>
+
+                <div class="col-md-7 text-left">
+                    {{ product_category.prod_cat_descr }}
+                    <hr class="style-one"/>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:product_category_update' pk=product_category.id %}">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        {% endfor %}
+    {% else %}
+        <div class="alert-success">
+        <p>No Product Categories are available. Click on the Add Button above to Add a Product Example. </p>
+        </div>
+    {% endif %}
+    <div class='row'>
+        <a href="{% url 'fpiweb:maintenance' %}">
+            Return to system maintenance
+        </a>
+    </div>
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: product_category_list.html
+    </h6>
+    <h6>
+        View: ProductCategoryListView
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:product_category_new' %}
+    </h6>
+    <h6>
+        Edit URL: {% url 'fpiweb:product_category_update' pk=1 %}
+    </h6>
+
+
+{% endblock %}
+

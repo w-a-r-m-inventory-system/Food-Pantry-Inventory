@@ -1,0 +1,78 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose - Confirm delete of a Product Example. #}
+{# URL Name - product_example_delete #}
+{# URL Response - POST #}
+{# Table - ProductExample #}
+{# Form - ProductExampleForm #}
+
+{% block title %}
+    Delete Product Example
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Delete Product Example
+            </h1>
+         </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+            <div class="col-md-12 text-center">
+                <strong>
+                    Are you sure you want to delete this Product Example
+                    {{ product_example.prod_example_name }} - {{ product_example.product }}?
+                </strong>
+            </div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <form action="
+            {%  url 'fpiweb:product_example_delete' pk=product_example.id %}"
+          method="POST">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <button id="delete_product_example"
+                        type="submit"
+                        class="btn btn-default alert-success">
+                    Confirm
+                </button>
+            </div>
+
+            <div class="col-md-6 text-center">
+                <a class="btn alert-info"
+                   role="button"
+                   href="{% url 'fpiweb:product_example_view' %}">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <hr class="style-one">
+
+    <h6>
+        Template: product_example_delete.html
+    </h6>
+    <h6>
+        View: ProductExampleDelete
+    </h6>
+    <h6>
+        Delete URL: {%  url 'fpiweb:product_example_delete' pk=1 %}
+    </h6>
+    <h6>
+        Cancel URL: {% url 'fpiweb:product_example_view' %}
+    </h6>
+
+{% endblock %}

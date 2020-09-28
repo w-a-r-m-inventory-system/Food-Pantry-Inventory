@@ -1,0 +1,107 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: List all Product rows #}
+{# URL Name: product_name_view #}
+{# URL Response: GET #}
+{# Table: Product #}
+{# Form: ProductName #}
+
+{% block title %} Product List {% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Product List
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one"/>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a class="btn alert-info"
+               role="button"
+               href="{% url 'fpiweb:product_name_new' %}">
+                Add a Product
+            </a>
+        </div>
+    </div>
+
+
+    <div class="row">
+            &nbsp;
+        </div>
+
+           <div class="row text-center">
+            <div class="col-md-3"><strong>Product</strong></div>
+            <div class="col-md-7"><strong>Product ID</strong></div>
+            <div class="col-md-2 text-center">
+                <strong>Edit this Product </strong>
+            </div>
+        </div>
+
+    {% if object_list %}
+        {% for product_name in object_list %}
+            <div class="row text-center">
+                <div class="col-md-3 text-left">
+                    {{ product_name.prod_name|safe }}
+                </div>
+
+                <div class="col-md-7 text-left">
+                    {{ product_name.prod_cat }}
+                    <hr class="style-one"/>
+                </div>
+
+
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:product_name_update' pk=product_name.id %}">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        {% endfor %}
+    {% else %}
+        <div class="alert-success">
+            <p>No Products are available. Click the Add Button above to add a Product.</p>
+        </div>
+    {% endif %}
+
+
+
+
+    <div class='row'>
+        <a href="{% url 'fpiweb:maintenance' %}">
+            Return to system maintenance
+        </a>
+    </div>
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: product_name_list.html
+    </h6>
+    <h6>
+        View: ProductNameListView
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:product_name_new' %}
+    </h6>
+    <h6>
+        Edit URL: {% url 'fpiweb:product_name_update' pk=1 %}
+    </h6>
+
+
+{% endblock %}
