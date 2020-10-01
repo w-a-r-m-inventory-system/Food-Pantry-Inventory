@@ -26,6 +26,7 @@ django-extensions
 docopt
 docutils
 execnet
+geckodriver-autoinstaller
 gitdb
 GitPython
 humanize
@@ -65,6 +66,7 @@ recommonmark
 regex
 reportlab
 requests
+selenium
 setuptools
 six
 smmap

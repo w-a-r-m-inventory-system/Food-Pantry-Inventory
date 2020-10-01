@@ -28,6 +28,7 @@ from fpiweb.constants import \
     ValidOrErrorResponse, \
     ProjectError, \
     AccessLevel, \
+    MINIMUM_PASSWORD_LENGTH, \
     EnumForDjango, \
     AccessDict, \
     AccessGroupsAndFlags, \
@@ -42,7 +43,9 @@ from fpiweb.models import \
     LocBin, \
     LocTier, \
     Pallet, \
-    Product
+    Product, \
+    ProductCategory, \
+    ProductExample
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
 
 __author__ = '(Multiple)'
@@ -1329,10 +1332,6 @@ class UserInfoForm(forms.Form):
         self.pm = ManageUserPermissions()
         return
 
-        # prepare to interact with user info in db
-        self.pm = ManageUserPermissions()
-        return
-
     def clean_username(self):
         """ ensure that the username does not contain screwball characters """
         init_un = self.cleaned_data['username']
@@ -1522,5 +1521,202 @@ class UserInfoForm(forms.Form):
         # TODO Jul 08 2020 travis - do remaining cross field validation
 
         return
+
+
+class ProductCategoryForm(forms.ModelForm):
+    """
+    Manage Product Category details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = ProductCategory
+        fields = ['id', 'prod_cat_name', 'prod_cat_descr', ]
+
+    # following along from LocRowForm help text in models.ProductCatagory
+    # additional help text for id and prod_cat_descr
+    # not sure how its used yet
+    prod_cat_name = forms.CharField(
+        help_text=ProductCategory.prod_cat_name_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_prod_cat_fields(
+            prod_cat_name: str,
+            prod_cat_descr: str,
+    ):
+        """
+        Validate the various product category record fields.
+
+        :param prod_cat_name: name of product catagory
+        :param prod_cat_descr: description of product description
+        :return: True if valid
+        """
+        max_len: int = ProductCategory.prod_cat_name_max_length
+        min_len: int = 1    # did not see min_length in ProductCategory
+        if not prod_cat_name or not (len(prod_cat_name) > 0):
+            raise ValidationError(
+                'The Product Category Name must be specified'
+            )
+        if (len(prod_cat_name) <= max_len) \
+                and \
+                (len(prod_cat_name) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Product Category Name length must be between 1 and 30 characters long'
+            )
+        if not prod_cat_descr or not (len(prod_cat_descr) > 0):
+            raise ValidationError(
+                'A description of this Product Catagory must be provided'
+            )
+
+        return
+
+    def clean(self):
+        """
+        Clean and validate the data given for the constraint record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        prod_cat_name = cleaned_data.get('prod_cat_name')
+        prod_cat_descr = cleaned_data.get('prod_cat_descr')
+        self.validate_prod_cat_fields(prod_cat_name, prod_cat_descr)
+        return
+
+# seems like the server won't fire up with a Form filled out but no Views to go with it????
+class ProductNameForm(forms.ModelForm):
+    """
+    Manage Product details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = Product
+        fields = ['id', 'prod_name', 'prod_cat', ]
+
+        # following along from LocRowForm help text in models.ProductCatagory
+        # additional help text for id and prod_cat_descr
+        # not sure how its used yet
+
+    prod_name = forms.CharField(
+        help_text=Product.prod_name_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_product_fields(
+            prod_name: str,
+            prod_cat: int,
+    ):
+        """
+        Validate the various product category record fields.
+
+        :param prod_cat_name: name of product
+        :param prod_cat_id: foreign key from product category
+        :return: True if valid
+        """
+
+        max_len: int = Product.prod_name_max_length
+        min_len: int = 1
+        if not prod_name or not (len(prod_name) > 0):
+            raise ValidationError(
+                'The Product name must be specified'
+            )
+        if (len(prod_name) <= max_len) \
+                and \
+                (len(prod_name) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Product name length must be between 1 and 30 characters long'
+            )
+        if not prod_cat:
+            raise ValidationError(
+                'A (foreign key) id of product category needs to be provided'
+            )
+
+        return
+
+    def clean(self):
+        """
+        Clean and validate the data given for the constraint record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        prod_name = cleaned_data.get('prod_name')
+        prod_cat = cleaned_data.get('prod_cat')
+        self.validate_product_fields(prod_name, prod_cat)
+        return
+
+class ProductExampleForm(forms.ModelForm):
+    """
+    Manage Loction row details with a generic form.
+    """
+
+    class Meta:
+        """
+        Additional info to help Django provide intelligent defaults.
+        """
+        model = ProductExample
+        fields = ['id', 'prod_example_name', 'product', ]
+
+    prod_example_name = forms.CharField(
+        help_text=ProductExample.prod_example_name_help_text,
+        required=True,
+    )
+
+    @staticmethod
+    def validate_product_example_fields(
+            prod_example_name: str,
+            product: int,
+    ):
+        """
+        Validate the Product Example Name and Foreigh Key Product ID
+
+        :param product_example_name: name of product example
+        :param product: foreign key from products table
+        :return: True if valid
+        """
+        max_len: int = ProductExample.prod_example_name_max_length
+        min_len: int = 1
+        if not prod_example_name or not (len(prod_example_name) > 0):
+            raise ValidationError(
+                'The Product Example name must be specified'
+            )
+        if (len(prod_example_name) <= max_len) \
+                and \
+                (len(prod_example_name) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Product Example name is needed)'
+            )
+        if not product:
+            raise ValidationError(
+                'A Product ID is required to enter/edit a Product Example Name'
+            )
+        return
+
+    def clean(self):
+        """
+        Clean and validate the data given for the constraint record.
+
+        :return:
+        """
+        cleaned_data = super().clean()
+        product_example_name = cleaned_data.get('prod_example_name')
+        product_id = cleaned_data.get('product')
+        self.validate_product_example_fields(product_example_name, product_id)
+        return
+
+
 
 # EOF

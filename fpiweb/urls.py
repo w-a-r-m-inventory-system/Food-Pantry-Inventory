@@ -47,20 +47,28 @@ from fpiweb.views import \
     ManualMoveBoxView, \
     ManualNewBoxView, \
     ManualPalletMoveView, \
+    ProductCategoryCreateView, \
     TestScanView, \
     UserManagementView, \
     UserCreateview, \
-    UserUpdateView
-from fpiweb.fpiweb_views.PrintLabelsView import \
-    PrintLabelsView
-
-# from fpiweb.fpiweb_views.PrintLabelView import PrintLabelView
+    UserUpdateView, \
+    ProductCategoryListView, \
+    ProductCategoryUpdateView, \
+    ProductNameListView, \
+    ProductNameCreateView, \
+    ProductNameUpdateView, \
+    ProductExampleUpdateView, \
+    ProductExampleCreateView, \
+    ProductExampleDeleteView, \
+    ProductExampleListView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "09/15/2020"
 
 # set the namespace for the application
+from fpiweb_views import PrintLabelsView
+
 app_name = 'fpiweb'
 
 urlpatterns = [
@@ -308,6 +316,56 @@ urlpatterns = [
     # e.g. /fpiweb/user_mgmt/edit/5/ = update an existing user
     path('user_mgmt/edit/<int:pk>', UserUpdateView.as_view(),
          name='user_edit'),
+
+    # ProductCategory List page
+    # e.g. /fpiweb/product_category/ = list of product_category
+    path('product_category/', ProductCategoryListView.as_view(),
+         name='product_category_view'),
+
+    # ProductCategory Add page
+    # e.g. /fpiweb/product_category/add/ = add a product_category
+    path('product_category/add/', ProductCategoryCreateView.as_view(),
+         name='product_category_new' ),
+
+    # ProductCategory Edit page
+    # e.g. /fpiweb/product_category/edit/4/ = edit product_category # 4
+    path('product_category/edit/<int:pk>/', ProductCategoryUpdateView.as_view(),
+         name='product_category_update' ),
+
+    # Product List page
+    # e.g. /fpiweb/product/ = list of product
+    path('product_name/', ProductNameListView.as_view(),
+         name='product_name_view'),
+
+    # ProductCategory Add page
+    # e.g. /fpiweb/product_/add/ = add a product
+    path('product_name/add/', ProductNameCreateView.as_view(),
+         name='product_name_new' ),
+
+    # Product Edit page
+    # e.g. /fpiweb/product/edit/4/ = edit product # 4
+    path('product_name/edit/<int:pk>/', ProductNameUpdateView.as_view(),
+         name='product_name_update' ),
+
+    # ProductExample List page
+    # e.g. /fpiweb/product_example/ = list of product examples
+    path('product_example/', ProductExampleListView.as_view(),
+         name='product_example_view'),
+
+    # PrdductExample Add page
+    # e.g. /fpiweb/product_example/add/ = add a product example
+    path('product_example/add/', ProductExampleCreateView.as_view(),
+         name='product_example_new', ),
+
+    # ProductExample Edit page
+    # e.g. /fpiweb/product_example/edit/4/ = edit product example # 4
+    path('product_example/edit/<int:pk>/', ProductExampleUpdateView.as_view(),
+         name='product_example_update', ),
+
+    # ProductExample Delete Page
+    # e.g. /fpiweb/product_example/delete/4/ = delete product_example # 4
+    path('product_example/delete/<int:pk>/', ProductExampleDeleteView.as_view(),
+         name='product_example_delete', ),
 
 ]
 

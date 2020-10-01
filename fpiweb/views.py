@@ -63,13 +63,18 @@ from fpiweb.models import \
     LocBin, \
     LocTier, \
     Pallet, \
+    Product, \
     Profile, \
-    PalletBox
+    Location, \
+    PalletBox, \
+    ProductCategory, \
+    ProductExample
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
 from fpiweb.forms import \
     BoxItemForm, \
+    BoxTypeForm, \
     ConfirmMergeForm, \
     ConstraintsForm, \
     BuildPalletForm, \
@@ -91,12 +96,16 @@ from fpiweb.forms import \
     NewBoxNumberForm, \
     PalletNameForm, \
     PalletSelectForm, \
+    ProductForm, \
     ExpMoStartForm, \
     ExpMoEndForm, \
     validation_exp_months_bool, \
     UserInfoForm, \
     UserInfoModes as MODES, \
-    ChangePasswordForm
+    ChangePasswordForm, \
+    ProductCategoryForm, \
+    ProductNameForm, \
+    ProductExampleForm
 from fpiweb.support.BoxManagement import \
     BoxManagementClass
 from fpiweb.support.PermissionsManagement import \
@@ -3008,6 +3017,192 @@ class UserUpdateView(PermissionRequiredMixin, View):
                 target_user=target_user,
             )
             return render(request, self.template_name, post_context)
+
+
+class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product Category using a generic CreateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_edit.html'
+    context_object_name = 'product_category'
+    success_url = reverse_lazy('fpiweb:product_category_view')
+
+    formClass = ProductCategoryForm
+
+    fields = ['prod_cat_name', 'prod_cat_descr', ]
+
+class ProductCategoryListView(PermissionRequiredMixin, ListView):
+    """
+    List of existing Product Categories using a generic ListView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_list.html'
+    context_object_name = 'product_category_list_content'
+
+
+class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product Category using a generic UpdateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_edit.html'
+    context_object_name = 'product_category'
+    form_class = ProductCategoryForm
+    success_url = reverse_lazy('fpiweb:product_category_view')
+
+
+class ProductNameCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product using a generic CreateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_edit.html'
+    context_object_name = 'product_name'
+    success_url = reverse_lazy('fpiweb:product_name_view')
+
+    formClass = ProductNameForm
+
+    fields = ['prod_name', 'prod_cat', ]
+
+class ProductNameListView(PermissionRequiredMixin, ListView):
+    """
+    List of Products using a generic ListView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_list.html'
+    context_object_name = 'product_name_list_content'
+
+
+class ProductNameUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product using a generic UpdateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_edit.html'
+    context_object_name = 'product_name'
+    form_class = ProductNameForm
+    success_url = reverse_lazy('fpiweb:product_name_view')
+
+
+class ProductExampleListView(PermissionRequiredMixin, ListView):
+    """
+    List of existing Product Examples using a generic ListView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_product_example',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_list.html'
+    context_object_name = 'product_example_list_content'
+
+
+class ProductExampleCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product Example using a generic CreateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_product_example',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_edit.html'
+    context_object_name = 'product_example'
+    success_url = reverse_lazy('fpiweb:product_example_view')
+
+    formClass = ProductExampleForm
+
+    fields = ['prod_example_name', 'product', ]
+
+
+class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product Example using a generic UpdateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_product_example_name',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_edit.html'
+    context_object_name = 'product_example'
+    form_class = ProductExampleForm
+    success_url = reverse_lazy('fpiweb:product_example_view')
+
+
+class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
+    """
+    Delete a Product Example using a generic DeleteView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.delete_product_example_name',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_delete.html'
+    context_object_name = 'product_example'
+    success_url = reverse_lazy('fpiweb:product_example_view')
+
+    form_class = ProductExampleForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(ProductExampleDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:product_example_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
 
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
