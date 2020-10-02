@@ -1736,5 +1736,84 @@ class ProductExampleForm(forms.ModelForm):
         return
 
 
+class RebuildLocationTableForm(forms.ModelForm):
+
+    # Manage RebuildLocationTable with a generic form
+
+    class Meta:
+        # Additional info to help Django provide intelligent defaults
+        model = Location
+        # fields defined in model based on DB, not DB column heads!
+        fields = ['id', 'loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
+                  'loc_row', 'loc_tier']
+
+    loc_code = forms.CharField(help_text=Location.loc_code_help_text,
+                                    required=True,)
+
+
+    @staticmethod
+    def validate_loc_fields(
+            loc_code: str,
+            loc_descr: str,
+            loc_in_warehouse: bool):
+
+        '''
+        Validate the various Location record fields
+
+        :param loc_code:
+        :param loc_descr:
+        :param loc_in_warehouse:
+        '''
+
+        loc_code_max_length = Location.loc_code_max_length
+        loc_descr_max_length = Location.loc_descr_max_length
+        min_len = 1
+        if not loc_code or not (len(loc_code_max_length) > 0):
+            raise ValidationError(
+                'The Location Code must be specified'
+            )
+        if (len(loc_code) <= loc_code_max_length) \
+                and \
+                (len(loc_code) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Location Code must be between 1 and ' + loc_code_max_length +
+                'characters long.'
+            )
+
+        # if not loc_descr or not (len(loc_descr_max_length) > 0):
+        #     raise ValidationError(
+        #         'The Location Description must be specified'
+        #     )
+        if (len(loc_descr) <= loc_descr_max_length) \
+                and \
+                (len(loc_code) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Location Description must be between 1 and ' + loc_descr_max_length +
+                'characters long.'
+            )
+
+        # Mike Rehner- need to verify this code works, not sure how implemented in Python
+        if loc_in_warehouse is None:
+            raise ValidationError(
+                'You must enter a True or False in this Field'
+            )
+
+        return
+
+    def clean(self):
+        # Clean and validate the data entered in the web form
+        cleaned_data = super().clean()
+        loc_code = cleaned_data.get('loc_code')
+        loc_descr = cleaned_data.get('loc_descr')
+        loc_in_warehouse = cleaned_data.get('loc_in_warehouse')
+        self.validate_loc_fields(loc_code, loc_descr, loc_in_warehouse)
+        return
+
+
+
 
 # EOF
