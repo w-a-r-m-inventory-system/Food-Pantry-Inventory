@@ -1752,17 +1752,21 @@ class RebuildLocationTableForm(forms.ModelForm):
 
 
     @staticmethod
-    def validate_loc_fields(
+    def validate_rebuild_location_table_fields(
             loc_code: str,
             loc_descr: str,
-            loc_in_warehouse: bool):
+            loc_bin: int,
+            loc_row: int,
+            loc_tier: int):
 
         '''
         Validate the various Location record fields
 
-        :param loc_code:
-        :param loc_descr:
-        :param loc_in_warehouse:
+        :param loc_code: Location Code
+        :param loc_descr:  Location Description
+        :param loc_bin: Location Bin
+        :param loc_row: Location Row
+        :param loc_tier: Location Tier
         '''
 
         loc_code_max_length = Location.loc_code_max_length
@@ -1782,10 +1786,6 @@ class RebuildLocationTableForm(forms.ModelForm):
                 'characters long.'
             )
 
-        # if not loc_descr or not (len(loc_descr_max_length) > 0):
-        #     raise ValidationError(
-        #         'The Location Description must be specified'
-        #     )
         if (len(loc_descr) <= loc_descr_max_length) \
                 and \
                 (len(loc_code) >= min_len):
@@ -1796,21 +1796,36 @@ class RebuildLocationTableForm(forms.ModelForm):
                 'characters long.'
             )
 
-        # Mike Rehner- need to verify this code works, not sure how implemented in Python
-        if loc_in_warehouse is None:
+        if not loc_bin:
             raise ValidationError(
-                'You must enter a True or False in this Field'
+                'A Location Bin Value is required to Rebuild Location Table'
+            )
+        if not loc_row:
+            raise ValidationError(
+                'A Location Row Value is required to Rebuild Location Table'
+            )
+        if not loc_tier:
+            raise ValidationError(
+                'A Location Tier Value is required to Rebuild Location Table'
             )
 
         return
 
     def clean(self):
         # Clean and validate the data entered in the web form
+        # loc_in_warehouse not cleaned because it has a devalut value of 'True'
+        # Need to check if you can enter a not False or not True value
         cleaned_data = super().clean()
         loc_code = cleaned_data.get('loc_code')
         loc_descr = cleaned_data.get('loc_descr')
-        loc_in_warehouse = cleaned_data.get('loc_in_warehouse')
-        self.validate_loc_fields(loc_code, loc_descr, loc_in_warehouse)
+        loc_bin =cleaned_data.get('loc_bin')
+        loc_row = cleaned_data.get('loc_row')
+        loc_tier = cleaned_data.get('loc_tier')
+        self.validate_rebuild_location_table_fields(loc_code,
+                                                    loc_descr,
+                                                    loc_bin,
+                                                    loc_row,
+                                                    loc_tier)
         return
 
 
