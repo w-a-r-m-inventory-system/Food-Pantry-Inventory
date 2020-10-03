@@ -117,7 +117,8 @@ from fpiweb.forms import \
     ChangePasswordForm, \
     ProductCategoryForm, \
     ProductNameForm, \
-    ProductExampleForm
+    ProductExampleForm, \
+    RebuildLocTableForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
@@ -3268,6 +3269,51 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
         return context
 
 
+class RebuildLocTableCreateView(PermissionRequiredMixin, CreateView):
+    """
+      Create a RebuildLocationTable using a generic CreateView.
+      """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_rebuild_location_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/rebuild_loc_table_edit.html'
+    context_object_name = 'rebuild_loc_table'
+    success_url = reverse_lazy('fpiweb:rebuild_loc_table_view')
+
+    formClass = RebuildLocTableForm
+
+    fields = ['loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin', 'loc_row', 'loc_tier']
+
+class RebuildLocTableListView(PermissionRequiredMixin, ListView):
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_rebuild_loc_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/rebuild_loc_table_list.html'
+    context_object_name = 'rebuild_loc_table'
+    # form_class = RebuildLocTableForm
+
+class RebuildLocTableUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+        Update a Rebuild Location Table using a generic UpdateView.
+        """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_rebuild_loc_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/rebuild_loc_table_edit.html'
+    context_object_name = 'rebuild_loc_table'
+    form_class = RebuildLocTableForm
+    success_url = reverse_lazy('fpiweb:rebuild_loc_table_view')
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """

@@ -1736,7 +1736,7 @@ class ProductExampleForm(forms.ModelForm):
         return
 
 
-class RebuildLocationTableForm(forms.ModelForm):
+class RebuildLocTableForm(forms.ModelForm):
 
     # Manage RebuildLocationTable with a generic form
 
@@ -1752,9 +1752,10 @@ class RebuildLocationTableForm(forms.ModelForm):
 
 
     @staticmethod
-    def validate_rebuild_location_table_fields(
+    def validate_rebuild_loc_table_fields(
             loc_code: str,
             loc_descr: str,
+            loc_in_warehouse: bool,
             loc_bin: int,
             loc_row: int,
             loc_tier: int):
@@ -1813,16 +1814,18 @@ class RebuildLocationTableForm(forms.ModelForm):
 
     def clean(self):
         # Clean and validate the data entered in the web form
-        # loc_in_warehouse not cleaned because it has a devalut value of 'True'
+        # loc_in_warehouse not cleaned because it has a default value of 'True'
         # Need to check if you can enter a not False or not True value
         cleaned_data = super().clean()
         loc_code = cleaned_data.get('loc_code')
         loc_descr = cleaned_data.get('loc_descr')
+        loc_in_warehouse = cleaned_data.get('loc_in_warehouse')
         loc_bin =cleaned_data.get('loc_bin')
         loc_row = cleaned_data.get('loc_row')
         loc_tier = cleaned_data.get('loc_tier')
-        self.validate_rebuild_location_table_fields(loc_code,
+        self.validate_rebuild_loc_table_fields(loc_code,
                                                     loc_descr,
+                                                    loc_in_warehouse,
                                                     loc_bin,
                                                     loc_row,
                                                     loc_tier)
