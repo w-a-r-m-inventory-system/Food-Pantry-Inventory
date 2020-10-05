@@ -3315,6 +3315,41 @@ class RebuildLocTableUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = RebuildLocTableForm
     success_url = reverse_lazy('fpiweb:rebuild_loc_table_view')
 
+class BuildLocTable(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.change_build_loc_table',
+    )
+
+    model = Location
+    # template_name =
+    # context_object_name =
+    # success_url = reverse_lazy('...')
+
+    def rebuild_location_table(self):
+
+        row_constraint_record = Constraints.objects.get(constraint_name = Constraints.CONSTRAINT_NAME_CHOICES.ROW)
+        if row_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.INT_RANGE :
+            row_min = int(row_constraint_record.constraint_min)
+            row_max = int(row_constraint_record.constraint_max)
+            for row_num in range(row_min, row_max + 1):
+                row_record, created = LocRow.objects.get(loc_row = row_num)
+                if created:
+                    row_record.loc_row = f'{row_num:02}'
+                    row_record.loc_row_descr = f'Row {row_num:02}'
+
+        # Do bin range here
+
+        tier_constraint_record = Constraints.objects.get(constraint_name=Constraints.CONSTRAINT_NAME_CHOICES.TIER)
+        if tier_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.CHAR_LIST:
+            tier_list = int(tier_constraint_record.constraint_list)
+            for tier_name in tier_list:
+                tier_record, created = LocTier.objects.get(loc_tier=tier_name)
+                if created:
+                    tier_record.loc_tier = f"{tier_name}"
+                    tier_record.loc_tier_descr = f"Tier {tier_name}"
+
+
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """
 #     Ask a question or notify the user of something.
