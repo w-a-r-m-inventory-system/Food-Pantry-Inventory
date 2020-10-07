@@ -118,7 +118,7 @@ from fpiweb.forms import \
     ProductCategoryForm, \
     ProductNameForm, \
     ProductExampleForm, \
-    RebuildLocTableForm
+    ManualLocTableForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
@@ -3269,70 +3269,73 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
         return context
 
 
-class RebuildLocTableCreateView(PermissionRequiredMixin, CreateView):
+class ManualLocTableCreateView(PermissionRequiredMixin, CreateView):
     """
       Create a RebuildLocationTable using a generic CreateView.
       """
 
     # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
-        'fpiweb.add_rebuild_location_table',
+        'fpiweb.add_manual_location_table',
     )
 
     model = Location
-    template_name = 'fpiweb/rebuild_loc_table_edit.html'
-    context_object_name = 'rebuild_loc_table'
-    success_url = reverse_lazy('fpiweb:rebuild_loc_table_view')
+    template_name = 'fpiweb/manual_loc_table_edit.html'
+    context_object_name = 'manual_loc_table'
+    success_url = reverse_lazy('fpiweb:manual_loc_table_view')
 
-    formClass = RebuildLocTableForm
+    formClass = ManualLocTableForm
 
     fields = ['loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin', 'loc_row', 'loc_tier']
 
-class RebuildLocTableListView(PermissionRequiredMixin, ListView):
+class ManualLocTableListView(PermissionRequiredMixin, ListView):
     # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
-        'fpiweb.view_rebuild_loc_table',
+        'fpiweb.view_manual_loc_table',
     )
 
     model = Location
-    template_name = 'fpiweb/rebuild_loc_table_list.html'
-    context_object_name = 'rebuild_loc_table'
+    template_name = 'fpiweb/manual_loc_table_list.html'
+    context_object_name = 'manual_loc_table'
     # form_class = RebuildLocTableForm
 
-class RebuildLocTableUpdateView(PermissionRequiredMixin, UpdateView):
+class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
     """
         Update a Rebuild Location Table using a generic UpdateView.
         """
 
     # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
+        'fpiweb.change_manual_loc_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/manual_loc_table_edit.html'
+    context_object_name = 'manual_loc_table'
+    form_class = ManualLocTableForm
+    success_url = reverse_lazy('fpiweb:manual_loc_table_view')
+
+class RebuildLocTable(PermissionRequiredMixin, View):
+
+    permission_required = (
         'fpiweb.change_rebuild_loc_table',
     )
 
     model = Location
-    template_name = 'fpiweb/rebuild_loc_table_edit.html'
+    template_name = 'fpiweb/rebuild_loc_table_list.html'
     context_object_name = 'rebuild_loc_table'
-    form_class = RebuildLocTableForm
     success_url = reverse_lazy('fpiweb:rebuild_loc_table_view')
-
-class BuildLocTable(PermissionRequiredMixin, View):
-
-    permission_required = (
-        'fpiweb.change_build_loc_table',
-    )
-
-    model = Location
-    # template_name =
-    # context_object_name =
-    # success_url = reverse_lazy('...')
 
     def rebuild_location_table(self):
 
+        # Get Constraint object with constraint_name Constraints.Constraints.CONSTRAINT_NAME_CHOICES.ROW
         row_constraint_record = Constraints.objects.get(constraint_name = Constraints.CONSTRAINT_NAME_CHOICES.ROW)
+        # if type == int then use default INT_RANGE?
         if row_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.INT_RANGE :
             row_min = int(row_constraint_record.constraint_min)
             row_max = int(row_constraint_record.constraint_max)
             for row_num in range(row_min, row_max + 1):
+                # created: boolean    get LowRow object with loc_row equals row_num
                 row_record, created = LocRow.objects.get(loc_row = row_num)
                 if created:
                     row_record.loc_row = f'{row_num:02}'
@@ -3342,7 +3345,7 @@ class BuildLocTable(PermissionRequiredMixin, View):
 
         tier_constraint_record = Constraints.objects.get(constraint_name=Constraints.CONSTRAINT_NAME_CHOICES.TIER)
         if tier_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.CHAR_LIST:
-            tier_list = int(tier_constraint_record.constraint_list)
+            tier_list = int(tier_constraint_record.constraint_list)     # check on this int type conversion
             for tier_name in tier_list:
                 tier_record, created = LocTier.objects.get(loc_tier=tier_name)
                 if created:

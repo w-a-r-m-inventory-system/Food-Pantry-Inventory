@@ -1,18 +1,18 @@
 {% extends 'fpiweb/base.html' %}
 
-{# Purpose: List Rebuild Location Table #}
-{# URL Name: rebuild_loc_table_view #}
+{# Purpose: List manual Location Table #}
+{# URL Name: manual_loc_table_view #}
 {# URL Response: GET #}
 {# Table: Location #}
 {# Form: RebuildLocTable #}
 
-{% block title %} Rebuild Location Table {% endblock %}
+{% block title %} Manual Location Table {% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12 text-center">
             <h1 class="h1">
-                Rebuild Location Table List
+                Manual Location Table List
             </h1>
         </div>
     </div>
@@ -24,7 +24,7 @@
         <div class="col-md-12 text-center">
             <a class="btn alert-info"
                role="button"
-               href="{% url 'fpiweb:rebuild_loc_table_new' %}">
+               href="{% url 'fpiweb:manual_loc_table_new' %}">
                 Add a Location Line
             </a>
         </div>
@@ -43,29 +43,29 @@
     </div>
 
     {% if object_list %}
-        {% for rebuild_loc_table in object_list %}
+        {% for manual_loc_table in object_list %}
             <div class="row text-center">
                 <div class="col-md-1 text-center">
-                    {{ rebuild_loc_table.loc_code }}
+                    {{ manual_loc_table.loc_code }}
                 </div>
                  <div class="col-md-4 text-center">
-                    {{ rebuild_loc_table.loc_descr }}
+                    {{ manual_loc_table.loc_descr }}
                 </div>
                 <div class="col-md-2 text-center">
-                    {{ rebuild_loc_table.loc_in_warehouse }}
+                    {{ manual_loc_table.loc_in_warehouse }}
                 </div>
                 <div class="col-md-1 text-center">
-                    {{ rebuild_loc_table.loc_bin }}
+                    {{ manual_loc_table.loc_bin }}
                 </div>
                 <div class="col-md-1 text-center">
-                    {{ rebuild_loc_table.loc_row }}
+                    {{ manual_loc_table.loc_row }}
                 </div>
                 <div class="col-md-1 text-center">
-                    {{ rebuild_loc_table.loc_tier }}
+                    {{ manual_loc_table.loc_tier }}
                 </div>
                 <div class="col-md-2 text-center">
                     <a class="'btn alert-info" role="button" href="
-                    {% url 'fpiweb:rebuild_loc_table_update' pk=rebuild_loc_table.id %}">
+                    {% url 'fpiweb:manual_loc_table_update' pk=manual_loc_table.id %}">
                     Edit this line</a>
                 </div>
             </div>
@@ -85,16 +85,16 @@
     <hr class="style-one"/>
 
     <h6>
-        Template: rebuild_loc_table_list.html
+        Template: manual_loc_table_list.html
     </h6>
     <h6>
-        View: RebuildLocTableListView
+        View: ManualLocTableListView
     </h6>
     <h6>
-        Add URL: {% url 'fpiweb:rebuild_loc_table_new' %}
+        Add URL: {% url 'fpiweb:manual_loc_table_new' %}
     </h6>
     <h6>
-        Edit URL: {% url 'fpiweb:rebuild_loc_table_update' pk=1 %}
+        Edit URL: {% url 'fpiweb:manual_loc_table_update' pk=1 %}
     </h6>
 
 

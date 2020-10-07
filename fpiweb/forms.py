@@ -1736,7 +1736,7 @@ class ProductExampleForm(forms.ModelForm):
         return
 
 
-class RebuildLocTableForm(forms.ModelForm):
+class ManualLocTableForm(forms.ModelForm):
 
     # Manage RebuildLocationTable with a generic form
 
@@ -1752,7 +1752,7 @@ class RebuildLocTableForm(forms.ModelForm):
 
 
     @staticmethod
-    def validate_rebuild_loc_table_fields(
+    def validate_manual_loc_table_fields(
             loc_code: str,
             loc_descr: str,
             loc_in_warehouse: bool,
@@ -1823,7 +1823,7 @@ class RebuildLocTableForm(forms.ModelForm):
         loc_bin =cleaned_data.get('loc_bin')
         loc_row = cleaned_data.get('loc_row')
         loc_tier = cleaned_data.get('loc_tier')
-        self.validate_rebuild_loc_table_fields(loc_code,
+        self.validate_manual_loc_table_fields(loc_code,
                                                     loc_descr,
                                                     loc_in_warehouse,
                                                     loc_bin,

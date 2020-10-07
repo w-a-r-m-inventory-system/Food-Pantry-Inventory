@@ -3,9 +3,9 @@
 
 {% block title %}
     {% if product_name.id %}
-        Edit Rebuild Location Table
+        Edit Manual Location Table
     (% else %}
-        Add Rebuild Location Table
+        Add Manual Location Table
     {% endif %}
 {% endblock %}
 
@@ -13,10 +13,10 @@
     <div class="row">
          <div class="col-md-12 text-center">
             <h1 class="h1">
-                {% if rebuild_loc_table.id %}
-                    Edit Rebuild Location Table
+                {% if manual_loc_table.id %}
+                    Edit Manual Location Table
                 {% else %}
-                    Add Rebuild Location Table
+                    Add Manual Location Table
                 {% endif %}
             </h1>
          </div>
@@ -37,34 +37,34 @@
             {% bootstrap_field form.loc_code %}
             {% bootstrap_field form.loc_descr %}
             {% bootstrap_field form.loc_in_warehouse %}
-            {% bootstrap_field form.loc_bin %}
             {% bootstrap_field form.loc_row %}
+            {% bootstrap_field form.loc_bin %}
             {% bootstrap_field form.loc_tier %}
-            {# % bootstrap_form rebuild_loc_table_form % #}
+            {# % bootstrap_form manual_loc_table_form % #}
             <input type="submit" value="Submit"/>
      </form>
 
     <br/>
-    <a href="{% url 'fpiweb:rebuild_loc_table_view' %}">
+    <a href="{% url 'fpiweb:manual_loc_table_view' %}">
         Back to Product list
     </a>
 
     <hr class="style-one">
 
     <h6>
-        Template: rebuild_loc_table_edit.html
+        Template: manual_loc_table_edit.html
     </h6>
     <h6>
-        View: RebuildLocTableCreateView and RebuildLocTableUpdateView
+        View: ManualLocTableCreateView and ManualLocTableUpdateView
     </h6>
     <h6>
-        Add URL: {% url 'fpiweb:rebuild_loc_table_new' %}
+        Add URL: {% url 'fpiweb:manual_loc_table_new' %}
     </h6>
     <h6>
-         Save URL: {% url 'fpiweb:rebuild_loc_table_view' %}
+         Save URL: {% url 'fpiweb:manual_loc_table_view' %}
     </h6>
     <h6>
-        Return URL: {% url 'fpiweb:rebuild_loc_table_view' %}
+        Return URL: {% url 'fpiweb:manual_loc_table_view' %}
     </h6>
 
 {% endblock %}
