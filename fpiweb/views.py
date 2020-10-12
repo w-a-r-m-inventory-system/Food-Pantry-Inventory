@@ -106,10 +106,12 @@ from fpiweb.forms import \
     ProductCategoryForm, \
     ProductNameForm, \
     ProductExampleForm
+
 from fpiweb.support.BoxManagement import \
     BoxManagementClass
 from fpiweb.support.PermissionsManagement import \
     ManageUserPermissions
+
 
 
 __author__ = '(Multiple)'
