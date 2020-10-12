@@ -9,10 +9,10 @@ fpiweb.fpiweb\_views package
 Submodules
 ----------
 
-fpiweb.fpiweb\_views.PrintLabelsView module
+fpiweb.fpiweb\_views.PrintLabelView module
 -------------------------------------------
 
-.. automodule:: fpiweb.fpiweb_views.PrintLabelsView
+.. automodule:: fpiweb.fpiweb_views.PrintLabelView
    :members:
    :undoc-members:
    :show-inheritance:

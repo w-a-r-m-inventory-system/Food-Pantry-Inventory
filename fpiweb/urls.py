@@ -67,7 +67,7 @@ __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "09/15/2020"
 
 # set the namespace for the application
-from fpiweb_views import PrintLabelsView
+from fpiweb.fpiweb_views import PrintLabelView
 
 app_name = 'fpiweb'
 
@@ -256,7 +256,7 @@ urlpatterns = [
 
     # generate a pdf of one or more pages of QR code labels to put on boxes
     # e.g. /fpiweb/print_labels/
-    path('print_labels/', PrintLabelsView.as_view(), name='print_labels'),
+    path('print_labels/', PrintLabelView.as_view(), name='print_labels'),
 
     # Downlaod a csv file containinng all box activity
     # e.g. /fpiweb/activity/download/
