@@ -61,13 +61,13 @@ from fpiweb.views import \
     ProductExampleCreateView, \
     ProductExampleDeleteView, \
     ProductExampleListView
+from fpiweb.fpiweb_views.PrintLabelView import PrintLabelView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "09/15/2020"
 
 # set the namespace for the application
-from fpiweb.fpiweb_views import PrintLabelView
 
 app_name = 'fpiweb'
 

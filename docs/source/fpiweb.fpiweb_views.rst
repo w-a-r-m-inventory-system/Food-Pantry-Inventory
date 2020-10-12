@@ -10,7 +10,7 @@ Submodules
 ----------
 
 fpiweb.fpiweb\_views.PrintLabelView module
--------------------------------------------
+------------------------------------------
 
 .. automodule:: fpiweb.fpiweb_views.PrintLabelView
    :members:

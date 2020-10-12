@@ -21,7 +21,10 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import Image
 
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
-from fpiweb.constants import QR_LABELS_MAX, QR_LABELS_PER_PAGE, UserInfo
+from fpiweb.constants import \
+    QR_LABELS_MAX, \
+    QR_LABELS_PER_PAGE, \
+    UserInfo
 
 from fpiweb.models import Box
 
@@ -153,11 +156,6 @@ class PrintLabelView(PermissionRequiredMixin, View):
     form_class = PrintLabelForm
     success_url = reverse_lazy('fpiweb:index')
 
-    def __init__(self):
-        super().__init__()
-        self.pm = ManageUserPermissions()
-        return
-
     @staticmethod
     def get_base_url(meta) -> str:
         """
@@ -196,7 +194,7 @@ class PrintLabelView(PermissionRequiredMixin, View):
 
         # add additional info to the default context
         get_context: dict = {
-                'form': PrintLabelForm(),
+                'form': PrintLabelForm,
                 'this_user_info': this_user_info,
                 'max_box_number': max_box_number,
                 'labels_per_page': QR_LABELS_PER_PAGE,
@@ -292,7 +290,7 @@ class QRCodePrinter(object):
         # use the page number to control first page handling
         self.page_number: int = 0
 
-    def print(self, starting_number: int, count: int, buffer: BytesIO):
+    def print(self, starting_number: int, count: int, buffer):
         """
         Starting point once view retrieved the requested info.
 
@@ -353,7 +351,7 @@ class QRCodePrinter(object):
             for horizontal_position in range(PAGE_OFFSET.x,
                                              horizontal_stop,
                                              BACKGROUND_SIZE.x):
-                new_label: Point = \
+                new_label = \
                     LabelPosition(
                         Point(
                             horizontal_position,
