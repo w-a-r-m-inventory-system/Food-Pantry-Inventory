@@ -68,7 +68,6 @@ __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "09/15/2020"
 
 # set the namespace for the application
-
 app_name = 'fpiweb'
 
 urlpatterns = [
