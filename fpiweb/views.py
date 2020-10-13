@@ -3315,21 +3315,21 @@ class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = ManualLocTableForm
     success_url = reverse_lazy('fpiweb:manual_loc_table_view')
 
-class RebuildLocTable(PermissionRequiredMixin, View):
+class RebuildLocTableView(PermissionRequiredMixin, View):
 
     permission_required = (
         'fpiweb.change_rebuild_loc_table',
     )
 
     model = Location
-    template_name = 'fpiweb/rebuild_loc_table_list.html'
+    template_name = 'fpiweb/rebuild_loc_table.html'
     context_object_name = 'rebuild_loc_table'
     success_url = reverse_lazy('fpiweb:rebuild_loc_table_view')
 
     def rebuild_location_table(self):
 
         # Get Constraint object with constraint_name Constraints.Constraints.CONSTRAINT_NAME_CHOICES.ROW
-        row_constraint_record = Constraints.objects.get(constraint_name = Constraints.CONSTRAINT_NAME_CHOICES.ROW)
+        row_constraint_record = Constraints.get(constraint_name = Constraints.CONSTRAINT_NAME_CHOICES.ROW)
         # if type == int then use default INT_RANGE?
         if row_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.INT_RANGE :
             row_min = int(row_constraint_record.constraint_min)
@@ -3341,7 +3341,18 @@ class RebuildLocTable(PermissionRequiredMixin, View):
                     row_record.loc_row = f'{row_num:02}'
                     row_record.loc_row_descr = f'Row {row_num:02}'
 
-        # Do bin range here
+        # Get Constraint object with constraint_name Constraints.Constraints.CONSTRAINT_NAME_CHOICES.BIN
+        bin_constraint_record = Constraints.objects.get(constraint_name=Constraints.CONSTRAINT_NAME_CHOICES.BIN)
+        # if type == int then use default INT_RANGE?
+        if bin_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.INT_RANGE:
+            bin_min = int(bin_constraint_record.constraint_min)
+            bin_max = int(bin_constraint_record.constraint_max)
+            for bin_num in range(bin_min, bin_max + 1):
+                # created: boolean    get LowRow object with loc_row equals row_num
+                bin_record, created = LocBin.objects.get(loc_bin=bin_num)
+                if created:
+                    bin_record.loc_bin = f'{bin_num:02}'
+                    bin_record.loc_bin_descr = f'Bin {bin_num:02}'
 
         tier_constraint_record = Constraints.objects.get(constraint_name=Constraints.CONSTRAINT_NAME_CHOICES.TIER)
         if tier_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.CHAR_LIST:
@@ -3351,6 +3362,18 @@ class RebuildLocTable(PermissionRequiredMixin, View):
                 if created:
                     tier_record.loc_tier = f"{tier_name}"
                     tier_record.loc_tier_descr = f"Tier {tier_name}"
+
+
+
+    def get(self, request, *args, **kwargs):
+        row_constraint_record = Constraints.objects.get(constraint_name = Constraints.CONSTRAINT_NAME_CHOICES.ROW)
+        if row_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.INT_RANGE:
+            row_min = row_constraint_record.constraint_min
+            row_max = row_constraint_record.constraint_max
+        context= {'row_max':row_max, 'row_min': row_min}
+        return render(request, "fpiweb/rebuild_loc_table.html", context=context,  )
+
+
 
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):

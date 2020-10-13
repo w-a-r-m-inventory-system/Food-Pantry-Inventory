@@ -64,7 +64,7 @@ from fpiweb.views import \
     ProductExampleListView, \
     ManualLocTableListView, \
     ManualLocTableCreateView, \
-    ManualLocTableUpdateView
+    ManualLocTableUpdateView, RebuildLocTableView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -369,20 +369,25 @@ urlpatterns = [
     path('product_example/delete/<int:pk>/', ProductExampleDeleteView.as_view(),
          name='product_example_delete', ),
 
-    # RebuildLocationTable Add page
+    # ManualLocationTable Add page
     # e.g. /fpiweb/product_example/add/ = add a product example
     path('manual_loc_table/add/', ManualLocTableCreateView.as_view(),
          name='manual_loc_table_new', ),
 
-    # RebuildLocationTable List Page
+    # ManualLocationTable List Page
     # e.g./fpiweb/manual_loc_table/ = list of RebuildLocationTable
     path('manual_loc_table/', ManualLocTableListView.as_view(),
          name='manual_loc_table_view'),
 
-    # RebuildLocationTable Edit page
+    # ManualLocationTable Edit page
     # e.g. /fpiweb/manual_loc_table/edit/4/ = edit rebuild_loc_table # 4
     path('manual_loc_table/edit/<int:pk>/', ManualLocTableUpdateView.as_view(),
          name='manual_loc_table_update', ),
+
+    # RebuildLocationTable List Page
+    # e.g./fpiweb/rebuild_loc_table/ = ManualLocationTable
+    path('rebuild_loc_table/', RebuildLocTableView.as_view(),
+         name='rebuild_loc_table_view'),
 
 ]
 

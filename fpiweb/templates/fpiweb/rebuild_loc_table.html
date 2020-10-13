@@ -1,0 +1,84 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: Rebuild Location Table #}
+{# URL Name: rebuild_loc_table_view #}
+{# URL Response: GET #}
+{# Table: Location #}
+
+
+{% block title %} Rebuild Location Table {% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Rebuild Location Table
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one"/>
+
+    <div class="row text-center">
+        <div class="col-md-4 text-Left">
+            Rows:
+        </div>
+        <div class="col-md-8 text-Left">
+           Rows: &nbsp; {{ row_min }} &nbsp; to &nbsp; {{ row_max }}
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col-md-4 text-Left">
+            Bins:
+        </div>
+        <div class="col-md-8 text-Left">
+            &nbsp;
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col-md-4 text-Left">
+            Tiers:
+        </div>
+        <div class="col-md-8 text-Left">
+            &nbsp;
+        </div>
+    </div>
+        <br/>
+    <div class="row text-center">
+        <div class="col-md-4 text-Left">
+            Exclusions:
+        </div>
+        <div class="col-md-8 text-Left">
+            &nbsp;
+        </div>
+    </div>
+        <br/><br/>
+
+    <div class=row text-center">
+        <div class="col-md-6 text-center">
+            <a class="'btn alert-info" role="button" href="
+                {% url 'fpiweb:rebuild_loc_table_view' %}">
+                        Start </a>
+        </div>
+        <div class="col-md-6 text-center">
+            <a class="'btn alert-info" role="button" href="
+                {% url 'fpiweb:rebuild_loc_table_view' %}">
+                        Cancel </a>
+        </div>
+    </div>
+
+    <br/><br/>
+
+
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: rebuild_loc_table.html
+    </h6>
+    <h6>
+        View: RebuildLocTableListView
+    </h6>
+
+{% endblock %}
