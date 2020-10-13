@@ -41,25 +41,27 @@ from fpiweb.views import \
     ConfirmPasswordChangeView, \
     LogoutView, \
     MaintenanceView, \
-    ManualBoxMenuView, \
     ManualBoxStatusView, \
     ManualCheckinBoxView, \
     ManualConsumeBoxView, \
-    ManualMenuView, \
     ManualMoveBoxView, \
     ManualNewBoxView, \
-    ManualPalletMenuView, \
     ManualPalletMoveView, \
-    ManualPalletNew, \
-    ManualPalletStatus, \
-    PalletManagementView, \
-    PalletSelectView, \
     PrintLabelsView, \
-    ScannerView, \
+    ProductCategoryCreateView, \
     TestScanView, \
     UserManagementView, \
     UserCreateview, \
-    UserUpdateView
+    UserUpdateView, \
+    ProductCategoryListView, \
+    ProductCategoryUpdateView, \
+    ProductNameListView, \
+    ProductNameCreateView, \
+    ProductNameUpdateView, \
+    ProductExampleUpdateView, \
+    ProductExampleCreateView, \
+    ProductExampleDeleteView, \
+    ProductExampleListView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -240,74 +242,30 @@ urlpatterns = [
         name='build_pallet'
     ),
 
-    # Manual box management menu
-    # e.g. /fpiweb/manualmenu/ = show manual box management menu
-    path(
-        'manualmenu/',
-        ManualMenuView.as_view(),
-        name='manual_menu'
-    ),
-
-    # Manual pallet management menu
-    # e.g. /fpiweb/manualpalletmenu/ = show manual pallet management menu
-    path('manualpalletmenu/',
-         ManualPalletMenuView.as_view(),
-         name='manual_pallet_menu'),
-
-    # Manual box management menu
-    # e.g. /fpiweb/manualboxmenu/ = show manual box management menu
-    path('manualboxmenu/',
-         ManualBoxMenuView.as_view(),
-         name='manual_box_menu'),
-
-    # Manually start a new pallet
-    # e.g. /fpiweb/manualpalletnew = manually starting a new pallet
-    path(
-        'manual_pallet_new/',
-        ManualPalletNew.as_view(),
-        name='manual_pallet_new'
-    ),
-
+    # Move all boxes in one location to a different location
+    # e.g. /fpiweb/manual_pallet_move/
     path(
         'manual_pallet_move/',
         ManualPalletMoveView.as_view(),
         name='manual_pallet_move',
     ),
 
-    # Manually show the current pallet status
-    # e.g. /fpiweb/manualpalletstatus/5/ = current pallet status
-    path(
-        'manual_pallet_status/<int:pk>',
-        ManualPalletStatus.as_view(),
-        name='manual_pallet_status'
-    ),
-
-    path(
-        'pallet/management/',
-        PalletManagementView.as_view(),
-        name='palletManagement',
-    ),
-
+    # build a pallet of boxes and store in a given location
     path('build_pallet/', BuildPalletView.as_view(), name='build_pallet'),
 
-    path(
-        'build_pallet/<int:box_pk>/',
-        BuildPalletView.as_view(),
-        name='build_pallet_add_box'),
-
-    path('pallet/select/', PalletSelectView.as_view(), name='pallet_select'),
-
-    path('scanner/', ScannerView.as_view(), name='scanner'),
-
+    # generate a pdf of one or more pages of QR code labels to put on boxes
+    # e.g. /fpiweb/print_labels/
     path('print_labels/', PrintLabelsView.as_view(), name='print_labels'),
 
+    # Downlaod a csv file containinng all box activity
+    # e.g. /fpiweb/activity/download/
     path(
         'activity/download/',
         ActivityDownloadView.as_view(),
         name='download_activities'),
 
     # Manually add an empty box to the inventory system
-    # e.g. /fpiweb/manual_box_status/ = determine the status of a box manually
+    # e.g. /fpiweb/manual_box_status/ = add a box to the system
     path('manual_add_box/', ManualNewBoxView.as_view(),
          name='manual_add_box', ),
 
@@ -357,6 +315,59 @@ urlpatterns = [
     # e.g. /fpiweb/user_mgmt/edit/5/ = update an existing user
     path('user_mgmt/edit/<int:pk>', UserUpdateView.as_view(),
          name='user_edit'),
+
+    # ProductCategory List page
+    # e.g. /fpiweb/product_category/ = list of product_category
+    path('product_category/', ProductCategoryListView.as_view(),
+         name='product_category_view'),
+
+    # ProductCategory Add page
+    # e.g. /fpiweb/product_category/add/ = add a product_category
+    path('product_category/add/', ProductCategoryCreateView.as_view(),
+         name='product_category_new' ),
+
+    # ProductCategory Edit page
+    # e.g. /fpiweb/product_category/edit/4/ = edit product_category # 4
+    path('product_category/edit/<int:pk>/', ProductCategoryUpdateView.as_view(),
+         name='product_category_update' ),
+
+    # Product List page
+    # e.g. /fpiweb/product/ = list of product
+    path('product_name/', ProductNameListView.as_view(),
+         name='product_name_view'),
+
+    # ProductCategory Add page
+    # e.g. /fpiweb/product_/add/ = add a product
+    path('product_name/add/', ProductNameCreateView.as_view(),
+         name='product_name_new' ),
+
+    # Product Edit page
+    # e.g. /fpiweb/product/edit/4/ = edit product # 4
+    path('product_name/edit/<int:pk>/', ProductNameUpdateView.as_view(),
+         name='product_name_update' ),
+
+    # ProductExample List page
+    # e.g. /fpiweb/product_example/ = list of product examples
+    path('product_example/', ProductExampleListView.as_view(),
+         name='product_example_view'),
+
+    # PrdductExample Add page
+    # e.g. /fpiweb/product_example/add/ = add a product example
+    path('product_example/add/', ProductExampleCreateView.as_view(),
+         name='product_example_new', ),
+
+    # ProductExample Edit page
+    # e.g. /fpiweb/product_example/edit/4/ = edit product example # 4
+    path('product_example/edit/<int:pk>/', ProductExampleUpdateView.as_view(),
+         name='product_example_update', ),
+
+    # ProductExample Delete Page
+    # e.g. /fpiweb/product_example/delete/4/ = delete product_example # 4
+    path('product_example/delete/<int:pk>/', ProductExampleDeleteView.as_view(),
+         name='product_example_delete', ),
+
+
+
 
 ]
 

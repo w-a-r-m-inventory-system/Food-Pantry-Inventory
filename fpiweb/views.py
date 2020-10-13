@@ -77,7 +77,9 @@ from fpiweb.models import \
     Product, \
     Profile, \
     Location, \
-    PalletBox
+    PalletBox, \
+    ProductCategory, \
+    ProductExample
 from fpiweb.code_reader import \
     CodeReaderError, \
     read_box_number
@@ -112,7 +114,10 @@ from fpiweb.forms import \
     validation_exp_months_bool, \
     UserInfoForm, \
     UserInfoModes as MODES, \
-    ChangePasswordForm
+    ChangePasswordForm, \
+    ProductCategoryForm, \
+    ProductNameForm, \
+    ProductExampleForm
 from fpiweb.qr_code_utilities import QRCodePrinter
 from fpiweb.support.BoxManagement import BoxManagementClass
 from fpiweb.support.PermissionsManagement import ManageUserPermissions
@@ -231,14 +236,10 @@ class AboutView(TemplateView):
         return context
 
 
-
-
 class LoginView(FormView):
     template_name = 'fpiweb/login.html'
     form_class = LoginForm
     success_url = reverse_lazy('fpiweb:index')
-
-
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
@@ -261,8 +262,6 @@ class LoginView(FormView):
         )
 
         return super().form_valid(form)
-
-
 
 
 class ChangePasswordView(LoginRequiredMixin, FormView):
@@ -433,7 +432,6 @@ class LocRowListView(PermissionRequiredMixin, ListView):
     List of existing rows using a generic ListView.
     """
 
-
     permission_required = (
         'fpiweb.view_locrow',
     )
@@ -441,8 +439,6 @@ class LocRowListView(PermissionRequiredMixin, ListView):
     model = LocRow
     template_name = 'fpiweb/loc_row_list.html'
     context_object_name = 'loc_row_list_content'
-
-
 
 
 class LocRowCreateView(PermissionRequiredMixin, CreateView):
@@ -462,7 +458,6 @@ class LocRowCreateView(PermissionRequiredMixin, CreateView):
     formClass = LocRowForm
 
     fields = ['loc_row', 'loc_row_descr', ]
-
 
 
 class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
@@ -1586,165 +1581,6 @@ class BoxItemFormView(PermissionRequiredMixin, View):
         )
 
 
-class ManualMenuView(PermissionRequiredMixin, TemplateView):
-    """
-    Menu to choose between manual pallet or manual box management
-    """
-
-    permission_required = (
-        'fpiweb.view_pallet',
-    )
-
-    template_name = 'fpiweb/manual_menu.html'
-
-    def get_context_data(self, **kwargs):
-        """
-        Add User Information to Manual Menu page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super(ManualMenuView, self).get_context_data(**kwargs)
-
-        # get the current user and related profile
-        current_user = self.request.user
-        profile = current_user.profile
-        if profile:
-            active_pallet = profile.active_pallet
-        else:
-            active_pallet = None
-
-        # does user have active pallet?  if so get info
-        if active_pallet:
-            new_target = None
-            # pallet_rec = Pallet.objects.select_related().get(
-            #     id=profile.active_pallet)
-            pallet_id = active_pallet.id
-            pallet_target = reverse_lazy(
-                'fpiweb:manual_pallet_status', args=[pallet_id]
-            )
-        else:
-            new_target = reverse_lazy('fpiweb:manual_pallet_new')
-            pallet_target = None
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = profile
-        context['active_pallet'] = active_pallet
-        context['new_target'] = new_target
-        context['pallet_target'] = pallet_target
-        return context
-
-
-class ManualPalletMenuView(PermissionRequiredMixin, TemplateView):
-    """
-    Menu of choices for manual pallet management.
-    """
-
-    permission_required = (
-        'fpiweb.view_pallet',
-    )
-
-    template_name = 'fpiweb/manual_pallet_menu.html'
-
-    def get_context_data(self, **kwargs):
-        """
-        Add User Information to Manual Menu page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super().get_context_data(**kwargs)
-
-        # get the current user and related profile
-        current_user = self.request.user
-        profile = current_user.profile
-        if profile and profile.active_pallet:
-            active_pallet = profile.active_pallet
-            pallet_boxes = PalletBox.objects.filter(pallet=active_pallet)
-            box_set = list()
-            for box in pallet_boxes:
-                box_set.append(box)
-        else:
-            active_pallet = None
-            box_set = None
-
-        # does user have active pallet?  if so get info
-        if active_pallet:
-            new_target = None
-            # pallet_rec = Pallet.objects.select_related().get(
-            #     id=profile.active_pallet)
-            pallet_id = active_pallet.id
-            pallet_target = reverse_lazy(
-                'fpiweb:manual_pallet_status', args=[pallet_id]
-            )
-        else:
-            new_target = reverse_lazy('fpiweb:manual_pallet_new')
-            pallet_target = None
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = profile
-        context['active_pallet'] = active_pallet
-        context['box_set'] = box_set
-        context['new_target'] = new_target
-        context['pallet_target'] = pallet_target
-        return context
-
-
-class ManualBoxMenuView(PermissionRequiredMixin, TemplateView):
-    """
-    Menu of choices for manual individual box management.
-    """
-    permission_required = (
-        'fpiweb.view_box',
-    )
-
-    template_name = 'fpiweb/manual_ind_box_menu.html'
-
-    def get_context_data(self, **kwargs):
-        """
-        Add User Information to Manual Menu page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super().get_context_data(**kwargs)
-
-        # get the current user and related profile
-        current_user = self.request.user
-        profile = current_user.profile
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = profile
-        return context
-
-
-# class ManualNotification(LoginRequiredMixin, TemplateView):
-#     """
-#     Ask a question or notify the user of something.
-#     """
-#     template_name = 'fpiweb/manual_generic_notification.html'
-#
-#     def get_context_data(self, **kwargs):
-#         """
-#         Get info from reqest and populate context from it.
-#
-#         :param kwargs:
-#         :return:
-#         """
-#         context = super(ManualNotification, self.get_context_data(**kwargs))
-#         request = context.get_request()
-#         title = request.
-
-
 class MANUAL_NOTICE_TYPE(Enum):
     """
     Manual generic notice type.
@@ -1801,64 +1637,9 @@ def manual_generic_notification(
     return template_info
 
 
-class ManualPalletNew(LoginRequiredMixin, TemplateView):
-    """
-    Establish a new pallet for this user.
-    """
-    # use CreateView later
-
-    model = Profile
-    template_name = 'fpiweb/manual_pallet_add.html'
-    context_object_name = 'manual_pallet'
-
-    # success_url = reverse_lazy('fpiweb:manual_pallet_status')
-
-    def get_context_data(self, **kwargs):
-        """
-        Add Site Information to About page.
-
-        :param kwargs:
-        :return:
-        """
-
-        # get information from the database
-        context = super(ManualPalletNew, self).get_context_data(**kwargs)
-        current_user = self.request.user
-        user_profile = Profile.objects.select_related().get(
-            user_id=current_user.id)
-
-        # check if new pallet or other status
-        if user_profile.active_location_id:
-            # check status
-            ...
-        else:
-            # find new location
-            ...
-
-        # load up  the context for the template
-        context['current_user'] = current_user
-        context['user_profile'] = user_profile
-        return context
-
-    def get_success_url(self, **kwargs) -> URL:
-        """
-
-        :param kwargs:
-        :return:
-        """
-
-        current_user = self.request.user
-        user_profile = Profile.objects.select_related().get(id=current_user.id)
-        pallet_rec = Pallet.objects.select_related().get(
-            user_id_id=current_user.id)
-        pallet_id = pallet_rec.id
-        target = reverse_lazy('fpiweb:manual_pallet_status', args=[pallet_id])
-        return target
-
-
 class ManualPalletStatus(PermissionRequiredMixin, ListView):
     """
-    Establish a new pallet for this user.
+    Show the status of a pallet.
     """
 
     permission_required = (
@@ -1868,7 +1649,7 @@ class ManualPalletStatus(PermissionRequiredMixin, ListView):
     model = Pallet
     template_name = 'fpiweb/manual_pallet_status.html'
     context_object_name = 'manual_pallet_status'
-    success_url = reverse_lazy('fpiweb:manual_menu')
+    success_url = reverse_lazy('fpiweb:index')
 
     def get_(self, **kwargs):
         """
@@ -3366,5 +3147,209 @@ class UserUpdateView(PermissionRequiredMixin, View):
                 target_user=target_user,
             )
             return render(request, self.template_name, post_context)
+
+
+class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product Category using a generic CreateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_edit.html'
+    context_object_name = 'product_category'
+    success_url = reverse_lazy('fpiweb:product_category_view')
+
+    formClass = ProductCategoryForm
+
+    fields = ['prod_cat_name', 'prod_cat_descr', ]
+
+class ProductCategoryListView(PermissionRequiredMixin, ListView):
+    """
+    List of existing Product Categories using a generic ListView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_list.html'
+    context_object_name = 'product_category_list_content'
+
+
+class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product Category using a generic UpdateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_product_category',
+    )
+
+    model = ProductCategory
+    template_name = 'fpiweb/product_category_edit.html'
+    context_object_name = 'product_category'
+    form_class = ProductCategoryForm
+    success_url = reverse_lazy('fpiweb:product_category_view')
+
+
+class ProductNameCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product using a generic CreateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_edit.html'
+    context_object_name = 'product_name'
+    success_url = reverse_lazy('fpiweb:product_name_view')
+
+    formClass = ProductNameForm
+
+    fields = ['prod_name', 'prod_cat', ]
+
+class ProductNameListView(PermissionRequiredMixin, ListView):
+    """
+    List of Products using a generic ListView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_list.html'
+    context_object_name = 'product_name_list_content'
+
+
+class ProductNameUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product using a generic UpdateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_product_name',
+    )
+
+    model = Product
+    template_name = 'fpiweb/product_name_edit.html'
+    context_object_name = 'product_name'
+    form_class = ProductNameForm
+    success_url = reverse_lazy('fpiweb:product_name_view')
+
+
+class ProductExampleListView(PermissionRequiredMixin, ListView):
+    """
+    List of existing Product Examples using a generic ListView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_product_example',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_list.html'
+    context_object_name = 'product_example_list_content'
+
+
+class ProductExampleCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Create a Product Example using a generic CreateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_product_example',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_edit.html'
+    context_object_name = 'product_example'
+    success_url = reverse_lazy('fpiweb:product_example_view')
+
+    formClass = ProductExampleForm
+
+    fields = ['prod_example_name', 'product', ]
+
+
+class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+    Update a Product Example using a generic UpdateView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_product_example_name',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_edit.html'
+    context_object_name = 'product_example'
+    form_class = ProductExampleForm
+    success_url = reverse_lazy('fpiweb:product_example_view')
+
+
+class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
+    """
+    Delete a Product Example using a generic DeleteView.
+    """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.delete_product_example_name',
+    )
+
+    model = ProductExample
+    template_name = 'fpiweb/product_example_delete.html'
+    context_object_name = 'product_example'
+    success_url = reverse_lazy('fpiweb:product_example_view')
+
+    form_class = ProductExampleForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super(ProductExampleDeleteView, self).get_context_data(**kwargs)
+        context['action'] = reverse('fpiweb:product_example_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+
+
+# class ManualNotification(LoginRequiredMixin, TemplateView):
+#     """
+#     Ask a question or notify the user of something.
+#     """
+#     template_name = 'fpiweb/manual_generic_notification.html'
+#
+#     def get_context_data(self, **kwargs):
+#         """
+#         Get info from reqest and populate context from it.
+#
+#         :param kwargs:
+#         :return:
+#         """
+#         context = super(ManualNotification, self.get_context_data(**kwargs))
+#         request = context.get_request()
+#         title = request.
 
 # EOF

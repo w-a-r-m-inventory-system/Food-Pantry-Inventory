@@ -8,8 +8,8 @@ User Documentation
 
    Overview
 
-   Individual Box Instructions <IndividualBoxInstructions>
+   User Management <UserManagement>
 
-   Pallet Instructions <PalletInstructions>
+   Inventory Management <InventoryManagement>
 
    Other Tools <OtherTools>

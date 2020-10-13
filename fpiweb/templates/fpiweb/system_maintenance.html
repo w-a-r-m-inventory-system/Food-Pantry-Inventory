@@ -15,7 +15,7 @@
 
     <div>
         <a href="{% url 'fpiweb:user_management' %}">
-            System User Maintainance
+            System User Maintenance
         </a>
     </div>
 
@@ -23,18 +23,18 @@
     <h6>Manage Product Information</h6>
 
     <br/>
-    <a href="{% url 'fpiweb:about' %}">
-        Product Category Maintainence
+    <a href="{% url 'fpiweb:product_category_view' %}">
+        Product Category Maintenance
     </a>
 
     <br/>
-    <a href="{% url 'fpiweb:about' %}">
-        Product Name Maintainence
+    <a href="{% url 'fpiweb:product_name_view' %}">
+        Product Maintenance
     </a>
 
     <br/>
-    <a href="{% url 'fpiweb:about' %}">
-        Product Example Maintainence
+    <a href="{% url 'fpiweb:product_example_view' %}">
+        Product Example Maintenance
     </a>
 
     <hr/>
@@ -42,17 +42,17 @@
 
     <br/>
     <a href="{% url 'fpiweb:loc_row_view' %}">
-        Location Row Maintainence
+        Location Row Maintenance
     </a>
 
     <br/>
     <a href="{% url 'fpiweb:loc_bin_view' %}">
-        Location Bin Maintainence
+        Location Bin Maintenance
     </a>
 
     <br/>
     <a href="{% url 'fpiweb:loc_tier_view' %}">
-        Location Tier Maintainence
+        Location Tier Maintenance
     </a>
 
     <br/>
@@ -78,23 +78,9 @@
         Activity Maintenance
     </a>
 
-    <br/>
-    <a href="{% url 'fpiweb:about' %}">
-        Manual Box Maintenance
-    </a>
-
     <hr/>
     <div>
         <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
     </div>
-
-
-
-
-
-
-
-
-
 
 {% endblock %}
