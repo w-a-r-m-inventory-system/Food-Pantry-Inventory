@@ -148,11 +148,11 @@ def get_user_and_profile(request):
     profile = user.profile or Profile.objects.create(user=user)
     return user, profile
 
-class BaseView(LoginRequiredMixin, TemplateView):
+class NavbarView(LoginRequiredMixin, TemplateView):
     """
     Default web page (/)
     """
-    template_name = 'fpiweb/base.html'
+    template_name = 'fpiweb/navbar.html'
 
     def get_context_data(self, **kwargs):
         """
@@ -237,6 +237,8 @@ class LoginView(FormView):
     template_name = 'fpiweb/login.html'
     form_class = LoginForm
     success_url = reverse_lazy('fpiweb:index')
+
+
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
