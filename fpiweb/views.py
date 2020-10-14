@@ -3366,12 +3366,34 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
 
 
     def get(self, request, *args, **kwargs):
-        row_constraint_record = Constraints.objects.get(constraint_name = Constraints.CONSTRAINT_NAME_CHOICES.ROW)
-        if row_constraint_record.constraint_type == Constraints.CONSTRAINT_NAME_CHOICES.INT_RANGE:
-            row_min = row_constraint_record.constraint_min
-            row_max = row_constraint_record.constraint_max
-        context= {'row_max':row_max, 'row_min': row_min}
-        return render(request, "fpiweb/rebuild_loc_table.html", context=context,  )
+        row_constraint = Constraints.objects.get(constraint_name = Constraints.ROW)
+        if row_constraint.constraint_type == Constraints.INT_RANGE:
+            row_min = row_constraint.constraint_min
+            row_max = row_constraint.constraint_max
+        else:
+            ...
+        bin_constraint = Constraints.objects.get(constraint_name = Constraints.BIN)
+        if bin_constraint.constraint_type == Constraints.INT_RANGE:
+            bin_min = bin_constraint.constraint_min
+            bin_max = bin_constraint.constraint_max
+        else:
+            ...
+        tier_constraint = Constraints.objects.get(constraint_name=Constraints.TIER)
+        if tier_constraint.constraint_type == Constraints.CHAR_LIST:
+            tiers = tier_constraint.constraint_list
+        else:
+            ...
+        exclusions_constraint = Constraints.objects.get(constraint_name=Constraints.LOCATION_EXCLUSIONS)
+        # exclusions_constraint = Constraints.objects.get(constraint_name=Constraints.LOCATION_EXCLUSIONS)
+        if exclusions_constraint.constraint_type == Constraints.CHAR_LIST:
+            exclusion_str = exclusions_constraint.constraint_list
+        else:
+            ...
+        context= {'row_max': row_max, 'row_min': row_min,
+                  'bin_min': bin_min, 'bin_max': bin_max,
+                  'tiers': tiers, 'exclusion_str': exclusion_str }
+        # need to get exclusions!!- grab the whole thing here ??
+        return render(request, "fpiweb/rebuild_loc_table.html", context, )
 
 
 

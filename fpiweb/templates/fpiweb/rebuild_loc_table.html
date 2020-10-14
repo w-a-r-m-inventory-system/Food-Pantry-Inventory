@@ -20,42 +20,47 @@
 
     <hr class="style-one"/>
 
-    <div class="row text-center">
-        <div class="col-md-4 text-Left">
+    <div class="row text-Left">
+        <div class="col-md-2 text-Left">
             Rows:
         </div>
-        <div class="col-md-8 text-Left">
-           Rows: &nbsp; {{ row_min }} &nbsp; to &nbsp; {{ row_max }}
+        <div class="col-md-2 text-Left">
+           {{ row_min }} to {{ row_max }}
         </div>
+        <div class="col-md-8 text-Center"></div>
     </div>
-    <div class="row text-center">
-        <div class="col-md-4 text-Left">
+    <br />
+    <div class="row text-Left">
+        <div class="col-md-2 text-Left">
             Bins:
         </div>
-        <div class="col-md-8 text-Left">
-            &nbsp;
+        <div class="col-md-2 text-Left">
+            &nbsp;{{ bin_min }} to {{ bin_max }}
         </div>
+        <div class="col-md-8"></div>
     </div>
-    <div class="row text-center">
-        <div class="col-md-4 text-Left">
+    <br />
+    <div class="row text-Left">
+        <div class="col-md-2 text-Left">
             Tiers:
         </div>
-        <div class="col-md-8 text-Left">
-            &nbsp;
+        <div class="col-md-2 text-Left">
+            &nbsp;{{ tiers }}
         </div>
+        <div class="col-md-8"></div>
     </div>
-        <br/>
-    <div class="row text-center">
-        <div class="col-md-4 text-Left">
+        <br /><br />
+    <div class="row text-Center">
+        <div class="col-md-2 text-Left">
             Exclusions:
         </div>
-        <div class="col-md-8 text-Left">
-            &nbsp;
+        <div class="col-md-10 text-Left">
+            {{ exclusion_str }}
         </div>
     </div>
         <br/><br/>
 
-    <div class=row text-center">
+    <div class="row text-center">
         <div class="col-md-6 text-center">
             <a class="'btn alert-info" role="button" href="
                 {% url 'fpiweb:rebuild_loc_table_view' %}">
@@ -63,7 +68,7 @@
         </div>
         <div class="col-md-6 text-center">
             <a class="'btn alert-info" role="button" href="
-                {% url 'fpiweb:rebuild_loc_table_view' %}">
+                {% url 'fpiweb:maintenance' %}">
                         Cancel </a>
         </div>
     </div>
