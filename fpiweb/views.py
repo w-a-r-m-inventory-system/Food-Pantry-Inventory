@@ -3328,6 +3328,8 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
     context_object_name = 'rebuild_loc_table'
     success_url = reverse_lazy('fpiweb:rebuild_loc_table_view')
 
+    # create a list of exclusion constraint keys
+    # requires that exclusion list items be comma separated
     def build_exclusion_constraint_list(self):
         exclusion_constraint_checklist = []
         exclusion_constraint_record = Constraints.objects.get(constraint_name=Constraints.LOCATION_EXCLUSIONS)
@@ -3338,11 +3340,58 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
                 exclusion_constraint_checklist.append(entry)
         return exclusion_constraint_checklist
 
+    # supposed to return a list of loc_code keys
+    def build_old_location_list(self):
+        loc_key_list = Location.objects.values_list('loc_code', flat=True)
+        return loc_key_list
+
+    def build_new_location_table_list(self):
+
+        exclusion_constraint_list = self.build_exclusion_constraint_list()
+        
+        location_table_combination_key = []
+        combination_location_key_list = []
+        single_key_str = ""
+        row_constraint_record = Constraints.objects.get(constraint_name=Constraints.ROW)
+        if row_constraint_record.constraint_type == Constraints.INT_RANGE :
+            row_min = int(row_constraint_record.constraint_min)
+            row_max = int(row_constraint_record.constraint_max)
+            for row_num in range(row_min, row_max + 1):
+                single_key_str = single_key_str + f'Row {row_num:02}'
+                bin_constraint_record = Constraints.objects.get(constraint_name=Constraints.BIN)
+                # if type == int then use default INT_RANGE?
+                if bin_constraint_record.constraint_type == Constraints.INT_RANGE:
+                    bin_min = int(bin_constraint_record.constraint_min)
+                    bin_max = int(bin_constraint_record.constraint_max)
+                    for bin_num in range(bin_min, bin_max + 1):
+                        single_key_str = single_key_str + f'{bin_num:02}'
+                        tier_constraint_record = Constraints.objects.get(constraint_name=Constraints.TIER)
+                        if tier_constraint_record.constraint_type == Constraints.CHAR_LIST:
+                            tier_str = tier_constraint_record.constraint_list
+                            tier_list = []
+                            for entry in tier_str.split(','):
+                                entry = entry.strip()
+                                tier_list.append(entry)
+                            for tier_name in tier_list:
+                                single_key_str = single_key_str + f"{tier_name}"
+                                combination_location_key_list.append(single_key_str)
+
+            return combination_location_key_list
+
+
+
+
+
 
     def rebuild_location_table(self):
 
-        self.build_exclusion_constraint_list()
-        
+        exclusion_constraint_list = self.build_exclusion_constraint_list()
+        loc_key_list = self.build_old_location_list()
+
+        row_nnn = 0     # Row records changed
+        bin_nnn = 0     # Bin records changed
+        tier_nnn = 0    # Tier records changed
+
         # Get Constraint object with constraint_name Constraints.Constraints.CONSTRAINT_NAME_CHOICES.ROW
         row_constraint_record = Constraints.objects.get(constraint_name = Constraints.ROW)
         # if type == int then use default INT_RANGE?
@@ -3350,17 +3399,12 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
             row_min = int(row_constraint_record.constraint_min)
             row_max = int(row_constraint_record.constraint_max)
             for row_num in range(row_min, row_max + 1):
-                # row_num_char = f'{row_num:02}'
-                # created: boolean    get LowRow object with loc_row equals row_num
-                # row_record, created = LocRow.objects.get_or_create(loc_row=row_num_char)
-                str_row_num = '0' + str(row_num)
-                # below works but doesn't allow for checking
-                # row_record, created = LocRow.objects.get_or_create(loc_row=f'{row_num:02}', loc_row_descr=f'Row {row_num:02}')
                 row_record, created = LocRow.objects.get_or_create(loc_row=f'{row_num:02}')
                 if created:
-                    row_record.loc_row = f'{row_num:02}'
+                    loc_row = f'{row_num:02}'
                     row_record.loc_row_descr = f'Row {row_num:02}'
                     row_record.save()
+                    row_nnn = row_nnn + 1
 
         # Get Constraint object with constraint_name Constraints.Constraints.CONSTRAINT_NAME_CHOICES.BIN
         bin_constraint_record = Constraints.objects.get(constraint_name=Constraints.BIN)
@@ -3375,6 +3419,7 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
                     bin_record.loc_bin = f'{bin_num:02}'
                     bin_record.loc_bin_descr = f'Bin {bin_num:02}'
                     bin_record.save()
+                    bin_nnn = bin_nnn + 1
 
         tier_constraint_record = Constraints.objects.get(constraint_name=Constraints.TIER)
         if tier_constraint_record.constraint_type == Constraints.CHAR_LIST:
@@ -3390,6 +3435,7 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
                     tier_record.loc_tier = f"{tier_name}"
                     tier_record.loc_tier_descr = f"Tier {tier_name}"
                     tier_record.save()
+                    tier_nnn = tier_nnn + 1
 
 
 
