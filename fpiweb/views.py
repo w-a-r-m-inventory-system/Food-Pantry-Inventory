@@ -3342,29 +3342,38 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
 
     # supposed to return a list of loc_code keys
     def build_old_location_list(self):
-        loc_key_list = Location.objects.values_list('loc_code', flat=True)
-        return loc_key_list
+        loc_code_list = []
+        loc_code_list = list (Location.objects.all().values_list('loc_code',
+                                                           flat=True).order_by('loc_code'))
+        return loc_code_list
 
-    def build_new_location_table_list(self):
+    def rebuild_location_table(self):
+
+        self.update_row_bin_tier_tables()
 
         exclusion_constraint_list = self.build_exclusion_constraint_list()
-        
-        location_table_combination_key = []
-        combination_location_key_list = []
+        combination_key_loc_table_list = []
+        combination_key_loc_table_list = self.build_old_location_list()
+
+        row_nnn = 0  # Row records changed
+        bin_nnn = 0  # Bin records changed
+        tier_nnn = 0  # Tier records changed
+
         single_key_str = ""
         row_constraint_record = Constraints.objects.get(constraint_name=Constraints.ROW)
         if row_constraint_record.constraint_type == Constraints.INT_RANGE :
             row_min = int(row_constraint_record.constraint_min)
             row_max = int(row_constraint_record.constraint_max)
             for row_num in range(row_min, row_max + 1):
-                single_key_str = single_key_str + f'Row {row_num:02}'
+                row_code_key = f'{row_num:02}'
                 bin_constraint_record = Constraints.objects.get(constraint_name=Constraints.BIN)
                 # if type == int then use default INT_RANGE?
                 if bin_constraint_record.constraint_type == Constraints.INT_RANGE:
                     bin_min = int(bin_constraint_record.constraint_min)
                     bin_max = int(bin_constraint_record.constraint_max)
+                    # massage the fuck out of this to get a LOCBIN instance
                     for bin_num in range(bin_min, bin_max + 1):
-                        single_key_str = single_key_str + f'{bin_num:02}'
+                        bin_code_key = f'{bin_num:02}'
                         tier_constraint_record = Constraints.objects.get(constraint_name=Constraints.TIER)
                         if tier_constraint_record.constraint_type == Constraints.CHAR_LIST:
                             tier_str = tier_constraint_record.constraint_list
@@ -3373,20 +3382,26 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
                                 entry = entry.strip()
                                 tier_list.append(entry)
                             for tier_name in tier_list:
-                                single_key_str = single_key_str + f"{tier_name}"
-                                combination_location_key_list.append(single_key_str)
+                                tier_code_key = f"{tier_name}"
+                                loc_code_key = row_code_key + bin_code_key + tier_code_key
+                                if loc_code_key in exclusion_constraint_list:
+                                    ...
+                                else:
+                                    location_record, created = Location.objects.get_or_create(
+                                        loc_code=loc_code_key,
+                                        loc_bin=bin_code_key,)
+                                    if created:
+                                        location_record.loc_row=row_code_key
+                                        location_record.loc_bin = bin_code_key
+                                        location_record.save()
+                                        ## kee track of record numbers here
 
-            return combination_location_key_list
 
 
-
-
-
-
-    def rebuild_location_table(self):
+    def update_row_bin_tier_tables(self):
 
         exclusion_constraint_list = self.build_exclusion_constraint_list()
-        loc_key_list = self.build_old_location_list()
+
 
         row_nnn = 0     # Row records changed
         bin_nnn = 0     # Bin records changed

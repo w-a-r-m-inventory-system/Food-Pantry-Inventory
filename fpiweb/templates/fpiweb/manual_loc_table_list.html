@@ -36,9 +36,9 @@
         <div class="col-md-1"><strong>Location Code</strong></div>
         <div class="col-md-4"><strong>Location Description</strong></div>
         <div class="col-md-2 text-center"><strong>Location In Warehouse</strong></div>
+        <div class="col-md-1 text-center"><strong>Row Location</strong></div>
         <div class="col-md-1 text-center"><strong>Bin Location</strong></div>
-        <div class="col-md-1 text-center"><strong>Row Location</strong></div>
-        <div class="col-md-1 text-center"><strong>Row Location</strong></div>
+        <div class="col-md-1 text-center"><strong>Tier Location</strong></div>
         <div class="col-md-2 text-center"><strong>Edit one Location Line</strong></div>
     </div>
 
@@ -55,10 +55,10 @@
                     {{ manual_loc_table.loc_in_warehouse }}
                 </div>
                 <div class="col-md-1 text-center">
-                    {{ manual_loc_table.loc_bin }}
+                    {{ manual_loc_table.loc_row }}
                 </div>
                 <div class="col-md-1 text-center">
-                    {{ manual_loc_table.loc_row }}
+                    {{ manual_loc_table.loc_bin }}
                 </div>
                 <div class="col-md-1 text-center">
                     {{ manual_loc_table.loc_tier }}
