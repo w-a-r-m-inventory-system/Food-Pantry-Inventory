@@ -3340,72 +3340,51 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
                 exclusion_constraint_checklist.append(entry)
         return exclusion_constraint_checklist
 
-    # supposed to return a list of loc_code keys
+    # return a list of loc_code keys
     def build_old_location_list(self):
-        loc_code_list = []
         loc_code_list = list (Location.objects.all().values_list('loc_code',
                                                            flat=True).order_by('loc_code'))
         return loc_code_list
 
     def rebuild_location_table(self):
 
+        # update LocRow, LocBin and LocTier from Constraints table
         self.update_row_bin_tier_tables()
-
+        # grab the exclusion list into memory
         exclusion_constraint_list = self.build_exclusion_constraint_list()
-        combination_key_loc_table_list = []
-        combination_key_loc_table_list = self.build_old_location_list()
+        # combination_key_loc_table_list = self.build_old_location_list()
 
         row_nnn = 0  # Row records changed
         bin_nnn = 0  # Bin records changed
         tier_nnn = 0  # Tier records changed
 
         single_key_str = ""
-        row_constraint_record = Constraints.objects.get(constraint_name=Constraints.ROW)
-        if row_constraint_record.constraint_type == Constraints.INT_RANGE :
-            row_min = int(row_constraint_record.constraint_min)
-            row_max = int(row_constraint_record.constraint_max)
-            for row_num in range(row_min, row_max + 1):
-                row_code_key = f'{row_num:02}'
-                bin_constraint_record = Constraints.objects.get(constraint_name=Constraints.BIN)
-                # if type == int then use default INT_RANGE?
-                if bin_constraint_record.constraint_type == Constraints.INT_RANGE:
-                    bin_min = int(bin_constraint_record.constraint_min)
-                    bin_max = int(bin_constraint_record.constraint_max)
-                    # massage the fuck out of this to get a LOCBIN instance
-                    for bin_num in range(bin_min, bin_max + 1):
-                        bin_code_key = f'{bin_num:02}'
-                        tier_constraint_record = Constraints.objects.get(constraint_name=Constraints.TIER)
-                        if tier_constraint_record.constraint_type == Constraints.CHAR_LIST:
-                            tier_str = tier_constraint_record.constraint_list
-                            tier_list = []
-                            for entry in tier_str.split(','):
-                                entry = entry.strip()
-                                tier_list.append(entry)
-                            for tier_name in tier_list:
-                                tier_code_key = f"{tier_name}"
-                                loc_code_key = row_code_key + bin_code_key + tier_code_key
-                                if loc_code_key in exclusion_constraint_list:
-                                    ...
-                                else:
-                                    location_record, created = Location.objects.get_or_create(
-                                        loc_code=loc_code_key,
-                                        loc_bin=bin_code_key,)
-                                    if created:
-                                        location_record.loc_row=row_code_key
-                                        location_record.loc_bin = bin_code_key
-                                        location_record.save()
-                                        ## kee track of record numbers here
+        ###### USE LocRow, LocBin and LocTier and forget about Constraints table ######
 
+        for row_code in LocRow.objects.all().values_list('loc_row', flat=True
+                                                           ).order_by('loc_row'):
+            row_code_key = row_code
+            for bin_code in LocBin.objects.all().values_list('loc_bin', flat=True
+                                                           ).order_by('loc_bin'):
+                bin_code_key = bin_code
+                for tier_code in LocTier.objects.all().values_list('loc_tier', flat=True
+                                                                 ).order_by('loc_tier'):
+                    tier_code_key = tier_code
+                    combination_loc_key = row_code_key + bin_code_key + tier_code_key
+                    location_record = Location.objects.filter(loc_code=combination_loc_key)
+                    if not location_record:
+                        if combination_loc_key not in exclusion_constraint_list:
+                            r = Location(loc_code=combination_loc_key,
+                                         loc_descr=f'Row {row_code_key} Bin {bin_code_key} Tier {tier_code_key}',
+                                         loc_row=LocRow.objects.get(loc_row=row_code_key),
+                                         loc_bin=LocBin.objects.get(loc_bin=bin_code_key),
+                                         loc_tier=LocTier.objects.get(loc_tier=tier_code_key))
+                            r.save()
+                            
 
-
+    # Updates LocRow, LocBin and LocTier tables with latest data from Constraints table
+    # Requires that exclusion data be in a comma separated string
     def update_row_bin_tier_tables(self):
-
-        exclusion_constraint_list = self.build_exclusion_constraint_list()
-
-
-        row_nnn = 0     # Row records changed
-        bin_nnn = 0     # Bin records changed
-        tier_nnn = 0    # Tier records changed
 
         # Get Constraint object with constraint_name Constraints.Constraints.CONSTRAINT_NAME_CHOICES.ROW
         row_constraint_record = Constraints.objects.get(constraint_name = Constraints.ROW)
@@ -3428,7 +3407,6 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
             bin_min = int(bin_constraint_record.constraint_min)
             bin_max = int(bin_constraint_record.constraint_max)
             for bin_num in range(bin_min, bin_max + 1):
-                # created: boolean    get LowRow object with loc_row equals row_num
                 bin_record, created = LocBin.objects.get_or_create(loc_bin=f'{bin_num:02}')
                 if created:
                     bin_record.loc_bin = f'{bin_num:02}'
@@ -3450,8 +3428,6 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
                     tier_record.loc_tier = f"{tier_name}"
                     tier_record.loc_tier_descr = f"Tier {tier_name}"
                     tier_record.save()
-                    tier_nnn = tier_nnn + 1
-
 
 
     def get(self, request, *args, **kwargs):
