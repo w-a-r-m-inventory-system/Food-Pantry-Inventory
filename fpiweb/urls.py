@@ -64,7 +64,9 @@ from fpiweb.views import \
     ProductExampleListView, \
     ManualLocTableListView, \
     ManualLocTableCreateView, \
-    ManualLocTableUpdateView, RebuildLocTableView
+    ManualLocTableUpdateView, \
+    RebuildLocTableStartView, \
+    RebuildLocTableFinishView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -375,7 +377,7 @@ urlpatterns = [
          name='manual_loc_table_new', ),
 
     # ManualLocationTable List Page
-    # e.g./fpiweb/manual_loc_table/ = list of RebuildLocationTable
+    # e.g./fpiweb/manual_loc_table/ = list of LocationTable
     path('manual_loc_table/', ManualLocTableListView.as_view(),
          name='manual_loc_table_view'),
 
@@ -384,10 +386,17 @@ urlpatterns = [
     path('manual_loc_table/edit/<int:pk>/', ManualLocTableUpdateView.as_view(),
          name='manual_loc_table_update', ),
 
-    # RebuildLocationTable List Page
-    # e.g./fpiweb/rebuild_loc_table/ = ManualLocationTable
-    path('rebuild_loc_table/', RebuildLocTableView.as_view(),
-         name='rebuild_loc_table_view'),
+    # RebuildLocationTable Start Page
+    # e.g./fpiweb/rebuild_loc_table_start/ = Update LocRow, LocBin & LocTier
+    # from Constraints table
+    path('rebuild_loc_table_start/', RebuildLocTableStartView.as_view(),
+         name='rebuild_loc_table_start_view'),
+
+    # RebuildLocationTable Finish Page
+    # e.g./fpiweb/rebuild_loc_table_finish/ = Rebuild Location Table
+    # from LocRow, LocBin, and LocTier tables
+    path('rebuild_loc_table_finish/', RebuildLocTableFinishView.as_view(),
+         name='rebuild_loc_table_finish_view'),
 
 ]
 

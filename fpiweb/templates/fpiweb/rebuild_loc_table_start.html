@@ -1,19 +1,19 @@
 {% extends 'fpiweb/base.html' %}
 
-{# Purpose: Rebuild Location Table #}
-{# URL Name: rebuild_loc_table_view #}
+{# Purpose: Rebuild Location Table Start#}
+{# URL Name: rebuild_loc_table_start_view #}
 {# URL Response: GET #}
 {# Table: Location #}
 
 
-{% block title %} Rebuild Location Table {% endblock %}
+{% block title %} Rebuild Location Table Start {% endblock %}
 
 {% block content %}
 
     <div class="row">
         <div class="col-md-12 text-center">
             <h1 class="h1">
-                Rebuild Location Table
+                Rebuild Location Table Start
             </h1>
         </div>
     </div>
@@ -63,7 +63,7 @@
     <div class="row text-center">
         <div class="col-md-6 text-center">
             <a class="'btn alert-info" role="button" href="
-                {% url 'fpiweb:rebuild_loc_table_view' %}">
+                {% url 'fpiweb:rebuild_loc_table_finish_view' %}">
                         Start </a>
         </div>
         <div class="col-md-6 text-center">
@@ -80,10 +80,10 @@
     <hr class="style-one"/>
 
     <h6>
-        Template: rebuild_loc_table.html
+        Template: rebuild_loc_table_start.html
     </h6>
     <h6>
-        View: RebuildLocTableListView
+        View: RebuildLocTableStartView
     </h6>
 
 {% endblock %}
