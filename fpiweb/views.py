@@ -3335,9 +3335,8 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
         exclusion_constraint_record = Constraints.objects.get(constraint_name=Constraints.LOCATION_EXCLUSIONS)
         if exclusion_constraint_record.constraint_type == Constraints.CHAR_LIST:
             exclusion_str = exclusion_constraint_record.constraint_list
-            for entry in exclusion_str.split(','):
-                entry = entry.strip()
-                exclusion_constraint_checklist.append(entry)
+            # create list of exclusions from Constraint table
+            exclusion_constraint_checklist = [entry.strip() for entry in exclusion_str.split(',')]
         return exclusion_constraint_checklist
 
     # return a list of loc_code keys
@@ -3380,11 +3379,15 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
                                          loc_bin=LocBin.objects.get(loc_bin=bin_code_key),
                                          loc_tier=LocTier.objects.get(loc_tier=tier_code_key))
                             r.save()
-                            
+
 
     # Updates LocRow, LocBin and LocTier tables with latest data from Constraints table
     # Requires that exclusion data be in a comma separated string
     def update_row_bin_tier_tables(self):
+
+        row_nnn= 0
+        bin_nnn= 0
+        tier_nnn = 0
 
         # Get Constraint object with constraint_name Constraints.Constraints.CONSTRAINT_NAME_CHOICES.ROW
         row_constraint_record = Constraints.objects.get(constraint_name = Constraints.ROW)
@@ -3418,10 +3421,7 @@ class RebuildLocTableView(PermissionRequiredMixin, View):
         if tier_constraint_record.constraint_type == Constraints.CHAR_LIST:
             tier_str = tier_constraint_record.constraint_list
             # convert comma separated string to a list
-            tier_list = []
-            for entry in tier_str.split(','):
-                entry = entry.strip()
-                tier_list.append(entry)
+            tier_list = [entry.strip() for entry in tier_str.split(',')]
             for tier_name in tier_list:
                 tier_record, created = LocTier.objects.get_or_create(loc_tier=f"{tier_name}", )
                 if created:
