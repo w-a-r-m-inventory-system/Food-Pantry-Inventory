@@ -3420,6 +3420,7 @@ class RebuildLocTableStartView(PermissionRequiredMixin, View):
 
 class RebuildLocTableFinishView(PermissionRequiredMixin, View):
 
+    # Mike Rehner not sure about these permissions
     permission_required = (
         'fpiweb.view_constraints',
         'fpiweb.view_location'
@@ -3434,15 +3435,14 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
     # create a list of exclusion constraint keys
     # requires that exclusion list items be comma separated
     def build_exclusion_constraint_list(self):
-        exclusion_constraint_checklist = []
         exclusion_constraint_record = Constraints.objects.get(
             constraint_name=Constraints.LOCATION_EXCLUSIONS)
         if exclusion_constraint_record.constraint_type == Constraints.CHAR_LIST:
             exclusion_str = exclusion_constraint_record.constraint_list
-            # create list of exclusions from Constraint table
-            exclusion_constraint_checklist = [entry.strip() for entry
-                                              in exclusion_str.split(',')]
-        return exclusion_constraint_checklist
+            # return list of exclusions from Constraint table
+            return [entry.strip() for entry in exclusion_str.split(',')]
+        else:
+            ...
 
     def rebuild_location_table(self):
 
@@ -3464,9 +3464,8 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
                     tier_code_key = tier_code
                     combination_loc_key = row_code_key + bin_code_key + \
                                           tier_code_key
-                    location_record = Location.objects.filter(
-                        loc_code=combination_loc_key)
-                    if not location_record:
+                    if not Location.objects.filter(loc_code=
+                                                   combination_loc_key):
                         if combination_loc_key not in exclusion_constraint_list:
                             r = Location(loc_code=combination_loc_key,
                                          loc_descr=f'Row {row_code_key} '
