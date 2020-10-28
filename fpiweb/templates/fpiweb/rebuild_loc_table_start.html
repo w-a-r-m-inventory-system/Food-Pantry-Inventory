@@ -20,6 +20,17 @@
 
     <hr class="style-one"/>
 
+    <div class="row col-md-12 text-Left">
+        <p>Purpose:</p>
+        <p>This screen will add any missing records to the Location table. If
+        there has been an increase in the number of rows, bins, and/or tiers
+        in the warehouse area, this screen is a shortcut to adding the
+        additional values in the appropriate tables. Change the values in the
+            Constraints table to set the appropriate values below.</p>
+    </div>
+
+
+
     <div class="row text-Left">
         <div class="col-md-2 text-Left">
             Rows:
@@ -60,11 +71,38 @@
     </div>
         <br/><br/>
 
+    <div class="row col-md-12 text-Left">
+        <p>Notes:</p>
+    </div>
+    <div class="row col-md-12 text-Left">
+        <ul>
+            <li>This procedure will add and missing values.</li>
+            <li>This procedure will not delete any existing records in the
+            Row, Bin, Tier or Location Tables.</li>
+            <li>This procedure will add records base on all combinations of
+            rows, bins, and tiers given above (except for the exclusions)</li>
+            <li>Each record added to the Row table will have a two digit
+                key and a description of "Row nn" where nn is the row
+                number.</li>
+             <li>Each record added to the Bin table will have a two digit
+                key and a description of "Bin nn" where nn is the bin
+                number.</li>
+            <li>Each record added to the Tier table will have a two character
+                key and a description of "Tier xx" where xx is the tier
+                code.</li>
+            <li>Each record added to the Location table will have a key of
+                "rrbbtt" and a description of "Row rr Bin bb Tier tt"
+                (where rr = row, bb = bin and tt = tier).</li>
+        </ul>
+    </div>
+
+    </div>
+
     <div class="row text-center">
         <div class="col-md-6 text-center">
             <a class="'btn alert-info" role="button" href="
                 {% url 'fpiweb:rebuild_loc_table_finish_view' %}">
-                        Start </a>
+                        Start Rebuild </a>
         </div>
         <div class="col-md-6 text-center">
             <a class="'btn alert-info" role="button" href="
