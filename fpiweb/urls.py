@@ -66,7 +66,8 @@ from fpiweb.views import \
     ManualLocTableCreateView, \
     ManualLocTableUpdateView, \
     RebuildLocTableStartView, \
-    RebuildLocTableFinishView
+    RebuildLocTableFinishView, \
+    RebuildLocTableProgressView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -397,6 +398,12 @@ urlpatterns = [
     # from LocRow, LocBin, and LocTier tables
     path('rebuild_loc_table_finish/', RebuildLocTableFinishView.as_view(),
          name='rebuild_loc_table_finish_view'),
+
+    # RebuildLocationTable Progress Page
+    # e.g./fpiweb/rebuild_loc_table_progress/ = Rebuild Location Table
+    # from LocRow, LocBin, and LocTier tables
+    path('rebuild_loc_table_progress/', RebuildLocTableProgressView.as_view(),
+         name='rebuild_loc_table_progress_view'),
 
 ]
 

@@ -1,6 +1,7 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+import time
 
 from collections import OrderedDict
 from csv import writer as csv_writer
@@ -3486,7 +3487,6 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
         else:
             ...
 
-
     # Adds new records to the Location table based on updated values from
     # Constraints table.
     # Requires Loc_Row, Loc_Bin and Loc Tier tables previously updated from
@@ -3527,9 +3527,11 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
                                              loc_tier=tier_code_key))
                             r.save()
                             loc_records_nnn = loc_records_nnn + 1
+
         return loc_records_nnn
 
     def get(self, request, *args, **kwargs):
+        # time.sleep(10)  Used to test spinner in previous page
         rows_added, bins_added, tiers_added = self.update_row_bin_tier_tables()
         location_records_added = self.rebuild_location_table()
         l = self.build_exclusion_constraint_list()
@@ -3539,6 +3541,23 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
                    'tiers_added': tiers_added,
                    'l': l}
         return render(request, "fpiweb/rebuild_loc_table_finish.html", context)
+
+
+class RebuildLocTableProgressView(PermissionRequiredMixin, View):
+    # Mike Rehner not sure about these permissions
+    permission_required = (
+        'fpiweb.view_constraints',
+        'fpiweb.view_location'
+        'fpiweb.add_location'
+    )
+
+    model = Location
+    template_name = 'fpiweb/ebuild_loc_table_progress.html'
+    context_object_name = 'rebuild_loc_table'
+    success_url = reverse_lazy('fpiweb:rebuild_loc_table_progress_view')
+
+    def get(self, request, *args, **kwargs):
+        return render(request, "fpiweb/rebuild_loc_table_progress.html")
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """
