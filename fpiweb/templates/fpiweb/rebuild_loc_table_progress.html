@@ -15,13 +15,17 @@
     <hr class="style-one"/>
     <br />
 
-    <!-- link below required for spinner to work -->
+    <!-- bootstrap link greater than version 4.2.1 below required for bootstrap
+    spinner to work -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <div class="'row">
         <div class="col-md-4 text-center"></div>
             <div class="col-nd-4 text-center">
-                <div class="spinner-border text-primary"></div>
+                <div class="spinner-border text-primary"
+                style="width: 10rem; height: 10rem;" role="status">
+                    <span class="sr-only"></span>
+                </div>
             </div>
         <div class="col-md-4 text-center"></div>
     </div>
@@ -30,17 +34,25 @@
 
     <div class="row text-center">
         <div class="col-md-12 text-center">
-            <a class="'btn alert-info" role="button" id='test'
+            <a class="'btn alert-info" role="button" id='next_page'
                style="display:none" href="
                 {% url 'fpiweb:rebuild_loc_table_finish_view' %}">
-                        Start Rebuild </a>
+            </a>
         </div>
     </div>
     <br />
 
     <script>
-        // click the hidden <a\> link
-        window.onload = document.getElementById('test').click();
+        // clicks link for 'rebuild_loc_table_finish.html' page to load,
+        // spinner spins until next page returns from server
+        window.onload = document.getElementById('next_page').click();
     </script>
+
+     <h6>
+        Template: rebuild_loc_table_progress.html
+    </h6>
+    <h6>
+        View: RebuildLocTableProgressView
+    </h6>
 
 {% endblock %}
