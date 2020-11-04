@@ -3,7 +3,7 @@ apipkg==1.5
 appdirs==1.4.4
 argon2-cffi==20.1.0
 args==0.1.0
-asgiref==3.2.10
+asgiref==3.3.0
 astroid==2.4.2
 atomicwrites==1.4.0
 attrs==20.2.0
@@ -19,7 +19,7 @@ commonmark==0.9.1
 coverage==5.3
 crayons==0.4.0
 dateparser==1.0.0
-Django==3.1.2
+Django==3.1.3
 django-bootstrap4==2.3.1
 django-db==0.0.7
 django-extensions==3.0.9
@@ -58,7 +58,7 @@ pytest-django==4.1.0
 pytest-forked==1.3.0
 pytest-xdist==2.1.0
 python-dateutil==2.8.1
-pytz==2020.1
+pytz==2020.4
 pytzdata==2020.1
 PyYAML==5.3.1
 qrcode==6.1
