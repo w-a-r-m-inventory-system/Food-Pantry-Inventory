@@ -6,14 +6,9 @@ from collections import OrderedDict
 from csv import writer as csv_writer
 from enum import Enum
 from http import HTTPStatus
-from io import BytesIO
 from json import loads
-from logging import getLogger, \
-    debug, \
-    info
+from logging import getLogger
 from operator import \
-    itemgetter, \
-    attrgetter, \
     methodcaller
 from string import digits
 from typing import Optional
@@ -31,11 +26,9 @@ from django.contrib.auth.mixins import \
 from django.core.exceptions import ValidationError
 from django.core.serializers import serialize
 from django.db import transaction
-from django.db.models import Max
 from django.db.models.functions import Substr
 from django.forms import formset_factory
 from django.http import \
-    FileResponse, \
     HttpResponse, \
     JsonResponse, \
     StreamingHttpResponse
@@ -45,7 +38,6 @@ from django.shortcuts import \
 from django.urls import \
     reverse, \
     reverse_lazy
-from django.utils import timezone
 from django.views import View
 from django.views.generic import \
     CreateView, \
@@ -56,11 +48,8 @@ from django.views.generic import \
     TemplateView, \
     UpdateView
 
-from sqlalchemy.engine.url import URL
-
 from fpiweb.constants import \
     ProjectError, \
-    InvalidValueError, \
     UserInfo, \
     TargetUser, \
     AccessLevel, \
@@ -107,7 +96,6 @@ from fpiweb.forms import \
     NewBoxNumberForm, \
     PalletNameForm, \
     PalletSelectForm, \
-    PrintLabelsForm, \
     ProductForm, \
     ExpMoStartForm, \
     ExpMoEndForm, \
@@ -118,9 +106,12 @@ from fpiweb.forms import \
     ProductCategoryForm, \
     ProductNameForm, \
     ProductExampleForm
-from fpiweb.qr_code_utilities import QRCodePrinter
-from fpiweb.support.BoxManagement import BoxManagementClass
-from fpiweb.support.PermissionsManagement import ManageUserPermissions
+
+from fpiweb.support.BoxManagement import \
+    BoxManagementClass
+from fpiweb.support.PermissionsManagement import \
+    ManageUserPermissions
+
 
 
 __author__ = '(Multiple)'
@@ -658,7 +649,7 @@ class ConstraintsListView(PermissionRequiredMixin, ListView):
         CHAR_RANGE = Constraints.CHAR_RANGE
         range_list = [INT_RANGE, CHAR_RANGE]
         context['range_list'] = range_list
-        info(
+        logger.info(
             f'Constraint extra info: INT_RANGE: {INT_RANGE}, '
             f'CHAR__RANGE: '
             f'{CHAR_RANGE}, range_list: {range_list}'
@@ -1109,7 +1100,7 @@ class BuildPalletView(PermissionRequiredMixin, View):
                 'exp_month_start': pallet_box.exp_month_start,
                 'exp_month_end': pallet_box.exp_month_end,
             }
-            print("adding {} to initial_data".format(form_data))
+            logger.debug("adding {} to initial_data".format(form_data))
             initial_data.append(form_data)
 
         build_pallet_form = BuildPalletForm(
@@ -1398,59 +1389,6 @@ class ScannerView(PermissionRequiredMixin, View):
             data=box_data,
             status=HTTPStatus.OK,
         )
-
-
-class PrintLabelsView(PermissionRequiredMixin, View):
-
-    permission_required = (
-        'fpiweb.print_labels_box',
-    )
-
-    template_name = 'fpiweb/print_labels.html'
-
-    @staticmethod
-    def get_base_url(meta):
-        protocol = meta.get('SERVER_PROTOCOL', 'HTTP/1.1')
-        protocol = protocol.split('/')[0].lower()
-
-        host = meta.get('HTTP_HOST')
-        return f"{protocol}://{host}/"
-
-    def get(self, request, *args, **kwargs):
-        max_box_number = Box.objects.aggregate(Max('box_number'))
-        print("max_box_number", max_box_number)
-
-        return render(
-            request,
-            self.template_name,
-            {'form': PrintLabelsForm()}
-        )
-
-    def post(self, request, *args, **kwargs):
-        base_url = self.get_base_url(request.META)
-
-        form = PrintLabelsForm(request.POST)
-        if not form.is_valid():
-            print("form invalid")
-            return render(
-                request,
-                self.template_name,
-                {'form': form},
-            )
-        print("form valid")
-
-        buffer = BytesIO()
-
-        QRCodePrinter(url_prefix='').print(
-            starting_number=form.cleaned_data.get('starting_number'),
-            count=form.cleaned_data.get('number_to_print'),
-            buffer=buffer,
-        )
-
-        # FileResponse sets the Content-Disposition header so that browsers
-        # present the option to save the file.
-        buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename='labels.pdf')
 
 
 class BoxItemFormView(PermissionRequiredMixin, View):
@@ -2044,7 +1982,7 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
         mode = request.POST.get('mode')
         if mode == self.MODE_ENTER_BOX_NUMBER:
             return self.post_box_number(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2147,7 +2085,7 @@ class ManualNewBoxView(PermissionRequiredMixin, View):
         mode = request.POST.get('mode')
         if mode == self.MODE_ENTER_BOX_NUMBER:
             return self.post_box_number(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2367,7 +2305,7 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
         mode = request.POST.get('mode')
         if mode == self.MODE_ENTER_BOX_INFO:
             return self.post_box_info(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2502,7 +2440,7 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
             return self.post_box_number(request)
         if mode == self.MODE_CONSUME_BOX:
             return self.post_consume_box(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 
@@ -2653,7 +2591,7 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
             return self.post_box_number(request)
         if mode == self.MODE_ENTER_LOCATION:
             return self.post_location(request)
-        print(f"Unrecognized mode '{mode}'")
+        logger.debug(f"Unrecognized mode '{mode}'")
         return render(request, self.template_name, {})
 
 

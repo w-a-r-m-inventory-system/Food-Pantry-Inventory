@@ -301,6 +301,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+*.env
 
 # Spyder project settings
 .spyderproject
@@ -394,16 +395,6 @@ data/
 /scans/*.png
 
 # Travis personal ignore files
-#/fpiweb/templates/fpiweb/animal_edit.html
-#/fpiweb/templates/fpiweb/animal_detail.html
-#/fpiweb/templates/fpiweb/animal_delete.html
-#/fpiweb/templates/fpiweb/puzzle_solve_edit.html
-#/fpiweb/templates/fpiweb/puzzle_edit.html
-#/fpiweb/templates/fpiweb/puzzle_detail.html
-#/fpiweb/wordtrek_views.py
-#/fpiweb/wordtrek_forms.py
-#/fpiweb/templates/fpiweb/animal_list.html
-#/fpiweb/wordtrek_urls.py
-#/fpiweb/templates/fpiweb/wordtrek_base.html
-#/work/data/
-/fpiweb/templates/fpiweb/travistest.html
+# config/Docker/
+
+# EOF

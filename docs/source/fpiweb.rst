@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   fpiweb.fpiweb_views
    fpiweb.migrations
    fpiweb.support
    fpiweb.templatetags

@@ -5,16 +5,63 @@
 
 {% block content %}
 
-<form action="{% url 'fpiweb:print_labels' %}" method="post">
-  {% csrf_token %}
-  {% bootstrap_field form.starting_number %}
-  {% bootstrap_field form.number_to_print %}
-  <input type="submit" value="Generate PDF"/>
-</form>
+    <h1>Print QR Codes</h1>
+
+    <h2>
+        {{ this_user_info.user.first_name }} &nbsp;
+        {{ this_user_info.user.last_name }}
+    </h2>
+    <h3>
+        {{ this_user_info.profile.title }}
+        ({{ this_user_info.highest_access_level.name }})
+    </h3>
+    <br/>
+    <div class="h6">
+        This program generates a pdf file that can subsequently be
+        printed on labels or plain paper.  There are four rows of three
+        QR codes per page.  For performance reasons, no more than
+        {{ labels_max }} QR codes can be printed at a time.
+    </div>
+    <br/>
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+    <form action="{% url 'fpiweb:print_labels' %}" method="post">
+      {% csrf_token %}
+      {% bootstrap_field form.starting_number %}
+        <div>
+            Currently the highest box number in the system is
+            {{ max_box_number }}.  Choose any starting box number desired.
+            Any box number already in the system will be skipped.
+        </div>
+        <br/>
+      {% bootstrap_field form.number_to_print %}
+        <br/>
+        <div>
+            QR codes are printed {{ labels_per_page }} per page.  If the
+            number of labels requested is not a multiple of
+            {{ labels_per_page }}, the last page will have blank labels.
+        </div>
+        <div>
+
+        </div>
+        <hr/>
+      <input type="submit" value="Generate QR Code Labels"/>
+    </form>
 
     <hr/>
     <div>
-        <a href="{% url 'fpiweb:index' %}">Return to main page.</a>
+        <a href="{% url 'fpiweb:index' %}">
+           Return to Main Menu
+        </a>
     </div>
 
 {% endblock %}

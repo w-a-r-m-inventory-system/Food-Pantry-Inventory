@@ -3,22 +3,15 @@ forms.py - provide validation of a forms.
 """
 from enum import Enum
 from logging import \
-    getLogger, \
-    debug, \
-    error
+    getLogger
 from typing import \
     Union, \
-    Optional, \
-    List, \
-    Dict, \
-    Any
+    Optional
 
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.forms import \
-    IntegerField, \
     CharField, \
     Form, \
     ModelChoiceField, \
@@ -27,8 +20,6 @@ from django.forms import \
     BooleanField, \
     ChoiceField, \
     EmailField
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 
 from fpiweb.constants import \
     CURRENT_YEAR, \
@@ -264,7 +255,7 @@ def validation_exp_months_bool(
 def box_number_validator(value) -> None:
     if BoxNumber.validate(value):
         return
-    raise ValidationError(f"{value} is not a valid Box Number")
+    raise ValidationError(f"{value} is not a valid box number")
 
 
 class Html5DateInput(forms.DateInput):
@@ -884,15 +875,6 @@ class BoxItemForm(forms.Form):
         return {
             'box_number': box.box_number,
         }
-
-
-class PrintLabelsForm(forms.Form):
-
-    starting_number = forms.IntegerField()
-
-    number_to_print = forms.IntegerField(
-        initial=10,
-    )
 
 
 class BoxTypeForm(forms.Form):

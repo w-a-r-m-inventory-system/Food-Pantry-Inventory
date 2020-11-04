@@ -16,6 +16,37 @@ from django.core.exceptions import ValidationError
 
 from fpiweb.models import Profile
 
+
+# # # # # #
+# Constants
+# # # # # #
+
+CURRENT_YEAR = date.today().year
+""" The current year - used for validating expiration dates """
+
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+MINIMUM_PASSWORD_LENGTH: int = 10
+
+QR_LABELS_PER_PAGE = 12
+QR_LABELS_MAX = 120
+
+# # # # # # # # # # # # # # #
+# Box Number Format Constants
+#
+# The box number format is "BOXnnnnn" where nnnnn is a five digit number.
+# These canstants provide the programming constraints for validation.
+# # # # # # # # # # # # # # #
+BOX_PREFIX = 'BOX'
+BOX_PREFIX_SIZE = len(BOX_PREFIX)
+MIN_BOX_NUMBER = 1
+MAX_BOX_NUMBER = 99999
+MAX_BOX_NUMBER_DIGITS = len(str(MAX_BOX_NUMBER))
+BOX_NUMBER_SIZE = BOX_PREFIX_SIZE + MAX_BOX_NUMBER_DIGITS
+
+
+
 # # # # # # # # # # # #
 # Decorator Definitions
 # # # # # # # # # # # #
@@ -54,19 +85,6 @@ class OrderedEnum(Enum):
         if self.__class__ is other.__class__:
             return self.value < other.value
         return NotImplemented
-
-
-# # # # # #
-# Constants
-# # # # # #
-
-CURRENT_YEAR = date.today().year
-""" The current year - used for validating expiration dates """
-
-MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-MINIMUM_PASSWORD_LENGTH: int = 10
 
 # # # # # # # # # # # # # # #
 # Project specific exceptions

@@ -25,14 +25,6 @@ StandaloneTools.LoadLocationData module
    :undoc-members:
    :show-inheritance:
 
-StandaloneTools.QRCodePrinter module
-------------------------------------
-
-.. automodule:: StandaloneTools.QRCodePrinter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 StandaloneTools.dump\_group\_permissions module
 -----------------------------------------------
 

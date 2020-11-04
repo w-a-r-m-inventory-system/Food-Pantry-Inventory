@@ -47,7 +47,6 @@ from fpiweb.views import \
     ManualMoveBoxView, \
     ManualNewBoxView, \
     ManualPalletMoveView, \
-    PrintLabelsView, \
     ProductCategoryCreateView, \
     TestScanView, \
     UserManagementView, \
@@ -62,10 +61,11 @@ from fpiweb.views import \
     ProductExampleCreateView, \
     ProductExampleDeleteView, \
     ProductExampleListView
+from fpiweb.fpiweb_views.PrintLabelView import PrintLabelView
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
-__creation_date__ = "04/01/2019"
+__creation_date__ = "09/15/2020"
 
 # set the namespace for the application
 app_name = 'fpiweb'
@@ -255,7 +255,7 @@ urlpatterns = [
 
     # generate a pdf of one or more pages of QR code labels to put on boxes
     # e.g. /fpiweb/print_labels/
-    path('print_labels/', PrintLabelsView.as_view(), name='print_labels'),
+    path('print_labels/', PrintLabelView.as_view(), name='print_labels'),
 
     # Downlaod a csv file containinng all box activity
     # e.g. /fpiweb/activity/download/
@@ -365,9 +365,6 @@ urlpatterns = [
     # e.g. /fpiweb/product_example/delete/4/ = delete product_example # 4
     path('product_example/delete/<int:pk>/', ProductExampleDeleteView.as_view(),
          name='product_example_delete', ),
-
-
-
 
 ]
 

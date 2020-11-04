@@ -1,0 +1,13 @@
+appdirs
+distlib
+filelock
+git-cola
+greenlet
+msgpack
+numpy
+pip
+setuptools
+six
+toml
+virtualenv
+wheel
