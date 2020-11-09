@@ -5,6 +5,11 @@
 {# URL Response: GET #}
 {# Table: Location #}
 
+ <!-- bootstrap link greater than version 4.2.1 below required for bootstrap
+    spinner to work -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
 
 {% block title %} Rebuild Location Table Start {% endblock %}
 
@@ -97,22 +102,52 @@
         </ul>
     </div>
 
-
+   <!-- btn-alert-info -->
 
     <div class="row text-center">
         <div class="col-md-6 text-center">
-            <a class="'btn alert-info" role="button" href="
-                {% url 'fpiweb:rebuild_loc_table_progress_view' %}">
-                        Start Rebuild </a>
+            <a class="btn alert-info" role="button" id ="b" href="
+                {% url 'fpiweb:rebuild_loc_table_finish_view' %}" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Start Rebuild
+            </a>
         </div>
         <div class="col-md-6 text-center">
-            <a class="'btn alert-info" role="button" href="
+
+            <a class="btn alert-info" role="button" href="
                 {% url 'fpiweb:maintenance' %}">
                         Cancel </a>
         </div>
     </div>
 
-    <br/><br/>
+    <br/>
+
+   <button class="btn btn-primary" type="button" disabled>
+  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+  <span class="sr-only">Loading...</span>
+</button>
+<button class="btn btn-primary" type="button" disabled>
+  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+  Loading...
+</button>
+    <br/>
+
+    <!--
+     <script>
+    $(document).ready(function() {
+        $("#b").click(function() {
+          // disable button
+          $(this).prop("disabled", true);
+          // add spinner to button
+          $(this).html(
+            `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...`
+          );
+        });
+    });
+    </script>
+    -->
+
+
 
 
 

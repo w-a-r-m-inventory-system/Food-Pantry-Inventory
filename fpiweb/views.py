@@ -3399,8 +3399,10 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
             row_max = int(row_constraint_record.constraint_max)
             for row_num in range(row_min, row_max + 1):
                 row_record, created = LocRow.objects.get_or_create(
-                    loc_row=f'{row_num:02}', loc_row_descr=f'Row {row_num:02}')
+                    loc_row=f'{row_num:02}')
                 if created:
+                    row_record.low_row_descr = f'Row {row_num:02}'
+                    row_record.save()
                     row_nnn = row_nnn + 1
 
         # Get Constraint object with constraint_name
@@ -3413,8 +3415,10 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
             bin_max = int(bin_constraint_record.constraint_max)
             for bin_num in range(bin_min, bin_max + 1):
                 bin_record, created = LocBin.objects.get_or_create(
-                    loc_bin=f'{bin_num:02}', loc_bin_descr=f'Bin {bin_num:02}')
+                    loc_bin=f'{bin_num:02}')
                 if created:
+                    bin_record.loc_bin_descr = f'Bin {bin_num:02}'
+                    bin_record.save()
                     bin_nnn = bin_nnn + 1
 
         tier_constraint_record = Constraints.objects.get(constraint_name=
@@ -3425,8 +3429,10 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
             tier_list = [entry.strip() for entry in tier_str.split(',')]
             for tier_name in tier_list:
                 tier_record, created = LocTier.objects.get_or_create(
-                    loc_tier=f'{tier_name}', loc_tier_descr=f'Tier {tier_name}')
+                    loc_tier=f'{tier_name}')
                 if created:
+                    tier_record.loc_tier_descr = f'Tier {tier_name}'
+                    tier_record.save()
                     tier_nnn =tier_nnn + 1
 
         return row_nnn, bin_nnn, tier_nnn
@@ -3455,38 +3461,64 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
         # grab the location exclusion list into memory
         exclusion_constraint_list = self.build_exclusion_constraint_list()
 
-        for row_code in LocRow.objects.all().values_list(
-                'loc_row', flat=True).order_by('loc_row'):
-            row_code_key = row_code
-            for bin_code in LocBin.objects.all().values_list(
-                    'loc_bin', flat=True).order_by('loc_bin'):
-                bin_code_key = bin_code
-                for tier_code in LocTier.objects.all().values_list(
-                        'loc_tier', flat=True).order_by('loc_tier'):
-                    tier_code_key = tier_code
+        for row_record in LocRow.objects.all():
+            row_code_key = row_record.loc_row
+            for bin_record in LocBin.objects.all():
+                bin_code_key = bin_record.loc_bin
+                for tier_record in LocTier.objects.all():
+                    tier_code_key = tier_record.loc_tier
                     combination_loc_key = row_code_key + bin_code_key + \
                                           tier_code_key
                     if not Location.objects.filter(loc_code=
                                                    combination_loc_key):
                         if combination_loc_key not in exclusion_constraint_list:
                             r = Location(loc_code=combination_loc_key,
-                                         loc_descr=f'Row {row_code_key} '
-                                                   f'Bin {bin_code_key} '
-                                                   f'Tier {tier_code_key}',
-                                         loc_row=LocRow.objects.get(
-                                             loc_row=row_code_key),
-                                         loc_bin=LocBin.objects.get(
-                                             loc_bin=bin_code_key),
-                                         loc_tier=LocTier.objects.get(
-                                             loc_tier=tier_code_key))
+                                  loc_descr=f'Row {row_code_key} '
+                                            f'Bin {bin_code_key} '
+                                            f'Tier {tier_code_key}',
+                                  loc_row=LocRow.objects.get(
+                                      loc_row=row_code_key),
+                                  loc_bin=LocBin.objects.get(
+                                      loc_bin=bin_code_key),
+                                  loc_tier=LocTier.objects.get(
+                                      loc_tier=tier_code_key))
                             r.save()
-                            loc_records_nnn = loc_records_nnn + 1
-
+                            loc_records_nnn =  loc_records_nnn + 1
         return loc_records_nnn
 
 
+        # for row_code in LocRow.objects.all().values_list(
+        #         'loc_row', flat=True).order_by('loc_row'):
+        #     row_code_key = row_code
+        #     .values_list(
+        #             'loc_bin', flat=True).order_by('loc_bin'):
+        #         bin_code_key = bin_code
+        #         for tier_code in LocTier.objects.all().values_list(
+        #                 'loc_tier', flat=True).order_by('loc_tier'):
+        #             tier_code_key = tier_code
+        #             combination_loc_key = row_code_key + bin_code_key + \
+        #                                   tier_code_key
+        #             if not Location.objects.filter(loc_code=
+        #                                            combination_loc_key):
+        #                 if combination_loc_key not in exclusion_constraint_list:
+        #                     r = Location(loc_code=combination_loc_key,
+        #                                  loc_descr=f'Row {row_code_key} '
+        #                                            f'Bin {bin_code_key} '
+        #                                            f'Tier {tier_code_key}',
+        #                                  loc_row=LocRow.objects.get(
+        #                                      loc_row=row_code_key),
+        #                                  loc_bin=LocBin.objects.get(
+        #                                      loc_bin=bin_code_key),
+        #                                  loc_tier=LocTier.objects.get(
+        #                                      loc_tier=tier_code_key))
+        #                     r.save()
+        #                     loc_records_nnn = loc_records_nnn + 1
+        #
+        # return loc_records_nnn
+
+
     def get(self, request):
-        # time.sleep(10)  # Used to test spinner from previous page
+        time.sleep(10)  # Used to test spinner from previous page
         rows_added, bins_added, tiers_added = self.update_row_bin_tier_tables()
         location_records_added = self.rebuild_location_table()
         context = {'location_records_added': location_records_added,
