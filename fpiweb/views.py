@@ -144,6 +144,28 @@ def get_user_and_profile(request):
     profile = user.profile or Profile.objects.create(user=user)
     return user, profile
 
+class NavbarView(LoginRequiredMixin, TemplateView):
+    """
+    Default web page (/)
+    """
+    template_name = 'fpiweb/navbar.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add some security info so appropriate links can be hidden.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+        user_info = ManageUserPermissions().get_user_info(current_user.id)
+        context={
+            'user_info': user_info,
+            'access_level': AccessLevel,
+            'user_access': user_info.highest_access_level,
+        }
+        return context
 
 class IndexView(LoginRequiredMixin, TemplateView):
     """
@@ -184,7 +206,8 @@ class AboutView(TemplateView):
         :param kwargs:
         :return:
         """
-
+        current_user = self.request.user
+        user_info = ManageUserPermissions().get_user_info(current_user.id)
         # get this information from the database later
         context = super().get_context_data(**kwargs)
         site_name = 'WARM (Westerville Area Resource Ministries)'
@@ -197,6 +220,10 @@ class AboutView(TemplateView):
         context['site_csz'] = site_csz
         context['site_phone'] = site_phone
         context['site_url'] = site_url
+        context['user_info'] = user_info
+        context['user_access'] = user_info.highest_access_level
+        context['access_level']: AccessLevel
+
         return context
 
 
@@ -335,6 +362,23 @@ class ConfirmPasswordChangeView(LoginRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
+    def get_context_data(self, **kwargs):
+        """
+        Add some security info so appropriate links can be hidden.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+        user_info = ManageUserPermissions().get_user_info(current_user.id)
+        context={
+            'user_info': user_info,
+            'access_level': AccessLevel,
+            'user_access': user_info.highest_access_level,
+        }
+        return context
+
 
 class LogoutView(TemplateView):
     template_name = 'fpiweb/logout.html'
@@ -355,6 +399,23 @@ class MaintenanceView(PermissionRequiredMixin, TemplateView):
     )
 
     template_name = 'fpiweb/system_maintenance.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add some security info so appropriate links can be hidden.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+        user_info = ManageUserPermissions().get_user_info(current_user.id)
+        context={
+            'user_info': user_info,
+            'access_level': AccessLevel,
+            'user_access': user_info.highest_access_level,
+        }
+        return context
 
 
 class LocRowListView(PermissionRequiredMixin, ListView):
@@ -1937,6 +1998,11 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
             mode=self.MODE_ENTER_BOX_NUMBER,
             box_number_form=FilledBoxNumberForm(),
         )
+        current_user = self.request.user
+        user_info = ManageUserPermissions().get_user_info(current_user.id)
+        get_context['user_info']= user_info
+        get_context['user_access']= user_info.highest_access_level
+        get_context['access_level']= AccessLevel
         return render(request, self.template_name, get_context)
 
     def post_box_number(self, request):

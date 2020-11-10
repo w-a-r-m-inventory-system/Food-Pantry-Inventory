@@ -1,5 +1,7 @@
+{% include 'fpiweb/navbar.html' %}
 {% load static %}{# django's static tag library #}
 {% load bootstrap4 %}{# bootstrap4 tag library #}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +20,7 @@
     <title>
         {% block title %}
         {% endblock %}
-</title>
+    </title>
     {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
@@ -27,7 +29,10 @@
 
 </head>
 <body>
-    <div class="container">
+    <div class="container-fluid">
+
+    </div>
+    <div class="container-fluid">
         {# Display django.contrib.messages as Bootstrap alerts #}
         {% bootstrap_messages %}
         {% block content %}
