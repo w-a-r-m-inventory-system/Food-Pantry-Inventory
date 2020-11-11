@@ -1,0 +1,108 @@
+{% load static %}{# django's static tag library #}
+{% load bootstrap4 %}{# bootstrap4 tag library #}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"
+          name="viewport"
+          content="width-device-width"
+          initial-scale="1"
+          shrink-to-fit="no"/>
+
+    {# Purpose - Base html for all other templates. #}
+    {# URL Name - (N/A) #}
+    {# URL Response - (N/A) #}
+    {# Table - (N/A) #}
+    {# Form - (N/A) #}
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+
+    {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-reboot.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
+</head>
+<body>
+    <div class = "container-fluid">
+        <div id="primary-nav nav-fill w-100">
+            <nav class="navbar navbar-expand-md navbar-dark " style="background-color: #811e33; color=#FFFFFF;">
+                <a class="navbar-brand nav-fill" href="#"> </a>
+                <button class="navbar-toggler display-flex "
+                        type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand brand-name" href="{% url 'fpiweb:index' %}">
+                    <div class= "logo-image">
+                        <img href="{% static 'fpiweb/Food_Pantry_Logo.jpg' %}"
+                        alt="WARM logo" style="width:15em; height:5em; padding:.5em 3em .5em 1em;"/>
+                    </div>
+                </a>
+
+                {% if user.is_authenticated %}
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Box Management
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_checkin_box' %}">Check In a Box</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_checkout_box' %}">Checkout (Consume Product in) a Box</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_box_status' %}">Check Status of a Box</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_add_box' %}">Add a New Box to Inventory</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_move_box' %}">Move a Box</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Pallet Management
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{% url 'fpiweb:build_pallet' %}">Build a Pallet</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_pallet_move' %}">Move a Pallet</a>
+                                </div>
+                            </li>
+                            {% if user_access == access_level.Volunteer %}
+                                &nbsp;
+                            {% else %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        System Management
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{% url 'fpiweb:maintenance' %}">System Maintenance</a>
+                                        <a class="dropdown-item" href="{% url 'fpiweb:print_labels' %}">Print Labels</a>
+                                        <a class="dropdown-item" href="{% url 'fpiweb:download_activities' %}">Download Activity Log</a>
+                                        <a class="dropdown-item" href="/warmadmin/">Admin</a>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                                    {{ user_info.user.first_name }}
+                                    {{ user_info.user.last_name }}
+                                    <br/>
+                                    {{ user_info.profile.title }}
+                                    ({{ user_info.highest_access_level.name }})
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{% url 'fpiweb:about' %}">Change password</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:logout' %}">Logout</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

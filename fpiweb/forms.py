@@ -3,15 +3,22 @@ forms.py - provide validation of a forms.
 """
 from enum import Enum
 from logging import \
-    getLogger
+    getLogger, \
+    debug, \
+    error
 from typing import \
     Union, \
-    Optional
+    Optional, \
+    List, \
+    Dict, \
+    Any
 
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.forms import \
+    IntegerField, \
     CharField, \
     Form, \
     ModelChoiceField, \
@@ -20,6 +27,8 @@ from django.forms import \
     BooleanField, \
     ChoiceField, \
     EmailField
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from fpiweb.constants import \
     CURRENT_YEAR, \
