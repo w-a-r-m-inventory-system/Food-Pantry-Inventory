@@ -3318,6 +3318,7 @@ class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = ManualLocTableForm
     success_url = reverse_lazy('fpiweb:manual_loc_table_view')
 
+
 class RebuildLocTableStartView(PermissionRequiredMixin, View):
 
     permission_required = (
@@ -3383,7 +3384,7 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
     # Updates LocRow, LocBin and LocTier tables with latest data from
     # Constraints table
     # Requires that exclusion data be in a comma separated string
-    # returns number of rows, bins and tiers added
+    # returns number of rows, bins and tiers added/updated
     def update_row_bin_tier_tables(self):
         row_nnn= 0
         bin_nnn= 0
@@ -3400,8 +3401,10 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
             for row_num in range(row_min, row_max + 1):
                 row_record, created = LocRow.objects.get_or_create(
                     loc_row=f'{row_num:02}')
-                if created:
-                    row_record.low_row_descr = f'Row {row_num:02}'
+                # if new record or loc_row_descr is empty
+                if (created or row_record.loc_row_descr is None or
+                        row_record.loc_row_descr == ''):
+                    row_record.loc_row_descr = f'Row {row_num:02}'
                     row_record.save()
                     row_nnn = row_nnn + 1
 
@@ -3416,7 +3419,8 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
             for bin_num in range(bin_min, bin_max + 1):
                 bin_record, created = LocBin.objects.get_or_create(
                     loc_bin=f'{bin_num:02}')
-                if created:
+                if (created or bin_record.loc_bin_descr is None or
+                        bin_record.loc_bin_descr == ''):
                     bin_record.loc_bin_descr = f'Bin {bin_num:02}'
                     bin_record.save()
                     bin_nnn = bin_nnn + 1
@@ -3430,10 +3434,11 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
             for tier_name in tier_list:
                 tier_record, created = LocTier.objects.get_or_create(
                     loc_tier=f'{tier_name}')
-                if created:
+                if (created or tier_record.loc_tier_descr is None or
+                        tier_record.loc_tier_descr == ''):
                     tier_record.loc_tier_descr = f'Tier {tier_name}'
                     tier_record.save()
-                    tier_nnn =tier_nnn + 1
+                    tier_nnn = tier_nnn + 1
 
         return row_nnn, bin_nnn, tier_nnn
 
@@ -3444,10 +3449,11 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
             constraint_name=Constraints.LOCATION_EXCLUSIONS)
         if exclusion_constraint_record.constraint_type == Constraints.CHAR_LIST:
             exclusion_str = exclusion_constraint_record.constraint_list
-            # return exclusion_st as a list
+            # return exclusion_str as a list
             return [entry.strip() for entry in exclusion_str.split(',')]
         else:
-            ...
+            return ['Error in views.RebuildLocTableFinishView'
+                    '.build_exclusion_constraint_list']
 
     # Adds new records to the Location table based on updated values from
     # Constraints table.
@@ -3486,39 +3492,8 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
                             loc_records_nnn =  loc_records_nnn + 1
         return loc_records_nnn
 
-
-        # for row_code in LocRow.objects.all().values_list(
-        #         'loc_row', flat=True).order_by('loc_row'):
-        #     row_code_key = row_code
-        #     .values_list(
-        #             'loc_bin', flat=True).order_by('loc_bin'):
-        #         bin_code_key = bin_code
-        #         for tier_code in LocTier.objects.all().values_list(
-        #                 'loc_tier', flat=True).order_by('loc_tier'):
-        #             tier_code_key = tier_code
-        #             combination_loc_key = row_code_key + bin_code_key + \
-        #                                   tier_code_key
-        #             if not Location.objects.filter(loc_code=
-        #                                            combination_loc_key):
-        #                 if combination_loc_key not in exclusion_constraint_list:
-        #                     r = Location(loc_code=combination_loc_key,
-        #                                  loc_descr=f'Row {row_code_key} '
-        #                                            f'Bin {bin_code_key} '
-        #                                            f'Tier {tier_code_key}',
-        #                                  loc_row=LocRow.objects.get(
-        #                                      loc_row=row_code_key),
-        #                                  loc_bin=LocBin.objects.get(
-        #                                      loc_bin=bin_code_key),
-        #                                  loc_tier=LocTier.objects.get(
-        #                                      loc_tier=tier_code_key))
-        #                     r.save()
-        #                     loc_records_nnn = loc_records_nnn + 1
-        #
-        # return loc_records_nnn
-
-
     def get(self, request):
-        time.sleep(10)  # Used to test spinner from previous page
+        # time.sleep(10)  # Used to test spinner from previous page
         rows_added, bins_added, tiers_added = self.update_row_bin_tier_tables()
         location_records_added = self.rebuild_location_table()
         context = {'location_records_added': location_records_added,
