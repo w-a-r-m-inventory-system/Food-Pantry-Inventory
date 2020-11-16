@@ -1718,5 +1718,102 @@ class ProductExampleForm(forms.ModelForm):
         return
 
 
+class ManualLocTableForm(forms.ModelForm):
+
+    # Manage RebuildLocationTable with a generic form
+
+    class Meta:
+        # Additional info to help Django provide intelligent defaults
+        model = Location
+        # fields defined in model based on DB, not DB column heads!
+        fields = ['id', 'loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
+                  'loc_row', 'loc_tier']
+
+    loc_code = forms.CharField(help_text=Location.loc_code_help_text,
+                                    required=True,)
+
+
+    @staticmethod
+    def validate_manual_loc_table_fields(
+            loc_code: str,
+            loc_descr: str,
+            loc_in_warehouse: bool,
+            loc_bin: int,
+            loc_row: int,
+            loc_tier: int):
+
+        '''
+        Validate the various Location record fields
+
+        :param loc_code: Location Code
+        :param loc_descr:  Location Description
+        :param loc_bin: Location Bin
+        :param loc_row: Location Row
+        :param loc_tier: Location Tier
+        '''
+
+        loc_code_max_length = Location.loc_code_max_length
+        loc_descr_max_length = Location.loc_descr_max_length
+        min_len = 1
+        if not loc_code or not (len(loc_code_max_length) > 0):
+            raise ValidationError(
+                'The Location Code must be specified'
+            )
+        if (len(loc_code) <= loc_code_max_length) \
+                and \
+                (len(loc_code) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Location Code must be between 1 and ' + loc_code_max_length +
+                'characters long.'
+            )
+
+        if (len(loc_descr) <= loc_descr_max_length) \
+                and \
+                (len(loc_code) >= min_len):
+            ...
+        else:
+            raise ValidationError(
+                'A Location Description must be between 1 and ' + loc_descr_max_length +
+                'characters long.'
+            )
+
+        if not loc_bin:
+            raise ValidationError(
+                'A Location Bin Value is required to Rebuild Location Table'
+            )
+        if not loc_row:
+            raise ValidationError(
+                'A Location Row Value is required to Rebuild Location Table'
+            )
+        if not loc_tier:
+            raise ValidationError(
+                'A Location Tier Value is required to Rebuild Location Table'
+            )
+
+        return
+
+    def clean(self):
+        # Clean and validate the data entered in the web form
+        # loc_in_warehouse not cleaned because it has a default value of 'True'
+        # Need to check if you can enter a not False or not True value
+        cleaned_data = super().clean()
+        loc_code = cleaned_data.get('loc_code')
+        loc_descr = cleaned_data.get('loc_descr')
+        loc_in_warehouse = cleaned_data.get('loc_in_warehouse')
+        loc_bin =cleaned_data.get('loc_bin')
+        loc_row = cleaned_data.get('loc_row')
+        loc_tier = cleaned_data.get('loc_tier')
+        self.validate_manual_loc_table_fields(loc_code,
+                                                    loc_descr,
+                                                    loc_in_warehouse,
+                                                    loc_bin,
+                                                    loc_row,
+                                                    loc_tier)
+        return
+
+
+
 
 # EOF

@@ -1061,7 +1061,7 @@ class Constraints(models.Model):
     BIN: str = 'Bin'
     QUANTITY_LIMIT: str = 'Quantity Limit'
     FUTURE_EXP_YEAR_LIMIT = 'Future Expiration Year Limit'
-    LOCATION_EXCLUSIONS = 'Location Exclusions '
+    LOCATION_EXCLUSIONS = 'Location Exclusions'
 
     CONSTRAINT_NAME_CHOICES = (
         (ROW, 'Rows in the warehouse'),

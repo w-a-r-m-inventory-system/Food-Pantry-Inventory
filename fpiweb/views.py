@@ -1,6 +1,7 @@
 """
 views.py - establish the views (pages) for the F. P. I. web application.
 """
+import time
 
 from collections import OrderedDict
 from csv import writer as csv_writer
@@ -105,13 +106,12 @@ from fpiweb.forms import \
     ChangePasswordForm, \
     ProductCategoryForm, \
     ProductNameForm, \
-    ProductExampleForm
-
+    ProductExampleForm, \
+    ManualLocTableForm
 from fpiweb.support.BoxManagement import \
     BoxManagementClass
 from fpiweb.support.PermissionsManagement import \
     ManageUserPermissions
-
 
 
 __author__ = '(Multiple)'
@@ -3200,12 +3200,256 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
         :return:
         """
 
-        context = super(ProductExampleDeleteView, self).get_context_data(**kwargs)
+        context = super(ProductExampleDeleteView, self).get_context_data(
+            **kwargs)
         context['action'] = reverse('fpiweb:product_example_delete',
                                     kwargs={'pk': self.get_object().id})
         return context
 
 
+class ManualLocTableCreateView(PermissionRequiredMixin, CreateView):
+    """
+      Create a new entry for Location Table using a generic CreateView.
+      """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_manual_location_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/manual_loc_table_edit.html'
+    context_object_name = 'manual_loc_table'
+    success_url = reverse_lazy('fpiweb:manual_loc_table_view')
+
+    formClass = ManualLocTableForm
+
+    fields = ['loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
+              'loc_row', 'loc_tier']
+
+class ManualLocTableListView(PermissionRequiredMixin, ListView):
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.view_manual_loc_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/manual_loc_table_list.html'
+    context_object_name = 'manual_loc_table'
+    # form_class = RebuildLocTableForm
+
+class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
+    """
+        Update a Rebuild Location Table using a generic UpdateView.
+        """
+
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.change_manual_loc_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/manual_loc_table_edit.html'
+    context_object_name = 'manual_loc_table'
+    form_class = ManualLocTableForm
+    success_url = reverse_lazy('fpiweb:manual_loc_table_view')
+
+
+class RebuildLocTableStartView(PermissionRequiredMixin, View):
+
+    permission_required = (
+        'fpiweb.view_constraints',
+        'fpiweb.view_location'
+        'fpiweb.add_location'
+    )
+
+    model = Location
+    template_name = 'fpiweb/rebuild_loc_table_start.html'
+    context_object_name = 'rebuild_loc_table'
+    # success_url = reverse_lazy('fpiweb:rebuild_loc_table_start_view')
+
+    def get(self, request):
+
+        row_constraint = Constraints.objects.get(constraint_name=
+                                                 Constraints.ROW)
+        if row_constraint.constraint_type == Constraints.INT_RANGE:
+            row_min = row_constraint.constraint_min
+            row_max = row_constraint.constraint_max
+        else:
+            row_min = 'Error in row constraint_min'
+            row_max = 'Error in row constraint_max'
+        bin_constraint = Constraints.objects.get(constraint_name=
+                                                 Constraints.BIN)
+        if bin_constraint.constraint_type == Constraints.INT_RANGE:
+            bin_min = bin_constraint.constraint_min
+            bin_max = bin_constraint.constraint_max
+        else:
+            bin_min = 'Error in Bin constraint_min'
+            bin_max = 'Error in Bin constraint_max'
+        tier_constraint = Constraints.objects.get(constraint_name=
+                                                  Constraints.TIER)
+        if tier_constraint.constraint_type == Constraints.CHAR_LIST:
+            tiers = tier_constraint.constraint_list
+        else:
+            tiers = 'Error in Tier constraint_list'
+        exclusions_constraint = Constraints.objects.get(
+            constraint_name=Constraints.LOCATION_EXCLUSIONS)
+        if exclusions_constraint.constraint_type == Constraints.CHAR_LIST:
+            exclusion_str = exclusions_constraint.constraint_list
+        else:
+            exclusion_str = 'Error in Location Exclusions constraint_list'
+        context= {'row_max': row_max, 'row_min': row_min,
+                  'bin_min': bin_min, 'bin_max': bin_max,
+                  'tiers': tiers, 'exclusion_str': exclusion_str,}
+        return render(request, "fpiweb/rebuild_loc_table_start.html", context, )
+
+
+class RebuildLocTableFinishView(PermissionRequiredMixin, View):
+
+    # Mike Rehner not sure about these permissions
+    permission_required = (
+        'fpiweb.view_constraints',
+        'fpiweb.view_location'
+        'fpiweb.add_location'
+    )
+
+    model = Location
+    template_name = 'fpiweb/rebuild_loc_table_finish.html'
+    context_object_name = 'rebuild_loc_table'
+
+    # Updates LocRow, LocBin and LocTier tables with latest data from
+    # Constraints table
+    # Requires that exclusion data be in a comma separated string
+    # returns number of rows, bins and tiers added/updated
+    def update_row_bin_tier_tables(self):
+        row_nnn= 0
+        bin_nnn= 0
+        tier_nnn = 0
+
+        # Get Constraint object with constraint_name
+        # Constraints.Constraints.CONSTRAINT_NAME_CHOICES.ROW
+        row_constraint_record = Constraints.objects.get(constraint_name=
+                                                        Constraints.ROW)
+        # if type == int then use default INT_RANGE?
+        if row_constraint_record.constraint_type == Constraints.INT_RANGE:
+            row_min = int(row_constraint_record.constraint_min)
+            row_max = int(row_constraint_record.constraint_max)
+            for row_num in range(row_min, row_max + 1):
+                row_record, created = LocRow.objects.get_or_create(
+                    loc_row=f'{row_num:02}')
+                # if new record or loc_row_descr is empty
+                if (created or row_record.loc_row_descr is None or
+                        row_record.loc_row_descr == ''):
+                    row_record.loc_row_descr = f'Row {row_num:02}'
+                    row_record.save()
+                    row_nnn = row_nnn + 1
+
+        # Get Constraint object with constraint_name
+        # Constraints.Constraints.CONSTRAINT_NAME_CHOICES.BIN
+        bin_constraint_record = Constraints.objects.get(constraint_name=
+                                                        Constraints.BIN)
+        # if type == int then use default INT_RANGE?
+        if bin_constraint_record.constraint_type == Constraints.INT_RANGE:
+            bin_min = int(bin_constraint_record.constraint_min)
+            bin_max = int(bin_constraint_record.constraint_max)
+            for bin_num in range(bin_min, bin_max + 1):
+                bin_record, created = LocBin.objects.get_or_create(
+                    loc_bin=f'{bin_num:02}')
+                if (created or bin_record.loc_bin_descr is None or
+                        bin_record.loc_bin_descr == ''):
+                    bin_record.loc_bin_descr = f'Bin {bin_num:02}'
+                    bin_record.save()
+                    bin_nnn = bin_nnn + 1
+
+        tier_constraint_record = Constraints.objects.get(constraint_name=
+                                                         Constraints.TIER)
+        if tier_constraint_record.constraint_type == Constraints.CHAR_LIST:
+            tier_str = tier_constraint_record.constraint_list
+            # convert comma separated string to a list
+            tier_list = [entry.strip() for entry in tier_str.split(',')]
+            for tier_name in tier_list:
+                tier_record, created = LocTier.objects.get_or_create(
+                    loc_tier=f'{tier_name}')
+                if (created or tier_record.loc_tier_descr is None or
+                        tier_record.loc_tier_descr == ''):
+                    tier_record.loc_tier_descr = f'Tier {tier_name}'
+                    tier_record.save()
+                    tier_nnn = tier_nnn + 1
+
+        return row_nnn, bin_nnn, tier_nnn
+
+    # returns a list of exclusion constraint keys
+    # requires that exclusion list items be comma separated in Constraint table
+    def build_exclusion_constraint_list(self):
+        exclusion_constraint_record = Constraints.objects.get(
+            constraint_name=Constraints.LOCATION_EXCLUSIONS)
+        if exclusion_constraint_record.constraint_type == Constraints.CHAR_LIST:
+            exclusion_str = exclusion_constraint_record.constraint_list
+            # return exclusion_str as a list
+            return [entry.strip() for entry in exclusion_str.split(',')]
+        else:
+            return ['Error in views.RebuildLocTableFinishView'
+                    '.build_exclusion_constraint_list']
+
+    # Adds new records to the Location table based on updated values from
+    # Constraints table.
+    # Requires Loc_Row, Loc_Bin and Loc Tier tables previously updated from
+    # Constraints table
+    # returns number of new records created in Location table
+    def rebuild_location_table(self):
+
+        loc_records_nnn = 0     # the number of location table records changed
+
+        # grab the location exclusion list into memory
+        exclusion_constraint_list = self.build_exclusion_constraint_list()
+
+        for row_record in LocRow.objects.all():
+            row_code_key = row_record.loc_row
+            for bin_record in LocBin.objects.all():
+                bin_code_key = bin_record.loc_bin
+                for tier_record in LocTier.objects.all():
+                    tier_code_key = tier_record.loc_tier
+                    combination_loc_key = row_code_key + bin_code_key + \
+                                          tier_code_key
+                    if not Location.objects.filter(loc_code=
+                                                   combination_loc_key):
+                        if combination_loc_key not in exclusion_constraint_list:
+                            r = Location(loc_code=combination_loc_key,
+                                  loc_descr=f'Row {row_code_key} '
+                                            f'Bin {bin_code_key} '
+                                            f'Tier {tier_code_key}',
+                                  loc_row=LocRow.objects.get(
+                                      loc_row=row_code_key),
+                                  loc_bin=LocBin.objects.get(
+                                      loc_bin=bin_code_key),
+                                  loc_tier=LocTier.objects.get(
+                                      loc_tier=tier_code_key))
+                            r.save()
+                            loc_records_nnn =  loc_records_nnn + 1
+        return loc_records_nnn
+
+    def get(self, request):
+        # time.sleep(10)  # Used to test spinner from previous page
+        rows_added, bins_added, tiers_added = self.update_row_bin_tier_tables()
+        location_records_added = self.rebuild_location_table()
+        context = {'location_records_added': location_records_added,
+                   'rows_added': rows_added,
+                   'bins_added': bins_added,
+                   'tiers_added': tiers_added,}
+        return render(request, "fpiweb/rebuild_loc_table_finish.html", context)
+
+
+# page shows a spinner while Location table is updated on server
+class RebuildLocTableProgressView(PermissionRequiredMixin, View):
+    # Mike Rehner not sure about these permissions
+    permission_required = (
+        'fpiweb.view_constraints',
+        'fpiweb.view_location'
+        'fpiweb.add_location'
+    )
+
+    def get(self, request ):
+        return render(request, "fpiweb/rebuild_loc_table_progress.html")
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """

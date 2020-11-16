@@ -1,0 +1,80 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: Rebuild Location Table Finish #}
+{# URL Name: rebuild_loc_table_finish_view #}
+{# URL Response: GET #}
+{# Table: Location #}
+
+
+{% block title %} Rebuild Location Table Finish {% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Rebuild Location Table Finish
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one"/>
+
+    <br/>
+
+    <div class="row">
+        <div class ="col-md-4 text-left"> Processing Complete </div>
+        <div class ="col-md-8 text-right"></div>
+    </div>
+    <br /><br />
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class ="col-md-3 text-left"> Row records added/updated: </div>
+        <div class ="col-md-2 text-right">{{ rows_added }}</div>
+        <div class="col-md-6"></div>
+    </div>
+    <br />
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class ="col-md-3 text-left">Bin records added/updated: </div>
+        <div class ="col-md-2 text-right">{{ bins_added }}</div>
+        <div class="col-md-6"></div>
+    </div>
+    <br />
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class ="col-md-3 text-left"> Tier records added/updated: </div>
+        <div class ="col-md-2 text-right">{{ tiers_added }}</div>
+        <div class="col-md-6"></div>
+    </div>
+    <br />
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class ="col-md-3 text-left"> Location records added: </div>
+        <div class ="col-md-2 text-right">{{ location_records_added }}</div>
+        <div class="col-md-6"></div>
+    </div>
+        <br /><br /><br />
+
+    <div class="col-md-12 text-center">
+        <a class="btn alert-info" role="button" href="
+            {% url 'fpiweb:maintenance' %}">
+                    Return to System Maintenance </a>
+    </div>
+
+    <br />
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: rebuild_loc_table_finish.html
+    </h6>
+    <h6>
+        View: RebuildLocTableFinishView
+    </h6>
+
+{% endblock %}

@@ -60,8 +60,16 @@ from fpiweb.views import \
     ProductExampleUpdateView, \
     ProductExampleCreateView, \
     ProductExampleDeleteView, \
-    ProductExampleListView
-from fpiweb.fpiweb_views.PrintLabelView import PrintLabelView
+    ProductExampleListView, \
+    ManualLocTableListView, \
+    ManualLocTableCreateView, \
+    ManualLocTableUpdateView, \
+    RebuildLocTableStartView, \
+    RebuildLocTableFinishView, \
+    RebuildLocTableProgressView
+from fpiweb.fpiweb_views.PrintLabelView import \
+    PrintLabelView
+
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -366,6 +374,38 @@ urlpatterns = [
     path('product_example/delete/<int:pk>/', ProductExampleDeleteView.as_view(),
          name='product_example_delete', ),
 
+    # ManualLocationTable Add page
+    # e.g. /fpiweb/product_example/add/ = add a product example
+    path('manual_loc_table/add/', ManualLocTableCreateView.as_view(),
+         name='manual_loc_table_new', ),
+
+    # ManualLocationTable List Page
+    # e.g./fpiweb/manual_loc_table/ = list of LocationTable
+    path('manual_loc_table/', ManualLocTableListView.as_view(),
+         name='manual_loc_table_view'),
+
+    # ManualLocationTable Edit page
+    # e.g. /fpiweb/manual_loc_table/edit/4/ = edit rebuild_loc_table # 4
+    path('manual_loc_table/edit/<int:pk>/', ManualLocTableUpdateView.as_view(),
+         name='manual_loc_table_update', ),
+
+    # RebuildLocationTable Start Page
+    # e.g./fpiweb/rebuild_loc_table_start/ = Update LocRow, LocBin & LocTier
+    # from Constraints table
+    path('rebuild_loc_table_start/', RebuildLocTableStartView.as_view(),
+         name='rebuild_loc_table_start_view'),
+
+    # RebuildLocationTable Finish Page
+    # e.g./fpiweb/rebuild_loc_table_finish/ = Rebuild Location Table
+    # from LocRow, LocBin, and LocTier tables
+    path('rebuild_loc_table_finish/', RebuildLocTableFinishView.as_view(),
+         name='rebuild_loc_table_finish_view'),
+
+    # RebuildLocationTable Progress Page
+    # e.g./fpiweb/rebuild_loc_table_progress/ = Rebuild Location Table
+    # from LocRow, LocBin, and LocTier tables
+    path('rebuild_loc_table_progress/', RebuildLocTableProgressView.as_view(),
+         name='rebuild_loc_table_progress_view'),
 ]
 
 # EOF

@@ -1,0 +1,128 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: Rebuild Location Table Start#}
+{# URL Name: rebuild_loc_table_start_view #}
+{# URL Response: GET #}
+{# Table: Location #
+
+{% block title %} Rebuild Location Table Start {% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Rebuild Location Table Start
+            </h1>
+        </div>
+    </div>
+
+    <hr class="style-one"/>
+
+    <div class="row col-md-12 text-Left">
+        <p>Purpose:</p>
+        <p>This screen will add any missing records to the Location table. If
+        there has been an increase in the number of rows, bins, and/or tiers
+        in the warehouse area, this screen is a shortcut to adding the
+        additional values in the appropriate tables. Change the values in the
+            Constraints table to set the appropriate values below.</p>
+    </div>
+
+
+
+    <div class="row text-Left">
+        <div class="col-md-2 text-Left">
+            Rows:
+        </div>
+        <div class="col-md-2 text-Left">
+           {{ row_min }} to {{ row_max }}
+        </div>
+        <div class="col-md-8 text-Center"></div>
+    </div>
+    <br />
+    <div class="row text-Left">
+        <div class="col-md-2 text-Left">
+            Bins:
+        </div>
+        <div class="col-md-2 text-Left">
+            &nbsp;{{ bin_min }} to {{ bin_max }}
+        </div>
+        <div class="col-md-8"></div>
+    </div>
+    <br />
+    <div class="row text-Left">
+        <div class="col-md-2 text-Left">
+            Tiers:
+        </div>
+        <div class="col-md-2 text-Left">
+            &nbsp;{{ tiers }}
+        </div>
+        <div class="col-md-8"></div>
+    </div>
+        <br /><br />
+    <div class="row text-Center">
+        <div class="col-md-2 text-Left">
+            Exclusions:
+        </div>
+        <div class="col-md-10 text-Left">
+            {{ exclusion_str }}
+        </div>
+    </div>
+        <br/><br/>
+
+    <div class="row col-md-12 text-Left">
+        <p>Notes:</p>
+    </div>
+
+    <div class="row col-md-12 text-Left">
+        <ul>
+            <li>This procedure will add any missing values.</li>
+            <li>This procedure will not delete any existing records in the
+            Row, Bin, Tier or Location Tables.</li>
+            <li>This procedure will add records base on all combinations of
+            rows, bins, and tiers given above (except for the exclusions).</li>
+            <li>Each record added to the Row table will have a two digit
+                key and a description of "Row nn" where nn is the row
+                number.</li>
+             <li>Each record added to the Bin table will have a two digit
+                key and a description of "Bin nn" where nn is the bin
+                number.</li>
+            <li>Each record added to the Tier table will have a two character
+                key and a description of "Tier xx" where xx is the tier
+                code.</li>
+            <li>Each record added to the Location table will have a key of
+                "rrbbtt" and a description of "Row rr Bin bb Tier tt"
+                (where rr = row, bb = bin and tt = tier).</li>
+        </ul>
+    </div>
+
+   <!-- btn-alert-info -->
+
+    <div class="row text-center">
+        <div class="col-md-6 text-center">
+            <a class="btn alert-info" role="button" id ="b" href="
+                {% url 'fpiweb:rebuild_loc_table_progress_view' %}">
+                        Start Rebuild
+            </a>
+        </div>
+        <div class="col-md-6 text-center">
+
+            <a class="btn alert-info" role="button" href="
+                {% url 'fpiweb:maintenance' %}">
+                        Cancel </a>
+        </div>
+    </div>
+
+    <br/>
+
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: rebuild_loc_table_start.html
+    </h6>
+    <h6>
+        View: RebuildLocTableStartView
+    </h6>
+
+{% endblock %}
