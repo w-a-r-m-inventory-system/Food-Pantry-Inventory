@@ -71,7 +71,7 @@ GROUPS_AND_PERMISSIONS: Dict[str, Dict[str, Dict[str, List[str]]]] = {
 
 def iterate_permissions(permissions):
     """
-    Generator to pick up the needed foreign keys for a given permisison.
+    Generator to pick up the needed foreign keys for a given permission.
 
     :param permissions: attributes associated with this permission
     :return:
@@ -84,7 +84,7 @@ def iterate_permissions(permissions):
 
 def setup_group_permissions(group, permissions):
     """
-    For a given group, create or replace the permisisons for it.
+    For a given group, create or replace the permissions for it.
 
     :param group: group to be created or replaced
     :param permissions: list of permissions to be applied to this group

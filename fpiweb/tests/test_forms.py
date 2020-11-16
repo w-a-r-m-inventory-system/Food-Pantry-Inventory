@@ -88,7 +88,7 @@ class BoxItemFormTest(TestCase):
         form = BoxItemForm(post_data)
         self.assertFalse(form.is_valid())
         self.assertIn(
-            f'{box_number} is not a valid Box Number',
+            f'{box_number} is not a valid box number',
             form.errors.get('box_number'),
         )
 

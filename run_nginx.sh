@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # manage the nginx server
 
 # config file location

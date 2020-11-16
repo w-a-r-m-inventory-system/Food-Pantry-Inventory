@@ -53,6 +53,7 @@ def create_user(*,
             user = user,
             title = title,
         )
+        profile.save()
 
     # fix up group permissions
     grp_vol = Group.objects.get(name=AccessLevel.Volunteer._name_)
@@ -68,7 +69,11 @@ def create_user(*,
 
 
 def logged_in_user(first_name: str, last_name: str, view=None) -> Client:
-    user = create_user(username='user')
+    user = create_user(
+        username='user',
+        first_name=first_name,
+        last_name=last_name
+    )
     if view is not None:
         grant_required_permissions(user, view)
     client = Client()

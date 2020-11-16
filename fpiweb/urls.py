@@ -47,7 +47,6 @@ from fpiweb.views import \
     ManualMoveBoxView, \
     ManualNewBoxView, \
     ManualPalletMoveView, \
-    PrintLabelsView, \
     ProductCategoryCreateView, \
     TestScanView, \
     UserManagementView, \
@@ -68,10 +67,13 @@ from fpiweb.views import \
     RebuildLocTableStartView, \
     RebuildLocTableFinishView, \
     RebuildLocTableProgressView
+from fpiweb.fpiweb_views.PrintLabelView import \
+    PrintLabelView
+
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
-__creation_date__ = "04/01/2019"
+__creation_date__ = "09/15/2020"
 
 # set the namespace for the application
 app_name = 'fpiweb'
@@ -261,7 +263,7 @@ urlpatterns = [
 
     # generate a pdf of one or more pages of QR code labels to put on boxes
     # e.g. /fpiweb/print_labels/
-    path('print_labels/', PrintLabelsView.as_view(), name='print_labels'),
+    path('print_labels/', PrintLabelView.as_view(), name='print_labels'),
 
     # Downlaod a csv file containinng all box activity
     # e.g. /fpiweb/activity/download/
@@ -404,7 +406,6 @@ urlpatterns = [
     # from LocRow, LocBin, and LocTier tables
     path('rebuild_loc_table_progress/', RebuildLocTableProgressView.as_view(),
          name='rebuild_loc_table_progress_view'),
-
 ]
 
 # EOF
