@@ -448,10 +448,7 @@ class LocRowCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'fpiweb/loc_row_edit.html'
     context_object_name = 'loc_row'
     success_url = reverse_lazy('fpiweb:loc_row_view')
-
     form_class = LocRowForm
-
-    fields = ['loc_row', 'loc_row_descr', ]
 
 
 class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
@@ -483,7 +480,6 @@ class LocRowDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'fpiweb/loc_row_delete.html'
     context_object_name = 'loc_row'
     success_url = reverse_lazy('fpiweb:loc_row_view')
-
     form_class = LocRowForm
 
     def get_context_data(self, **kwargs):
@@ -526,10 +522,7 @@ class LocBinCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'fpiweb/loc_bin_edit.html'
     context_object_name = 'loc_bin'
     success_url = reverse_lazy('fpiweb:loc_bin_view')
-
     form_class = LocBinForm
-
-    fields = ['loc_bin', 'loc_bin_descr', ]
 
 
 class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
@@ -545,7 +538,6 @@ class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'fpiweb/loc_bin_edit.html'
     context_object_name = 'loc_bin'
     success_url = reverse_lazy('fpiweb:loc_bin_view')
-
     form_class = LocBinForm
 
     def get_context_data(self, **kwargs):
@@ -575,7 +567,6 @@ class LocBinDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'fpiweb/loc_bin_delete.html'
     context_object_name = 'loc_bin'
     success_url = reverse_lazy('fpiweb:loc_bin_view')
-
     form_class = LocBinForm
 
     def get_context_data(self, **kwargs):
@@ -618,11 +609,8 @@ class LocTierCreateView(PermissionRequiredMixin, CreateView):
     model = LocTier
     template_name = 'fpiweb/loc_tier_edit.html'
     context_object_name = 'loc_tier'
-    success_url = reverse_lazy('fpiweb:loc_tier_view')
-
     form_class = LocTierForm
-
-    fields = ['loc_tier', 'loc_tier_descr', ]
+    success_url = reverse_lazy('fpiweb:loc_tier_view')
 
 
 class LocTierUpdateView(PermissionRequiredMixin, UpdateView):
@@ -3108,11 +3096,9 @@ class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
     model = ProductCategory
     template_name = 'fpiweb/product_category_edit.html'
     context_object_name = 'product_category'
+    form_class = ProductCategoryForm
     success_url = reverse_lazy('fpiweb:product_category_view')
 
-    formClass = ProductCategoryForm
-
-    fields = ['prod_cat_name', 'prod_cat_descr', ]
 
 class ProductCategoryListView(PermissionRequiredMixin, ListView):
     """
@@ -3159,11 +3145,9 @@ class ProductNameCreateView(PermissionRequiredMixin, CreateView):
     model = Product
     template_name = 'fpiweb/product_name_edit.html'
     context_object_name = 'product_name'
+    form_class = ProductNameForm
     success_url = reverse_lazy('fpiweb:product_name_view')
 
-    formClass = ProductNameForm
-
-    fields = ['prod_name', 'prod_cat', ]
 
 class ProductNameListView(PermissionRequiredMixin, ListView):
     """
@@ -3227,9 +3211,7 @@ class ProductExampleCreateView(PermissionRequiredMixin, CreateView):
     context_object_name = 'product_example'
     success_url = reverse_lazy('fpiweb:product_example_view')
 
-    formClass = ProductExampleForm
-
-    fields = ['prod_example_name', 'product', ]
+    form_class = ProductExampleForm
 
 
 class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
@@ -3306,8 +3288,6 @@ class ManualLocTableCreateView(PermissionRequiredMixin, CreateView):
     context_object_name = 'manual_loc_table'
     success_url = reverse_lazy('fpiweb:manual_loc_table_view')
     form_class = ManualLocTableForm
-    # fields = ['loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
-    #           'loc_row', 'loc_tier']
 
 
 class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
@@ -3324,8 +3304,6 @@ class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
     context_object_name = 'manual_loc_table'
     form_class = ManualLocTableForm
     success_url = reverse_lazy('fpiweb:manual_loc_table_view')
-    # fields = ['loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
-    #           'loc_row', 'loc_tier']
 
 
 class RebuildLocTableStartView(PermissionRequiredMixin, View):
