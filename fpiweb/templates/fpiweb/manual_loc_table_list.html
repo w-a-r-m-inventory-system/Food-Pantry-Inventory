@@ -25,7 +25,7 @@
             <a class="btn alert-info"
                role="button"
                href="{% url 'fpiweb:manual_loc_table_new' %}">
-                Add a Location Line
+                Add a Location Record
             </a>
         </div>
         &nbsp;
@@ -77,9 +77,16 @@
         </div>
     {% endif %}
 
-    <div class = "row">
-        <a href="{% url 'fpiweb:maintenance' %}"> Return to system maintenance </a>
+    <br /><br />
+
+    <div class="row col-md12 text-left">
+        <a href="{% url 'fpiweb:maintenance' %}">
+            Return to System Maintenance
+        </a>
     </div>
+
+    <br />
+
 
 
     <hr class="style-one"/>

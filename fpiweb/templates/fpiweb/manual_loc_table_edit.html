@@ -32,6 +32,8 @@
         </div>
     {% endif %}
 
+    <br />
+
      <form action="" method="post">
             {% csrf_token %}
             {% bootstrap_field form.loc_code %}
@@ -44,10 +46,19 @@
             <input type="submit" value="Submit"/>
      </form>
 
-    <br/>
-    <a href="{% url 'fpiweb:manual_loc_table_view' %}">
-        Back to Product list
-    </a>
+    <br /><br />
+
+
+     <div class="row">
+        <div class="col-md-12 text-left">
+            <a class="btn alert-info" role="button" id ="b" href="
+                {% url 'fpiweb:manual_loc_table_view' %}">
+                  Return to Location Table List
+            </a>
+        </div>
+     </div>
+
+
 
     <hr class="style-one">
 
