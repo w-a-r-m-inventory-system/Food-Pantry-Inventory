@@ -904,6 +904,11 @@ class BoxDetailsView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         logger.debug(f"kwargs are {kwargs}")
         context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+        user_info = ManageUserPermissions().get_user_info(current_user.id)
+        context['user_info'] = user_info
+        context['access_level'] = AccessLevel
+        context['user_access'] = user_info.highest_access_level
         return context
 
 
