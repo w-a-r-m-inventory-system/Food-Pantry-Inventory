@@ -1719,19 +1719,17 @@ class ProductExampleForm(forms.ModelForm):
 
 
 class ManualLocTableForm(forms.ModelForm):
-
     # Manage RebuildLocationTable with a generic form
 
     class Meta:
         # Additional info to help Django provide intelligent defaults
         model = Location
         # fields defined in model based on DB, not DB column heads!
-        fields = ['id', 'loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
+        fields = ['loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
                   'loc_row', 'loc_tier']
 
     loc_code = forms.CharField(help_text=Location.loc_code_help_text,
                                     required=True,)
-
 
     @staticmethod
     def validate_manual_loc_table_fields(
@@ -1744,7 +1742,6 @@ class ManualLocTableForm(forms.ModelForm):
 
         '''
         Validate the various Location record fields
-
         :param loc_code: Location Code
         :param loc_descr:  Location Description
         :param loc_bin: Location Bin
@@ -1755,7 +1752,7 @@ class ManualLocTableForm(forms.ModelForm):
         loc_code_max_length = Location.loc_code_max_length
         loc_descr_max_length = Location.loc_descr_max_length
         min_len = 1
-        if not loc_code or not (len(loc_code_max_length) > 0):
+        if not loc_code or not (loc_code_max_length > 0):
             raise ValidationError(
                 'The Location Code must be specified'
             )
@@ -1768,17 +1765,15 @@ class ManualLocTableForm(forms.ModelForm):
                 'A Location Code must be between 1 and ' + loc_code_max_length +
                 'characters long.'
             )
-
         if (len(loc_descr) <= loc_descr_max_length) \
                 and \
                 (len(loc_code) >= min_len):
             ...
         else:
             raise ValidationError(
-                'A Location Description must be between 1 and ' + loc_descr_max_length +
-                'characters long.'
+                'A Location Description must be between 1 and ' +
+                loc_descr_max_length + 'characters long.'
             )
-
         if not loc_bin:
             raise ValidationError(
                 'A Location Bin Value is required to Rebuild Location Table'
@@ -1791,7 +1786,6 @@ class ManualLocTableForm(forms.ModelForm):
             raise ValidationError(
                 'A Location Tier Value is required to Rebuild Location Table'
             )
-
         return
 
     def clean(self):

@@ -384,10 +384,7 @@ class LocRowCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'fpiweb/loc_row_edit.html'
     context_object_name = 'loc_row'
     success_url = reverse_lazy('fpiweb:loc_row_view')
-
-    formClass = LocRowForm
-
-    fields = ['loc_row', 'loc_row_descr', ]
+    form_class = LocRowForm
 
 
 class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
@@ -419,7 +416,6 @@ class LocRowDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'fpiweb/loc_row_delete.html'
     context_object_name = 'loc_row'
     success_url = reverse_lazy('fpiweb:loc_row_view')
-
     form_class = LocRowForm
 
     def get_context_data(self, **kwargs):
@@ -462,10 +458,7 @@ class LocBinCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'fpiweb/loc_bin_edit.html'
     context_object_name = 'loc_bin'
     success_url = reverse_lazy('fpiweb:loc_bin_view')
-
-    formClass = LocBinForm
-
-    fields = ['loc_bin', 'loc_bin_descr', ]
+    form_class = LocBinForm
 
 
 class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
@@ -481,7 +474,6 @@ class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'fpiweb/loc_bin_edit.html'
     context_object_name = 'loc_bin'
     success_url = reverse_lazy('fpiweb:loc_bin_view')
-
     form_class = LocBinForm
 
     def get_context_data(self, **kwargs):
@@ -511,7 +503,6 @@ class LocBinDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'fpiweb/loc_bin_delete.html'
     context_object_name = 'loc_bin'
     success_url = reverse_lazy('fpiweb:loc_bin_view')
-
     form_class = LocBinForm
 
     def get_context_data(self, **kwargs):
@@ -554,11 +545,8 @@ class LocTierCreateView(PermissionRequiredMixin, CreateView):
     model = LocTier
     template_name = 'fpiweb/loc_tier_edit.html'
     context_object_name = 'loc_tier'
+    form_class = LocTierForm
     success_url = reverse_lazy('fpiweb:loc_tier_view')
-
-    formClass = LocTierForm
-
-    fields = ['loc_tier', 'loc_tier_descr', ]
 
 
 class LocTierUpdateView(PermissionRequiredMixin, UpdateView):
@@ -3034,11 +3022,9 @@ class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
     model = ProductCategory
     template_name = 'fpiweb/product_category_edit.html'
     context_object_name = 'product_category'
+    form_class = ProductCategoryForm
     success_url = reverse_lazy('fpiweb:product_category_view')
 
-    formClass = ProductCategoryForm
-
-    fields = ['prod_cat_name', 'prod_cat_descr', ]
 
 class ProductCategoryListView(PermissionRequiredMixin, ListView):
     """
@@ -3085,11 +3071,9 @@ class ProductNameCreateView(PermissionRequiredMixin, CreateView):
     model = Product
     template_name = 'fpiweb/product_name_edit.html'
     context_object_name = 'product_name'
+    form_class = ProductNameForm
     success_url = reverse_lazy('fpiweb:product_name_view')
 
-    formClass = ProductNameForm
-
-    fields = ['prod_name', 'prod_cat', ]
 
 class ProductNameListView(PermissionRequiredMixin, ListView):
     """
@@ -3153,9 +3137,7 @@ class ProductExampleCreateView(PermissionRequiredMixin, CreateView):
     context_object_name = 'product_example'
     success_url = reverse_lazy('fpiweb:product_example_view')
 
-    formClass = ProductExampleForm
-
-    fields = ['prod_example_name', 'product', ]
+    form_class = ProductExampleForm
 
 
 class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
@@ -3207,26 +3189,6 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
         return context
 
 
-class ManualLocTableCreateView(PermissionRequiredMixin, CreateView):
-    """
-      Create a new entry for Location Table using a generic CreateView.
-      """
-
-    # by Mike Rehner adding permission but not sure how its granted
-    permission_required = (
-        'fpiweb.add_manual_location_table',
-    )
-
-    model = Location
-    template_name = 'fpiweb/manual_loc_table_edit.html'
-    context_object_name = 'manual_loc_table'
-    success_url = reverse_lazy('fpiweb:manual_loc_table_view')
-
-    formClass = ManualLocTableForm
-
-    fields = ['loc_code', 'loc_descr', 'loc_in_warehouse', 'loc_bin',
-              'loc_row', 'loc_tier']
-
 class ManualLocTableListView(PermissionRequiredMixin, ListView):
     # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
@@ -3236,13 +3198,28 @@ class ManualLocTableListView(PermissionRequiredMixin, ListView):
     model = Location
     template_name = 'fpiweb/manual_loc_table_list.html'
     context_object_name = 'manual_loc_table'
-    # form_class = RebuildLocTableForm
+
+
+class ManualLocTableCreateView(PermissionRequiredMixin, CreateView):
+    """
+      Create a new entry for Location Table using a generic CreateView.
+      """
+    # by Mike Rehner adding permission but not sure how its granted
+    permission_required = (
+        'fpiweb.add_manual_location_table',
+    )
+
+    model = Location
+    template_name = 'fpiweb/manual_loc_table_edit.html'
+    context_object_name = 'manual_loc_table'
+    success_url = reverse_lazy('fpiweb:manual_loc_table_view')
+    form_class = ManualLocTableForm
+
 
 class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
     """
         Update a Rebuild Location Table using a generic UpdateView.
         """
-
     # by Mike Rehner adding permission but not sure how its granted
     permission_required = (
         'fpiweb.change_manual_loc_table',
