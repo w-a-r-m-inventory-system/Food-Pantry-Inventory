@@ -3,7 +3,7 @@
 # manage the nginx server
 
 # config file location
-export CONFIG_LOCATION='/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory-testui/config/nginx/nginx.conf'
+export CONFIG_LOCATION='/Volumes/MBPC/Dvl/Python/PythonProjects/Food-Pantry-Inventory/config/nginx/nginx.conf'
 # for MacOS with nginx installed with Homebrew, the configuration file
 # is located at /usr/local/etc/nginx/nginx.conf.
 
