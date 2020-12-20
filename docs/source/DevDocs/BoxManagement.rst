@@ -15,9 +15,9 @@ about to run low or when they have an excess of some product that
 another food pantry can use before it expires and has to be thrown away.
 
 
-***********
+**************************************************
 Box Summary
-***********
+**************************************************
 
 All boxes have a box type -- which indicates an approximate quantity of
 product it might contain.  All boxes have a QR code label with a unique
@@ -40,9 +40,9 @@ will have no product, location, or expiration information.  However, the
 boxes are expected to be sufficiently durable that they can be used a
 number of times.
 
-****************
+**************************************************
 Activity Summary
-****************
+**************************************************
 
 When a box has product in it, the activity information will also have
 the product, approximate quantity, location and expiration information
@@ -52,9 +52,9 @@ the product was in the box, etc.  When a box is used again, a new
 activity record will be created so the information about the previous
 contents is preserved.
 
-**************
-Box Management
-**************
+**************************************************
+Box Management Details
+**************************************************
 
 Ideally all boxes are handled correctly so this inventory system can
 accurately report the quantity and location of all products in it.
@@ -75,14 +75,14 @@ system.
 
 
 Box Management API Summary
-==========================
+==================================================
 
 The `BoxManagementClass`_ has five API's or public methods that can be
 called to update the database with details about a box (or a pallet of
 boxes).
 
 Individual Box API's
----------------------
+--------------------------------------------------
 
 For individual boxes the calls are:
 
@@ -104,105 +104,105 @@ BoxManagementClass.box_consume
 
 
 Box Management API Details
-==========================
+==================================================
 
 The expected input, actions, and output of the box management API calls are
 shown below.
 
 BoxManagementClass.box_new
---------------------------
+--------------------------------------------------
 
 Add a new box with a unique box number to the inventory system.
 
-Expected Input
-^^^^^^^^^^^^^^
+Box New Expected Input
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A unique box number and a valid box type.
 
-Action
-^^^^^^
+Box New Action
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A box record will be added to the inventory with the supplied box type.  All
 other fields in the box will be empty.
 
-Output
-^^^^^^
+Box New Output
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The new box record will be returned.
 
 BoxManagementClass.box_fill
----------------------------
+--------------------------------------------------
 
 Add an individual box containing a named product at a specified location
 with a specified expiration year (and possibly range of months).
 
-Expected Input
-^^^^^^^^^^^^^^
+Box Fill Expected Input
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The unmodified box record and the information needed to update the box.
 
-Actions
-^^^^^^^
+Box Fill Actions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This API call will mark the indicated box with the contents, location and
 expiration indicated.  It will also make the call to create the appropriate
 Activity record.
 
-Output
-^^^^^^
+Box Fill Output
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The modified box record will be returned.
 
 
 BoxManagementClass.box_move
----------------------------
+--------------------------------------------------
 
 Move a filled box from one location to another in the warehouse.
 
-Expected Input
-^^^^^^^^^^^^^^
+Box Move Expected Input
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The unmodified box record and the target location.
 
-Actions
-^^^^^^^
+Box Move Actions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This API call will change the location in the box record to the new
 location specified. It will also make the call to create the appropriate
 Activity record.
 
-Output
-^^^^^^
+Box Move Output
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The modified box record will be returned.
 
 
 BoxManagementClass.box_consume
-------------------------------
+--------------------------------------------------
 
 Empty a box (consume it's contents) by putting the contents into QC or
 directly in the pantry.
 
-Expected Input
-^^^^^^^^^^^^^^
+Box Consume Expected Input
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The unmodified box record.
 
-Actions
-^^^^^^^
+Box Consume Actions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This API call will make the call to create the appropriate Activity record.
 It will then clear all the product, location, and expiration fields in the
 box record.
 
-Output
-^^^^^^
+Box Consume Output
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The modified box record will be returned.
 
-*****************
+**************************************************
 Pallet Management
-*****************
+**************************************************
 
 Pallet management is designed to make dealing with pallets of boxes swift
 and easy.  Rather than require strict conformance to some arbitrary rules in
@@ -212,7 +212,7 @@ designed to show developers what might happen.
 
 
 Pallet Management Scenarios
-===========================
+==================================================
 
 New Pallet Scenario
     The user will start with an empty pallet and add newly filled boxes of
@@ -256,7 +256,7 @@ Move a Pallet Scenaro
 
 
 Developer Suggestions
----------------------
+--------------------------------------------------
 
 Perhaps a way of minimizing the amount of scanning by the user would be
 to either prepopulate the pallet boxes when a location with boxes is
@@ -269,7 +269,7 @@ record.
 
 
 Pallet Management API's
------------------------
+--------------------------------------------------
 
 The call for processing a pallet of boxes is:
 
@@ -288,18 +288,18 @@ boxes.
 
 
 Pallet Management API Details
------------------------------
+--------------------------------------------------
 
 The expected input, actions, and output of the box management API calls are
 shown below.
 
 BoxManagementClass.pallet_finish
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Process a pallet of boxes and do the appropriate action to each box.
 
-Expected Input
-""""""""""""""
+Pallet Finish Expected Input
+""""""""""""""""""""""""""""""""""""""""""""""""""
 
 The pallet record with an appropriate pallet status in it.  The pallet
 status will indicate if this is an addition of product to inventory
@@ -309,8 +309,8 @@ or a consolidation of boxes from various old locations to a new location
 expiration information, as well as an individual status that will guide this
 processing.
 
-Actions
-"""""""
+Pallet Finish Actions
+""""""""""""""""""""""""""""""""""""""""""""""""""
 
 This API will walk through the PalletBox records associated with this
 Pallet.  Each corresponding box will be modified as needed.
@@ -343,19 +343,19 @@ ORIGINAL:
 MERGE:
     This record will be treated the same way as if its status was "ORIGINAL".
 
-Output
-""""""
+Pallet Finish Output
+""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Nothing will be returned.
 
 
-*******************
+**************************************************
 Activity Management
-*******************
+**************************************************
 
 
 Box Activity API
-================
+==================================================
 
 The Box Activity API (`BoxActivityClass`_) records information in the
 Activity table so that what is available can be readily discerned and that
@@ -367,7 +367,7 @@ box activity API.
 
 
 Box Activity API Details
-------------------------
+--------------------------------------------------
 
 The details for each Box Management API call are documented in the source
 code of the call.

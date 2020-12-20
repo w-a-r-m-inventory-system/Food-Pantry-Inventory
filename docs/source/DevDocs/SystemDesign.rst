@@ -3,13 +3,10 @@ System Design
 #############
 
 ..  toctree::
-    :maxdepth: 2
     :caption: System Design Table of Contents:
 
 
     User Management <UserManagement>
-
-    Box Management <BoxManagement>
 
 *********************
 System Design Summary
