@@ -5,6 +5,13 @@
 # Required (Specifies using v2 of Read the Docs configuration format)
 version: 2
 
+# Optionally build your docs in additional formats such as PDF
+formats:
+  - epub
+  - htmlzip
+  - pdf
+
+# Optionally set the version of Python and requirements required to build your docs
 python:
   version: 3.8
   install:
