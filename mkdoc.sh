@@ -1,12 +1,35 @@
 #!/usr/bin/env bash
 
-# Check if one parameter or none
+usage()(
+    echo 'usage: mkdir [-c] [html | latex | latexpdf]'
+    echo
+    echo '  -c  run make before running the (optional) final parameter'
+)
+
+# set defaults for parameters
+CLEAN=False
+TYPE='html'
+
+# parse command line parameters
+while getopts ":abc" opt; do
+    case $opt in
+
+        c   )   CLEAN=True ;;
+
+        \?  )   usage
+                exit 1 ;;
+    esac
+done
+
+shift $((OPTIND -1))
+
+# Check final parameter if given
 if [ $# == 0 ] ; then
     TYPE='html'
 elif [ $# == 1 ] ;  then
     TYPE="$1"
 else
-    echo 'usage: mkdir html | latex | latexpdf'
+    usage
     exit 1
 fi
 
@@ -21,6 +44,9 @@ sphinx-apidoc -f -M -o docs/source --tocfile StandaloneTools.modules StandaloneT
 # bash script to run the new Sphinx build
 pushd .
 cd docs
+if [ "$CLEAN" = True ]; then
+    make clean
+fi
 make $TYPE
 popd
 
