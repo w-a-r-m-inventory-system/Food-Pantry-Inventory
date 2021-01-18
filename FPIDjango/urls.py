@@ -21,18 +21,30 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from fpiweb.views import \
-    LoginView
+from fpiweb.views import LoginView
 
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
 
+
+
 urlpatterns = [
+
     path('', LoginView.as_view()),
     path('fpiweb/', include('fpiweb.urls')),
     path('warmadmin/', admin.site.urls,),
+
 ]
+
+# required for django-debug-toolbar
+from .settings import DEBUG
+if DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
+
 
 # EOF

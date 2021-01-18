@@ -96,6 +96,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+
 ]
 
 ROOT_URLCONF = 'FPIDjango.urls'
@@ -355,3 +357,15 @@ LOGGING = {
         'handlers': ['file', 'console'],
     },
 }
+
+# Sets up django-debug-toolbar in browser
+# If toolbar disappears after adding an installed app  or middleware
+# there might be a problem in the ordering of INSTALLED_APPS or MIDDLEWARE
+if DEBUG:
+    INSTALLED_APPS = INSTALLED_APPS + [
+        # django debug toolbar not on main stream
+        'debug_toolbar'
+    ]
+    MIDDLEWARE = MIDDLEWARE + [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
