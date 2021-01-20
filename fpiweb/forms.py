@@ -1808,6 +1808,66 @@ class ManualLocTableForm(forms.ModelForm):
         return
 
 
+class BoxTypeMaintenanceForm(forms.ModelForm):
+    # Manage List, Add, Edit and Delete for BoxTypes
+
+    class Meta:
+        # Additonal info to help Django provide intelligent defaults
+        model = BoxType
+        fields = ['id', 'box_type_code', 'box_type_descr', 'box_type_qty']
+
+    box_type_code = forms.CharField(
+        help_text=BoxType.box_type_code_help_text,
+        required=True )
+
+    box_type_descr = forms.CharField(
+        help_text=BoxType.box_type_descr_help_text,
+        required=True )
+
+    box_type_qty = forms.IntegerField(
+        help_text=BoxType.box_type_qty_help_text,
+        required=True )
+
+    @staticmethod
+    def validate_box_type_fields(
+            box_type_code: str,
+            box_type_descr: str,
+            box_type_qty: int,
+    ):
+        max_len = BoxType.box_type_code.max_length
+        min_len = 0
+        if not box_type_code or not (len(box_type_code) > 0):
+            raise ValidationError('A Box Type Code must be entered')
+        elif len(box_type_code) > max_len:
+            raise ValidationError(f'A Box Type Code is required to be less'
+                                  f'than {max_len} characters in length')
+        max_len = BoxType.box_type_descr.max_length
+        if not box_type_descr or not (len(box_type_code) > 0):
+            raise ValidationError('A Box Type Description must be entered')
+        elif len(box_type_descr) > max_len:
+            raise ValidationError(f'A Box Type Description is required to be'
+                                  f'less than {max_len} characters in length')
+        if not box_type_qty.isdigit():
+            raise ValidationError(f'You must enter a whole number greater than'
+                                  f'0')
+        elif box_type_qty < 1:
+            raise ValidationError(f'You must enter a whole number greater than'
+                                  f'0')
+        return
+
+    def clean(self):
+        cleaned_data = super().clean()
+        box_type_code = cleaned_data.get('box_type_code')
+        box_type_descr = cleaned_data.get('box_type_descr')
+        box_type_qty = cleaned_data.get('box_type_qty')
+        self.validate_box_type_fields(box_type_code,
+                                      box_type_descr,
+                                      box_type_qty)
+        return
+
+
+
+
 
 
 # EOF

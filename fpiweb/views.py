@@ -3428,6 +3428,12 @@ class RebuildLocTableProgressView(PermissionRequiredMixin, View):
     def get(self, request ):
         return render(request, "fpiweb/rebuild_loc_table_progress.html")
 
+
+class BoxTypeMaintenanceListView(PermissionRequiredMixin, ListView):
+    # List of existing BoxTypes using a generic ListView
+
+    permission_required = {}
+
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """
 #     Ask a question or notify the user of something.
