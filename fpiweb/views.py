@@ -58,6 +58,7 @@ from fpiweb.constants import \
 from fpiweb.models import \
     Activity, \
     Box, \
+    BoxType, \
     BoxNumber, \
     Constraints, \
     LocRow, \
@@ -76,6 +77,7 @@ from fpiweb.code_reader import \
 from fpiweb.forms import \
     BoxItemForm, \
     BoxTypeForm, \
+    BoxTypeMaintenanceForm, \
     ConfirmMergeForm, \
     ConstraintsForm, \
     BuildPalletForm, \
@@ -3432,7 +3434,63 @@ class RebuildLocTableProgressView(PermissionRequiredMixin, View):
 class BoxTypeMaintenanceListView(PermissionRequiredMixin, ListView):
     # List of existing BoxTypes using a generic ListView
 
-    permission_required = {}
+    # by Mike Rehner adding permission but not sure how this works?
+    permission_required = ('fpiweb.view_box_type')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_list.html'
+    context_object_name = 'box_type_maintenance_list_content'
+
+class BoxTypeMaintenanceCreateView(PermissionRequiredMixin, CreateView):
+    # create a Box Type using a generic CreateView
+
+    # by Mike Rehner adding permission but not sure how this works?
+    permission_required = ('fpiweb.add_box_type_maintenance')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_edit.html'
+    context_object_name = 'box_type_maintenance'
+    success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
+    form_class = BoxTypeMaintenanceForm
+
+class BoxTypeMaintenanceUpdateView(PermissionRequiredMixin, UpdateView):
+    # Update a Box Type using a generic update view
+
+    # by Mike Rehner adding permission but not sure how this works?
+    permission_required = ('fpiweb.change_box_type_maintenance')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_edit.html'
+    context_object_name = 'box_type_maintenance'
+    form_class = BoxTypeMaintenanceForm
+    success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
+
+class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
+    # Delete a Box Type using a generic DeleteView
+
+
+    permission_required = ('fpiweb.delete_box_type_maintenance')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_delete.html'
+    context_object_name = 'box_type_maintenance'
+    success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
+    form_class = BoxTypeMaintenanceForm
+
+    def get_context_data(self, **kwargs):
+        """
+            Modify the context before rendering the template.
+            :param kwargs:
+            :return:
+        """
+        context = super(ProductExampleDeleteView, self).get_context_data(
+            **kwargs)
+        context['action'] = reverse('fpiweb:box_type_maintenance_delete',
+                                    kwargs={'pk': self.get_object().id})
+        return context
+
+
+
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """

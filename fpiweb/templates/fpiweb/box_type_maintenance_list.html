@@ -1,0 +1,130 @@
+{% extends 'fpiweb/base.html' %}
+
+{# Purpose: List all Box Type rows #}
+{# URL Name: box_type_maintenance_view #}
+{# URL Response: GET #}
+{# Table: BoxType #}
+{# Form: BoxTypeMaintenanceForm #}
+
+{% block title %} Box Type List{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="h1">
+                Box Type List
+            </h1>
+        </div>
+    </div>
+
+   <hr class="style-one"/>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a class="btn alert-info"
+               role="button"
+               href="{% url 'fpiweb:box_type_maintenance_new' %}">
+                Add a Box Type
+            </a>
+        </div>
+    </div>
+
+     <div class="row">
+            &nbsp;
+        </div>
+
+           <div class="row text-center">
+            <div class="col-md-2"><strong>Box Type Code</strong></div>
+            <div class="col-md-4"><strong>Box Type Description</strong></div>
+            <div class="col-md-2"><strong>Box Type Qty</strong></div>
+
+            <div class="col-md-2 text-center">
+                <strong>Edit Box Type</strong>
+            </div>
+            <div class="col-md-2 text-center">
+                <strong>Delete Box Type</strong>
+            </div>
+        </div>
+
+    {% if object_list %}
+        {% for box_type in object_list %}
+            <div class="row text-left">
+                <div class="col-md-2">
+                    {{ box_type.type_code|safe }}
+                </div>
+
+                <div class="col-md-4 text-left">
+                    {{ box_type.box_type_descr }}
+                    <hr class="style-one"/>
+                </div>
+
+                <div class="col-md-2 text-left">
+                    {{ box_type.box_type_qty }}
+                    <hr class="style-one"/>
+                </div>
+
+
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:box_type_maintenance_update' pk=box_type.id %}">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="text-center">
+                        <a class="btn alert-info"
+                           role="button"
+                           href="
+                            {% url 'fpiweb:box_type_maintenance_delete' pk=box_type.id %}">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+        {% endfor %}
+    {% else %}
+             <div class="alert-success">
+            <p>No Box Types are available. Click the Add Button above to
+                create a new Box Type.</p>
+             </div>
+    {% endif %}
+
+
+    <div class='row'>
+        <a href="{% url 'fpiweb:maintenance' %}">
+            Return to system maintenance
+        </a>
+    </div>
+
+    <hr class="style-one"/>
+
+    <h6>
+        Template: box_type_maintenance_list.html
+    </h6>
+    <h6>
+        View: BoxTypeMaintenanceListView
+    </h6>
+    <h6>
+        Add URL: {% url 'fpiweb:box_type_maintenance_new' %}
+    </h6>
+    <h6>
+        Edit URL: {% url 'fpiweb:box_type_maintenance_update' pk=1 %}
+    </h6>
+     <h6>
+        Delete URL: {% url 'fpiweb:box_type_maintenance_delete' pk=1 %}
+    </h6>
+
+
+
+{% endblock %}
