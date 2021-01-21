@@ -2,10 +2,10 @@
 {% load bootstrap4 %}
 
 {% block title %}
-    {% if product_example.id %}
-        Edit Product Example
+    {% if box_type_maintenance.id %}
+        Edit Box Type
     (% else %}
-        Add Product Example
+        Add Box Type
     {% endif %}
 {% endblock %}
 
@@ -13,10 +13,10 @@
     <div class="row">
          <div class="col-md-12 text-center">
             <h1 class="h1">
-                {% if product_example.id %}
-                    Edit Product Example
+                {% if box_type_maintenance.id %}
+                    Edit Box Type
                 {% else %}
-                    Add Product Example
+                    Add Box Type
                 {% endif %}
             </h1>
          </div>
@@ -34,14 +34,15 @@
 
     <form action="" method="post">
         {% csrf_token %}
-        {% bootstrap_field form.prod_example_name %}
-        {% bootstrap_field form.product %}
+        {% bootstrap_field form.box_type_code %}
+        {% bootstrap_field form.box_type_descr %}
+        {% bootstrap_field form.box_type_qty %}
         <input type="submit" value="Submit"/>
     </form>
 
     <br/>
-    <a href="{% url 'fpiweb:product_example_view' %}">
-        Back to Product Example list
+    <a href="{% url 'fpiweb:box_type_maintenance_view' %}">
+        Back to Box Type list
     </a>
 
     <hr class="style-one">
@@ -50,16 +51,16 @@
         Template: product_example_edit.html
     </h6>
     <h6>
-        View: ProductExampleCreateView and ProductExampleUpdateView
+        View: BoxTypeMaintenanceCreateView and BoxTypeMaintenanceUpdateView
     </h6>
     <h6>
-        Add URL: {% url 'fpiweb:product_example_new' %}
+        Add URL: {% url 'fpiweb:box_type_maintenance_new' %}
     </h6>
     <h6>
-         Save URL: {% url 'fpiweb:product_example_view' %}
+         Save URL: {% url 'fpiweb:box_type_maintenance_view' %}
     </h6>
     <h6>
-        Return URL: {% url 'fpiweb:product_example_view' %}
+        Return URL: {% url 'fpiweb:box_type_maintenance_view' %}
     </h6>
 
 {% endblock %}

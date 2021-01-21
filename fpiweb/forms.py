@@ -1834,24 +1834,21 @@ class BoxTypeMaintenanceForm(forms.ModelForm):
             box_type_descr: str,
             box_type_qty: int,
     ):
-        max_len = BoxType.box_type_code.max_length
+        max_len = BoxType.box_type_code_max_len
         min_len = 0
         if not box_type_code or not (len(box_type_code) > 0):
             raise ValidationError('A Box Type Code must be entered')
         elif len(box_type_code) > max_len:
             raise ValidationError(f'A Box Type Code is required to be less'
                                   f'than {max_len} characters in length')
-        max_len = BoxType.box_type_descr.max_length
+        max_len = BoxType.box_type_descr_max_len
         if not box_type_descr or not (len(box_type_code) > 0):
             raise ValidationError('A Box Type Description must be entered')
         elif len(box_type_descr) > max_len:
             raise ValidationError(f'A Box Type Description is required to be'
                                   f'less than {max_len} characters in length')
-        if not box_type_qty.isdigit():
-            raise ValidationError(f'You must enter a whole number greater than'
-                                  f'0')
-        elif box_type_qty < 1:
-            raise ValidationError(f'You must enter a whole number greater than'
+        if box_type_qty < 1:
+            raise ValidationError(f'You must enter a whole number greater than '
                                   f'0')
         return
 
