@@ -3483,7 +3483,7 @@ class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
             :param kwargs:
             :return:
         """
-        context = super(ProductExampleDeleteView, self).get_context_data(
+        context = super(BoxTypeMaintenanceDeleteView, self).get_context_data(
             **kwargs)
         context['action'] = reverse('fpiweb:box_type_maintenance_delete',
                                     kwargs={'pk': self.get_object().id})
