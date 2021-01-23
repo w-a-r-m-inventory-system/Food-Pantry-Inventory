@@ -1686,19 +1686,13 @@ class ProductExampleForm(forms.ModelForm):
         :return: True if valid
         """
         max_len: int = ProductExample.prod_example_name_max_length
-        min_len: int = 1
         if not prod_example_name or not (len(prod_example_name) > 0):
             raise ValidationError(
                 'The Product Example name must be specified'
             )
-        if (len(prod_example_name) <= max_len) \
-                and \
-                (len(prod_example_name) >= min_len):
-            ...
-        else:
-            raise ValidationError(
-                'A Product Example name is needed)'
-            )
+        if len(prod_example_name) > max_len:
+            raise ValidationError("The Product Example Name should be no more " 
+                                  "than 30 characters long")
         if not product:
             raise ValidationError(
                 'A Product ID is required to enter/edit a Product Example Name'
@@ -1838,17 +1832,18 @@ class BoxTypeMaintenanceForm(forms.ModelForm):
         if not box_type_code or not (len(box_type_code) > 0):
             raise ValidationError('A Box Type Code must be entered')
         elif len(box_type_code) > max_len:
-            raise ValidationError(f'A Box Type Code is required to be less '
+            raise ValidationError(f'A Box Type Code is required to be no more '
                                   f'than {max_len} characters in length')
         max_len = BoxType.box_type_descr_max_len
         if not box_type_descr or not (len(box_type_code) > 0):
             raise ValidationError('A Box Type Description must be entered')
         elif len(box_type_descr) > max_len:
             raise ValidationError(f'A Box Type Description is required to be '
-                                  f'less than {max_len} characters in length')
-        if box_type_qty < 1:
-            raise ValidationError(f'You must enter a whole number greater than '
-                                  f'0')
+                                  f'no more than {max_len} characters in '
+                                  f'length')
+        if not box_type_qty or box_type_qty < 1:
+            raise ValidationError(f'You must enter a whole number 1 or more '
+                                  f'in Box Type Qty.')
         return
 
     def clean(self):

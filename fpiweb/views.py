@@ -27,7 +27,7 @@ from django.contrib.auth.mixins import \
     LoginRequiredMixin, \
     PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.core.exceptions import ValidationError
 from django.core.serializers import serialize
 from django.db import transaction
 from django.db.models import ProtectedError
@@ -36,7 +36,8 @@ from django.forms import formset_factory
 from django.http import \
     HttpResponse, \
     JsonResponse, \
-    StreamingHttpResponse, HttpResponseRedirect
+    StreamingHttpResponse, \
+    HttpResponseRedirect
 from django.shortcuts import \
     redirect, \
     render
@@ -3147,6 +3148,7 @@ class ProductExampleCreateView(PermissionRequiredMixin,
     success_message = 'A new Product Example has been successfully added.'
     form_class = ProductExampleForm
 
+
 class ProductExampleUpdateView(PermissionRequiredMixin,
                                SuccessMessageMixin,
                                UpdateView):
@@ -3167,6 +3169,7 @@ class ProductExampleUpdateView(PermissionRequiredMixin,
     success_message = "The Product Example has been has been successfully " \
                       "updated."
 
+
 class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
     """
     Delete a Product Example using a generic DeleteView.
@@ -3181,21 +3184,17 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'fpiweb/product_example_delete.html'
     context_object_name = 'product_example'
     success_url = reverse_lazy('fpiweb:product_example_view')
+    success_message ='The Product Example has been successfully deleted.'
     form_class = ProductExampleForm
 
-    def get_context_data(self, **kwargs):
-        """
-        Modify the context before rendering the template.
-
-        :param kwargs:
-        :return:
-        """
-
-        context = super(ProductExampleDeleteView, self).get_context_data(
-            **kwargs)
-        context['action'] = reverse('fpiweb:product_example_delete',
-                                    kwargs={'pk': self.get_object().id})
-        return context
+    # delete the Procduct Example and show the Success Message
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.add_message(request, messages.SUCCESS,
+                             self.success_message)
+        return HttpResponseRedirect(success_url)
 
 
 class ManualLocTableListView(PermissionRequiredMixin, ListView):
@@ -3464,6 +3463,7 @@ class BoxTypeMaintenanceCreateView(PermissionRequiredMixin,
     success_message = " A new BoxType has been successfully added."
     form_class = BoxTypeMaintenanceForm
 
+
 class BoxTypeMaintenanceUpdateView(PermissionRequiredMixin,
                                    SuccessMessageMixin,
                                    UpdateView):
@@ -3477,7 +3477,7 @@ class BoxTypeMaintenanceUpdateView(PermissionRequiredMixin,
     context_object_name = 'box_type_maintenance'
     form_class = BoxTypeMaintenanceForm
     success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
-    success_message = 'The Box Type has been successfully updated'
+    success_message = 'The Box Type has been successfully updated.'
 
 
 class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
@@ -3497,16 +3497,18 @@ class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
                     'that uses this Box Type. (Cascade Delete Protected) '  \
                     'Click Cancel Button to return to Box Type List page.'
 
-
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
         try:
+            # Return to BoxType List page and show success message
             self.object.delete()
             messages.add_message(request, messages.SUCCESS,
                                  self.success_message )
             return HttpResponseRedirect(success_url)
         except ProtectedError:
+            # Return to BoxType List page and show cascade Protected Error
+            # message
             messages.add_message(request, messages.ERROR, self.error_message)
             return HttpResponseRedirect(self.request.path_info)
 
