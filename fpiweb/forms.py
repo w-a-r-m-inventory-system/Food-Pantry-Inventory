@@ -1686,19 +1686,13 @@ class ProductExampleForm(forms.ModelForm):
         :return: True if valid
         """
         max_len: int = ProductExample.prod_example_name_max_length
-        min_len: int = 1
         if not prod_example_name or not (len(prod_example_name) > 0):
             raise ValidationError(
                 'The Product Example name must be specified'
             )
-        if (len(prod_example_name) <= max_len) \
-                and \
-                (len(prod_example_name) >= min_len):
-            ...
-        else:
-            raise ValidationError(
-                'A Product Example name is needed)'
-            )
+        if len(prod_example_name) > max_len:
+            raise ValidationError("The Product Example Name should be no more " 
+                                  "than 30 characters long")
         if not product:
             raise ValidationError(
                 'A Product ID is required to enter/edit a Product Example Name'
@@ -1806,6 +1800,63 @@ class ManualLocTableForm(forms.ModelForm):
                                                     loc_row,
                                                     loc_tier)
         return
+
+
+class BoxTypeMaintenanceForm(forms.ModelForm):
+    # Manage List, Add, Edit and Delete for BoxTypes
+
+    class Meta:
+        # Additonal info to help Django provide intelligent defaults
+        model = BoxType
+        fields = ['id', 'box_type_code', 'box_type_descr', 'box_type_qty']
+
+    box_type_code = forms.CharField(
+        help_text=BoxType.box_type_code_help_text,
+        required=True )
+
+    box_type_descr = forms.CharField(
+        help_text=BoxType.box_type_descr_help_text,
+        required=True )
+
+    box_type_qty = forms.IntegerField(
+        help_text=BoxType.box_type_qty_help_text,
+        required=True )
+
+    @staticmethod
+    def validate_box_type_fields(
+            box_type_code: str,
+            box_type_descr: str,
+            box_type_qty: int,
+    ):
+        max_len = BoxType.box_type_code_max_len
+        if not box_type_code or not (len(box_type_code) > 0):
+            raise ValidationError('A Box Type Code must be entered')
+        elif len(box_type_code) > max_len:
+            raise ValidationError(f'A Box Type Code is required to be no more '
+                                  f'than {max_len} characters in length')
+        max_len = BoxType.box_type_descr_max_len
+        if not box_type_descr or not (len(box_type_code) > 0):
+            raise ValidationError('A Box Type Description must be entered')
+        elif len(box_type_descr) > max_len:
+            raise ValidationError(f'A Box Type Description is required to be '
+                                  f'no more than {max_len} characters in '
+                                  f'length')
+        if not box_type_qty or box_type_qty < 1:
+            raise ValidationError(f'You must enter a whole number 1 or more '
+                                  f'in Box Type Qty.')
+        return
+
+    def clean(self):
+        cleaned_data = super().clean()
+        box_type_code = cleaned_data.get('box_type_code')
+        box_type_descr = cleaned_data.get('box_type_descr')
+        box_type_qty = cleaned_data.get('box_type_qty')
+        self.validate_box_type_fields(box_type_code,
+                                      box_type_descr,
+                                      box_type_qty)
+        return
+
+
 
 
 

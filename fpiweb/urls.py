@@ -18,6 +18,10 @@ from fpiweb.views import \
     BoxMoveView, \
     BoxNewView, \
     BoxScannedView, \
+    BoxTypeMaintenanceListView, \
+    BoxTypeMaintenanceCreateView, \
+    BoxTypeMaintenanceUpdateView, \
+    BoxTypeMaintenanceDeleteView, \
     BuildPalletView, \
     ConstraintCreateView, \
     ConstraintDeleteView, \
@@ -406,6 +410,28 @@ urlpatterns = [
     # from LocRow, LocBin, and LocTier tables
     path('rebuild_loc_table_progress/', RebuildLocTableProgressView.as_view(),
          name='rebuild_loc_table_progress_view'),
+
+    # BoxType Maintenance List page
+    # e.g. /fpiweb/box_type_maintenance_list/ = list of Box Types
+    path('box_type_maintenance/', BoxTypeMaintenanceListView.as_view(),
+         name='box_type_maintenance_view'),
+
+    # BoxType Maintenance Add page
+    # e.g. /fpiweb/box_type_maintenance/add/ = add a Box Type
+    path('box_type_maintenance/add/', BoxTypeMaintenanceCreateView.as_view(),
+         name='box_type_maintenance_new', ),
+
+    # BoxType Maintenance Edit/Update page
+    # e.g. /fpiweb/box_type_maintenance/add/ = add a Box Type
+    path('box_type_maintenance/edit/<int:pk>/',
+         BoxTypeMaintenanceUpdateView.as_view(),
+         name='box_type_maintenance_update', ),
+
+    # BoxType Maintenance Delete page
+    # e.g. /fpiweb/box_type_maintenance/delet/4/ = delete Box Type #4
+    path('box_type_maintenance/delete/<int:pk>/',
+         BoxTypeMaintenanceDeleteView.as_view(),
+         name='box_type_maintenance_delete', ),
 ]
 
 # EOF

@@ -309,26 +309,26 @@ class BoxType(models.Model):
         help_text=id_help_text,
     )
     """ Internal record identifier for box type. """
-
+    box_type_code_max_len = 10
     box_type_code_help_text = 'Type of box (code or shorthand).'
     box_type_code = models.CharField(
         'Box Type Code',
-        max_length=10,
+        max_length=box_type_code_max_len,
         unique=True,
         help_text=box_type_code_help_text,
     )
     """ Type of box (code or shorthand). """
-
+    box_type_descr_max_len = 30
     box_type_descr_help_text = 'Type of box (description).'
     box_type_descr = models.CharField(
         'Box Type Description',
-        max_length=30,
+        max_length=box_type_descr_max_len,
         help_text=box_type_descr_help_text,
     )
     """ Type of box (description). """
 
     box_type_qty_help_text = (
-        'Number of items (usually cans) that can typically fix in this box.'
+        'Number of items (usually cans) that can typically fit in this box.'
     )
     box_type_qty = models.IntegerField(
         'Default Box Type Quantity',

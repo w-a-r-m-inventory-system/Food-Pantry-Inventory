@@ -3,6 +3,8 @@ views.py - establish the views (pages) for the F. P. I. web application.
 """
 import time
 
+from django.contrib import messages
+
 from collections import OrderedDict
 from csv import writer as csv_writer
 from enum import Enum
@@ -24,15 +26,18 @@ from django.contrib.auth import \
 from django.contrib.auth.mixins import \
     LoginRequiredMixin, \
     PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
 from django.core.serializers import serialize
 from django.db import transaction
+from django.db.models import ProtectedError
 from django.db.models.functions import Substr
 from django.forms import formset_factory
 from django.http import \
     HttpResponse, \
     JsonResponse, \
-    StreamingHttpResponse
+    StreamingHttpResponse, \
+    HttpResponseRedirect
 from django.shortcuts import \
     redirect, \
     render
@@ -58,6 +63,7 @@ from fpiweb.constants import \
 from fpiweb.models import \
     Activity, \
     Box, \
+    BoxType, \
     BoxNumber, \
     Constraints, \
     LocRow, \
@@ -76,6 +82,7 @@ from fpiweb.code_reader import \
 from fpiweb.forms import \
     BoxItemForm, \
     BoxTypeForm, \
+    BoxTypeMaintenanceForm, \
     ConfirmMergeForm, \
     ConstraintsForm, \
     BuildPalletForm, \
@@ -3122,7 +3129,9 @@ class ProductExampleListView(PermissionRequiredMixin, ListView):
     context_object_name = 'product_example_list_content'
 
 
-class ProductExampleCreateView(PermissionRequiredMixin, CreateView):
+class ProductExampleCreateView(PermissionRequiredMixin,
+                               SuccessMessageMixin,
+                               CreateView):
     """
     Create a Product Example using a generic CreateView.
     """
@@ -3136,11 +3145,13 @@ class ProductExampleCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'fpiweb/product_example_edit.html'
     context_object_name = 'product_example'
     success_url = reverse_lazy('fpiweb:product_example_view')
-
+    success_message = 'A new Product Example has been successfully added.'
     form_class = ProductExampleForm
 
 
-class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
+class ProductExampleUpdateView(PermissionRequiredMixin,
+                               SuccessMessageMixin,
+                               UpdateView):
     """
     Update a Product Example using a generic UpdateView.
     """
@@ -3155,6 +3166,8 @@ class ProductExampleUpdateView(PermissionRequiredMixin, UpdateView):
     context_object_name = 'product_example'
     form_class = ProductExampleForm
     success_url = reverse_lazy('fpiweb:product_example_view')
+    success_message = "The Product Example has been has been successfully " \
+                      "updated."
 
 
 class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
@@ -3171,22 +3184,17 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'fpiweb/product_example_delete.html'
     context_object_name = 'product_example'
     success_url = reverse_lazy('fpiweb:product_example_view')
-
+    success_message ='The Product Example has been successfully deleted.'
     form_class = ProductExampleForm
 
-    def get_context_data(self, **kwargs):
-        """
-        Modify the context before rendering the template.
-
-        :param kwargs:
-        :return:
-        """
-
-        context = super(ProductExampleDeleteView, self).get_context_data(
-            **kwargs)
-        context['action'] = reverse('fpiweb:product_example_delete',
-                                    kwargs={'pk': self.get_object().id})
-        return context
+    # delete the Procduct Example and show the Success Message
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.add_message(request, messages.SUCCESS,
+                             self.success_message)
+        return HttpResponseRedirect(success_url)
 
 
 class ManualLocTableListView(PermissionRequiredMixin, ListView):
@@ -3427,6 +3435,85 @@ class RebuildLocTableProgressView(PermissionRequiredMixin, View):
 
     def get(self, request ):
         return render(request, "fpiweb/rebuild_loc_table_progress.html")
+
+
+class BoxTypeMaintenanceListView(PermissionRequiredMixin, ListView):
+    # List of existing BoxTypes using a generic ListView
+
+    # by Mike Rehner adding permission but not sure how this works?
+    permission_required = ('fpiweb.view_box_type')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_list.html'
+    context_object_name = 'box_type_maintenance_list_content'
+
+
+class BoxTypeMaintenanceCreateView(PermissionRequiredMixin,
+                                   SuccessMessageMixin,
+                                   CreateView):
+    # create a Box Type using a generic CreateView
+
+    # by Mike Rehner adding permission but not sure how this works?
+    permission_required = ('fpiweb.add_box_type_maintenance')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_edit.html'
+    context_object_name = 'box_type_maintenance'
+    success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
+    success_message = " A new BoxType has been successfully added."
+    form_class = BoxTypeMaintenanceForm
+
+
+class BoxTypeMaintenanceUpdateView(PermissionRequiredMixin,
+                                   SuccessMessageMixin,
+                                   UpdateView):
+    # Update a Box Type using a generic update view
+
+    # by Mike Rehner adding permission but not sure how this works?
+    permission_required = ('fpiweb.change_box_type_maintenance')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_edit.html'
+    context_object_name = 'box_type_maintenance'
+    form_class = BoxTypeMaintenanceForm
+    success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
+    success_message = 'The Box Type has been successfully updated.'
+
+
+class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
+    # Delete a Box Type using a generic DeleteView
+
+    # added by Mike Rehner adding permission but not sure how this works?
+    permission_required = ('fpiweb.delete_box_type_maintenance')
+
+    model = BoxType
+    template_name = 'fpiweb/box_type_maintenance_delete.html'
+    context_object_name = 'box_type_maintenance'
+    success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
+    form_class = BoxTypeMaintenanceForm
+    success_message = 'Box Type successfully deleted.'
+    error_message = 'Unable to Delete this Box Type. Before deleting this ' \
+                    'Box Type it is necessary to Delete every Box ' \
+                    'that uses this Box Type. (Cascade Delete Protected) '  \
+                    'Click Cancel Button to return to Box Type List page.'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        try:
+            # Return to BoxType List page and show success message
+            self.object.delete()
+            messages.add_message(request, messages.SUCCESS,
+                                 self.success_message )
+            return HttpResponseRedirect(success_url)
+        except ProtectedError:
+            # Return to BoxType List page and show cascade Protected Error
+            # message
+            messages.add_message(request, messages.ERROR, self.error_message)
+            return HttpResponseRedirect(self.request.path_info)
+
+
+
 
 # class ManualNotification(LoginRequiredMixin, TemplateView):
 #     """
