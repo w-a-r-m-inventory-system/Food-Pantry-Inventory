@@ -190,7 +190,7 @@ class PrintLabelView(PermissionRequiredMixin, View):
         # determine the highest numbered box in the database
         max_box_number: int = Box.objects.aggregate(Max(
             'box_number'))['box_number__max']
-        logger.debug(f"{max_box_number=}")
+        logger.debug(f"max_box_number={max_box_number}")
 
         # add additional info to the default context
         get_context: dict = {

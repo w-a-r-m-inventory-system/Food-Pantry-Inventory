@@ -238,7 +238,7 @@ class LoginViewTest(TestCase):
         error_list = soup.find('ul', class_='errorlist')
         self.assertIsNotNone(error_list)
         self.assertIn(
-            "Invalid username and/or password",
+            "Please enter a correct username and password",
             error_list.get_text(),
         )
 
@@ -1230,6 +1230,3 @@ class ManualPalletMoveViewTest(TestCase):
             Pallet.MOVE,
             pallet.pallet_status,
         )
-
-
-

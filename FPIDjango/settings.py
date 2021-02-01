@@ -167,12 +167,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'fpiweb.password_validation.WarmInPasswordValidator',
+    },
+    {
+        'NAME': 'fpiweb.password_validation.CurrentMonthInPasswordValidator',
+    },
+    {
+        'NAME': 'fpiweb.password_validation.ShortPasswordValidator',
+        'OPTIONS': {
+            'length_threshold': 12,
+        },
     },
 ]
 
@@ -181,6 +196,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # authentication.
 LOGIN_URL = 'fpiweb:login'
 
+LOGIN_REDIRECT_URL = 'fpiweb:index'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -201,7 +217,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = STATIC_ROOT
 # django-bootstrap4 settings
 # Default settings
 BOOTSTRAP4 = {
