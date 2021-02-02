@@ -10,6 +10,7 @@ from typing import \
 
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.forms import \
     CharField, \
@@ -46,7 +47,8 @@ from fpiweb.models import \
     Product, \
     ProductCategory, \
     ProductExample
-from fpiweb.support.PermissionsManagement import ManageUserPermissions
+from fpiweb.support.PermissionsManagement import \
+    ManageUserPermissions
 
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
@@ -294,106 +296,9 @@ class BoxNumberField(forms.CharField):
         return BoxNumber.format_box_number(value)
 
 
-class LogoutForm(Form):
-    username = CharField(
-        label='Username',
-        max_length=100,
-    )
-
-
-class LoginForm(Form):
-    username = CharField(label='Username', max_length=150, )
-
-    password = CharField(label='Password', max_length=128,
-                         widget=PasswordInput)
-
-
-class ChangePasswordForm(forms.Form):
-    """
-    Form to allow a user to change their own password.
-    """
-
-    class Meta:
-        fields = [
-            'current_pwsd',
-            'new_pswd',
-            'confirm_pswd',
-        ]
-    current_pswd = CharField(
-        label='Current Password',
-        max_length=128,
-        # widget=PasswordInput
-    )
-
-    new_pswd = CharField(
-        label='New Password',
-        max_length=128,
-        # widget=PasswordInput
-    )
-
-    confirm_pswd = CharField(
-        label='Confirm Password',
-        max_length=128,
-        # widget=PasswordInput
-    )
-
-    # def clean_current_pswd(self):
-    #     init_pwd = self.cleaned_data['current_pswd']
-    #     # validate later in clean()
-    #     final_pwd = init_pwd
-    #     return final_pwd
-    #
-    # def clean_new_pswd(self):
-    #     init_pwd = self.cleaned_data['new_pswd']
-    #     # validate later in clean()
-    #     final_pwd = init_pwd
-    #     return final_pwd
-    #
-    # def clean_confirm_pswd(self):
-    #     init_conf_pwd = self.cleaned_data['confirm_pswd']
-    #     # validate later in clean()
-    #     final_conf_pwd = init_conf_pwd
-    #     return final_conf_pwd
-    #
-    # def clean(self):
-    #     """
-    #     Validate the consistency across firlds.
-    #
-    #     :return:
-    #     """
-    #     cleaned_data = super().clean()
-    #
-    #     # extract user, mode, and id of target user
-    #     parm_dict = self.data
-    #     user_id = parm_dict['userid']
-    #
-    #     # check that the current password is valid
-    #
-    #
-    #     # check that both password fields match and password is valid
-    #     pwd = cleaned_data.get('userpswd')
-    #     conf_pwd = cleaned_data.get('confirm_pwd')
-    #     if pwd != conf_pwd:
-    #         msg = 'The password and the confirm password fields must match'
-    #         self.add_error('userpswd', msg)
-    #         self.add_error('confirm_pwd', msg)
-    #     else:
-    #         # validate password
-    #         username = cleaned_data.get('username')
-    #         email = cleaned_data.get('email')
-    #         user_model = get_user_model()
-    #         # user = user_model.objects.create_user(
-    #         #     username=username, password=pwd, email=email,
-    #         # )
-    #         # validators will raise ValidationError if problem found
-    #         # validate_password(pwd, user=user)
-    #
-    #     return
-
-
 class LocRowForm(forms.ModelForm):
     """
-    Manage Loction row details with a generic form.
+    Manage Location row details with a generic form.
     """
 
     class Meta:

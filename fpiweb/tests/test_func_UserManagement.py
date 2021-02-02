@@ -8,8 +8,11 @@ import geckodriver_autoinstaller  # https://pypi.org/project/geckodriver-autoins
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
+
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options  # headless mode
+
+from fpiweb.models import Profile
 
 
 class UserManagementTest(StaticLiveServerTestCase):
@@ -74,6 +77,8 @@ class UserManagementTest(StaticLiveServerTestCase):
         test_user.set_password('test_password')
         test_user.save()
 
+        Profile.objects.create(user=test_user)
+
         # Log in user, Verify the user created and logged in
         self.assertTrue(self.client.login(username='TestUser', password='test_password'))
         # Add cookie to log in the browser
@@ -98,12 +103,13 @@ class UserManagementTest(StaticLiveServerTestCase):
         self.browser.find_element_by_tag_name("form").click()
         login.submit()
         self.delay_for_recording()
+        print(f"self.browser.title is {self.browser.title}")
         self.assertIn("Welcome to Food Pantry Inventory System", self.browser.title)
 
         # Test change password- not implemented 8/27/20
         self.browser.find_element_by_link_text("Change Password").click()
         self.delay_for_recording()
-        self.assertIn("About Food Pantry Inventory", self.browser.title)
+        self.assertIn("Change password", self.browser.title)
         self.browser.find_element_by_link_text("Return to main page.").click()
         self.delay_for_recording()
         self.assertIn("Welcome to Food Pantry Inventory System", self.browser.title)

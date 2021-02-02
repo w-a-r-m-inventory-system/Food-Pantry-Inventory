@@ -3,9 +3,10 @@ Manage the urls for the F. P. I. application.
 """
 
 from django.urls import path
-from django.contrib import admin
-from django.views.generic import TemplateView
-
+from django.contrib.auth.views import \
+    LoginView, \
+    LogoutView, \
+    PasswordChangeView
 
 from fpiweb.views import \
     AboutView, \
@@ -40,10 +41,7 @@ from fpiweb.views import \
     LocTierDeleteView, \
     LocTierListView, \
     LocTierUpdateView, \
-    LoginView, \
-    ChangePasswordView, \
     ConfirmPasswordChangeView, \
-    LogoutView, \
     MaintenanceView, \
     ManualBoxStatusView, \
     ManualCheckinBoxView, \
@@ -95,11 +93,25 @@ urlpatterns = [
 
     # login page
     # e.g. /fpiweb/login/
-    path('login/', LoginView.as_view(), name='login'),
+    path(
+        'login/',
+        LoginView.as_view(
+            template_name='fpiweb/login.html'
+        ),
+        name='login'
+    ),
 
     # change password page
     # e.g. /fpiweb/change_pswd/
-    path('change_pswd/', ChangePasswordView.as_view(), name='change_pswd'),
+    # path('change_pswd/', ChangePasswordView.as_view(), name='change_pswd'),
+    path(
+        'change_pswd/',
+        PasswordChangeView.as_view(
+            template_name='fpiweb/change_password.html',
+            success_url='/fpiweb/confirm_pswd',
+        ),
+        name='change_pswd',
+    ),
 
     # confirm password page
     # e.g. /fpiweb/confirm_pswd/
@@ -111,7 +123,13 @@ urlpatterns = [
 
     # logout page
     # e.g. /fpiweb/logout/
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path(
+        'logout/',
+        LogoutView.as_view(
+            template_name='fpiweb/logout.html',
+        ),
+        name='logout',
+    ),
 
     # Maintenance page
     # e.g. /fpiweb/maintenance/ = list of constraints

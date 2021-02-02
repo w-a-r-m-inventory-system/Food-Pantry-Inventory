@@ -18,9 +18,7 @@ from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth import \
-    authenticate, \
     get_user_model, \
-    login, \
     logout, \
     update_session_auth_hash
 from django.contrib.auth.mixins import \
@@ -98,7 +96,6 @@ from fpiweb.forms import \
     LocRowForm, \
     LocBinForm, \
     LocTierForm, \
-    LoginForm, \
     MoveToLocationForm, \
     NewBoxForm, \
     NewBoxNumberForm, \
@@ -110,7 +107,6 @@ from fpiweb.forms import \
     validation_exp_months_bool, \
     UserInfoForm, \
     UserInfoModes as MODES, \
-    ChangePasswordForm, \
     ProductCategoryForm, \
     ProductNameForm, \
     ProductExampleForm, \
@@ -207,114 +203,6 @@ class AboutView(TemplateView):
         return context
 
 
-class LoginView(FormView):
-    template_name = 'fpiweb/login.html'
-    form_class = LoginForm
-    success_url = reverse_lazy('fpiweb:index')
-
-    def form_valid(self, form):
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-
-        user = authenticate(
-            request=self.request,
-            username=username,
-            password=password
-        )
-
-        if user is None:
-            form.add_error(None, "Invalid username and/or password")
-            return self.form_invalid(form)
-
-        login(self.request, user)
-        profile = Profile.objects.get_or_create(
-            user_id=user.id,
-            defaults={'title': 'User'},
-        )
-
-        return super().form_valid(form)
-
-
-class ChangePasswordView(LoginRequiredMixin, FormView):
-    """
-    Allow a user to change their password.
-    """
-    template_name = 'fpiweb/change_password.html'
-    form_class = ChangePasswordForm
-    success_url = reverse_lazy('fpiweb:confirm_pwsd')
-
-    def __init__(self):
-        _ = super().__init__()
-        self.pm = ManageUserPermissions()
-        return
-
-    def get(self, request, *args, **kwargs):
-        """
-        Add user info for the template.
-
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-
-        # get permission level and other info about current user
-        user = request.user
-        user_info: UserInfo = self.pm.get_user_info(user_id=user.id)
-        pswd_form = ChangePasswordForm()
-        context = dict()
-        context['user_info'] = user_info
-        context['access_level'] = AccessLevel
-        context['user_access'] = user_info.highest_access_level
-        context['pswd_form'] = pswd_form
-        return render(request, self.template_name, context)
-
-    def form_valid(self, form):
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-
-        # user = authenticate(
-        #     request=self.request,
-        #     username=username,
-        #     password=password
-        # )
-        #
-        # if user is None:
-        #     form.add_error(None, "Invalid username and/or password")
-        #     return self.form_invalid(form)
-        #
-        # login(self.request, user)
-        # profile = Profile.objects.get_or_create(
-        #     user_id=user.id,
-        #     defaults={'title': 'User'},
-        # )
-
-        return super().form_valid(form)
-
-    def post(self, request, *args, **kwargs):
-        """
-        Process the user attempt to change passwords.
-
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        user = request.user
-        form = ChangePasswordForm(request)
-
-        post_context = dict()
-
-        if form.is_valid():
-            # adjust session to reflect the new password
-            update_session_auth_hash(request, user)
-
-        else:
-            post_context['errors'] = form.errors
-
-        return render(request, self.template_name, post_context)
-
-
 class ConfirmPasswordChangeView(LoginRequiredMixin, View):
     """
     Confirm the password was successfully changed.
@@ -341,15 +229,6 @@ class ConfirmPasswordChangeView(LoginRequiredMixin, View):
             'user_access': user_info.highest_access_level,
         }
         return render(request, self.template_name, context)
-
-
-class LogoutView(TemplateView):
-    template_name = 'fpiweb/logout.html'
-
-    def get_context_data(self, *args, **kwargs):
-        logout(self.request)
-        nothing = dict()
-        return nothing
 
 
 class MaintenanceView(PermissionRequiredMixin, TemplateView):

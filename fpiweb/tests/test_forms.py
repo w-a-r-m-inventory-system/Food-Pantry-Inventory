@@ -4,7 +4,7 @@ __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "06/03/2019"
 
 from django.db.models import Count
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from fpiweb.forms import \
     BoxItemForm, \
@@ -24,6 +24,7 @@ from fpiweb.models import \
     LocRow, \
     LocTier, \
     Product
+from fpiweb.tests.utility import default_password, create_user
 
 
 class NewBoxFormTest(TestCase):
@@ -403,11 +404,3 @@ class ConfirmMergeFormTest(TestCase):
             }
         )
         self.assertEqual('02, 02, C1', form.to_location_str())
-
-
-
-
-
-
-
-
