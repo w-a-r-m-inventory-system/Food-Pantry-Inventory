@@ -27,6 +27,7 @@ from fpiweb.constants import \
     UserInfo
 
 from fpiweb.models import Box
+from fpiweb.views import add_navbar_vars
 
 __author__ = 'Travis Risner'
 __project__ = "Food-Pantry-Inventory"
@@ -182,10 +183,6 @@ class PrintLabelView(PermissionRequiredMixin, View):
         :param kwargs:
         :return:
         """
-        # get info for the navigation bar
-        this_user_info: UserInfo = ManageUserPermissions().get_user_info(
-            user_id=request.user.id
-        )
 
         # determine the highest numbered box in the database
         max_box_number: int = Box.objects.aggregate(Max(
@@ -195,11 +192,13 @@ class PrintLabelView(PermissionRequiredMixin, View):
         # add additional info to the default context
         get_context: dict = {
                 'form': PrintLabelForm,
-                'this_user_info': this_user_info,
                 'max_box_number': max_box_number,
                 'labels_per_page': QR_LABELS_PER_PAGE,
                 'labels_max': QR_LABELS_MAX,
         }
+
+        # add navbar info
+        get_context = add_navbar_vars(self.request.user, get_context)
 
         return render(
             request,

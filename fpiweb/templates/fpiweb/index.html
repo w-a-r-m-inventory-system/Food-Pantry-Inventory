@@ -8,23 +8,12 @@
 
     <h1>Welcome to the Food Pantry Inventory System</h1>
 
-    <div>
-        <strong><a href="{% url 'fpiweb:about' %}">About</a></strong>
+    <div class="text-center">
+        <strong><a href="{% url 'fpiweb:about' %}">
+            About the Food Pantry Inventory System</a></strong>
     </div>
 
     <br/>
-
-    <div class="text-center">
-
-    <h2>
-        {{ user_info.user.first_name }} &nbsp;
-        {{ user_info.user.last_name }}
-    </h2>
-    <h3>
-        {{ user_info.profile.title }}
-        ({{ user_info.highest_access_level.name }})
-    </h3>
-    </div>
 
     <hr/>
 
@@ -100,7 +89,7 @@
 
     <hr/>
 
-    {% if user_access == access_level.Volunteer %}
+    {% if user_info.highest_access_level == access_level.Volunteer %}
 
         &nbsp;
 

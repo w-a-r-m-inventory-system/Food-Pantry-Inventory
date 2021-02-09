@@ -69,6 +69,14 @@ fpiweb.models module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.password\_validation module
+----------------------------------
+
+.. automodule:: fpiweb.password_validation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 fpiweb.qr\_code\_utilities module
 ---------------------------------
 

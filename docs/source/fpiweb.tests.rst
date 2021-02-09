@@ -33,6 +33,14 @@ fpiweb.tests.rework\_func\_ManualPalletManagement module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.tests.rework\_func\_UserManagement module
+------------------------------------------------
+
+.. automodule:: fpiweb.tests.rework_func_UserManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 fpiweb.tests.test\_forms module
 -------------------------------
 
@@ -41,18 +49,18 @@ fpiweb.tests.test\_forms module
    :undoc-members:
    :show-inheritance:
 
-fpiweb.tests.test\_func\_UserManagement module
-----------------------------------------------
-
-.. automodule:: fpiweb.tests.test_func_UserManagement
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 fpiweb.tests.test\_models module
 --------------------------------
 
 .. automodule:: fpiweb.tests.test_models
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.test\_password\_validation module
+----------------------------------------------
+
+.. automodule:: fpiweb.tests.test_password_validation
    :members:
    :undoc-members:
    :show-inheritance:

@@ -3,16 +3,22 @@ forms.py - provide validation of a forms.
 """
 from enum import Enum
 from logging import \
-    getLogger
+    getLogger, \
+    debug, \
+    error
 from typing import \
     Union, \
-    Optional
+    Optional, \
+    List, \
+    Dict, \
+    Any
 
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.forms import \
+    IntegerField, \
     CharField, \
     Form, \
     ModelChoiceField, \
@@ -21,6 +27,8 @@ from django.forms import \
     BooleanField, \
     ChoiceField, \
     EmailField
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from fpiweb.constants import \
     CURRENT_YEAR, \
@@ -363,7 +371,7 @@ class LocRowForm(forms.ModelForm):
 
 class LocBinForm(forms.ModelForm):
     """
-    Manage Loction bin details with a generic form.
+    Manage Location bin details with a generic form.
     """
 
     class Meta:
@@ -1651,7 +1659,7 @@ class ManualLocTableForm(forms.ModelForm):
         loc_code_max_length = Location.loc_code_max_length
         loc_descr_max_length = Location.loc_descr_max_length
         min_len = 1
-        if not loc_code or not (loc_code_max_length > 0):
+        if not loc_code or not (len(loc_code) > 0):
             raise ValidationError(
                 'The Location Code must be specified'
             )

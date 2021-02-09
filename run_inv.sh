@@ -31,7 +31,7 @@ fi
 # task is needed so we can tell which process to kill when done
 run_server() {
   cd $ROOT/log
-  # echo "My PID is $$ "
+  # echo -e "My PID is $$ "
   $PYTHON $MANAGE_CMD runserver $HOST_IP:$SERVER_PORT > root.log 2>&1
 }
 
@@ -42,7 +42,7 @@ run_server &
 # capture pid of the background tasks
 ROOT_PID=$!
 SERVER_PID=$(ps -f | grep runserver | awk "\$3 = $ROOT_PID { print \$2 }") >/dev/null 2>&1
-# echo "root: $ROOT_PID, task: $SERVER_PID"
+# echo -e "root: $ROOT_PID, task: $SERVER_PID"
 
 # wait a moment for the server to start up
 sleep 2s
@@ -60,15 +60,15 @@ elif [ "$SHELL" = '/bin/bash' ]; then
   # Assume some form of Linux with xdg-open command
   xdg-open $CLIENT_URL
 else
-  echo -n "\n\tUnable to open the URL $CLIENT_URL for you.  "
-  echo "Please open manually.\n"
-  echo -n "\tIf/when you get tired of opening this URL manually, Please "
-  echo -n "\tfix this script for your OS and submit a pull request.  :)"
+  echo -en "\n\tUnable to open the URL $CLIENT_URL for you.  "
+  echo -e "Please open manually.\n"
+  echo -en "\tIf/when you get tired of opening this URL manually, Please "
+  echo -en "\tfix this script for your OS and submit a pull request.  :)"
 fi
 
 # tell user how to kill the server
-echo  "\nInstead of typing a CONTROL-C to kill the server, type"
-echo  "\tkill -QUIT $SERVER_PID"
-echo  "instead when you are done with the server."
+echo  -e "\nInstead of typing a CONTROL-C to kill the server, type"
+echo  -e "\tkill -QUIT $SERVER_PID"
+echo  -e "instead when you are done with the server."
 
 # EOF

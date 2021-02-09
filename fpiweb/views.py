@@ -10,15 +10,26 @@ from csv import writer as csv_writer
 from enum import Enum
 from http import HTTPStatus
 from json import loads
-from logging import getLogger
+from logging import getLogger, \
+    debug, \
+    info
 from operator import \
     methodcaller
 from string import digits
-from typing import Optional
+from typing import \
+    Any, \
+    Dict, \
+    List, \
+    Optional, \
+    Type, \
+    Tuple, \
+    Union
 
 from django.conf import settings
 from django.contrib.auth import \
+    authenticate, \
     get_user_model, \
+    login, \
     logout, \
     update_session_auth_hash
 from django.contrib.auth.mixins import \
@@ -42,6 +53,7 @@ from django.shortcuts import \
 from django.urls import \
     reverse, \
     reverse_lazy
+from django.utils import timezone
 from django.views import View
 from django.views.generic import \
     CreateView, \
@@ -52,6 +64,7 @@ from django.views.generic import \
     TemplateView, \
     UpdateView
 
+# from constants import UserInfo
 from fpiweb.constants import \
     ProjectError, \
     UserInfo, \
@@ -130,16 +143,47 @@ def error_page(
         message=None,
         message_list=tuple(),
         status=HTTPStatus.BAD_REQUEST):
-
+    context = {
+                'message': message,
+                'message_list': message_list,
+        }
+    context = add_navbar_vars(request.user, context)
     return render(
         request,
         'fpiweb/error.html',
-        {
-            'message': message,
-            'message_list': message_list,
-        },
+        context,
         status=status
     )
+
+
+def add_navbar_vars(user: Optional, context: Dict) -> Dict:
+    """
+    Add context variables needed by the navigation bar.
+
+    :param user: user record (usually extracted from the request object
+    :param context: current context
+    :return: modified context
+    """
+    if user:
+        user_info = ManageUserPermissions().get_user_info(user.id)
+    else:
+        fake_user = dict()
+        fake_user['first_name'] = ''
+        fake_user['last_name'] = ''
+        fake_user['highest_access_level'] = AccessLevel.No_Access
+        fake_profile = dict()
+        fake_profile['title'] = ""
+        user_info = UserInfo(
+            user=fake_user,
+            profile=fake_profile,
+            highest_access_level=fake_user['highest_access_level'],
+            is_active=False,
+            is_superuser=False,
+        )
+    context['user_info'] = user_info
+    context['access_level'] = AccessLevel
+    context['user_access'] = user_info.highest_access_level
+    return context
 
 
 def get_user_and_profile(request):
@@ -156,19 +200,13 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         """
-        Add some security info so appropriate links can be hidden.
+        Add info needed for the navigation bar
 
         :param kwargs:
         :return:
         """
         context = super().get_context_data(**kwargs)
-        current_user = self.request.user
-        user_info = ManageUserPermissions().get_user_info(current_user.id)
-        context={
-            'user_info': user_info,
-            'access_level': AccessLevel,
-            'user_access': user_info.highest_access_level,
-        }
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -187,9 +225,10 @@ class AboutView(TemplateView):
         :param kwargs:
         :return:
         """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
 
         # get this information from the database later
-        context = super().get_context_data(**kwargs)
         site_name = 'WARM (Westerville Area Resource Ministries)'
         site_address = '150 Heatherdown Dr.'
         site_csz = 'Westerville Ohio 43081'
@@ -221,13 +260,8 @@ class ConfirmPasswordChangeView(LoginRequiredMixin, View):
         :return:
         """
 
-        user = request.user
-        user_info = ManageUserPermissions().get_user_info(user.id)
-        context={
-            'user_info': user_info,
-            'access_level': AccessLevel,
-            'user_access': user_info.highest_access_level,
-        }
+        context = dict()
+        context = add_navbar_vars(self.request.user, context)
         return render(request, self.template_name, context)
 
 
@@ -242,6 +276,17 @@ class MaintenanceView(PermissionRequiredMixin, TemplateView):
 
     template_name = 'fpiweb/system_maintenance.html'
 
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class LocRowListView(PermissionRequiredMixin, ListView):
     """
@@ -255,6 +300,17 @@ class LocRowListView(PermissionRequiredMixin, ListView):
     model = LocRow
     template_name = 'fpiweb/loc_row_list.html'
     context_object_name = 'loc_row_list_content'
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class LocRowCreateView(PermissionRequiredMixin, CreateView):
@@ -272,6 +328,17 @@ class LocRowCreateView(PermissionRequiredMixin, CreateView):
     success_url = reverse_lazy('fpiweb:loc_row_view')
     form_class = LocRowForm
 
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
     """
@@ -287,6 +354,17 @@ class LocRowUpdateView(PermissionRequiredMixin, UpdateView):
     context_object_name = 'loc_row'
     form_class = LocRowForm
     success_url = reverse_lazy('fpiweb:loc_row_view')
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class LocRowDeleteView(PermissionRequiredMixin, DeleteView):
@@ -312,9 +390,10 @@ class LocRowDeleteView(PermissionRequiredMixin, DeleteView):
         :return:
         """
 
-        context = super(LocRowDeleteView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:loc_row_delete',
-                                    kwargs={'pk': self.get_object().id})
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_row_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -329,6 +408,20 @@ class LocBinListView(PermissionRequiredMixin, ListView):
     model = LocBin
     template_name = 'fpiweb/loc_bin_list.html'
     context_object_name = 'loc_bin_list_content'
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_row_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class LocBinCreateView(PermissionRequiredMixin, CreateView):
@@ -345,6 +438,20 @@ class LocBinCreateView(PermissionRequiredMixin, CreateView):
     context_object_name = 'loc_bin'
     success_url = reverse_lazy('fpiweb:loc_bin_view')
     form_class = LocBinForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_row_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
@@ -370,9 +477,10 @@ class LocBinUpdateView(PermissionRequiredMixin, UpdateView):
         :return:
         """
 
-        context = super(LocBinUpdateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:loc_bin_update',
-                                    kwargs={'pk': self.get_object().id})
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_bin_update',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -399,9 +507,10 @@ class LocBinDeleteView(PermissionRequiredMixin, DeleteView):
         :return:
         """
 
-        context = super(LocBinDeleteView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:loc_bin_delete',
-                                    kwargs={'pk': self.get_object().id})
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_bin_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -418,6 +527,20 @@ class LocTierListView(PermissionRequiredMixin, ListView):
     template_name = 'fpiweb/loc_tier_list.html'
     context_object_name = 'loc_tier_list_content'
 
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_row_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class LocTierCreateView(PermissionRequiredMixin, CreateView):
     """
@@ -431,8 +554,22 @@ class LocTierCreateView(PermissionRequiredMixin, CreateView):
     model = LocTier
     template_name = 'fpiweb/loc_tier_edit.html'
     context_object_name = 'loc_tier'
-    form_class = LocTierForm
     success_url = reverse_lazy('fpiweb:loc_tier_view')
+    form_class = LocTierForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_row_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class LocTierUpdateView(PermissionRequiredMixin, UpdateView):
@@ -459,9 +596,10 @@ class LocTierUpdateView(PermissionRequiredMixin, UpdateView):
         :return:
         """
 
-        context = super(LocTierUpdateView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:loc_tier_update',
-                                    kwargs={'pk': self.get_object().id})
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_tier_update',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -489,9 +627,10 @@ class LocTierDeleteView(PermissionRequiredMixin, DeleteView):
         :return:
         """
 
-        context = super(LocTierDeleteView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:loc_tier_delete',
-                                    kwargs={'pk': self.get_object().id})
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_tier_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -523,6 +662,7 @@ class ConstraintsListView(PermissionRequiredMixin, ListView):
         CHAR_RANGE = Constraints.CHAR_RANGE
         range_list = [INT_RANGE, CHAR_RANGE]
         context['range_list'] = range_list
+        context = add_navbar_vars(self.request.user, context)
         logger.info(
             f'Constraint extra info: INT_RANGE: {INT_RANGE}, '
             f'CHAR__RANGE: '
@@ -551,6 +691,20 @@ class ConstraintCreateView(PermissionRequiredMixin, CreateView):
     fields = ['constraint_name', 'constraint_descr', 'constraint_type',
               'constraint_min', 'constraint_max', 'constraint_list', ]
 
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:loc_row_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class ConstraintUpdateView(PermissionRequiredMixin, UpdateView):
     """
@@ -564,6 +718,7 @@ class ConstraintUpdateView(PermissionRequiredMixin, UpdateView):
     model = Constraints
     template_name = 'fpiweb/constraint_edit.html'
     context_object_name = 'constraints'
+    success_url = reverse_lazy('fpiweb:constraints_view')
 
     form_class = ConstraintsForm
 
@@ -576,18 +731,10 @@ class ConstraintUpdateView(PermissionRequiredMixin, UpdateView):
         """
 
         context = super().get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_update',
-                                    kwargs={'pk': self.get_object().id})
+        # context['action'] = reverse('fpiweb:constraint_update',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
         return context
-
-    def get_success_url(self):
-        """
-        Set the next URL to use once the edit is successful.
-        :return:
-        """
-
-        results = reverse('fpiweb:constraints_view')
-        return results
 
 
 class ConstraintDeleteView(PermissionRequiredMixin, DeleteView):
@@ -614,9 +761,10 @@ class ConstraintDeleteView(PermissionRequiredMixin, DeleteView):
         :return:
         """
 
-        context = super(ConstraintDeleteView, self).get_context_data(**kwargs)
-        context['action'] = reverse('fpiweb:constraint_delete',
-                                    kwargs={'pk': self.get_object().id})
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:constraint_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -639,6 +787,14 @@ class BoxNewView(PermissionRequiredMixin, View):
     #     )
 
     def get(self, request, *args, **kwargs):
+        """
+        Prepare to present the new box view.
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         box_number = kwargs.get('box_number')
         if not box_number:
             return error_page(request, 'missing box_number')
@@ -650,13 +806,13 @@ class BoxNewView(PermissionRequiredMixin, View):
             )
 
         new_box_form = NewBoxForm(initial={'box_number': box_number})
+        context = {'form': new_box_form}
+        context = add_navbar_vars(self.request.user, context)
         return render(
             request,
             self.template_name,
-            {
-                'form': new_box_form,
-            }
-        )
+            context,
+       )
 
     def post(self, request, *args, **kwargs):
         box_number = kwargs.get('box_number')
@@ -675,17 +831,21 @@ class BoxNewView(PermissionRequiredMixin, View):
         )
 
         if not new_box_form.is_valid():
+            context = {
+                        'form': new_box_form,
+                }
+            context = add_navbar_vars(request.user, context)
             return render(
                 request,
                 self.template_name,
-                {
-                    'form': new_box_form,
-                },
+                context,
             )
 
         box = new_box_form.save()
 
-        return redirect(reverse('fpiweb:box_details', args=(box.pk,)))
+        return redirect(reverse(
+            'fpiweb:box_details', args=(box.pk,)
+        ))
 
 
 class BoxEditView(PermissionRequiredMixin, UpdateView):
@@ -714,6 +874,7 @@ class BoxDetailsView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         logger.debug(f"kwargs are {kwargs}")
         context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
         return context
 
 
@@ -726,7 +887,9 @@ class BoxEmptyMoveView(PermissionRequiredMixin, TemplateView):
     template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
-        return {}
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class BoxMoveView(PermissionRequiredMixin, TemplateView):
@@ -738,7 +901,9 @@ class BoxMoveView(PermissionRequiredMixin, TemplateView):
     template_name = 'fpiweb/box_empty_move.html'
 
     def get_context_data(self, **kwargs):
-        return {}
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class BoxEmptyView(PermissionRequiredMixin, View):
@@ -818,14 +983,19 @@ class TestScanView(PermissionRequiredMixin, TemplateView):
         empty_box = Box.objects.filter(product__isnull=True).first()
         full_box = Box.objects.filter(product__isnull=False).first()
 
-        return {
-            'full_box_url': full_box_url,
-            'empty_box_url': empty_box_url,
-            'new_box_url': new_box_url,
-            'empty_box': empty_box,
-            'full_box': full_box,
-            'next_box_number': BoxNumber.get_next_box_number(),
+        # load up the context with results
+        context = super().get_context_data(**kwargs)
+        context = {
+                'full_box_url': full_box_url,
+                'empty_box_url': empty_box_url,
+                'new_box_url': new_box_url,
+                'empty_box': empty_box,
+                'full_box': full_box,
+                'next_box_number': BoxNumber.get_next_box_number(),
         }
+        context = add_navbar_vars(self.request.user, context)
+
+        return context
 
 
 class BuildPalletError(RuntimeError):
@@ -833,7 +1003,9 @@ class BuildPalletError(RuntimeError):
 
 
 class BuildPalletView(PermissionRequiredMixin, View):
-
+    """
+    Manage preparing a pallet of bxes of product to store in the warehouse.
+    """
     permission_required = (
         'fpiweb.build_pallet',
     )
@@ -871,15 +1043,16 @@ class BuildPalletView(PermissionRequiredMixin, View):
         :param status:
         :return:
         """
-
+        context = {
+                    'form': build_pallet_form,
+                    'box_forms': box_forms,
+                    'pallet_form': pallet_form,
+            }
+        context = add_navbar_vars(request.user, context)
         return render(
             request,
             self.form_template,
-            {
-                'form': build_pallet_form,
-                'box_forms': box_forms,
-                'pallet_form': pallet_form,
-            },
+            context,
             status=status,
         )
 
@@ -889,6 +1062,17 @@ class BuildPalletView(PermissionRequiredMixin, View):
             pallet_select_form=None,
             pallet_name_form=None,
             status_code=HTTPStatus.OK):
+        """
+        Prepare info to name or select a pallet.
+
+        Note that this is invoking show_page in a different class.
+
+        :param request: Info from Django
+        :param pallet_select_form:  Form to use to select an existing pallet
+        :param pallet_name_form:  form to use to name a new pallet
+        :param status_code:  status code to send to browser
+        :return:  prepated web page
+        """
 
         return PalletManagementView.show_page(
             request,
@@ -901,8 +1085,14 @@ class BuildPalletView(PermissionRequiredMixin, View):
         )
 
     def get(self, request):
-        # Show page to select/add new pallet.  This page will POST back to this
-        # view
+        """
+        Show page to select/add new pallet.
+
+        This page will POST back to this view.
+
+        :param request: info from Django about this page to display
+        :return: prepared web page
+        """
         return self.show_pallet_management_page(request)
 
     def post(self, request):
@@ -919,8 +1109,8 @@ class BuildPalletView(PermissionRequiredMixin, View):
             return self.process_build_pallet_forms(request)
 
         if form_name not in [
-            self.PALLET_SELECT_FORM_NAME,
-            self.PALLET_NAME_FORM_NAME
+                self.PALLET_SELECT_FORM_NAME,
+                self.PALLET_NAME_FORM_NAME
         ]:
             message = f"Unexpected form name {repr(form_name)}"
             logger.error(message)
@@ -1069,7 +1259,8 @@ class BuildPalletView(PermissionRequiredMixin, View):
 
         if duplicate_box_numbers:
             duplicate_box_numbers = [str(k) for k in duplicate_box_numbers]
-            message = f"Duplicate box numbers: {', '.join(duplicate_box_numbers)}"
+            message = f"Duplicate box numbers: " \
+                      f"{', '.join(duplicate_box_numbers)}"
             logger.debug(message)
             build_pallet_form.add_error(None, message)
             raise BuildPalletError(message)
@@ -1132,14 +1323,15 @@ class BuildPalletView(PermissionRequiredMixin, View):
 
         box_management = BoxManagementClass()
         box_management.pallet_finish(pallet)
-
+        context = {
+                    'location': location,
+                    'boxes': boxes_by_box_number.values(),
+            }
+        context = add_navbar_vars(request.user, context)
         return render(
             request,
             self.confirmation_template,
-            {
-                'location': location,
-                'boxes': boxes_by_box_number.values(),
-            },
+            context,
         )
 
 
@@ -1304,6 +1496,7 @@ class BoxItemFormView(PermissionRequiredMixin, View):
         except Pallet.DoesNotExist as dne:
             error = f"Pallet pk={pallet_pk} not found"
             logger.error(error)
+            logger.error(dne)
             return HttpResponse(error, status=HTTPStatus.NOT_FOUND)
 
         # If box is filled, empty it before continuing
@@ -1319,16 +1512,16 @@ class BoxItemFormView(PermissionRequiredMixin, View):
             box=box,
             pallet=pallet
         )
-
+        context = {
+                    'box_number': box.box_number,
+                    'form': self.get_form(
+                        pallet_box,
+                        prefix),
+            }
         return render(
             request,
             self.template_name,
-            {
-                'box_number': box.box_number,
-                'form': self.get_form(
-                    pallet_box,
-                    prefix),
-            },
+            context,
         )
 
 
@@ -1336,8 +1529,8 @@ class MANUAL_NOTICE_TYPE(Enum):
     """
     Manual generic notice type.
     """
-    NOTICE:str = 'NOTICE'
-    QUESTION:str = 'QUESTION'
+    NOTICE: str = 'NOTICE'
+    QUESTION: str = 'QUESTION'
 
 
 def manual_generic_notification(
@@ -1377,6 +1570,7 @@ def manual_generic_notification(
     context['yes_url'] = yes_url
     context['no_url'] = no_url
     context['return_url'] = return_url
+    context = add_navbar_vars(request.user, context)
 
     # content_type: use response status from HTTPStatus
     template_info = render(
@@ -1410,7 +1604,7 @@ class ManualPalletStatus(PermissionRequiredMixin, ListView):
         :return:
         """
 
-        # get stuff from the request
+        # get current context data
         context = super().get_context_data(**kwargs)
 
         # get related stuff from the database
@@ -1445,6 +1639,7 @@ class ManualPalletStatus(PermissionRequiredMixin, ListView):
         context['loc_bin'] = loc_bin_rec
         context['loc_tier'] = loc_tier_rec
         context['box_set'] = box_set
+        context = add_navbar_vars(current_user, context)
         return context
 
 
@@ -1672,19 +1867,33 @@ class ManualPalletMoveView(PermissionRequiredMixin, View):
             errors=None,
             status=HTTPStatus.OK):
 
+        context = dict()
+        context['mode'] = mode
+        context['view_class'] = self.__class__
+        context['from_location_form'] = from_location_form
+        context['to_location_form'] = to_location_form
+        context['confirm_merge_form'] = confirm_merge_form
+        context['boxes_moved'] = boxes_moved
+        context['to_location'] = to_location
+        context['errors'] = errors or []
+        # context = {
+        #                   'mode': mode,
+        #                   'view_class': self.__class__,
+        #                   'from_location_form': from_location_form,
+        #                   'to_location_form': to_location_form,
+        #                   'confirm_merge_form': confirm_merge_form,
+        #                   'boxes_moved': boxes_moved,
+        #                   'to_location': to_location,
+        #                   'errors': error_list,
+        #           },
+
+        # add user info
+        context = add_navbar_vars(self.request.user, context)
+
         return render(
             request,
             self.template,
-            {
-                'mode': mode,
-                'view_class': self.__class__,
-                'from_location_form': from_location_form,
-                'to_location_form': to_location_form,
-                'confirm_merge_form': confirm_merge_form,
-                'boxes_moved': boxes_moved,
-                'to_location': to_location,
-                'errors': errors or [],
-            },
+            context,
             status=status,
         )
 
@@ -1704,7 +1913,12 @@ class ActivityDownloadView(PermissionRequiredMixin, View):
 
         @staticmethod
         def write(value):
-            """Write the value by returning it, instead of storing in a buffer."""
+            """
+            Write the value by returning it, instead of storing in a buffer.
+
+            :param value:
+            :return:
+            """
             return value
 
     def write_rows(self):
@@ -1758,7 +1972,8 @@ class ActivityDownloadView(PermissionRequiredMixin, View):
             (writer.writerow(row) for row in self.write_rows()),
             content_type="text/csv"
         )
-        response['Content-Disposition'] = 'attachment; filename="activities.csv"'
+        response[
+            'Content-Disposition'] = 'attachment; filename="activities.csv"'
         return response
 
 
@@ -1811,6 +2026,7 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
             mode=self.MODE_ENTER_BOX_NUMBER,
             box_number_form=FilledBoxNumberForm(),
         )
+        get_context = add_navbar_vars(request.user, get_context)
         return render(request, self.template_name, get_context)
 
     def post_box_number(self, request):
@@ -1820,6 +2036,10 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
                 mode=self.MODE_ENTER_BOX_NUMBER,
                 box_number_form=box_number_form,
                 errors=box_number_form.errors,
+            )
+            box_number_failed_context = add_navbar_vars(
+                request.user,
+                box_number_failed_context
             )
             return render(
                 request,
@@ -1840,16 +2060,18 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
         location = box.location
 
         # go get the final box info after any modifications
+        post_context = self.build_context(
+            mode=self.MODE_CONFIRMATION,
+            box=box,
+            box_type=box_type,
+            product=product,
+            location=location,
+        )
+        post_context = add_navbar_vars(request.user, post_context)
         return render(
             request,
             self.template_name,
-            self.build_context(
-                mode=self.MODE_CONFIRMATION,
-                box=box,
-                box_type=box_type,
-                product=product,
-                location=location,
-            ),
+            post_context,
         )
 
     def post(self, request, *args, **kwargs):
@@ -1857,7 +2079,9 @@ class ManualBoxStatusView(PermissionRequiredMixin, View):
         if mode == self.MODE_ENTER_BOX_NUMBER:
             return self.post_box_number(request)
         logger.debug(f"Unrecognized mode '{mode}'")
-        return render(request, self.template_name, {})
+        context = dict()
+        context = add_navbar_vars(self.request.user, context)
+        return render(request, self.template_name, context)
 
 
 class ManualNewBoxView(PermissionRequiredMixin, View):
@@ -1904,6 +2128,9 @@ class ManualNewBoxView(PermissionRequiredMixin, View):
             box_number_form=NewBoxNumberForm(),
             box_type_form=ExistingBoxTypeForm(),
         )
+
+        # add user info
+        get_context = add_navbar_vars(self.request.user, get_context)
         return render(request, self.template_name, get_context)
 
     def post_box_number(self, request):
@@ -1916,6 +2143,10 @@ class ManualNewBoxView(PermissionRequiredMixin, View):
                 box_number_form=box_number_form,
                 box_type_form=box_type_form,
                 errors=[f"Box {box_number} already in inventory"],
+            )
+            box_number_failed_context = add_navbar_vars(
+                self.request.user,
+                box_number_failed_context
             )
             return render(
                 request,
@@ -1932,6 +2163,10 @@ class ManualNewBoxView(PermissionRequiredMixin, View):
                 box_number_form=box_number_form,
                 box_type_form=box_type_form,
             )
+            box_type_failed_context = add_navbar_vars(
+                self.request.user,
+                box_type_failed_context
+            )
             return render(
                 request,
                 self.template_name,
@@ -1942,17 +2177,21 @@ class ManualNewBoxView(PermissionRequiredMixin, View):
 
         # add the box to inventory
         box_mgmt = BoxManagementClass()
-        box = box_mgmt.box_new(box_number=box_number, box_type=box_type)
+        _ = box_mgmt.box_new(box_number=box_number, box_type=box_type)
 
         # present the final box info
+        context = self.build_context(
+            mode=self.MODE_CONFIRMATION,
+            box_number_form=box_number_form,
+            box=box_number,
+            box_type=box_type,
+            box_type_form=box_type_form,
+        )
+        context = add_navbar_vars(self.request.user, context)
         return render(
             request,
             self.template_name,
-            self.build_context(
-                mode=self.MODE_CONFIRMATION,
-                box=box,
-                box_type=box_type,
-            ),
+            context,
         )
 
     def post(self, request, *args, **kwargs):
@@ -1960,7 +2199,9 @@ class ManualNewBoxView(PermissionRequiredMixin, View):
         if mode == self.MODE_ENTER_BOX_NUMBER:
             return self.post_box_number(request)
         logger.debug(f"Unrecognized mode '{mode}'")
-        return render(request, self.template_name, {})
+        context = dict()
+        context = add_navbar_vars(self.request.user, context)
+        return render(request, self.template_name, context)
 
 
 class ManualCheckinBoxView(PermissionRequiredMixin, View):
@@ -2022,6 +2263,9 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
             exp_month_start_form=ExpMoStartForm(),
             exp_month_end_form=ExpMoEndForm(),
         )
+
+        # add user info
+        get_context = add_navbar_vars(self.request.user, get_context)
         return render(request, self.template_name, get_context)
 
     def post_box_info(self, request):
@@ -2160,19 +2404,26 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
         box_type = box.box_type
         product = box.product
         location = box.location
+
+        # prepare context
+        post_context = self.build_context(
+            mode=self.MODE_CONFIRMATION,
+            box=filled_box,
+            product=product,
+            location=location,
+            exp_year=exp_year,
+            exp_month_start=exp_month_start,
+            exp_month_end=exp_month_end,
+            errors=[],
+        )
+
+        # add user info
+        post_context = add_navbar_vars(self.request.user, post_context)
+
         return render(
             request,
             self.template_name,
-            self.build_context(
-                mode=self.MODE_CONFIRMATION,
-                box=filled_box,
-                product=product,
-                location=location,
-                exp_year=exp_year,
-                exp_month_start=exp_month_start,
-                exp_month_end=exp_month_end,
-                errors=[],
-            ),
+            post_context
         )
 
     def post(self, request, *args, **kwargs):
@@ -2180,7 +2431,9 @@ class ManualCheckinBoxView(PermissionRequiredMixin, View):
         if mode == self.MODE_ENTER_BOX_INFO:
             return self.post_box_info(request)
         logger.debug(f"Unrecognized mode '{mode}'")
-        return render(request, self.template_name, {})
+        context = dict()
+        context = add_navbar_vars(self.request.user, context)
+        return render(request, self.template_name, context)
 
 
 class ManualConsumeBoxView(PermissionRequiredMixin, View):
@@ -2231,8 +2484,9 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
         """
         get_context = self.build_context(
             mode=self.MODE_ENTER_BOX_NUMBER,
-            box_number_form=FilledBoxNumberForm(),
+            box_number_form=FilledBoxNumberForm,
         )
+        context = add_navbar_vars(self.request.user, get_context)
         return render(request, self.template_name, get_context)
 
     def post_box_number(self, request):
@@ -2242,6 +2496,10 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
                 mode=self.MODE_ENTER_BOX_NUMBER,
                 box_number_form=box_number_form,
                 errors=['Box number missing or box is empty']
+            )
+            box_number_failed_context = add_navbar_vars(
+                self.request.user,
+                box_number_failed_context
             )
             return render(
                 request,
@@ -2267,6 +2525,12 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
             product=product,
             location=location,
         )
+
+        # get user info
+        pre_consume_context = add_navbar_vars(
+            self.request.user,
+            pre_consume_context
+        )
         return render(
             request,
             self.template_name,
@@ -2281,6 +2545,10 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
                 box_number_form=FilledBoxNumberForm(),
                 errors=['Missing box_pk']
             ),
+            box_failed_context = add_navbar_vars(
+                request.user,
+                box_failed_context,
+            )
             return render(
                 request,
                 self.template_name,
@@ -2298,14 +2566,21 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
             'box_type',
         ).get(id=box.id)
         box_type = box.box_type
+        post_consume_context = self.build_context(
+            mode=self.MODE_CONFIRMATION,
+            box=empty_box,
+            box_type=box_type,
+        )
+
+        # get user info
+        post_consume_context = add_navbar_vars(
+            self.request.user,
+            post_consume_context
+        )
         return render(
             request,
             self.template_name,
-            self.build_context(
-                mode=self.MODE_CONFIRMATION,
-                box=empty_box,
-                box_type=box_type,
-            ),
+            post_consume_context
         )
 
     def post(self, request, *args, **kwargs):
@@ -2315,7 +2590,9 @@ class ManualConsumeBoxView(PermissionRequiredMixin, View):
         if mode == self.MODE_CONSUME_BOX:
             return self.post_consume_box(request)
         logger.debug(f"Unrecognized mode '{mode}'")
-        return render(request, self.template_name, {})
+        context = dict()
+        context = add_navbar_vars(self.request.user, context)
+        return render(request, self.template_name, context)
 
 
 class ManualMoveBoxView(PermissionRequiredMixin, View):
@@ -2348,11 +2625,14 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
         }
 
     def get(self, request, *args, **kwargs):
-        context = self.build_context(
+        get_context = self.build_context(
             mode=self.MODE_ENTER_BOX_NUMBER,
             box_number_form=FilledBoxNumberForm(),
         )
-        return render(request, self.template_name, context)
+
+        # add user info
+        get_context = add_navbar_vars(self.request.user, get_context)
+        return render(request, self.template_name, get_context)
 
     def post_box_number(self, request):
         box_number_form = FilledBoxNumberForm(request.POST)
@@ -2362,6 +2642,7 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
                 box_number_form=box_number_form,
                 errors=['Box number invalid']
             )
+            context = add_navbar_vars(self.request.user, context)
             return render(
                 request,
                 self.template_name,
@@ -2374,15 +2655,19 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
         boxes = Box.select_location(
             Box.objects.filter(box_number=box_number)
         )
+        # prepare context
+        context = self.build_context(
+            mode=self.MODE_ENTER_LOCATION,
+            box=boxes.first(),
+            location_form=ExistingLocationForm(),
+        )
 
+        # add user info
+        context = add_navbar_vars(self.request.user, context)
         return render(
             request,
             self.template_name,
-            self.build_context(
-                mode=self.MODE_ENTER_LOCATION,
-                box=boxes.first(),
-                location_form=ExistingLocationForm(),
-            )
+            context
         )
 
     def post_location(self, request):
@@ -2415,15 +2700,17 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
 
         location_form = ExistingLocationForm(request.POST)
         if not location_form.is_valid():
+            context = self.build_context(
+                mode=self.MODE_ENTER_LOCATION,
+                box=box,
+                location_form=location_form,
+                errors=['invalid or missing location'],
+            ),
+            context = add_navbar_vars(self.request.user, context)
             return render(
                 request,
                 self.template_name,
-                self.build_context(
-                    mode=self.MODE_ENTER_LOCATION,
-                    box=box,
-                    location_form=location_form,
-                    errors=['invalid or missing location'],
-                ),
+                context,
                 status=HTTPStatus.NOT_FOUND
             )
 
@@ -2431,15 +2718,17 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
         if not location:
             message = "Unable to retrieve location from form"
             logger.error(message)
+            context = self.build_context(
+                mode=self.MODE_ENTER_LOCATION,
+                box=box,
+                location_form=location_form,
+                errors=['invalid or missing location'],
+            ),
+            context = add_navbar_vars(self.request.user, context)
             return render(
                 request,
                 self.template_name,
-                self.build_context(
-                    mode=self.MODE_ENTER_LOCATION,
-                    box=box,
-                    location_form=location_form,
-                    errors=['invalid or missing location'],
-                ),
+                context,
                 status=HTTPStatus.NOT_FOUND
             )
 
@@ -2449,14 +2738,20 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
             box=box,
             location=location
         )
+        # prepare context for post location
+        post_context = self.build_context(
+            mode=self.MODE_CONFIRMATION,
+            box=box,
+            location_form=ExistingLocationForm(),
+        )
+
+        # add user info
+        post_context = add_navbar_vars(self.request.user, post_context)
 
         return render(
             request,
             self.template_name,
-            self.build_context(
-                mode=self.MODE_CONFIRMATION,
-                box=box,
-            ),
+            post_context
         )
 
     def post(self, request, *args, **kwargs):
@@ -2466,7 +2761,9 @@ class ManualMoveBoxView(PermissionRequiredMixin, View):
         if mode == self.MODE_ENTER_LOCATION:
             return self.post_location(request)
         logger.debug(f"Unrecognized mode '{mode}'")
-        return render(request, self.template_name, {})
+        context = dict()
+        context = add_navbar_vars(self.request.user, context)
+        return render(request, self.template_name, context)
 
 
 class PalletManagementView(PermissionRequiredMixin, View):
@@ -2487,7 +2784,18 @@ class PalletManagementView(PermissionRequiredMixin, View):
             pallet_select_form=None,
             pallet_name_form=None,
             status_code=HTTPStatus.OK):
+        """
+        Prepare web page from the info received.
 
+        :param request: infor from Django
+        :param page_title: title to put in the browser tab
+        :param show_delete: should a delete option be displayee?
+        :param prompt: suggestion to the user about what to do
+        :param pallet_select_form: form to use to select an existing pallet
+        :param pallet_name_form: form to use to name a new pallet
+        :param status_code: status code to send to the browser
+        :return: a fully rendered web page to send to the browser
+        """
         context = {
             'page_title': page_title,
             'show_delete': show_delete,
@@ -2495,6 +2803,9 @@ class PalletManagementView(PermissionRequiredMixin, View):
             'pallet_select_form': pallet_select_form or PalletSelectForm(),
             'pallet_name_form': pallet_name_form or PalletNameForm(),
         }
+
+        # add user info for navbar
+        context = add_navbar_vars(request.user, context)
         return render(
             request,
             PalletManagementView.template_name,
@@ -2516,8 +2827,16 @@ class PalletSelectView(PermissionRequiredMixin, FormView):
     success_url = reverse_lazy('fpiweb:index')
     form_class = PalletSelectForm
 
-    def get_success_url(self):
-        return self.success_url
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -2535,7 +2854,6 @@ class PalletSelectView(PermissionRequiredMixin, FormView):
 
 
 class UserManagementView(PermissionRequiredMixin, View):
-
     """
     Allow staff and administrators to manage any users access
     """
@@ -2606,6 +2924,7 @@ class UserManagementView(PermissionRequiredMixin, View):
             user_info_list=user_info_list,
             user_list_count=len(user_info_list)
         )
+        get_context = add_navbar_vars(this_user, get_context)
         return render(request, self.template_name, get_context)
 
 
@@ -2690,6 +3009,7 @@ class UserCreateview(PermissionRequiredMixin, CreateView):
             target_user=target_user,
             target_user_form=UserInfoForm(),
         )
+        get_context = add_navbar_vars(self.request.user, get_context)
         return render(request, self.template_name, get_context)
 
     def post(self, request, *args, **kwargs):
@@ -2714,6 +3034,7 @@ class UserCreateview(PermissionRequiredMixin, CreateView):
                 target_user_form=target_user_form,
                 errors=target_user_form.errors,
             )
+            error_context = add_navbar_vars(self.request.user, error_context)
             return render(request=request, template_name=self.template_name,
                           context=error_context)
         else:
@@ -2736,7 +3057,10 @@ class UserCreateview(PermissionRequiredMixin, CreateView):
                     mode=MODES.MODE_ADD_USER,
                     this_user_info=this_user_info,
                     target_user_form=target_user_form,
-                    errors=errors, )
+                    errors=errors,
+                )
+                error_context = add_navbar_vars(self.request.user,
+                                                error_context)
                 return render(
                     request=request,
                     template_name=self.template_name,
@@ -2748,6 +3072,7 @@ class UserCreateview(PermissionRequiredMixin, CreateView):
                 this_user_info=this_user_info,
                 target_user=target_user,
             )
+            post_context = add_navbar_vars(self.request.user, post_context)
             return render(request, self.template_name, post_context)
 
 
@@ -2827,7 +3152,8 @@ class UserUpdateView(PermissionRequiredMixin, View):
         target_user_form = UserInfoForm()
         target_user_form.initial['username'] = target_user_info.user.username
         target_user_form.initial['force_password'] = False,
-        target_user_form.initial['first_name'] = target_user_info.user.first_name
+        target_user_form.initial[
+            'first_name'] = target_user_info.user.first_name
         target_user_form.initial['last_name'] = target_user_info.user.last_name
         target_user_form.initial['email'] = target_user_info.user.email
         target_user_form.initial['title'] = target_user_info.profile.title
@@ -2846,6 +3172,7 @@ class UserUpdateView(PermissionRequiredMixin, View):
             target_user=target_user,
             target_user_form=target_user_form,
         )
+        get_context = add_navbar_vars(request.user, get_context)
         return render(request, self.template_name, get_context)
 
     def post(self, request, *args, **kwargs):
@@ -2872,6 +3199,7 @@ class UserUpdateView(PermissionRequiredMixin, View):
                 target_user_form=target_user_form,
                 errors=target_user_form.errors,
             )
+            error_context = add_navbar_vars(self.request.user, error_context)
             return render(request=request, template_name=self.template_name,
                           context=error_context)
         else:
@@ -2892,6 +3220,7 @@ class UserUpdateView(PermissionRequiredMixin, View):
                 this_user_info=this_user_info,
                 target_user=target_user,
             )
+            post_context = add_navbar_vars(self.request.user, post_context)
             return render(request, self.template_name, post_context)
 
 
@@ -2908,8 +3237,19 @@ class ProductCategoryCreateView(PermissionRequiredMixin, CreateView):
     model = ProductCategory
     template_name = 'fpiweb/product_category_edit.html'
     context_object_name = 'product_category'
-    form_class = ProductCategoryForm
     success_url = reverse_lazy('fpiweb:product_category_view')
+    form_class = ProductCategoryForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class ProductCategoryListView(PermissionRequiredMixin, ListView):
@@ -2925,6 +3265,17 @@ class ProductCategoryListView(PermissionRequiredMixin, ListView):
     model = ProductCategory
     template_name = 'fpiweb/product_category_list.html'
     context_object_name = 'product_category_list_content'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
@@ -2943,6 +3294,17 @@ class ProductCategoryUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = ProductCategoryForm
     success_url = reverse_lazy('fpiweb:product_category_view')
 
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class ProductNameCreateView(PermissionRequiredMixin, CreateView):
     """
@@ -2957,8 +3319,19 @@ class ProductNameCreateView(PermissionRequiredMixin, CreateView):
     model = Product
     template_name = 'fpiweb/product_name_edit.html'
     context_object_name = 'product_name'
-    form_class = ProductNameForm
     success_url = reverse_lazy('fpiweb:product_name_view')
+    form_class = ProductNameForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class ProductNameListView(PermissionRequiredMixin, ListView):
@@ -2974,6 +3347,17 @@ class ProductNameListView(PermissionRequiredMixin, ListView):
     model = Product
     template_name = 'fpiweb/product_name_list.html'
     context_object_name = 'product_name_list_content'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class ProductNameUpdateView(PermissionRequiredMixin, UpdateView):
@@ -2992,6 +3376,17 @@ class ProductNameUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = ProductNameForm
     success_url = reverse_lazy('fpiweb:product_name_view')
 
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class ProductExampleListView(PermissionRequiredMixin, ListView):
     """
@@ -3006,6 +3401,17 @@ class ProductExampleListView(PermissionRequiredMixin, ListView):
     model = ProductExample
     template_name = 'fpiweb/product_example_list.html'
     context_object_name = 'product_example_list_content'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class ProductExampleCreateView(PermissionRequiredMixin,
@@ -3026,6 +3432,17 @@ class ProductExampleCreateView(PermissionRequiredMixin,
     success_url = reverse_lazy('fpiweb:product_example_view')
     success_message = 'A new Product Example has been successfully added.'
     form_class = ProductExampleForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class ProductExampleUpdateView(PermissionRequiredMixin,
@@ -3048,6 +3465,17 @@ class ProductExampleUpdateView(PermissionRequiredMixin,
     success_message = "The Product Example has been has been successfully " \
                       "updated."
 
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
     """
@@ -3066,6 +3494,20 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
     success_message ='The Product Example has been successfully deleted.'
     form_class = ProductExampleForm
 
+    def get_context_data(self, **kwargs):
+        """
+        Modify the context before rendering the template.
+
+        :param kwargs:
+        :return:
+        """
+
+        context = super().get_context_data(**kwargs)
+        # context['action'] = reverse('fpiweb:product_example_delete',
+        #                             kwargs={'pk': self.get_object().id})
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
     # delete the Procduct Example and show the Success Message
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -3077,7 +3519,11 @@ class ProductExampleDeleteView(PermissionRequiredMixin, DeleteView):
 
 
 class ManualLocTableListView(PermissionRequiredMixin, ListView):
-    # by Mike Rehner adding permission but not sure how its granted
+    """
+    List the location table entries so they can be edited as needed.
+
+    Added by Mike Rehner
+    """
     permission_required = (
         'fpiweb.view_manual_loc_table',
     )
@@ -3086,12 +3532,24 @@ class ManualLocTableListView(PermissionRequiredMixin, ListView):
     template_name = 'fpiweb/manual_loc_table_list.html'
     context_object_name = 'manual_loc_table'
 
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class ManualLocTableCreateView(PermissionRequiredMixin, CreateView):
     """
-      Create a new entry for Location Table using a generic CreateView.
-      """
-    # by Mike Rehner adding permission but not sure how its granted
+    Create a new entry for Location Table using a generic CreateView.
+
+    Added by Mike Rehner
+    """
     permission_required = (
         'fpiweb.add_manual_location_table',
     )
@@ -3101,6 +3559,17 @@ class ManualLocTableCreateView(PermissionRequiredMixin, CreateView):
     context_object_name = 'manual_loc_table'
     success_url = reverse_lazy('fpiweb:manual_loc_table_view')
     form_class = ManualLocTableForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
@@ -3118,6 +3587,17 @@ class ManualLocTableUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = ManualLocTableForm
     success_url = reverse_lazy('fpiweb:manual_loc_table_view')
 
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class RebuildLocTableStartView(PermissionRequiredMixin, View):
 
@@ -3134,24 +3614,27 @@ class RebuildLocTableStartView(PermissionRequiredMixin, View):
 
     def get(self, request):
 
-        row_constraint = Constraints.objects.get(constraint_name=
-                                                 Constraints.ROW)
+        row_constraint = Constraints.objects.get(
+            constraint_name=Constraints.ROW
+        )
         if row_constraint.constraint_type == Constraints.INT_RANGE:
             row_min = row_constraint.constraint_min
             row_max = row_constraint.constraint_max
         else:
             row_min = 'Error in row constraint_min'
             row_max = 'Error in row constraint_max'
-        bin_constraint = Constraints.objects.get(constraint_name=
-                                                 Constraints.BIN)
+        bin_constraint = Constraints.objects.get(
+            constraint_name=Constraints.BIN
+        )
         if bin_constraint.constraint_type == Constraints.INT_RANGE:
             bin_min = bin_constraint.constraint_min
             bin_max = bin_constraint.constraint_max
         else:
             bin_min = 'Error in Bin constraint_min'
             bin_max = 'Error in Bin constraint_max'
-        tier_constraint = Constraints.objects.get(constraint_name=
-                                                  Constraints.TIER)
+        tier_constraint = Constraints.objects.get(
+            constraint_name=Constraints.TIER
+        )
         if tier_constraint.constraint_type == Constraints.CHAR_LIST:
             tiers = tier_constraint.constraint_list
         else:
@@ -3162,19 +3645,21 @@ class RebuildLocTableStartView(PermissionRequiredMixin, View):
             exclusion_str = exclusions_constraint.constraint_list
         else:
             exclusion_str = 'Error in Location Exclusions constraint_list'
-        context= {'row_max': row_max, 'row_min': row_min,
-                  'bin_min': bin_min, 'bin_max': bin_max,
-                  'tiers': tiers, 'exclusion_str': exclusion_str,}
-        return render(request, "fpiweb/rebuild_loc_table_start.html", context, )
+        context = {'row_max': row_max, 'row_min': row_min,
+                   'bin_min': bin_min, 'bin_max': bin_max,
+                   'tiers': tiers, 'exclusion_str': exclusion_str, }
+        context = add_navbar_vars(request.user, context)
+        return render(request, "fpiweb/rebuild_loc_table_start.html",
+                      context, )
 
 
 class RebuildLocTableFinishView(PermissionRequiredMixin, View):
 
     # Mike Rehner not sure about these permissions
     permission_required = (
-        'fpiweb.view_constraints',
-        'fpiweb.view_location'
-        'fpiweb.add_location'
+            'fpiweb.view_constraints',
+            'fpiweb.view_location'
+            'fpiweb.add_location'
     )
 
     model = Location
@@ -3185,15 +3670,17 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
     # Constraints table
     # Requires that exclusion data be in a comma separated string
     # returns number of rows, bins and tiers added/updated
-    def update_row_bin_tier_tables(self):
-        row_nnn= 0
-        bin_nnn= 0
+    # @property
+    def update_row_bin_tier_tables(self) -> Tuple[int, int, int]:
+        row_nnn = 0
+        bin_nnn = 0
         tier_nnn = 0
 
         # Get Constraint object with constraint_name
         # Constraints.Constraints.CONSTRAINT_NAME_CHOICES.ROW
-        row_constraint_record = Constraints.objects.get(constraint_name=
-                                                        Constraints.ROW)
+        row_constraint_record = Constraints.objects.get(
+            constraint_name=Constraints.ROW
+        )
         # if type == int then use default INT_RANGE?
         if row_constraint_record.constraint_type == Constraints.INT_RANGE:
             row_min = int(row_constraint_record.constraint_min)
@@ -3210,8 +3697,9 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
 
         # Get Constraint object with constraint_name
         # Constraints.Constraints.CONSTRAINT_NAME_CHOICES.BIN
-        bin_constraint_record = Constraints.objects.get(constraint_name=
-                                                        Constraints.BIN)
+        bin_constraint_record = Constraints.objects.get(
+            constraint_name=Constraints.BIN
+        )
         # if type == int then use default INT_RANGE?
         if bin_constraint_record.constraint_type == Constraints.INT_RANGE:
             bin_min = int(bin_constraint_record.constraint_min)
@@ -3225,8 +3713,9 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
                     bin_record.save()
                     bin_nnn = bin_nnn + 1
 
-        tier_constraint_record = Constraints.objects.get(constraint_name=
-                                                         Constraints.TIER)
+        tier_constraint_record = Constraints.objects.get(
+            constraint_name=Constraints.TIER
+        )
         if tier_constraint_record.constraint_type == Constraints.CHAR_LIST:
             tier_str = tier_constraint_record.constraint_list
             # convert comma separated string to a list
@@ -3247,7 +3736,8 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
     def build_exclusion_constraint_list(self):
         exclusion_constraint_record = Constraints.objects.get(
             constraint_name=Constraints.LOCATION_EXCLUSIONS)
-        if exclusion_constraint_record.constraint_type == Constraints.CHAR_LIST:
+        if (exclusion_constraint_record.constraint_type ==
+                Constraints.CHAR_LIST):
             exclusion_str = exclusion_constraint_record.constraint_list
             # return exclusion_str as a list
             return [entry.strip() for entry in exclusion_str.split(',')]
@@ -3260,9 +3750,9 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
     # Requires Loc_Row, Loc_Bin and Loc Tier tables previously updated from
     # Constraints table
     # returns number of new records created in Location table
-    def rebuild_location_table(self):
+    def rebuild_location_table(self) -> int:
 
-        loc_records_nnn = 0     # the number of location table records changed
+        loc_records_nnn = 0  # the number of location table records changed
 
         # grab the location exclusion list into memory
         exclusion_constraint_list = self.build_exclusion_constraint_list()
@@ -3273,11 +3763,13 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
                 bin_code_key = bin_record.loc_bin
                 for tier_record in LocTier.objects.all():
                     tier_code_key = tier_record.loc_tier
-                    combination_loc_key = row_code_key + bin_code_key + \
-                                          tier_code_key
-                    if not Location.objects.filter(loc_code=
-                                                   combination_loc_key):
-                        if combination_loc_key not in exclusion_constraint_list:
+                    combination_loc_key = (
+                            row_code_key + bin_code_key + tier_code_key
+                    )
+                    if not Location.objects.filter(
+                            loc_code=combination_loc_key):
+                        if (combination_loc_key not in
+                                exclusion_constraint_list):
                             r = Location(loc_code=combination_loc_key,
                                   loc_descr=f'Row {row_code_key} '
                                             f'Bin {bin_code_key} '
@@ -3289,7 +3781,7 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
                                   loc_tier=LocTier.objects.get(
                                       loc_tier=tier_code_key))
                             r.save()
-                            loc_records_nnn =  loc_records_nnn + 1
+                            loc_records_nnn = loc_records_nnn + 1
         return loc_records_nnn
 
     def get(self, request):
@@ -3299,7 +3791,8 @@ class RebuildLocTableFinishView(PermissionRequiredMixin, View):
         context = {'location_records_added': location_records_added,
                    'rows_added': rows_added,
                    'bins_added': bins_added,
-                   'tiers_added': tiers_added,}
+                   'tiers_added': tiers_added, }
+        context = add_navbar_vars(request.user, context)
         return render(request, "fpiweb/rebuild_loc_table_finish.html", context)
 
 
@@ -3312,8 +3805,10 @@ class RebuildLocTableProgressView(PermissionRequiredMixin, View):
         'fpiweb.add_location'
     )
 
-    def get(self, request ):
-        return render(request, "fpiweb/rebuild_loc_table_progress.html")
+    def get(self, request):
+        context = add_navbar_vars(request.user, dict())
+        return render(request, "fpiweb/rebuild_loc_table_progress.html",
+                      context)
 
 
 class BoxTypeMaintenanceListView(PermissionRequiredMixin, ListView):
@@ -3325,6 +3820,17 @@ class BoxTypeMaintenanceListView(PermissionRequiredMixin, ListView):
     model = BoxType
     template_name = 'fpiweb/box_type_maintenance_list.html'
     context_object_name = 'box_type_maintenance_list_content'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class BoxTypeMaintenanceCreateView(PermissionRequiredMixin,
@@ -3342,6 +3848,17 @@ class BoxTypeMaintenanceCreateView(PermissionRequiredMixin,
     success_message = " A new BoxType has been successfully added."
     form_class = BoxTypeMaintenanceForm
 
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
+
 
 class BoxTypeMaintenanceUpdateView(PermissionRequiredMixin,
                                    SuccessMessageMixin,
@@ -3357,6 +3874,17 @@ class BoxTypeMaintenanceUpdateView(PermissionRequiredMixin,
     form_class = BoxTypeMaintenanceForm
     success_url = reverse_lazy('fpiweb:box_type_maintenance_view')
     success_message = 'The Box Type has been successfully updated.'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
 
 class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
@@ -3375,6 +3903,17 @@ class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
                     'Box Type it is necessary to Delete every Box ' \
                     'that uses this Box Type. (Cascade Delete Protected) '  \
                     'Click Cancel Button to return to Box Type List page.'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add info needed for the navigation bar
+
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context = add_navbar_vars(self.request.user, context)
+        return context
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -3402,12 +3941,12 @@ class BoxTypeMaintenanceDeleteView(PermissionRequiredMixin, DeleteView):
 #
 #     def get_context_data(self, **kwargs):
 #         """
-#         Get info from reqest and populate context from it.
+#         Get info from request and populate context from it.
 #
 #         :param kwargs:
 #         :return:
 #         """
-#         context = super(ManualNotification, self.get_context_data(**kwargs))
+#         context = super().get_context_data(**kwargs)
 #         request = context.get_request()
 #         title = request.
 
