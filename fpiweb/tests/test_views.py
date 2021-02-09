@@ -44,7 +44,8 @@ from fpiweb.views import \
     BuildPalletError, \
     BuildPalletView, \
     ManualMoveBoxView, \
-    ManualPalletMoveView
+    ManualPalletMoveView, \
+    add_navbar_vars
 
 
 def add_prefix(post_data, prefix):
@@ -100,6 +101,7 @@ class BoxNewViewTest(TestCase):
         # create user for this test (It will only exist briefly in the test
         # database).
         # create an associated profile - just for the test
+        user_model = get_user_model()
         user = create_user(username='user', title='Test User')
         # profile = Profile.objects.create(
         #     title='Test User',
@@ -190,7 +192,11 @@ class IndexViewTest(TestCase):
 class AboutViewTest(TestCase):
 
     def test_get(self):
+
+        user_model = get_user_model()
+        user = create_user(username='user', title='Test User')
         client = Client()
+        client.force_login(user)
         response = client.get(reverse('fpiweb:about'))
         self.assertEqual(200, response.status_code)
 

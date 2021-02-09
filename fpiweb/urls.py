@@ -381,7 +381,7 @@ urlpatterns = [
     path('product_example/', ProductExampleListView.as_view(),
          name='product_example_view'),
 
-    # PrdductExample Add page
+    # ProductExample Add page
     # e.g. /fpiweb/product_example/add/ = add a product example
     path('product_example/add/', ProductExampleCreateView.as_view(),
          name='product_example_new', ),

@@ -1,7 +1,15 @@
-{% load static %}{# django's static tag library #}
-{% load bootstrap4 %}{# bootstrap4 tag library #}
+{% extends 'fpiweb/navbar.html' %}
+{% block doctype %}
 <!DOCTYPE html>
 <html lang="en">
+{% endblock %}  <!-- end of doctype block -->
+{# document level declaration above #}
+
+{#  See the documentation for why this extends the navbar.html rather than #}
+{#  includes it. #}
+
+{# static header prefix info #}
+{% block headfirst %}
 <head>
     <meta charset="UTF-8"
           name="viewport"
@@ -14,31 +22,27 @@
     {# URL Response - (N/A) #}
     {# Table - (N/A) #}
     {# Form - (N/A) #}
+{% endblock %}  {# end of headfirst block #}
 
-    <title>
-        {% block title %}
-        {% endblock %}
-</title>
-    {# previously {% bootstrap_css %} was used.  Presumbably this pointed to CDN site.  Is there an option to make the tag point to a local directory #}
-    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-reboot.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'fpiweb/style.css' %}"/>
-
+{# static header suffix #}
+{% block headlast %}
 </head>
-<body>
-    <div class="container">
-        {# Display django.contrib.messages as Bootstrap alerts #}
-        {% bootstrap_messages %}
-        {% block content %}
-        {% endblock %}
-    </div>
+{% endblock %}  {# end of headlast block #}
 
-    <script src="{% static '/fpiweb/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static '/fpiweb/popper.min.js' %}"></script>
-    <script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-    {% block footer_javascript %}
-    {% endblock %}
+{# static body prefix #}
+{% block bodyfirst %}
+<body>
+{% endblock %}  <!-- end of bodyfirst block -->
+
+{# NavBar defined here in havbar.html #}
+
+{# body content defined here in navbar.html #}
+{# including content block #}
+
+{# footer_javascript block defined here in navbar.html #}
+
+{# static body suffix #}
+{% block bodylast %}
 </body>
 </html>
-
+{%  endblock %}  <!-- end of bodylast block -->

@@ -1,6 +1,7 @@
 """
 PermissionsManagement.py - Manage user permissions
 """
+from functools import lru_cache
 from logging import getLogger
 from typing import Optional
 
@@ -33,6 +34,7 @@ class ManageUserPermissions:
 
         return
 
+    @lru_cache(maxsize=100)
     def get_user_info(self, user_id: int) -> UserInfo:
         """
         Return full user info for a given user.

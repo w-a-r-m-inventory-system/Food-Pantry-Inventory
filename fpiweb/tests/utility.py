@@ -1,9 +1,14 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group, Permission, User
+from django.contrib.auth.models import \
+    Group, \
+    Permission, \
+    User
 from django.test import Client
 from django.views import View
 
-from fpiweb.constants import AccessLevel, TargetUser
+from fpiweb.constants import \
+    AccessLevel, \
+    TargetUser
 from fpiweb.models import Profile
 
 default_password = 'abc123'
