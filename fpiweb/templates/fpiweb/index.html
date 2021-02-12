@@ -21,7 +21,7 @@
 
     <div class="row">
         <a class="btn btn-primary" href="
-            {% url 'fpiweb:manual_box_status' %}">Check the status of a box
+            {% url 'fpiweb:manual_box_status' %}">Check the Status of a Box
         </a>
     </div>
 
@@ -29,7 +29,7 @@
 
     <div class="row">
         <a class="btn btn-primary" href="
-            {% url 'fpiweb:manual_checkin_box' %}">Checkin a Box
+            {% url 'fpiweb:manual_checkin_box' %}">Check In a Box
         </a>
     </div>
 
@@ -38,11 +38,28 @@
     <div class="row">
         <a class="btn btn-primary" href="
             {% url 'fpiweb:manual_checkout_box' %}">
-            Checkout (Consume Product in) a Box
+            Checkout (Consume Product In) a Box
         </a>
     </div>
 
-    <br/>
+     <br/>
+
+    <div class="row">
+        <a class="btn btn-primary" href="
+        {% url 'fpiweb:manual_move_box' %}">Move a box
+        </a>
+    </div>
+
+     <br/>
+
+    <div class="row">
+        <a class="btn btn-primary" href="
+        {% url 'fpiweb:manual_add_box' %}"> Add a New Box to Inventory
+        </a>
+    </div>
+
+    <br/><br />
+
     <div class="row">
         <a class="btn btn-primary" href="
             {% url 'fpiweb:build_pallet' %}">Build a Pallet
@@ -50,20 +67,14 @@
     </div>
 
     <br/>
-    <a href="
-        {% url 'fpiweb:manual_pallet_move' %}">Move a Pallet
-    </a>
+    <div class="row">
+        <a class="btn btn-primary" href="
+            {% url 'fpiweb:manual_pallet_move' %}">Move a Pallet
+        </a>
+    </div>
 
     <br/>
-    <a href="{% url 'fpiweb:manual_move_box' %}">
-        Move a box
-    </a>
 
-    <br/>
-    <br/>
-    <a href="{% url 'fpiweb:manual_add_box' %}">
-        Add a new box to inventory
-    </a>
 
     <hr/>
 
