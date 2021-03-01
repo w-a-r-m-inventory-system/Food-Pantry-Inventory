@@ -1,0 +1,109 @@
+# manage the development build of the web container
+
+# # # # # #
+# BUILDER #
+# # # # # #
+
+# pull official base image
+# FROM python:3.8.3-alpine as builder
+FROM python as builder
+
+# set work directory in the web container
+WORKDIR /usr/src/app
+
+RUN pwd
+
+RUN python --version
+RUN python3 --version
+
+RUN uname -a
+
+# RUN apt-cache search netcat
+# RUN apt-get install netcat
+# RUN exit 1
+
+# set environment variables to control Python within the container
+# Force Python to NOT write .pyc files
+ENV PYTHONDONTWRITEBYTECODE 1
+# Force Python to NOT buffer stdout and stderr output
+ENV PYTHONUNBUFFERED 1
+
+# install psycopg2 dependencies
+# RUN apk update && apk add postgresql-dev gcc python3-dev libffi-dev musl-dev
+
+# install upgrades and dependencies
+RUN pip install --upgrade pip setuptools wheel
+
+# install dependencies
+COPY ./config/Docker/web/manage_requirements.txt manage_requirements.txt
+COPY ./config/Docker/web/requirements.docker.web.txt requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r manage_requirements.txt
+
+RUN ls -l . /usr/src/app/wheels
+
+
+
+# # # # #
+# FINAL #
+# # # # #
+
+# pull official base image
+# FROM python:3.8.3-alpine
+FROM python
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create the app user
+# RUN addgroup -S app && adduser -S app -G app
+RUN addgroup --system app && adduser --system --ingroup app app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+RUN pwd
+
+# install upgrades and dependencies
+RUN pip install --upgrade --no-cache pip setuptools wheel
+
+# install dependencies
+# RUN apk update && apk add libpq
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt $APP_HOME
+COPY --from=builder /usr/src/app/manage_requirements.txt $APP_HOME
+RUN pip install --no-cache /wheels/*
+
+# add a script to manage web container startup
+COPY ./config/Docker/web/entrypoint.web.sh /home/app/web/entrypoint.sh
+COPY ./config/Docker/web/netcat.py /home/app/web/netcat.py
+
+# copy project code
+COPY ./FPIDjango $APP_HOME/FPIDjango
+COPY ./fpiweb $APP_HOME/fpiweb
+
+# copy Django manaager program
+COPY manage.py .
+
+# create the directories that app must own
+RUN mkdir /home/app/web/staticfiles /home/app/web/mediafiles
+
+RUN pwd
+
+RUN ls -l
+
+# reset ownership of all project-related files and directories
+RUN chown -R app:app $APP_HOME
+
+RUN ls -l
+
+# change to the app user
+USER app
+
+# tell docker to use the inv web script when starting the container
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]
+
+# EOF
+

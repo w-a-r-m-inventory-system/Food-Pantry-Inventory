@@ -1,0 +1,9 @@
+# manage_requirements.txt - applly additional requirements to pip
+# require that all packages be installed from binary wheels
+# --only-binary :all:
+
+# use this option to prefer wheels but allow compile if necessary
+--prefer-binary :all:
+
+# read in the list of packages to install
+-r requirements.txt

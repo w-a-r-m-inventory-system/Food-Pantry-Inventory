@@ -394,7 +394,11 @@ data/
 # Ignore .png files in scans
 /scans/*.png
 
+# Ignore all environment constatants except the sample
+inv.project-constants.*
+
 # Travis personal ignore files
-# config/Docker/
+/config/Docker/.env.inv
+/config/Docker/.env.inv.db
 
 # EOF
