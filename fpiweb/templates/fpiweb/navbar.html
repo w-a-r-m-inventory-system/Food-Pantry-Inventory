@@ -50,51 +50,55 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Box Management
+                                <a
+                                        class="nav-link dropdown-toggle navbar-text" href="#" id="navbarInventoryManageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Inventory Management
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_checkin_box' %}">Check In a Box</a>
-                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_checkout_box' %}">Checkout (Consume Product in) a Box</a>
                                     <a class="dropdown-item" href="{% url 'fpiweb:manual_box_status' %}">Check Status of a Box</a>
-                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_add_box' %}">Add a New Box to Inventory</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_checkin_box' %}">Check In a Box</a>
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_checkout_box' %}">Checkout (Consume Product In) a Box</a>
                                     <a class="dropdown-item" href="{% url 'fpiweb:manual_move_box' %}">Move a Box</a>
-                                </div>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Pallet Management
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{% url 'fpiweb:manual_add_box' %}">Add a New Box to Inventory</a>
+                                     <hr class="style-one"/>
                                     <a class="dropdown-item" href="{% url 'fpiweb:build_pallet' %}">Build a Pallet</a>
                                     <a class="dropdown-item" href="{% url 'fpiweb:manual_pallet_move' %}">Move a Pallet</a>
                                 </div>
-                            </li>
+
                             {% if user_access == access_level.Volunteer %}
                                 &nbsp;
                             {% else %}
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a
+                                            class="nav-link dropdown-toggle navbar-text" href="#" id="navbarSysManageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         System Management
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="/warmadmin/">(Admin)</a>
                                         <a class="dropdown-item" href="{% url 'fpiweb:maintenance' %}">System Maintenance</a>
                                         <a class="dropdown-item" href="{% url 'fpiweb:print_labels' %}">Print Labels</a>
                                         <a class="dropdown-item" href="{% url 'fpiweb:download_activities' %}">Download Activity Log</a>
-                                        <a class="dropdown-item" href="/warmadmin/">Admin</a>
+
                                     </div>
                                 </li>
                             {% endif %}
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle navbar-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                                <a
+                                        class="nav-link dropdown-toggle navbar-text" href="#" id="navbarUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                                     {{ user_info.user.first_name }}
                                     {{ user_info.user.last_name }}
-                                    <br/>
+                                    <!-- <br /> removed this space to see if
+                                    that is the way it should go @Mike -->
                                     {{ user_info.profile.title }}
                                     ({{ user_info.highest_access_level.name }})
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <!-- original not sure where to wired up
+                                    about
                                     <a class="dropdown-item" href="{% url 'fpiweb:about' %}">Change password</a>
+                                    -->
+                                    <a class="dropdown-item"
+                                       href="{% url 'fpiweb:change_pswd' %}">Change Password</a>
                                     <a class="dropdown-item" href="{% url 'fpiweb:logout' %}">Logout</a>
                                 </div>
                             </li>
