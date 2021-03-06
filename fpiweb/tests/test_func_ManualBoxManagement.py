@@ -300,6 +300,8 @@ class ManualBoxManagement(StaticLiveServerTestCase):
             "//input[@value='Set Box Checkin Information']")
         set_box_checkin_button.submit()
         self.delay_for_recording()
+        self.delay_for_recording()
+        self.delay_for_recording()
         # find <li> item that contains 'Invalid box number' text
         self.browser.find_element_by_xpath(
             "//li[contains(text(),'Invalid box number')]")

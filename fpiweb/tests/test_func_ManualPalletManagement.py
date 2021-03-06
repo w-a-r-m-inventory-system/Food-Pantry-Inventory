@@ -52,10 +52,11 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Required to truncate all pk instances to 1
         cls.reset_sequences = True
-        geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists
-                                            # and if it doesn't exist, download it automatically,
-                                            # then add geckodriver to path
+        # Check if the current version of geckodriver existsand if it doesn't
+        # exist, download it automatically, then add geckodriver to path
+        geckodriver_autoinstaller.install()
         cls.browser = cls.run_headless_mode()   # True = run in headless mode
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
