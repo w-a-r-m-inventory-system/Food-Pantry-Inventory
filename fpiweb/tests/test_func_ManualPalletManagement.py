@@ -25,6 +25,10 @@ from ..models import Profile
 
 class ManualPalletMaintenance(StaticLiveServerTestCase):
 
+    user_name = 'login_user'
+    password = 'abc123'
+    profile_title = 'Jessie'
+
     fixtures = ['Activity.json','Constraints.json',
                 'Group.json',
                  'PalletBox.json',
@@ -71,19 +75,21 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
         # Here I am not using utility.py to create a user,
         # I am creating a user by code inside the StaticLiveServerTestCase
-        test_user = User.objects.create_superuser(username='user')
-        test_user.set_password('abc123')
+        test_user = User.objects.create_superuser(username=self.user_name)
+        test_user.set_password(self.password)
         # add group permissions to user
         group_list = Group.objects.all()
         for group in group_list:
             test_user.groups.add(group)
         test_user.save()
         # add profile to user
-        profile = Profile.objects.create(user=test_user, title='Volunteer')
+        profile = Profile.objects.create(user=test_user, title
+        =self.profile_title)
         profile.save()
 
-        # Login the user
-        self.assertTrue(self.client.login(username='user', password='abc123'))
+        # Log in user, Verify the user created and logged in
+        self.assertTrue(self.client.login(username=self.user_name,
+                                          password=self.password))
         # Add cookie to login to the browser
         cookie = self.client.cookies['sessionid']
         # visit page in the site domain so the page accepts the cookie

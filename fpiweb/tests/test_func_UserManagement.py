@@ -1,8 +1,3 @@
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
-
 _author__ = 'Mike Rehner'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "08/27/20"
@@ -27,13 +22,7 @@ class UserManagementTest(StaticLiveServerTestCase):
     profile_title = 'Jessie'
 
     fixtures = ['Activity.json','Constraints.json',
-                'Group.json',
-                 'PalletBox.json',
-                 'BoxType.json', 'Location.json', 'LocBin.json', 'LocRow.json',
-                 'LocTier.json',
-                 'ProductExample.json',
-                 'Product.json', 'ProductCategory.json',
-                 'Box.json', 'Pallet.json' ]
+                'Group.json']
 
     RECORD = False
     def delay_for_recording(self):
@@ -118,19 +107,12 @@ class UserManagementTest(StaticLiveServerTestCase):
         login.submit()
         self.delay_for_recording()
 
+
     # Test login works
     def test_1_Login(self):
         fname = 'test_1_Login'
         self.browser.get(self.live_server_url)
-        timeout = 20
-        try:
-            # line below requires double parenthesis ???
-            title = expected_conditions.presence_of_element_located((By.ID,
-                    'id_username'))
-            WebDriverWait(self.browser, timeout).until(title)
-        except TimeoutException:
-            self.fail('Timed out waiting for page to load')
-            print('Timed out waiting- printing now')
+        #self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/login/'))
 
         # Line below casues test to fail in pytest, passes in unitest
         self.assertIn("Login", self.browser.title)
@@ -161,6 +143,7 @@ class UserManagementTest(StaticLiveServerTestCase):
         print(f"self.browser.title is {self.browser.title}")
         self.assertIn("Welcome to Food Pantry Inventory System",
                       self.browser.title)
+
 
     # test change password and login with new password
     def test_3_change_password(self):
@@ -212,6 +195,7 @@ class UserManagementTest(StaticLiveServerTestCase):
         self.assertIn("Welcome to Food Pantry Inventory System",
                       self.browser.title)
 
+
     # test change password, password too common
     def test_4_change_password_common(self):
         new_password = 'password'
@@ -238,6 +222,7 @@ class UserManagementTest(StaticLiveServerTestCase):
         self.browser.find_element_by_class_name("invalid-feedback")
         self.browser.find_element_by_xpath(
             "//div[contains(text(), 'This password is too common.')]")
+
 
     # test change password, passwords don't match
     def test_5_change_password_nomatch(self):
