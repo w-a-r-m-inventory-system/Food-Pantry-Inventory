@@ -6,7 +6,7 @@
 source inv.project-constants.prod
 
 {
-  open "http://localhost:1337/admin"
+  open "http://localhost:1337/warmadmin"
 } 2>&1 | tee ./log/${0}.log
 
 # EOF

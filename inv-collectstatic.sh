@@ -7,7 +7,7 @@ source inv.project-constants.prod
 
 {
 	docker-compose -f $YAML_FILE --project-name $PROJECT exec $WEB_SERVICE_NAME python manage.py collectstatic --no-input
-} 2>&1 | tee ./log/${9}.log
+} 2>&1 | tee ./log/${0}.log
 
 # EOF
 

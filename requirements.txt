@@ -4,7 +4,7 @@ appdirs==1.4.4
 argon2-cffi==20.1.0
 args==0.1.0
 asgiref==3.3.1
-astroid==2.5
+astroid==2.5.1
 atomicwrites==1.4.0
 attrs==20.3.0
 Babel==2.9.0
@@ -16,7 +16,7 @@ click==7.1.2
 clint==0.5.1
 colorama==0.4.4
 commonmark==0.9.1
-coverage==5.4
+coverage==5.5
 crayons==0.4.0
 dateparser==1.0.0
 Django==3.1.7
@@ -33,7 +33,7 @@ GitPython==3.1.14
 humanize==3.2.0
 idna==2.10
 imagesize==1.2.0
-importlib-metadata==3.7.0
+importlib-metadata==3.7.2
 iniconfig==1.1.1
 Jinja2==2.11.3
 lazy-object-proxy==1.5.2
@@ -42,13 +42,13 @@ MarkupSafe==1.1.1
 more-itertools==8.7.0
 packaging==20.9
 pendulum==2.1.2
-Pillow==8.1.0
+Pillow==8.1.2
 pipdeptree==2.0.0
 pluggy==0.13.1
 psycopg2-binary==2.8.6
 py==1.10.0
 pycparser==2.20
-Pygments==2.8.0
+Pygments==2.8.1
 PyMySQL==1.0.2
 pyparsing==2.4.7
 pypng==0.0.20
@@ -65,7 +65,7 @@ PyYAML==5.4.1
 qrcode==6.1
 recommonmark==0.7.1
 regex==2020.11.13
-reportlab==3.5.59
+reportlab==3.5.63
 requests==2.25.1
 selenium==3.141.0
 six==1.15.0
@@ -73,7 +73,7 @@ smmap==3.0.5
 snaptime==0.2.4
 snowballstemmer==2.1.0
 soupsieve==2.2
-Sphinx==3.5.1
+Sphinx==3.5.2
 sphinx-autoapi==1.7.0
 sphinx-markdown==1.0.2
 sphinx-rtd-theme==0.5.1
@@ -98,4 +98,4 @@ uWSGI==2.0.19.1
 uwsgitop==0.11
 wcwidth==0.2.5
 wrapt==1.12.1
-zipp==3.4.0
+zipp==3.4.1

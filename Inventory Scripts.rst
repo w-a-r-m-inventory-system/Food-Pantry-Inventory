@@ -107,3 +107,101 @@ Notes
 -   Another reason for writing these scripts is that I am lazy and forgetful
     This provides reminders of how Docker works and perhaps will provide
     illumination for others.
+
+**************************************************
+Changes required to move to new location
+**************************************************
+
+The following changes were required to migrate to a new location, by file:
+
+.. note:: All files are listed with locations relative to the main project
+    directory.
+
+File Changes and Essential Information
+==================================================
+
+./config/Docker/nginx/nginx.conf
+--------------------------------------------------
+
+This is the nginx.conf file that Docker will load into the nginx container
+    for use at run time.
+
+Hard coded values:
+
+server web:8000
+    The 8000 here is the port that ???
+
+# TODO 03/02/2021 - identify what port this connects to.
+
+listen 80;
+    The 89 here is the port from the outside that nginx will listen to.
+
+location / ...
+    This identifies that the root of the url coming in will be snagged and
+    passed on to the proxy info that follows.
+
+proxy_pass http://FPIDjango;
+    The incoming url will be passed on as though it had been
+    http://<host>/FPIDjango/<rest of url>.
+
+proxy_set_header HOST $host:
+    The $host part will have the originating host inserted into the URL that
+    the application receives.
+
+location /static/ ...
+    Any URL coming in that begins /static/ will have that request redirected
+    to the alias listed in the nginx docker container rather than being
+    passed on to the application.
+
+location /media/ ...
+    Any URL coming in that begins /media/ will have that request redirected
+    to the alias listed in the nginx docker container rather than being
+    passed on to the application.
+
+./config/Docker/web/Dockerfile.web
+--------------------------------------------------
+
+This is the docker script to build the web container.
+
+FROM python
+    This expects a preloaded python container with python 3.8 loaded in it.
+
+RUN addgroup -S app &&adduser ...
+    &&adduser refers to ???
+
+#TODO 03/02/2021 find out what &&adduser refers to
+
+.. note:: Docker build will build a temporary container to downlaod and
+    install all the dependencies for the produditon requirements.
+    Afterwords, it will create a fresh container and copy only the wheels from
+    the old container to this new one.
+
+
+./config/Docker/.env.inv
+--------------------------------------------------
+
+Environment Variables:
+
+DEBUG
+    This should be set to False for production.
+
+SQL_USER
+    This is the "superuser" in the PostgreSQL database
+
+./inv.project-constants.prod
+--------------------------------------------------
+
+.. tip:: This file is "sourced" by many of the inv-*.sh scripts.
+
+Environment Variables:
+
+USER_NAME
+    This must be set to the name of the user who will be the "superuser"
+    initially.
+
+PASSWORD
+    Ignored for now.  When the password is needed, currently it is requested
+    interactively.
+
+
+.. tip:: This file is "sourced" by many of the inv-*.sh scripts.
