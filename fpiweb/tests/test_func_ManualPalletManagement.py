@@ -8,7 +8,7 @@ __creation_date__ = "05/5/20"
 # Test function names  have numbers in them to force order on how they run
 # for video recording.
 # Video recording is used to implement User Documentation.
-
+from django.contrib.auth.models import User, Group
 from selenium import webdriver
 import geckodriver_autoinstaller  # https://pypi.org/project/geckodriver-autoinstaller/
 from selenium.webdriver.support.ui import Select
@@ -19,14 +19,24 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 import random
 
+from ..constants import AccessLevel
+from ..models import Profile
+
 
 class ManualPalletMaintenance(StaticLiveServerTestCase):
 
-    fixtures = ['BoxType.json', 'LocBin.json', 'LocRow.json', 'LocTier.json',
-                'Location.json', 'ProductCategory.json', 'Product.json',
-                'Box.json', 'Pallet.json','PalletBox.json', 'Constraints.json']
+    user_name = 'login_user'
+    password = 'abc123'
+    profile_title = 'Jessie'
 
-    test_user = ""
+    fixtures = ['Activity.json','Constraints.json',
+                'Group.json',
+                 'PalletBox.json',
+                 'BoxType.json', 'Location.json', 'LocBin.json', 'LocRow.json',
+                 'LocTier.json',
+                 'ProductExample.json',
+                 'Product.json', 'ProductCategory.json',
+                 'Box.json', 'Pallet.json' ]
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
@@ -44,9 +54,11 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists
-                                            # and if it doesn't exist, download it automatically,
-                                            # then add geckodriver to path
+        # Required to truncate all pk instances to 1
+        cls.reset_sequences = True
+        # Check if the current version of geckodriver existsand if it doesn't
+        # exist, download it automatically, then add geckodriver to path
+        geckodriver_autoinstaller.install()
         cls.browser = cls.run_headless_mode()   # True = run in headless mode
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
@@ -57,15 +69,28 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     # setup user, login and  set sessionid for user
     def setUp(self):
         super(ManualPalletMaintenance, self).setUp()
-        test_user = utility.create_user(username=user)
-        test_user.set_password(utility.default_password)
-        test_user.save()
+        #test_user = utility.create_user(username='user')
 
-        # Login the user
-        self.assertTrue(self.client.login(username=test_user,
-                                          password=utility.default_password))
+        # Here I am not using utility.py to create a user,
+        # I am creating a user by code inside the StaticLiveServerTestCase
+        test_user = User.objects.create_superuser(username=self.user_name)
+        test_user.set_password(self.password)
+        # add group permissions to user
+        group_list = Group.objects.all()
+        for group in group_list:
+            test_user.groups.add(group)
+        test_user.save()
+        # add profile to user
+        profile = Profile.objects.create(user=test_user,
+                                         title=self.profile_title)
+        profile.save()
+
+        # Log in user, Verify the user created and logged in
+        self.assertTrue(self.client.login(username=self.user_name,
+                                          password=self.password))
         # Add cookie to login to the browser
         cookie = self.client.cookies['sessionid']
+        # visit page in the site domain so the page accepts the cookie
         self.browser.get(self.live_server_url)
         self.browser.add_cookie({'name': 'sessionid', 'value': cookie.value,
                                  'secure': False, 'path': '/'})
@@ -75,7 +100,6 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     def tearDownClass(cls):
         cls.browser.quit()
         super().tearDownClass()
-
 
     RECORD = False
     def delay_for_recording(self):
@@ -127,12 +151,13 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     # Move box to empty pallet
     def test_1A_Move_a_pallet(self):
         fname = "test_Move_a_pallet"
-        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
-        self.assertIn("Manual Box and Pallet Management", self.browser.title)
-        self.browser.find_element_by_link_text("Manage a pallet manually").click()
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
         self.delay_for_recording()
-        self.assertIn("Manual Box and Pallet Management", self.browser.title)
-        self.browser.find_element_by_link_text("Move a pallet").click()
+        self.assertIn("Welcome to Food Pantry Inventory System",
+                      self.browser.title)
+
+        assert (self.browser.find_element_by_link_text("Move a Pallet"))
+        self.browser.find_element_by_link_text("Move a Pallet").click()
         self.delay_for_recording()
         self.assertIn("Move Pallet", self.browser.title)
 
@@ -147,17 +172,15 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         )
 
 
+
+
     # Move box to pallet that has boxes
     def test_1B_MovePallet(self):
-        fname = "test_Move_a_pallet"
-        # setup to move directory to "Move a pallet"?
-        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
-        self.assertIn("Manual Box and Pallet Management", self.browser.title)
-        self.browser.find_element_by_link_text("Manage a pallet manually").click()
-        self.delay_for_recording()
-        self.assertIn("Manual Box and Pallet Management", self.browser.title)
-        self.browser.find_element_by_link_text("Move a pallet").click()
-        self.delay_for_recording()
+        fname = "test_1B_Move_a_pallet"  # debbugging
+
+        # setup to sign in and go to  "Move Pallet" page.
+        self.browser.get('%s/%s' % (self.live_server_url,
+                                    'fpiweb/manual_pallet_move/'))
         self.assertIn("Move Pallet", self.browser.title)
 
         # get a box is from this location
@@ -193,16 +216,14 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
 
 
+
     # Attempt to move box from empty pallet
     def test_1C_MovePallet(self):
-        fname = "test_1C_Move_a_pallet testing fpiweb/manual_pallet_move"
-        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/manualmenu/'))
-        self.assertIn("Manual Box and Pallet Management", self.browser.title)
-        self.browser.find_element_by_link_text("Manage a pallet manually").click()
-        self.delay_for_recording()
-        self.assertIn("Manual Box and Pallet Management", self.browser.title)
-        self.browser.find_element_by_link_text("Move a pallet").click()
-        self.delay_for_recording()
+        fname = "test_1C_MovePallet"
+
+        # setup to sign in and go to  "Move Pallet" page.
+        self.browser.get('%s/%s' % (self.live_server_url,
+                                    'fpiweb/manual_pallet_move/'))
         self.assertIn("Move Pallet", self.browser.title)
 
         # Select an empty pallet as determined from Location.json
