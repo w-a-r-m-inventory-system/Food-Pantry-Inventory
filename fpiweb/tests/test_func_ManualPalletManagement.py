@@ -38,11 +38,9 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
                  'Product.json', 'ProductCategory.json',
                  'Box.json', 'Pallet.json' ]
 
-    test_user = None
-
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -83,8 +81,8 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
             test_user.groups.add(group)
         test_user.save()
         # add profile to user
-        profile = Profile.objects.create(user=test_user, title
-        =self.profile_title)
+        profile = Profile.objects.create(user=test_user,
+                                         title=self.profile_title)
         profile.save()
 
         # Log in user, Verify the user created and logged in

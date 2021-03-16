@@ -35,7 +35,7 @@ class UserManagementTest(StaticLiveServerTestCase):
     # sets browser to run in headless mode or browser mode depending on
     # True/False value of HEADLESS_MODE. Requires HEADLESS_MODE for valid
     # testing purposes when uploading to browserless server
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def get_browser_mode(cls):
         options = Options()  # headless mode

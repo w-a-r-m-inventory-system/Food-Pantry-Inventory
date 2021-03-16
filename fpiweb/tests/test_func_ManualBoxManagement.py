@@ -41,11 +41,9 @@ class ManualBoxManagement(StaticLiveServerTestCase):
                  'Product.json', 'ProductCategory.json',
                  'Box.json', 'Pallet.json' ]
 
-    test_user = ""
-
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def get_browser_mode(cls):
         options = Options()  # headless mode
