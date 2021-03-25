@@ -59,7 +59,7 @@ pytest-xdist==1.32.0
 python-dateutil==2.8.1
 pytz==2020.1
 pytzdata==2019.3
-PyYAML==5.3.1
+PyYAML==5.4
 qrcode==6.1
 recommonmark==0.6.0
 regex==2020.6.8
