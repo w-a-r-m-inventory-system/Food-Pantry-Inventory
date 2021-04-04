@@ -267,6 +267,11 @@ log/**
 !static/placeholder.txt
 static/**
 
+# Keep cratch directory itself and the placeholder.txt file, but ignore
+# everything else.
+!cratch/placeholder.txt
+cratch/**
+
 # Flask stuff:
 instance/
 .webassets-cache

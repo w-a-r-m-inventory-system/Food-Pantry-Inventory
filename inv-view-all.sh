@@ -13,7 +13,7 @@ source inv.project-constants.prod
   docker-compose -f $YAML_FILE --project-name $PROJECT ps --all
   docker container ps --all
   echo
-  echo "All docker networs..."
+  echo "All docker networks..."
   docker network ls
   echo
   echo "All docker volumes..."
