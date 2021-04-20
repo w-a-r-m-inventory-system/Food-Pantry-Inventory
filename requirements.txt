@@ -44,7 +44,7 @@ Pillow==8.1.1
 pipdeptree==0.13.2
 pluggy==0.13.1
 psycopg2-binary==2.8.5
-py==1.8.1
+py==1.10.0
 pycparser==2.20
 Pygments==2.6.1
 PyMySQL==0.9.3
