@@ -19,7 +19,7 @@ commonmark==0.9.1
 coverage==5.1
 crayons==0.3.1
 dateparser==0.7.4
-Django==3.1.6
+Django==3.1.9
 django-bootstrap4==2.0.1
 django-db==0.0.7
 django-extensions==2.2.9
