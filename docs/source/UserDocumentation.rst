@@ -13,3 +13,5 @@ User Documentation
    Inventory Management <InventoryManagement>
 
    Other Tools <OtherTools>
+
+   Ancillary User Documentation <AncillaryDocs>
