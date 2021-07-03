@@ -66,8 +66,8 @@ Staff access can do the following:
 -   Everything that a volunteer can do
 
 
-Admin User Access
-=================
+Administrator User Access
+=========================
 
 Admin access has full access to all menu picks - including all
 Django admin pages.
@@ -178,14 +178,14 @@ Fields Displayed (see Legend_ and `Table Notes`_ for additional explanation)
     =================  ========  ===========
     Field              New User  Change User
     =================  ========  ===========
-    userid             CM(1)     U
+    userid             CM[1]     U
     first name         CM        C
     last name          CM        C
-    title              C(2)      C(2)
+    title              C[2]      C(2]
     email address      CN        CN
-    permission level   SM(4)     S(4)
+    permission level   SM[4]     S[4]
     active             BM        CB
-    password           CME(3)    CE(3)
+    password           CME[3]    CE[3]
     =================  ========  ===========
 
 _`Legend`
@@ -204,10 +204,14 @@ _`Legend`
 
 _`Table Notes`
 
-1.  Userid must be unique and are encouraged to be at least 6 characters long.
-2.  Title will default to "Volunteer", "Staff", or "Administrator" depending
-    on the permission level given.
-3.  If set or changed, the password will never be visible at any time, and
-    must be entered twice.
-4.  Only administrators can set the permission level of a user to
-    administrator.
+.. [1]  Userid must be unique and are encouraged to be at least 6 characters
+        long.
+
+.. [2]  Title will default to "Volunteer", "Staff", or "Administrator"
+        depending on the permission level given.
+
+.. [3]  If set or changed, the password will never be visible at any time, and
+        must be entered twice.
+
+.. [4]  Only administrators can set the permission level of a user to
+        administrator.

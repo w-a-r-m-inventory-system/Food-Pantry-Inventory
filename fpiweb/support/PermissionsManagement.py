@@ -208,7 +208,7 @@ class ManageUserPermissions:
                     new=target_user.username,
                 )
                 user.username = target_user.username
-            # TODO Jun 27 2020 travis - deal with passwork change and
+            # TODO Jun 27 2020 travis - deal with password change and
             #  force password change
             if target_user.first_name != user.first_name:
                 self.log_change(

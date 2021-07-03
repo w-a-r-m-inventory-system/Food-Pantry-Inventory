@@ -25,10 +25,10 @@ FPIDjango.settings module
    :undoc-members:
    :show-inheritance:
 
-FPIDjango.settings\_private module
-----------------------------------
+FPIDjango.settings\_private\_SAMPLE\_ONLY module
+------------------------------------------------
 
-.. automodule:: FPIDjango.settings_private
+.. automodule:: FPIDjango.settings_private_SAMPLE_ONLY
    :members:
    :undoc-members:
    :show-inheritance:

@@ -267,6 +267,11 @@ log/**
 !static/placeholder.txt
 static/**
 
+# Keep cratch directory itself and the placeholder.txt file, but ignore
+# everything else.
+!cratch/placeholder.txt
+cratch/**
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -394,7 +399,11 @@ data/
 # Ignore .png files in scans
 /scans/*.png
 
+# Ignore all environment constants except the sample
+inv.project-constants.*
+
 # Travis personal ignore files
-# config/Docker/
+/config/Docker/.env.inv
+/config/Docker/.env.inv.db
 
 # EOF

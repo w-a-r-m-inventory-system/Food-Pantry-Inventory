@@ -1,0 +1,11 @@
+Django
+django-extensions
+django-bootstrap4
+gunicorn
+psycopg2-binary
+argon2-cffi
+qrcode
+PyQRCode
+reportlab
+SQLAlchemy
+pypng

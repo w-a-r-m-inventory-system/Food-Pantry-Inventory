@@ -3,19 +3,42 @@ Django settings for FPIDjango project.
 
 ----
 
-Unfortunately, the modified import statement of
+For now (until someone has time to improve this, there are two ways to
+manage settings for running the application.
 
-..
+The first way is mandatory (for now).
 
-    from FPIDjango.private.settings_private import *
+1.  Under the FPIDjango directory create a subdirectory called "private".
 
-is required for the PyCharm Python Console and the PyCharm manage.py to
-work properly.  It obviously knows better than I do.  It cannot pay
-attention to some silly environment variable that I set in Preferences
-like we were able to do in the run settings.
+2.  In that directory copy the "private_settings_SAMPLE_ONLY.py" to a file
+called "private_settings.py".
 
-This will work -- and not reveal our credentials -- as long as the
-**private** directory is included in our **.gitignore** file.
+3.  Tailor the "private_settings.py" file to your needs.
+
+The second way is optional.
+
+1.  Add a file to the config/Docker/web directory called ".env".
+
+    -   Note this file is a shell script whose name begins with a period.
+
+2.  Populate the shell script with these variables:
+
+    # Application variables
+    DEBUG=True                                # or False
+    SQL_ENGINE=django.db.backends.postgresql
+    SQL_DATABASE=<database name>
+    SQL_USER=<username>
+    SQL_PASSWORD=<password
+    SQL_HOST=<server hosting the database>
+    SQL_PORT=<port>                           # default is 5432
+    DJANGO_STATIC_ROOT=<static root directory>
+    SECRET_KEY=<some arbitrary (and random) 50 character sequence>
+    DJANGO_ALLOWED_HOSTS=<list of hosts>
+        # can be muliple hosts separated with a space
+        # e. g. "localhost 127.0.0.1 [::1] nginx"
+
+    # Used by startup script (entrypoint.web.sh)
+    DATABASE=postgres
 
 ----
 
@@ -37,11 +60,6 @@ import django_extensions
 
 from FPIDjango.private.settings_private import *
 
-"""
-Original import of dummy values:
-from .settings_public import *
-"""
-
 __author__ = '(Multiple)'
 __project__ = "Food-Pantry-Inventory"
 __creation_date__ = "04/01/2019"
@@ -49,22 +67,22 @@ __creation_date__ = "04/01/2019"
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SCANS_DIR = join(BASE_DIR, 'scans')
+SCANS_DIR = join(dirname(BASE_DIR), 'scans')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = MY_SECRET_KEY
+SECRET_KEY = SECRET_KEY_SETTING
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = DEBUG_SETTING
 
 # Site info - see https://docs.djangoproject.com/en/3.0/ref/contrib/sites/
 SITE_ID = 1
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', DB_HOST]
+ALLOWED_HOSTS = ALLOWED_HOSTS_SETTING
 
 
 # Application definition
@@ -96,8 +114,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-
 ]
 
 ROOT_URLCONF = 'FPIDjango.urls'
@@ -135,12 +151,12 @@ DATABASES = {
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # },
     'default': {
-            'ENGINE': DB_ENGINE,
-            'NAME': DB_NAME,
-            'USER': DB_USER,
-            'PASSWORD': DB_PSWD,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
+            'ENGINE': DB_ENGINE_SETTING,
+            'NAME': DB_NAME_SETTING,
+            'USER': DB_USER_SETTING,
+            'PASSWORD': DB_PSWD_SETTING,
+            'HOST': DB_HOST_SETTING,
+            'PORT': DB_PORT_SETTING,
     }
 }
 
@@ -217,6 +233,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = STATIC_ROOT_SETTING
 # django-bootstrap4 settings
 # Default settings
 BOOTSTRAP4 = {
@@ -376,14 +393,14 @@ LOGGING = {
 # Sets up django-debug-toolbar in browser
 # If toolbar disappears after adding an installed app  or middleware
 # there might be a problem in the ordering of INSTALLED_APPS or MIDDLEWARE
-if DEBUG:
-    INSTALLED_APPS = INSTALLED_APPS + [
-        # django debug toolbar not on main stream
-        'debug_toolbar',
-    ]
-    MIDDLEWARE = MIDDLEWARE + [
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ]
-    INTERNAL_IPS = [
-            "127.0.0.1",
-    ]
+# if DEBUG:
+#     INSTALLED_APPS = INSTALLED_APPS + [
+#         # django debug toolbar not on main stream
+#         'debug_toolbar',
+#     ]
+#     MIDDLEWARE = MIDDLEWARE + [
+#         'debug_toolbar.middleware.DebugToolbarMiddleware',
+#     ]
+#     INTERNAL_IPS = [
+#             "127.0.0.1",
+#     ]

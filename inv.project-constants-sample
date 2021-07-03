@@ -1,0 +1,55 @@
+# Purpose: provide common information for prod scripts
+
+# THIS IS A SAMPLE.  COPY IT TO inv.project-constants.prod AND MODIFY IT AS
+# NEEDED TO USE IT FOR PRODUCTION.
+
+# Some variables to locate system info
+ROOT=$(pwd)
+MANAGE_LOCATION=$ROOT
+MANAGE_CMD=$MANAGE_LOCATION/manage.py
+VIRTUAL_BIN_LOCATION=$ROOT/venv/bin
+PYTHON=$VIRTUAL_BIN_LOCATION/python
+LOG_LOCATION=$ROOT/log
+LOG_FILE=$LOG_LOCATION/server.log
+
+
+# NOTE: this script is deliberately not executable to remind users to
+# "source" this file rather than run it as a normal script.
+
+# Docker project name
+PROJECT=inv
+
+# Docker-compose YAML file to manage production
+YAML_FILE=./docker-compose.inv.yml
+
+# Dockerfiles to manage building containers needed for production
+WEB_DOCKERFILE=./config/Docker/web/Dockerfile.web
+NGINX_DOCKERFILE=./config/Docker/nginx/Dockerfile.nginx
+
+# Docker network name (apparently the network name cannot have hyphens)
+NETWORK_NAME=invnet
+
+# Docker container names
+WEB_CONTAINER_NAME=inv_web
+DB_CONTAINER_NAME=inv_db
+NGINX_CONTAINER_NAME=inv_nginx
+
+# Docker service names
+WEB_SERVICE_NAME=web
+DB_SERVICE_NAME=db
+NGINX_SERVICE_NAME=nginx
+
+# Docker volume names
+STATIC_FILE_VOLUME=${PROJECT}_static_volume
+DB_DATA_VOLUME=${PROJECT}_postgres_data
+MEDIA_FILE_VOLUME=${PROJECT}_media_volume
+
+# Docker database information
+DB_NAME=inv_warm
+
+# User information
+USER_NAME=hello_django
+PASSWORD=""
+EMAIL="a@b.com"
+
+# EOF
