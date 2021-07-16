@@ -25,7 +25,7 @@ into inventory.
 
 .. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_01_15_08.png
 
-Checkin a Box
+Check In a Box
 **************
 
 With this screen you can add all the information needed to check in a box of food
@@ -86,7 +86,7 @@ screen to start over.
 .. image:: InventoryManagementImages/CheckinBoxFailure_0_03_05.png
 
 
-Checkout (Consume Product in) a Box
+Checkout (Consume Product In) a Box
 **************************************
 
 To consume or empty a box enter a 5 digit box number in the **Box Number** field. Then
@@ -113,6 +113,58 @@ Click on the **Cancel Box Consumption** link to return to the **Main Menu Page**
 page.
 
 .. image:: InventoryManagementImages/ConsumeBoxFailure_0_03_40.png
+
+
+Move a Box
+************
+
+To move a box to a different pallet enter the 5 digit box number in the **Box Number**
+field and then click on the blue **Search** button.
+
+.. image:: InventoryManagementImages/MoveBox_0_03_55.png
+
+The next **Move Box** screen contains all the box information. In this screen
+you can choose a new location by entering new **Row**, **Bin**, **Tier** locations. Click
+on the small triangle to the right of each **Row**, **Bin**, **Tier** to get your drop down
+list choices. After choosing your new location entries click on the blue **Move**
+button to change the information in the database.
+
+.. image:: InventoryManagementImages/MoveBoxFillIn_0_04_19.png
+
+If there are no errors you should see a screen similar to the one below. Click on the
+**Return to Main Menu** link to return to the **Main Menu Page**
+screen.
+
+.. image:: InventoryManagementImages/MoveBoxSuccess.png
+
+In case of error you will see a screen similar to the one below with an error message.
+Click on the **Cancel Box Move** link to return to the **Main Menu** screen.
+
+.. image:: InventoryManagementImages/MoveBoxFailure_0_04_32.png
+
+
+Add a New Box to Inventory
+****************************
+
+With this screen you can add a new box following the 4 steps listed below.
+
+    (1) Enter a 5 digit box number.
+    (2) Click on the drop down list triangle at the far right.
+    (3) Choose an item from the drop down list.
+    (4) Finally click on the **Add Box** button (hidden from view in the below graphic).
+
+.. image:: InventoryManagementImages/AddNewBox_0_00_58.png
+
+After clicking on **Add Box** you should see the following screen. From there you can
+**Add another box** or **Return to Main Menu** by clicking on the links in the
+**New Box** screen.
+
+.. image:: InventoryManagementImages/AddNewBoxSuccess.png
+
+If there was an error you will see the following screen. Simply click on **Cancel Adding
+a Box** to return to the **Main Menu** screen.
+
+.. image:: InventoryManagementImages/AddNewBoxFailure_0_01_14.png
 
 
 
@@ -335,56 +387,3 @@ in the database for that pallet location you will see a screen similar to the on
 below.
 
 .. image:: InventoryManagementImages/MoveEmptyPallet_0_03_01.png
-
-
-Move a Box
-************
-
-To move a box to a different pallet enter the 5 digit box number in the **Box Number**
-field and then click on the blue **Search** button.
-
-.. image:: InventoryManagementImages/MoveBox_0_03_55.png
-
-The next **Move Box** screen contains all the box information. In this screen
-you can choose a new location by entering new **Row**, **Bin**, **Tier** locations. Click
-on the small triangle to the right of each **Row**, **Bin**, **Tier** to get your drop down
-list choices. After choosing your new location entries click on the blue **Move**
-button to change the information in the database.
-
-.. image:: InventoryManagementImages/MoveBoxFillIn_0_04_19.png
-
-If there are no errors you should see a screen similar to the one below. Click on the
-**Return to Main Menu** link to return to the **Main Menu Page**
-screen.
-
-.. image:: InventoryManagementImages/MoveBoxSuccess.png
-
-In case of error you will see a screen similar to the one below with an error message.
-Click on the **Cancel Box Move** link to return to the **Main Menu** screen.
-
-.. image:: InventoryManagementImages/MoveBoxFailure_0_04_32.png
-
-
-Add a New Box to Inventory
-****************************
-
-With this screen you can add a new box following the 4 steps listed below.
-
-    (1) Enter a 5 digit box number.
-    (2) Click on the drop down list triangle at the far right.
-    (3) Choose an item from the drop down list.
-    (4) Finally click on the **Add Box** button (hidden from view in the below graphic).
-
-.. image:: InventoryManagementImages/AddNewBox_0_00_58.png
-
-After clicking on **Add Box** you should see the following screen. From there you can
-**Add another box** or **Return to Main Menu** by clicking on the links in the
-**New Box** screen.
-
-.. image:: InventoryManagementImages/AddNewBoxSuccess.png
-
-If there was an error you will see the following screen. Simply click on **Cancel Adding
-a Box** to return to the **Main Menu** screen.
-
-.. image:: InventoryManagementImages/AddNewBoxFailure_0_01_14.png
-

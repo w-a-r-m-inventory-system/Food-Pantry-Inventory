@@ -17,34 +17,34 @@ fpiweb.tests.AddPermissionData module
    :undoc-members:
    :show-inheritance:
 
-fpiweb.tests.rework\_func\_ManualBoxManagement module
------------------------------------------------------
-
-.. automodule:: fpiweb.tests.rework_func_ManualBoxManagement
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.tests.rework\_func\_ManualPalletManagement module
---------------------------------------------------------
-
-.. automodule:: fpiweb.tests.rework_func_ManualPalletManagement
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-fpiweb.tests.rework\_func\_UserManagement module
-------------------------------------------------
-
-.. automodule:: fpiweb.tests.rework_func_UserManagement
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 fpiweb.tests.test\_forms module
 -------------------------------
 
 .. automodule:: fpiweb.tests.test_forms
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.test\_func\_ManualBoxManagement module
+---------------------------------------------------
+
+.. automodule:: fpiweb.tests.test_func_ManualBoxManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.test\_func\_ManualPalletManagement module
+------------------------------------------------------
+
+.. automodule:: fpiweb.tests.test_func_ManualPalletManagement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fpiweb.tests.test\_func\_UserManagement module
+----------------------------------------------
+
+.. automodule:: fpiweb.tests.test_func_UserManagement
    :members:
    :undoc-members:
    :show-inheritance:
