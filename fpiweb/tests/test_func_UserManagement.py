@@ -17,14 +17,14 @@ from fpiweb.models import Profile
 
 class UserManagementTest(StaticLiveServerTestCase):
 
-    user_name = 'login_user'
+    user_name = 'Jessie'
     password = 'abc123'
     profile_title = 'Jessie'
 
     fixtures = ['Activity.json','Constraints.json',
                 'Group.json']
 
-    RECORD = False
+    RECORD = True
     def delay_for_recording(self):
         # Need a delay for (1) wait for next page load or (2) recording
         if self.RECORD:
@@ -35,7 +35,7 @@ class UserManagementTest(StaticLiveServerTestCase):
     # sets browser to run in headless mode or browser mode depending on
     # True/False value of HEADLESS_MODE. Requires HEADLESS_MODE for valid
     # testing purposes when uploading to browserless server
-    HEADLESS_MODE = True
+    HEADLESS_MODE = False
     @classmethod
     def get_browser_mode(cls):
         options = Options()  # headless mode
@@ -58,7 +58,7 @@ class UserManagementTest(StaticLiveServerTestCase):
         cls.browser.set_window_position(0, 0)
         # required size is so I can get the entire web page video recorded
         # without scrolling
-        cls.browser.set_window_size(1920, 1080)
+        cls.browser.set_window_size(1500, 1120)
 
 
     @classmethod

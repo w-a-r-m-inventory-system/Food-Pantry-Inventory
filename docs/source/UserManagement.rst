@@ -6,16 +6,18 @@ Login
 ******
 
 Start at the **Login Screen** by entering your user name and password. In the graphic below
-the user name is 'TestUser' and of course the password remains hidden on the screen. Then
-click the **Login** button with your mouse.
+the user name is 'Jessie' and of course the password remains hidden on the
+screen.
+Then click the **Login** button with your mouse.
 
-.. image:: UserManagementImages/UserManagementLogInCrop_00_14_10.png
+.. image:: UserManagementImages/UserManagementLogInV2_0_00_01_23.png
 
 You should now come to the **Main Menu** screen as seen below. Here you will be working with
 the **User Management** menus and the **Inventory Management** menus. **System Management** is
-for program administrators and you should not be able to click on and enter those menu items.
+for program administrators and you should not be able to click on and enter
+those menu items.
 
-.. image:: UserManagementImages/UserManagementMainScreenCrop0_00_24_16.png
+.. image:: UserManagementImages/UserManagementMainScreenV2_0_00_22_13.png
 
 Change Password
 ****************
@@ -32,11 +34,11 @@ Logout
 
 Whenever you have finished you should always log out! This will prevent the next person using
 the program from making inadvertent changes in your name. Always click on the **Logout** button
-when you are finished using the program.
+as shown below when you are finished using the program.
 
-.. image:: UserManagementImages/UserManagementLogOutCrop_0_00_44_28.png
+.. image:: UserManagementImages/UserManagementLogOutV2_0_02_29_12.png
 
 After logging out you should see the **Now logged out.** screen. To go back to the login screen click
 on **Go to login page.**
 
-.. image:: UserManagementImages/UserManagementLoggedOutCrop_0_01_04_20.png
+.. image:: UserManagementImages/UserManagementLogOutV2_0_02_39_18.png
