@@ -24,7 +24,7 @@ class UserManagementTest(StaticLiveServerTestCase):
     fixtures = ['Activity.json','Constraints.json',
                 'Group.json']
 
-    RECORD = True
+    RECORD = False
     def delay_for_recording(self):
         # Need a delay for (1) wait for next page load or (2) recording
         if self.RECORD:
@@ -35,7 +35,7 @@ class UserManagementTest(StaticLiveServerTestCase):
     # sets browser to run in headless mode or browser mode depending on
     # True/False value of HEADLESS_MODE. Requires HEADLESS_MODE for valid
     # testing purposes when uploading to browserless server
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def get_browser_mode(cls):
         options = Options()  # headless mode
