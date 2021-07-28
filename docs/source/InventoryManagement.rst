@@ -2,28 +2,30 @@
 Inventory Management
 ######################
 
-Check the Status of a Box
+Check Status of a Box
 **************************
 
-From the Inventory Management section on the Manin screen clicking on
-**Check the status of a box** will bring you
+From the Inventory Management section on the Mainn screen clicking on
+**Check Status of a Box** will bring you
 to the **Manual Status a Box** screen. Here you can check the box status by entering a 5 digit
 box number and then clicking on the **Search** button.
 
-.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_00_32_10.png
+.. image:: InventoryManagementImages/BMV2CheckStatusBoxF1Crop_0_00_10.png
+
 
 After clicking on the **Search** button you should see a screen listing the Box Number,
 Box Type, Box Contents, Contents Expire (expiration date) and location- Row, Bin and Tier
 number.
 
-.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_00_44_26.png
+.. image:: InventoryManagementImages/BMV2CheckStatusBoxF2Crop_0_00_14.png
 
 From this screen you can click on **Check another box** or **Return to Main Menu**.
 
 If you see the screen below that means the **Box Number** is invalid or has not been entered
-into inventory.
+into inventory. In this screen you can enter a new **Box Number** and click
+**Search** to see if the new **Box Number** works.
 
-.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_01_15_08.png
+.. image:: InventoryManagementImages/BMV2CheckStatusBoxF3Crop_0_00_33.png
 
 Check In a Box
 **************

@@ -27,7 +27,6 @@ import random
 
 
 class ManualBoxManagement(StaticLiveServerTestCase):
-
     user_name = 'login_user'
     password = 'abc123'
     profile_title = 'Jessie'
@@ -43,7 +42,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = True
+    HEADLESS_MODE = False
     @classmethod
     def get_browser_mode(cls):
         options = Options()  # headless mode
@@ -65,7 +64,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
         # weird size is so I can get the entire web page video recorded without scrolling
-        cls.browser.set_window_size(2100, 1181)
+        cls.browser.set_window_size(1500, 1400)
 
 
     # sets up user to login with StaticLIveServerTestCase
@@ -120,7 +119,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         super().tearDownClass()
 
 
-    RECORD = False
+    RECORD = True
     def delay_for_recording(self):
         # Need to delay for (1) recording or  (2) wait for new page to load
         if self.RECORD:
