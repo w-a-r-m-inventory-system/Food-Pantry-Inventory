@@ -30,18 +30,19 @@ into inventory. In this screen you can enter a new **Box Number** and click
 Check In a Box
 **************
 
-With this screen you can add all the information needed to check in a box of food
-items to warehouse inventory. The blank **Checkin a Box** screen is shown below.
+With this screen you can add all the information needed to check in a box of
+food items to warehouse inventory. The blank **Checkin a Box** screen is
+shown below.
 
-.. image:: InventoryManagementImages/CheckinBox_0_01_26.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF1_0_00_47Crop.png
 
 
-The first two items to enter are the **Box number** and **Product**. With the keyboard
-enter a 5 digit 'Box number' in the **Box number** field. Then click on the small
-triangle in the circle at the right of the **Product** drop down list to select a
-product with your mouse.
+The first two items to enter are the **Box number** and **Product**. With the
+keyboard enter a 5 digit 'Box number' in the **Box number** field. Then click on
+the small 'v' or triangle in the circle at the right of the **Product** drop
+down list to select a product with your mouse.
 
-.. image:: InventoryManagementImages/CheckinBoxSelectProduct_0_01_31.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF2_0_00_56Crop.png
 
 After entering the **Product** the next step is to  enter the pallet location.
 You will have to select 3 different entries with your mouse.
@@ -50,42 +51,46 @@ You will have to select 3 different entries with your mouse.
     (2) Bin number ( Bin number in the length of a row)
     (3) Tier number (level up or down
 
-Each entry uses a drop down list and you will make a choice from each drop down list.
-In the graphic below the **Row** and **Bin** numbers have been chosen and the drop down
+Each entry uses a drop down list and you will make a choice from each drop
+down list. In the graphic below the **Row** and **Bin** numbers have been
+chosen and the drop down
 list is shown with the **Tier** number.
 
-.. image:: InventoryManagementImages/CheckinBoxLocation_0_01_49.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF3_0_01_27Crop.png
 
-After entering the location enter the expiration year by clicking on the small triangle
-to the right of the **Exp year** field and making a selection from the drop down list.
+After entering the location enter the expiration year by clicking on the
+small 'v' or triangle to the right of the **Exp year** field and making a
+selection from the drop down list.
 
-.. image:: InventoryManagementImages/CheckinBoxExpYear_0_01_55.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF4_0_01_39Crop.png
 
-The last selection you will have to make is the expiration month. There are 2 drop down
-list fields here **Exp month start** and **Exp month end**. These fields are optional and
-it is not necessary to fill these fields out. These drop down lists show a list of all
-the months in the year. You can also choose to **only** fill out the **Exp month start**
-field also. However if you choose to fill out the **Exp month end** field you must make
-sure it is a later month in the year than the **Exp month start** field. So if you enter
-**April** in the **Exp month start** field, then you must enter **May** or a later month
-in the **Exp month end** field.
+The last selection you will have to make is the expiration month. There are 2
+drop down list fields here **Exp month start** and **Exp month end**. These
+fields are optional and it is not necessary to fill these fields out. These
+drop down lists show a list of all the months in the year. You can also
+choose to **only** fill out the **Exp month start** field. However if you
+choose to fill out the **Exp month end** field you must make sure it is a
+later month in the year than the **Exp month start** field. So if you enter
+**April** in the **Exp month start** field, then you must enter **May** or a
+later month in the **Exp month end** field.
 
-When you are through with the **Exp month** fields click on the blue **Set Box Checkin
-Information** button to enter all the Checkin data.
+When you are through with the **Exp month** fields click on the blue **Set Box
+Checkin Information** button to enter all the Check In data.
 
-.. image:: InventoryManagementImages/CheckinBoxExpMonth_0_02_08.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF5_0_02_07Crop.png
 
-If everything has worked correctly you should see the following screen below. Simply click
-on the **Return to Main Menu** link to continue.
+If everything has worked correctly you should see the following screen below.
+Simply click on the **Return to Main Menu** link to continue.
 
-.. image:: InventoryManagementImages/CheckinBoxSuccessCrop_0_03_05_22.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF6_0_02_14Crop.png
 
 If there is an error you should see a screen like the one below. The
-red arrows point to what has to be fixed before a box can be Checked in. Click on the
-**Cancel Box Checkin** link at the bottom of the page to go back to the **Main Menu**
-screen to start over.
+red arrows point to what has to be fixed before a box can be Checked in.
+The green arrows points to the green check mark which indicates that box is
+correctly filled out. Click on the **Cancel Box Checkin** link at the bottom
+of the page to go back to the **Main Menu** screen to start over.
 
-.. image:: InventoryManagementImages/CheckinBoxFailure_0_03_05.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF7_0_03_59.png
 
 
 Checkout (Consume Product In) a Box
