@@ -163,20 +163,25 @@ With this screen you can add a new box following the 4 steps listed below.
     (1) Enter a 5 digit box number.
     (2) Click on the drop down list triangle at the far right.
     (3) Choose an item from the drop down list.
-    (4) Finally click on the **Add Box** button (hidden from view in the below graphic).
+    (4) Finally click on the **Add Box** button (hidden from view in the below
+        it is under the drop down box in shown in the graphic).
 
-.. image:: InventoryManagementImages/AddNewBox_0_00_58.png
+.. image:: InventoryManagementImages/BMV2NewBoxF1_0_07_34Crop.png
 
-After clicking on **Add Box** you should see the following screen. From there you can
-**Add another box** or **Return to Main Menu** by clicking on the links in the
-**New Box** screen.
+After clicking on **Add Box** you should see the following screen. From there
+you can **Add another box** or **Return to Main Menu** by clicking on the
+links in the**New Box** screen.
 
-.. image:: InventoryManagementImages/AddNewBoxSuccess.png
+.. image:: InventoryManagementImages/BMV2NewBoxF2_0_07_45Crop.png
 
-If there was an error you will see the following screen. Simply click on **Cancel Adding
-a Box** to return to the **Main Menu** screen.
+If there was an error you will see the following screen. The red arrows
+point to the **Box number** error messages while the green arrow points to the
+green checkmark that indicates the **Box type** entry is valid or ok. Click
+on the **Cancel Box Adding a Box** link to return to the **Main Menu** screen.
+Or you can enter a different **Box number** in the **Box number** entry box
+and then click on the blue **Add Box** button.
 
-.. image:: InventoryManagementImages/AddNewBoxFailure_0_01_14.png
+.. image:: InventoryManagementImages/BMV2NewBoxF3_0_08_15Crop.png
 
 
 
