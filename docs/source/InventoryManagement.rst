@@ -97,30 +97,31 @@ of the page to go back to the **Main Menu** screen to start over.
 Checkout (Consume Product In) a Box
 **************************************
 
-To consume or empty a box enter a 5 digit box number in the **Box Number** field. Then
-click on the blue **Search** button.
+To consume or empty a box enter a 5 digit box number in the **Box Number**
+field. Then click on the blue **Search** button.
 
-.. image:: InventoryManagementImages/ConsumeBox_0_03_15.png
+.. image:: InventoryManagementImages/BMV2ConsumeF1_0_04_44Crop.png
 
-If everything went ok you should see the box information on the next screen. The box
-information includes the Box Number, the Box Type, the Box Contents, the year the
-Contents Expire and the location- Row, Bin, Tier. Click on the blue **Consume** button
-to continue if all the information seems correct.
+If everything went ok you should see the box information on the next screen. The
+box information includes the Box Number, the Box Type, the Box Contents, the
+year the Contents Expire and the location- Row, Bin, Tier. Click on the blue
+**Consume** button to continue if all the information seems correct.
 
-.. image:: InventoryManagementImages/ConsumeBoxMessage_0_03_22.png
+.. image:: InventoryManagementImages/BMV2ConsumeF2_0_04_53Crop.png
 
 
-The next screen should contain a message stating that a box 'has been succesfully
-consumed'. Click on the **Return to Main Menu** link to return to the **Main Menu**
-page.
+The next screen should contain a message stating that a box 'has been
+succesfully consumed'. Click on the **Return to Main Menu** link to return to
+the **Main Menu** page.
 
-.. image:: InventoryManagementImages/ConsumeBoxSuccessScreenshot.png
+.. image:: InventoryManagementImages/BMV2ConsumeF3_0_04_57Crop.png
 
-In case of error you should see a screen similar to the one below listing the error.
-Click on the **Cancel Box Consumption** link to return to the **Main Menu Page**
-page.
+In case of error you should see a screen similar to the one below listing the
+error. Click on the **Cancel Box Consumption** link to return to the **Main
+Menu Page** page. Or enter a different **Box number** in the **Box number**
+entry box and click on **Search**
 
-.. image:: InventoryManagementImages/ConsumeBoxFailure_0_03_40.png
+.. image:: InventoryManagementImages/BMV2ConsumeF4_0_05_32Crop.png
 
 
 Move a Box
