@@ -119,7 +119,7 @@ the **Main Menu** page.
 In case of error you should see a screen similar to the one below listing the
 error. Click on the **Cancel Box Consumption** link to return to the **Main
 Menu Page** page. Or enter a different **Box number** in the **Box number**
-entry box and click on **Search**
+entry box and click on the **Search** button.
 
 .. image:: InventoryManagementImages/BMV2ConsumeF4_0_05_32Crop.png
 
@@ -127,29 +127,32 @@ entry box and click on **Search**
 Move a Box
 ************
 
-To move a box to a different pallet enter the 5 digit box number in the **Box Number**
-field and then click on the blue **Search** button.
+To move a box to a different pallet enter the 5 digit box number in the **Box
+Number** field and then click on the blue **Search** button.
 
-.. image:: InventoryManagementImages/MoveBox_0_03_55.png
+.. image:: InventoryManagementImages/BMV2MoveBoxF1_0_05_58Crop.png
 
 The next **Move Box** screen contains all the box information. In this screen
-you can choose a new location by entering new **Row**, **Bin**, **Tier** locations. Click
-on the small triangle to the right of each **Row**, **Bin**, **Tier** to get your drop down
-list choices. After choosing your new location entries click on the blue **Move**
-button to change the information in the database.
+you can choose a new location by entering new **Row**, **Bin**, **Tier**
+locations. Click on the small 'v' or triangle to the right of each **Row**,
+**Bin**, **Tier** entry box to get your drop down list choices. After
+choosing your new location entries click on the blue **Move** button to
+change the information in the database.
 
-.. image:: InventoryManagementImages/MoveBoxFillIn_0_04_19.png
+.. image:: InventoryManagementImages/BMV2MoveBoxF2_0_06_40Crop.png
 
-If there are no errors you should see a screen similar to the one below. Click on the
-**Return to Main Menu** link to return to the **Main Menu Page**
+If there are no errors you should see a screen similar to the one below. Click
+on the **Return to Main Menu** link to return to the **Main Menu Page**
 screen.
 
-.. image:: InventoryManagementImages/MoveBoxSuccess.png
+.. image:: InventoryManagementImages/BMV2MoveBoxF3_0_06_46Crop.png
 
-In case of error you will see a screen similar to the one below with an error message.
-Click on the **Cancel Box Move** link to return to the **Main Menu** screen.
+In case of error you will see a screen similar to the one below with an error
+message. Click on the **Cancel Box Move** link to return to the **Main Menu**
+screen. Or you can enter a different **Box number** in the **Box number**
+entry box and then click on the **Search** button.
 
-.. image:: InventoryManagementImages/MoveBoxFailure_0_04_32.png
+.. image:: InventoryManagementImages/BMV2MoveBoxF4_0_07_03Crop.png
 
 
 Add a New Box to Inventory
