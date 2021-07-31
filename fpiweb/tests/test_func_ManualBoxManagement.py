@@ -42,7 +42,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def get_browser_mode(cls):
         options = Options()  # headless mode
@@ -119,7 +119,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
         super().tearDownClass()
 
 
-    RECORD = True
+    RECORD = False
     def delay_for_recording(self):
         # Need to delay for (1) recording or  (2) wait for new page to load
         if self.RECORD:
