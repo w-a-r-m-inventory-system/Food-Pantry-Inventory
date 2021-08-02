@@ -63,7 +63,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         cls.browser.delete_all_cookies()
         cls.browser.set_window_position(0, 0)
         # size is so I can get the entire web page video recorded without scrolling
-        cls.browser.set_window_size(1920, 1080)
+        cls.browser.set_window_size(1920, 1115)
 
 
     # setup user, login and  set sessionid for user
@@ -105,7 +105,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
-            time.sleep(5)
+            time.sleep(10)
         else:
             time.sleep(2)
 

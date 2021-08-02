@@ -25,6 +25,14 @@ fpiweb.tests.test\_forms module
    :undoc-members:
    :show-inheritance:
 
+fpiweb.tests.test\_func\_BuildPallet module
+-------------------------------------------
+
+.. automodule:: fpiweb.tests.test_func_BuildPallet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 fpiweb.tests.test\_func\_ManualBoxManagement module
 ---------------------------------------------------
 

@@ -149,17 +149,17 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
 
     # Verifies that link goes to build_pallet screen
-    def test_1A_Build_a_Pallet(self):
-        fname = "test_Build_a_Pallet"
-        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
-        self.delay_for_recording()
-        self.assertIn("Welcome to Food Pantry Inventory System",
-                      self.browser.title)
-
-        assert (self.browser.find_element_by_link_text("Build a Pallet"))
-        self.browser.find_element_by_link_text("Build a Pallet").click()
-        self.delay_for_recording()
-        self.assertIn("Build Pallet", self.browser.title)
+    # def test_1A_Build_a_Pallet(self):
+    #     fname = "test_Build_a_Pallet"
+    #     self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
+    #     self.delay_for_recording()
+    #     self.assertIn("Welcome to Food Pantry Inventory System",
+    #                   self.browser.title)
+    #
+    #     assert (self.browser.find_element_by_link_text("Build a Pallet"))
+    #     self.browser.find_element_by_link_text("Build a Pallet").click()
+    #     self.delay_for_recording()
+    #     self.assertIn("Build Pallet", self.browser.title)
 
     # Checks that you can select a pallet from the list of pallets
     def test1B_Select_a_Pallet(self):
@@ -179,6 +179,8 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.assertIn("Build Pallet", self.browser.title)
         self.delay_for_recording()
         self.delay_for_recording()
+
+        # this test needs to be built up further but I'm believe
 
         # //self.browser.find_element_by_xpath("//*[@id='id_exp_year']").click()
         # //self.delay_for_recording()
