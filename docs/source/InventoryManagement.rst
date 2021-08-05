@@ -325,7 +325,7 @@ This screen allows you to move the location of each pallet along with its
 boxes in the database records. Basically if you move a pallet you are also
 moving the boxes the pallet contains.
 
-.. image:: InventoryManagementImages/MovePalletStart_0_00_11.png
+.. image:: InventoryManagementImages/PMV2MovePalletF01_0_00_11Crop.png
 
 When moving a pallet (with its boxes) three different conditions can occur.
 
@@ -339,37 +339,38 @@ Move a Pallet to an Empty Pallet Location
 ==========================================
 
 When moving a pallet and its boxes to a new location the first thing you need to
-do is to "Enter location to move pallet from". You enter the position of the
+do is to **Enter location to move pallet from**. You enter the position of the
 pallet by selecting the Row, Bin, and Tier dropdown lists by using the mouse
 to click on the down arrow at the right of each dropdown list. Selecting the
 down arrow as shown below in the Row dropdown list brings a set of choices.
-Simply click on the current Row location choice to "Enter the location to
-move pallet from".
+Simply click on the current Row location choice to select the Row that the
+pallet is curently located in.
 
-.. image:: InventoryManagementImages/SelectRowFromDropDownList_0_00_21.png
+.. image:: InventoryManagementImages/PMV2MovePalletF02_0_00_20Crop.png
 
-Do the same with the Row and Tier locations. Once that is done you should see
+Do the same with the Bin and Tier locations. Once that is done you should see
 the **Move Pallet** screen as filled out below with Row, Bin, and Tier
 locations filled out. Then click on the blue **Submit Query** button.
 
-.. image:: InventoryManagementImages/SubmitQuery_0_00_23.png
+.. image:: InventoryManagementImages/PMV2MovePalletF03_0_00_21Crop.png
 
 This will bring you to a similar screen but this new screen will say "Enter
-location to move pallet **to**". Enter the Row, Bin, and Tier location for
-where the pallet and it's boxes will be moved to. The screen below shows the
-new Tier location being chosen.
+location to move pallet **to**" instead of **from**. Enter the Row, Bin, and
+Tier location for where the pallet and it's boxes will be moved to. The
+screen below shows the new Tier location being chosen.
 
-.. image:: InventoryManagementImages/SelectTierTo2_0_00_20.png
+.. image:: InventoryManagementImages/PMV2MovePalletF04_0_00_33Crop.png
 
 Once the **Enter location to move pallet to** screen has been filled out click
-on the blue **Submit Query** button. If the new location you want to move the
-pallet is emptyand has no boxes you should see a screen similar to the one
-shown immediately below.
+on the blue **Submit Query** button. The **Submit Query** button is hidden
+behind the **Tier selection dropdown list** in the screen above. If the new
+location you want to move the pallet to is empty at that location you should
+see a screen similar to the one shown immediately below.
 
-.. image:: InventoryManagementImages/MovePalletFinish_0_00_39.png
+.. image:: InventoryManagementImages/PMV2MovePalletF05_0_00_44Crop.png
 
-If the "Enter location to move pallet to" is NOT EMPTY then you will see a
-screen like the one shown in the next section below.
+If the "Enter location to move pallet to" is NOT EMPTY then you will have to
+follow the directions in the section below.
 
 Move a Pallet and Its Boxes to a Non-Empty Pallet Location
 ===========================================================
@@ -378,27 +379,49 @@ The screen below shows up when you try to move a pallet to a location where a
 pallet is already located. Notice that the message states "There are 2 boxes
 at 01,03,C2".
 
-.. image:: InventoryManagementImages/BoxesAtLocation_0_01_21.png
+.. image:: InventoryManagementImages/PMV2MovePalletF06_0_01_19Crop.png
 
 This means you will have to make a decision, either (1) choose a new location
 by clicking the **Change To Location** choice or (2) merge the pallets by
 clicking the **Merge Pallets** choice.
 
-.. image:: InventoryManagementImages/SelectOptionLocationMerge_0_01_30.png
+f you click on **Merge Pallets** both pallets along with their boxes will be
+merged into the new locatio from the original location **Enter
+location to move pallet to** screen. In the below case the location that was
+picked was 01, 03, C2 or Row 01, Bin 03, Tier C2.
 
-If you click on **Change to Location** you will be directed back to the **Enter location
-to move pallet to** screen as shown above. From there you can select another location to
-move the pallet to.
+.. image:: InventoryManagementImages/PMV2MovePalletF08_0_01_59Crop.png
 
-If you click on **Merge Pallets** both pallets along with their boxes will be merged
-into the new location you picked from the **Enter location to move pallet to** screen.
-You will see a screen stating "boxes move to row, bin, tier".
+After you have chosen the **Merge Pallets** choice click on the blue **Submit
+Query** button which is hidden under the **Action** drop down menu in the
+screen above. Upon success you should see a screen similar to the one below.
+
+.. image:: InventoryManagementImages/PMV2MovePalletF09_0_02_59Crop.png
+
+If you click on **Change to Location** you will be directed back to the
+**Move Pallet -> Enter location to move pallet to** screen as shown
+several screens above in the previous section. From that screen you can select
+another location to move the pallet to.
+
+.. image:: InventoryManagementImages/PMV2MovePalletF07_0_01_31Crop.png
+
+Once you have entered a new valid location to in the **Move Pallet -> Enter
+location to move pallet to** screen your final screen should be one similar to
+the screen below.
+
+.. image:: InventoryManagementImages/PMV2MovePalletF10_0_03_23Crop.png
+
 
 Attempt to Move an Empty Pallet
 ================================
 
-If you attempt "Enter location to move pallet from" and there are no boxes recorded
-in the database for that pallet location you will see a screen similar to the one shown
-below.
+If you attempt "Enter location to move pallet from" and there are no boxes
+recorded in the database for that pallet location you will see a screen
+similar to the one shown below. The red arrow points to the "Error Message"
+while the green arrows point to valid or good input.
 
-.. image:: InventoryManagementImages/MoveEmptyPallet_0_03_01.png
+.. image:: InventoryManagementImages/PMV2MovePalletF11_0_02_34Crop.png
+
+It makes no sense to move an empty pallet as the database does not record
+empty pallets. But you may want to make sure the pallet is actually empty and
+has no boxes.

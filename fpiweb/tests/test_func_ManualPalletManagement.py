@@ -40,7 +40,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -101,7 +101,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         cls.browser.quit()
         super().tearDownClass()
 
-    RECORD = True
+    RECORD = False
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
@@ -149,7 +149,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
 
     # Move box to empty pallet
-    def test_1A_Move_a_pallet(self):
+    def test1_Move_a_pallet(self):
         fname = "test_Move_a_pallet"
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
         self.delay_for_recording()
@@ -172,11 +172,9 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         )
 
 
-
-
-    # Move box to pallet that has boxes
-    def test_1B_MovePallet(self):
-        fname = "test_1B_Move_a_pallet"  # debbugging
+    # Move box to pallet location that has boxes and use merge aoption
+    def test2_MoveMergePallets(self):
+        fname = "test_1B_MoveMergePallets"  # debugging
 
         # setup to sign in and go to  "Move Pallet" page.
         self.browser.get('%s/%s' % (self.live_server_url,
@@ -202,23 +200,49 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.assertIn(
             self.browser.find_element_by_tag_name('p').text, '1 boxes moved to: row 01, bin 03, tier C2.'
         )
+        self.delay_for_recording()
 
-        # check the go to new location option
-        self.browser.back()
+
+    def test3_MovePallet_WithBoxConflict(self):
+        fname = "test3_MovePallet_WithBoxConflict"   #debugging
+
+        # setup to sign in and go to  "Move Pallet" page.
+        self.browser.get('%s/%s' % (self.live_server_url,
+                                    'fpiweb/manual_pallet_move/'))
+        self.assertIn("Move Pallet", self.browser.title)
+
+        # get a box is from this location
+        self.set_pallet_location(1, 1, 1, self.START_LOCATION)
+        self.browser.find_element_by_xpath(
+            "//h2[contains(text(),'Enter location to move pallet to')]")
+
+        # send a box to this location where there are box(es)
+        self.set_pallet_location(1, 3, 6, not self.START_LOCATION)
+
         self.browser.find_element_by_id("id_confirm_merge-action").click()
         self.delay_for_recording()
-        action = Select(self.browser.find_element_by_id("id_confirm_merge-action"))
+        action = Select(
+            self.browser.find_element_by_id("id_confirm_merge-action"))
         action.select_by_index(0)
         self.delay_for_recording()
-        submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
+        submit_query_button = self.browser.find_element_by_xpath(
+            "//input[@type='submit']")
         submit_query_button.submit()
         self.delay_for_recording()
-        self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
+        self.browser.find_element_by_xpath(
+            "//h2[contains(text(),'Enter location to move pallet to')]")
+        self.delay_for_recording()
+        self.set_pallet_location(2, 4, 6, not self.START_LOCATION)
+        self.delay_for_recording()
+        self.assertIn(
+            self.browser.find_element_by_tag_name('p').text,
+            '1 boxes moved to: row 02, bin 04, tier C2.'
+        )
+        self.delay_for_recording()
 
 
-
-    # Attempt to move box from empty pallet
-    def test_1C_MovePallet(self):
+    # # Attempt to move box from empty pallet
+    def test4_MovePallet(self):
         fname = "test_1C_MovePallet"
 
         # setup to sign in and go to  "Move Pallet" page.
