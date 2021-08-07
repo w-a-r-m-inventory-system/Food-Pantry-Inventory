@@ -149,7 +149,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
 
     # Move box to empty pallet
-    def test1_Move_a_pallet(self):
+    def test_1_Move_a_pallet(self):
         fname = "test_Move_a_pallet"
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
         self.delay_for_recording()
@@ -173,7 +173,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
 
     # Move box to pallet location that has boxes and use merge aoption
-    def test2_MoveMergePallets(self):
+    def test_2_MoveMergePallets(self):
         fname = "test_1B_MoveMergePallets"  # debugging
 
         # setup to sign in and go to  "Move Pallet" page.
@@ -203,7 +203,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
 
 
-    def test3_MovePallet_WithBoxConflict(self):
+    def test_3_MovePallet_WithBoxConflict(self):
         fname = "test3_MovePallet_WithBoxConflict"   #debugging
 
         # setup to sign in and go to  "Move Pallet" page.
@@ -242,7 +242,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
 
     # # Attempt to move box from empty pallet
-    def test4_MovePallet(self):
+    def test_4_MovePalletFromEmptyPallet(self):
         fname = "test_1C_MovePallet"
 
         # setup to sign in and go to  "Move Pallet" page.

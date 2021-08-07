@@ -173,7 +173,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
     #     # Should also test logout sometime in the future.
 
 
-    def test_1ManualStatusBox(self):
+    def test_1_ManualStatusBox(self):
         fname = "test_3ManualStatusBox testing fpiweb/manual_box_status"
         # Start off in Manual Box Management page
         self.browser.get(
@@ -211,7 +211,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
                 f"number.*** \n")
 
 
-    def test_2CheckinBox(self):
+    def test_2_CheckinBox(self):
         fname = "test_3CheckinBox"
         # Start off in Manual Box Management page
         self.browser.get(
@@ -310,7 +310,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
                       self.browser.title)
 
 
-    def test_3Checkout_a_box(self):
+    def test_3_Checkout_a_box(self):
         fname = "test_6Checkout_a_box"
         # Start out in Manual Box Management
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
@@ -363,7 +363,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
                       self.browser.title)
 
 
-    def test_4Move_a_box(self):
+    def test_4_Move_a_box(self):
         fname = "test_7Move_a_box"
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
         self.assertIn("Welcome to Food Pantry Inventory System",
@@ -417,7 +417,7 @@ class ManualBoxManagement(StaticLiveServerTestCase):
                       self.browser.title)
 
 
-    def test_5AddNewBox(self):
+    def test_5_AddNewBox(self):
         fname = "test_AddNewBox"
         # Start off in Main Food Pantry page
         self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))

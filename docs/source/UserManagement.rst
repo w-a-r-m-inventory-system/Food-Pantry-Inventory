@@ -18,6 +18,18 @@ be able to click on and enter those menu items.
 
 .. image:: UserManagementImages/UserManagementMainScreenV2_0_00_22_13.png
 
+The **Inventory Management** menu can also be accessed from the top bar menu.
+On the top bar click on the triangle or down arrow to the right of the text
+*Inventory Management*. A drop down **Inventory Management** menu will appear.
+This menu goes to the exact same pages or screens as the **Inventory
+Management** menu on the main page.
+
+.. image:: UserManagementImages/UMV2F8_0_04_24Crop.png
+
+The **User Management** menu can also be accessed from the top bar menu.
+Click on the triangle or down arro to the right of your login name in the top
+menu bar to access the **User Management** menu.
+
 Change Password
 ****************
 

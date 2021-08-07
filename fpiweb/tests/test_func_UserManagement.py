@@ -20,6 +20,7 @@ class UserManagementTest(StaticLiveServerTestCase):
     user_name = 'Jessie'
     password = 'abc123'
     profile_title = 'Jessie'
+    LINKS = []
 
     fixtures = ['Activity.json','Constraints.json',
                 'Group.json']
@@ -251,6 +252,44 @@ class UserManagementTest(StaticLiveServerTestCase):
         self.browser.find_element_by_class_name("invalid-feedback")
         self.browser.find_element_by_xpath(
             "//div[contains(text(), 'The two password fields didn')]")
+
+    # Cycles through Inventory Management top menu bar. Does not verify
+    # correct page
+    def test_6_cycle_inventory_management_menu_bar(self):
+        self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
+        self.assertIn("Welcome to Food Pantry Inventory System",
+                      self.browser.title)
+        self.browser.find_element_by_id('navbarInventoryManageDropdown').click()
+        self.delay_for_recording()
+
+        # get Inventory Management links
+        inventory_management_menu = self.browser.find_element_by_xpath("//div["
+                                                     "@class='dropdown-menu "
+                                                     "show'"
+                                                     "]")
+        pages = inventory_management_menu.find_elements_by_xpath(".//a["
+                                                "@class='dropdown-item']")
+
+        # save the links so they don't create a stale exception
+        links = []
+        for link in pages:
+            links.append(link.get_attribute('href'))
+        # cycle through links
+        for href in links:
+            self.browser.get(href)
+            self.delay_for_recording()
+            self.browser.back()
+            self.delay_for_recording()
+            self.browser.find_element_by_id(
+                    'navbarInventoryManageDropdown').click()
+            self.delay_for_recording()
+
+
+
+
+
+
+
 
 
 

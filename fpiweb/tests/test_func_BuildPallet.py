@@ -40,7 +40,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -101,7 +101,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         cls.browser.quit()
         super().tearDownClass()
 
-    RECORD = True
+    RECORD = False
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
