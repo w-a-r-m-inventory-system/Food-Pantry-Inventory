@@ -40,7 +40,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = True
+    HEADLESS_MODE = False
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -116,78 +116,91 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         return random.randint(1, dropdown_int)
 
 
-    # 'START_LOCATION = True' means use 'id_from-loc' while not True means use 'id_to-loc'
-    START_LOCATION = True
-    def set_pallet_location(self, row, bin, tier, start_location):
-        if start_location:
-            self.browser.find_element_by_id("id_from-loc_row").click()
-            row_location = Select(self.browser.find_element_by_id("id_from-loc_row"))
-            row_location.select_by_index(row)
-            self.browser.find_element_by_id("id_from-loc_bin").click()
-            bin_location = Select(self.browser.find_element_by_id("id_from-loc_bin"))
-            bin_location.select_by_index(bin)
-            self.browser.find_element_by_id("id_from-loc_tier").click()
-            tier_location = Select(self.browser.find_element_by_id("id_from-loc_tier"))
-            tier_location.select_by_index(tier)
-        else:
-            self.browser.find_element_by_id("id_to-loc_row").click()
-            row_location = Select(self.browser.find_element_by_id("id_to-loc_row"))
-            row_location.select_by_index(row)
-            self.browser.find_element_by_id("id_to-loc_bin").click()
-            bin_location = Select(self.browser.find_element_by_id("id_to-loc_bin"))
-            bin_location.select_by_index(bin)
-            self.browser.find_element_by_id("id_to-loc_tier").click()
-            tier_location = Select(self.browser.find_element_by_id("id_to-loc_tier"))
-            if self.RECORD:
-                self.delay_for_recording()      # needed for a screenshot
-            tier_location.select_by_index(tier)
+    def set_pallet_location(self, row, bin, tier ):
+        # below line is to drop down product list for recording
+        self.browser.find_element_by_id("id_build_pallet-loc_row").click()
+        row_location = Select(self.browser.find_element_by_id(
+            "id_build_pallet-loc_row"))
+        row_location.select_by_index(row)
+        self.browser.find_element_by_id("id_build_pallet-loc_bin").click()
+        bin_location = Select(self.browser.find_element_by_id(
+            "id_build_pallet-loc_bin"))
+        bin_location.select_by_index(bin)
+        self.browser.find_element_by_id("id_build_pallet-loc_tier").click()
+        tier_location = Select(self.browser.find_element_by_id(
+            "id_build_pallet-loc_tier"))
+        tier_location.select_by_index(tier)
 
 
-        submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-        submit_query_button.submit()
+    def test_1_SelectPallet(self):
+        fname = "test_1_SelectPallet"
+        self.browser.get(
+            '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
+        self.delay_for_recording()
+        self.assertIn("Build Pallet", self.browser.title)
+
+        self.browser.find_element_by_id("id_pallet").click()
+        select_pallet = Select(self.browser.find_element_by_id(
+            "id_pallet"))
+        select_pallet.select_by_index(1)
+        select_button = self.browser.find_element_by_xpath("//input["
+                                                    "@value='Select']")
+        select_button.click()
+        self.delay_for_recording()
+        # self.set_pallet_location(2,3,4)
+        self.set_pallet_location(2,2,2)
+        self.delay_for_recording()
+
+        pallet_complete = self.browser.find_element_by_xpath("//button["
+                                                             "contains(text(), 'Pallet Complete')]")
+        pallet_complete.click()
+
+        self.assertIn("Build Pallet Confirmation", self.browser.title)
+        self.delay_for_recording()
+        self.browser.find_element_by_xpath("//a[contains(text(), "
+                                           "'Return to main page.')]").click()
         self.delay_for_recording()
 
 
-    # Verifies that link goes to build_pallet screen
-    # def test_1A_Build_a_Pallet(self):
-    #     fname = "test_Build_a_Pallet"
-    #     self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
-    #     self.delay_for_recording()
-    #     self.assertIn("Welcome to Food Pantry Inventory System",
-    #                   self.browser.title)
-    #
-    #     assert (self.browser.find_element_by_link_text("Build a Pallet"))
-    #     self.browser.find_element_by_link_text("Build a Pallet").click()
-    #     self.delay_for_recording()
-    #     self.assertIn("Build Pallet", self.browser.title)
+
+
+     # self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
+     # self.delay_for_recording()
+     # self.assertIn("Welcome to Food Pantry Inventory System",
+     #               self.browser.title)
+     #
+     # assert (self.browser.find_element_by_link_text("Build a Pallet"))
+     #    self.browser.find_element_by_link_text("Build a Pallet").click()
+     #    self.delay_for_recording()
+     #    self.assertIn("Build Pallet", self.browser.title)
 
     # Checks that you can select a pallet from the list of pallets
-    def test1B_Select_a_Pallet(self):
-        fname = "test_Select_a_Pallet"
-        self.browser.get('%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
-        self.delay_for_recording()
-        self.assertIn("Build Pallet", self.browser.title)
-        self.browser.find_element_by_xpath("//*[@id='id_pallet']").click()
-        self.delay_for_recording()
-        selectPallet = Select(self.browser.find_element_by_id("id_pallet"))
-        selectPallet.select_by_index(self.select_random_dropdown(1))
-        self.delay_for_recording()
-        selectPallet = self.browser.find_element_by_xpath((
-            "//*[@value='Select']"))
-        selectPallet.submit()
-        self.delay_for_recording()
-        self.assertIn("Build Pallet", self.browser.title)
-        self.delay_for_recording()
-        self.delay_for_recording()
-
-        # this test needs to be built up further but I'm believe
-
-        # //self.browser.find_element_by_xpath("//*[@id='id_exp_year']").click()
-        # //self.delay_for_recording()
-        # //exp_year = Select(self.browser.find_element_by_id("id_exp_year"))
-        # //exp_year.select_by_index(self.select_random_dropdown(4))
-        # //self.browser.find_element_by_xpath(
-        #     "//*[@id='id_exp_month_end']").click()
+    # def test1B_Select_a_Pallet(self):
+    #     fname = "test_Select_a_Pallet"
+    #     self.browser.get('%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
+    #     self.delay_for_recording()
+    #     self.assertIn("Build Pallet", self.browser.title)
+    #     self.browser.find_element_by_xpath("//*[@id='id_pallet']").click()
+    #     self.delay_for_recording()
+    #     selectPallet = Select(self.browser.find_element_by_id("id_pallet"))
+    #     selectPallet.select_by_index(self.select_random_dropdown(1))
+    #     self.delay_for_recording()
+    #     selectPallet = self.browser.find_element_by_xpath((
+    #         "//*[@value='Select']"))
+    #     selectPallet.submit()
+    #     self.delay_for_recording()
+    #     self.assertIn("Build Pallet", self.browser.title)
+    #     self.delay_for_recording()
+    #     self.delay_for_recording()
+    #
+    #     # this test needs to be built up further but I'm believe
+    #
+    #     # //self.browser.find_element_by_xpath("//*[@id='id_exp_year']").click()
+    #     # //self.delay_for_recording()
+    #     # //exp_year = Select(self.browser.find_element_by_id("id_exp_year"))
+    #     # //exp_year.select_by_index(self.select_random_dropdown(4))
+    #     # //self.browser.find_element_by_xpath(
+    #     #     "//*[@id='id_exp_month_end']").click()
 
 
 
@@ -202,67 +215,48 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         #)
 
 
+    def test_2_BuildPallet(self):
+        fname = 'test_2_BuildPallet'
+        self.browser.get(
+            '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
+        self.delay_for_recording()
+        self.assertIn("Build Pallet", self.browser.title)
+        name_of_pallet = self.browser.find_element_by_id('id_name')
+        name_of_pallet.send_keys('green')
+        self.delay_for_recording()
+        add_pallet = self.browser.find_element_by_xpath(("//*[@value='Add']"))
+        add_pallet.click()
+        self.delay_for_recording()
+
+        # get to next screen on same page
+        scan_box = self.browser.find_element_by_xpath("//button[contains(text("
+                                                     "), 'Scan a Box')]")
+
+        self.set_pallet_location(2, 2, 2)
+
+        scan_box.click()
+        self.delay_for_recording()
+        box_number = self.browser.find_element_by_id("boxNumber")
+        box_number.send_keys('55555')
+        self.delay_for_recording()
+        scan_button = self.browser.find_element_by_id("scanButton")
+        scan_button.click()
+        self.delay_for_recording()
+        select_product = Select(self.browser.find_element_by_id(
+            "id_box_forms-0-product"))
+        select_product.select_by_index(8)
+        self.delay_for_recording()
+        pallet_complete = self.browser.find_element_by_xpath("//button["
+                              "contains(text(), 'Pallet Complete')]")
+        pallet_complete.click()
+
+        self.assertIn("Build Pallet Confirmation", self.browser.title)
+        self.delay_for_recording()
+        self.browser.find_element_by_xpath("//a[contains(text(), "
+                                       "'Return to main page.')]").click()
+        self.delay_for_recording()
 
 
-    # # Move box to pallet that has boxes
-    # def test_1B_MovePallet(self):
-    #     fname = "test_1B_Move_a_pallet"  # debbugging
-    #
-    #     # setup to sign in and go to  "Move Pallet" page.
-    #     self.browser.get('%s/%s' % (self.live_server_url,
-    #                                 'fpiweb/manual_pallet_move/'))
-    #     self.assertIn("Move Pallet", self.browser.title)
-    #
-    #     # get a box is from this location
-    #     self.set_pallet_location(1, 1, 1, self.START_LOCATION)
-    #     self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
-    #
-    #     # send a box to this location where there are box(es)
-    #     self.set_pallet_location(1, 3, 6, not self.START_LOCATION)
-    #
-    #     # check the merge option
-    #     self.browser.find_element_by_id("id_confirm_merge-action").click()
-    #     self.delay_for_recording()
-    #     action = Select(self.browser.find_element_by_id("id_confirm_merge-action"))
-    #     action.select_by_index(1)
-    #     self.delay_for_recording()
-    #     submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-    #     submit_query_button.submit()
-    #     self.delay_for_recording()
-    #     self.assertIn(
-    #         self.browser.find_element_by_tag_name('p').text, '1 boxes moved to: row 01, bin 03, tier C2.'
-    #     )
-    #
-    #     # check the go to new location option
-    #     self.browser.back()
-    #     self.browser.find_element_by_id("id_confirm_merge-action").click()
-    #     self.delay_for_recording()
-    #     action = Select(self.browser.find_element_by_id("id_confirm_merge-action"))
-    #     action.select_by_index(0)
-    #     self.delay_for_recording()
-    #     submit_query_button = self.browser.find_element_by_xpath("//input[@type='submit']")
-    #     submit_query_button.submit()
-    #     self.delay_for_recording()
-    #     self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
-    #
-    #
-    #
-    # # Attempt to move box from empty pallet
-    # def test_1C_MovePallet(self):
-    #     fname = "test_1C_MovePallet"
-    #
-    #     # setup to sign in and go to  "Move Pallet" page.
-    #     self.browser.get('%s/%s' % (self.live_server_url,
-    #                                 'fpiweb/manual_pallet_move/'))
-    #     self.assertIn("Move Pallet", self.browser.title)
-    #
-    #     # Select an empty pallet as determined from Location.json
-    #     self.set_pallet_location(1, 3, 2, self.START_LOCATION)
-    #
-    #     self.browser.find_element_by_xpath("//div[@role='alert']")
-    #     self.browser.find_element_by_xpath("//button[@aria-label='close']").click()
-    #     # verify alert has closed
-    #     try:
-    #         self.browser.find_element_by_xpath("//div[@role='alert']")
-    #     except NoSuchElementException:
-    #         print(f"\nAlert from {fname} has closed as expected- verified.\n")
+
+
+
