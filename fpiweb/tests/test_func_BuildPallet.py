@@ -40,7 +40,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = True
+    HEADLESS_MODE = False
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -136,34 +136,34 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
 
 
-    def test_1_SelectPallet(self):
-        fname = "test_1_SelectPallet"
-        self.browser.get(
-            '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
-        self.delay_for_recording()
-        self.assertIn("Build Pallet", self.browser.title)
-
-        self.browser.find_element_by_id("id_pallet").click()
-        select_pallet = Select(self.browser.find_element_by_id(
-            "id_pallet"))
-        select_pallet.select_by_index(1)
-        select_button = self.browser.find_element_by_xpath("//input["
-                                                    "@value='Select']")
-        select_button.click()
-        self.delay_for_recording()
-        self.set_pallet_location(2,3,4)
-
-        pallet_complete = self.browser.find_element_by_xpath("//button["
-                                         "contains(text(), 'Pallet Complete')]")
-        pallet_complete.click()
-        self.delay_for_recording()
-
-        self.assertIn("Build Pallet Confirmation", self.browser.title)
-        self.delay_for_recording()
-        self.browser.find_element_by_xpath("//a[contains(text(), "
-                                           "'Return to main page.')]").click()
-        self.delay_for_recording()
-
+    # def test_1_SelectPallet(self):
+    #     fname = "test_1_SelectPallet"
+    #     self.browser.get(
+    #         '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
+    #     self.delay_for_recording()
+    #     self.assertIn("Build Pallet", self.browser.title)
+    #
+    #     self.browser.find_element_by_id("id_pallet").click()
+    #     select_pallet = Select(self.browser.find_element_by_id(
+    #         "id_pallet"))
+    #     select_pallet.select_by_index(1)
+    #     select_button = self.browser.find_element_by_xpath("//input["
+    #                                                 "@value='Select']")
+    #     select_button.click()
+    #     self.delay_for_recording()
+    #     self.set_pallet_location(2,3,4)
+    #
+    #     pallet_complete = self.browser.find_element_by_xpath("//button["
+    #                                      "contains(text(), 'Pallet Complete')]")
+    #     pallet_complete.click()
+    #     self.delay_for_recording()
+    #
+    #     self.assertIn("Build Pallet Confirmation", self.browser.title)
+    #     self.delay_for_recording()
+    #     self.browser.find_element_by_xpath("//a[contains(text(), "
+    #                                        "'Return to main page.')]").click()
+    #     self.delay_for_recording()
+    #
 
     def test_2_BuildPallet(self):
         fname = 'test_2_BuildefdPallet'
@@ -190,12 +190,20 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         scan_button = self.browser.find_element_by_id("scanButton")
         scan_button.click()
         self.delay_for_recording()
+
         self.browser.find_element_by_id("id_box_forms-0-product").click()
+        self.delay_for_recording()
         select_product = Select(self.browser.find_element_by_id(
             "id_box_forms-0-product"))
-        self.delay_for_recording()
+
         select_product.select_by_index(self.select_random_dropdown(18))
+
+        self.browser.find_element_by_id("id_box_forms-0-exp_year").click()
+        expired_year = Select(self.browser.find_element_by_id
+                              ("id_box_forms-0-exp_year"))
         self.delay_for_recording()
+        expired_year.select_by_index(self.select_random_dropdown(4))
+
         month_start = self.browser.find_element_by_id(
             "id_box_forms-0-exp_month_start")
         month_start.send_keys("1")
@@ -280,7 +288,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     # # field. Currently goes to Server Error 500. Should offer the user a
     # # chance to correct their input with a 5 digit number
     # def test_4_BuildPallet_ExtraDigitBoxNumber(self):
-    #     fname = 'test_4_BuildefdPallet_ExtraDigitBoxNumber'
+    #     fname = 'test_4_BuildPallet_ExtraDigitBoxNumber'
     #     self.browser.get(
     #         '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
     #     self.delay_for_recording()
