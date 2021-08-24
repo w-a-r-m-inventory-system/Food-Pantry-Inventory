@@ -40,7 +40,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -101,11 +101,11 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         cls.browser.quit()
         super().tearDownClass()
 
-    RECORD = True
+    RECORD = False
     def delay_for_recording(self):
-        # Need to delay for (1) wait for page load (2) recording
+        # Need to delay for (1) wait for page load (2) record video of screens
         if self.RECORD:
-            time.sleep(5)
+            time.sleep(10)
         else:
             time.sleep(2)
 
@@ -119,17 +119,21 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
     def set_pallet_location(self, row, bin, tier ):
         # below line is to drop down product list for recording
         self.browser.find_element_by_id("id_build_pallet-loc_row").click()
+        self.delay_for_recording()
         row_location = Select(self.browser.find_element_by_id(
             "id_build_pallet-loc_row"))
         row_location.select_by_index(row)
         self.browser.find_element_by_id("id_build_pallet-loc_bin").click()
+        self.delay_for_recording()
         bin_location = Select(self.browser.find_element_by_id(
             "id_build_pallet-loc_bin"))
         bin_location.select_by_index(bin)
         self.browser.find_element_by_id("id_build_pallet-loc_tier").click()
+        self.delay_for_recording()
         tier_location = Select(self.browser.find_element_by_id(
             "id_build_pallet-loc_tier"))
         tier_location.select_by_index(tier)
+
 
 
     def test_1_SelectPallet(self):
@@ -148,9 +152,6 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         select_button.click()
         self.delay_for_recording()
         self.set_pallet_location(2,3,4)
-        # self.set_pallet_location(2,2,2)
-        self.delay_for_recording()
-        self.delay_for_recording()
 
         pallet_complete = self.browser.find_element_by_xpath("//button["
                                          "contains(text(), 'Pallet Complete')]")
@@ -178,7 +179,6 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
 
         # get to next screen on same page
-
         self.set_pallet_location(2, 2, 2)
         scan_box = self.browser.find_element_by_xpath("//button[contains(text("
                                                       "), 'Scan a Box')]")
@@ -214,6 +214,104 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.browser.find_element_by_xpath("//a[contains(text(), "
                                        "'Return to main page.')]").click()
         self.delay_for_recording()
+
+    # # This test currently fails so it is commented out. Test checks the
+    # # edge condition where the Expiration Month End > Expiration Month Start.
+    # # The Build Pallet page does not go forward to the Pallet Complete page.
+    # # Also when the Build Pallet page is shown after incorrect input all
+    # # boxes are checked green and there is no error message
+    # def test_3_BuildPallet_RangeErrorExpirMonths(self):
+    #     fname = 'test_3_BuildefdPallet_RangeErrorExpirMonths'
+    #     self.browser.get(
+    #         '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
+    #     self.delay_for_recording()
+    #     self.assertIn("Build Pallet", self.browser.title)
+    #     name_of_pallet = self.browser.find_element_by_id('id_name')
+    #     name_of_pallet.send_keys('green')
+    #     self.delay_for_recording()
+    #     add_pallet = self.browser.find_element_by_xpath(("//*[@value='Add']"))
+    #     add_pallet.click()
+    #     self.delay_for_recording()
+    #
+    #     # get to next screen on same page
+    #     self.set_pallet_location(2, 2, 2)
+    #     scan_box = self.browser.find_element_by_xpath("//button[contains(text("
+    #                                                   "), 'Scan a Box')]")
+    #     scan_box.click()
+    #     self.delay_for_recording()
+    #     box_number = self.browser.find_element_by_id("boxNumber")
+    #     box_number.send_keys('12350')
+    #     self.delay_for_recording()
+    #     self.assertIn("Build Pallet", self.browser.title)
+    #     scan_button = self.browser.find_element_by_id("scanButton")
+    #     scan_button.click()
+    #     self.delay_for_recording()
+    #     self.browser.find_element_by_id("id_box_forms-0-product").click()
+    #     select_product = Select(self.browser.find_element_by_id(
+    #         "id_box_forms-0-product"))
+    #     self.delay_for_recording()
+    #     select_product.select_by_index(self.select_random_dropdown(18))
+    #     self.delay_for_recording()
+    #     month_start = self.browser.find_element_by_id(
+    #         "id_box_forms-0-exp_month_start")
+    #     month_start.send_keys("12")
+    #     self.delay_for_recording()
+    #     month_end = self.browser.find_element_by_id(
+    #         "id_box_forms-0-exp_month_end")
+    #     month_end.send_keys(self.select_random_dropdown(11))
+    #     self.delay_for_recording()
+    #
+    #     pallet_complete = self.browser.find_element_by_xpath("//button["
+    #                                      "contains(text(), 'Pallet Complete')]")
+    #     pallet_complete.click()
+    #     self.delay_for_recording()
+    #
+    #     try:
+    #         self.assertIn("Build Pallet Confirmation", self.browser.title)
+    #         self.delay_for_recording()
+    #     except:
+    #         self.fail(
+    #             "Exceptions raised. Unable to find invalid feedback message in "
+    #             "function. All input is marked with a green checkmark " + fname)
+    #
+    #
+    # # This test currently fails so it is commented out. Test checks the edge
+    # # condition when a 6 digit Box Number is enterd in the 'Scan a Box'
+    # # field. Currently goes to Server Error 500. Should offer the user a
+    # # chance to correct their input with a 5 digit number
+    # def test_4_BuildPallet_ExtraDigitBoxNumber(self):
+    #     fname = 'test_4_BuildefdPallet_ExtraDigitBoxNumber'
+    #     self.browser.get(
+    #         '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
+    #     self.delay_for_recording()
+    #     self.assertIn("Build Pallet", self.browser.title)
+    #     name_of_pallet = self.browser.find_element_by_id('id_name')
+    #     name_of_pallet.send_keys('green')
+    #     self.delay_for_recording()
+    #     add_pallet = self.browser.find_element_by_xpath(("//*[@value='Add']"))
+    #     add_pallet.click()
+    #     self.delay_for_recording()
+    #
+    #     self.set_pallet_location(2, 2, 2)
+    #     scan_box = self.browser.find_element_by_xpath("//button[contains(text("
+    #                                                   "), 'Scan a Box')]")
+    #     scan_box.click()
+    #     self.delay_for_recording()
+    #     box_number = self.browser.find_element_by_id("boxNumber")
+    #     box_number.send_keys('123507')
+    #     self.delay_for_recording()
+    #     scan_button = self.browser.find_element_by_id("scanButton")
+    #     scan_button.click()
+    #     self.delay_for_recording()
+    #
+    #     try:
+    #         self.assertIn("Build Pallet", self.browser.title)
+    #         self.delay_for_recording()
+    #     except:
+    #         self.fail(
+    #             "Exceptions raised. Unable to find invalid feedback in "
+    #             "function. Goes to Server Error 500 " + fname)
+
 
 
 

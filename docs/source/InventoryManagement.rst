@@ -188,26 +188,64 @@ and then click on the blue **Add Box** button.
 Build a Pallet
 ***************
 
-The next screen you will see is the **Build Pallet** screen. Here you will have
+A pallet is a large container which contains a number indivual boxes or items
+that will be distributed. To *Build a Pallet* you will need to click **Build
+Pallet** from the main menu as shown below.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF01_0_01_16Crop.png
+
+The next screen you will see is the **Pallet** screen. Here you will have
 two choices, **Select** or **Add**. **Select** gives you a choice of pallets
-to work with. If there are no pallets in **Select**, you must create a new
-pallet listing using **Add**.
+to work with. If there are no pallet choices in **Select**, you can create a
+new pallet using **Add**.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF02_0_00_10Crop.png
 
 Select
 =======
 To check if there are pallets that you can select click on the ‘Dropdown icon’
 shown below. If there are pallets available you will see a drop down list as
-shown below. Select one of the pallets from the drop down list.
+shown below. Select one of the pallets from the drop down list. The screen
+below only shows one selection but you may have more.
 
 If there are no pallets available nothing will show on the drop down list.
 You will have to go the **Add** section.
 
-.. image:: InventoryManagementImages/SelectPallet.png
+.. image:: InventoryManagementImages/PMV2SelectPalletF03_0_00_10Crop.png
 
-After selecting a pallet click on the **Select** button to go to the
+After selecting a pallet, click on the **Select** button to go to the
 **Build Pallet** screen as shown below.
 
-.. image:: InventoryManagementImages/SelectPalletButton.png
+.. image:: InventoryManagementImages/PMV2SelectPalletF04_0_00_11Crop.png
+
+This is what a typical **Build Pallet** screen looks like. In the screen
+below you have a pallet with 2 boxes already in this pallet. There may be
+several boxes or none. (Each box contains smaller boxes/cans which are the
+individual items to be distributed). You may also add additional boxes to
+this pallet. How to add boxes is shown in the **Scan a Box** part of
+the **Add** pallet section which follows this **Select** section.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF05_0_00_19Crop.png
+
+You will have to place this pallet in a specific **Row** - **Bin** - **Tier**
+location. Click on the dropdown icon in the **Row**, **Bin** and **Tier**
+sections as shown below. Of course you should not place this pallet in a
+place where there is a pallet already.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF06_0_00_35Crop.png
+
+Once you have a location and boxes for the selected *Pallet*, click on the
+blue **Pallet Complete** section. The **Expiration Month** section is
+optional. If you need to fill out the  **Expiration Month** section, that  is
+shown in the **Add** section after this **Select** section.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF07_0_00_52Crop.png
+
+If everything has worked out you should see the **Pallet Complete** screen as
+shown below. From there you can *Return to main page.*
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF08_0_00_58Crop.png
+
 
 Add
 ====
@@ -320,10 +358,10 @@ From here you can return to the main screen by clicking ‘Return to main page�
 Move a Pallet
 **************
 
-After clicking on **Move a Pallet** you should see a screen like the one below.
-This screen allows you to move the location of each pallet along with its
-boxes in the database records. Basically if you move a pallet you are also
-moving the boxes the pallet contains.
+After clicking on **Move a Pallet** from the *Main Menu* you should see a
+screen like the one below. This screen allows you to move the location of
+each pallet along with its boxes in the database records. Basically if you
+move a pallet you are also moving the boxes the pallet contains.
 
 .. image:: InventoryManagementImages/PMV2MovePalletF01_0_00_11Crop.png
 
