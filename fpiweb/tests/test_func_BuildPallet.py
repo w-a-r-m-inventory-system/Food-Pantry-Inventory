@@ -163,55 +163,6 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
                                            "'Return to main page.')]").click()
         self.delay_for_recording()
 
-     # self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
-     # self.delay_for_recording()
-     # self.assertIn("Welcome to Food Pantry Inventory System",
-     #               self.browser.title)
-     #
-     # assert (self.browser.find_element_by_link_text("Build a Pallet"))
-     #    self.browser.find_element_by_link_text("Build a Pallet").click()
-     #    self.delay_for_recording()
-     #    self.assertIn("Build Pallet", self.browser.title)
-
-    # Checks that you can select a pallet from the list of pallets
-    # def test1B_Select_a_Pallet(self):
-    #     fname = "test_Select_a_Pallet"
-    #     self.browser.get('%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
-    #     self.delay_for_recording()
-    #     self.assertIn("Build Pallet", self.browser.title)
-    #     self.browser.find_element_by_xpath("//*[@id='id_pallet']").click()
-    #     self.delay_for_recording()
-    #     selectPallet = Select(self.browser.find_element_by_id("id_pallet"))
-    #     selectPallet.select_by_index(self.select_random_dropdown(1))
-    #     self.delay_for_recording()
-    #     selectPallet = self.browser.find_element_by_xpath((
-    #         "//*[@value='Select']"))
-    #     selectPallet.submit()
-    #     self.delay_for_recording()
-    #     self.assertIn("Build Pallet", self.browser.title)
-    #     self.delay_for_recording()
-    #     self.delay_for_recording()
-    #
-    #     # this test needs to be built up further but I'm believe
-    #
-    #     # //self.browser.find_element_by_xpath("//*[@id='id_exp_year']").click()
-    #     # //self.delay_for_recording()
-    #     # //exp_year = Select(self.browser.find_element_by_id("id_exp_year"))
-    #     # //exp_year.select_by_index(self.select_random_dropdown(4))
-    #     # //self.browser.find_element_by_xpath(
-    #     #     "//*[@id='id_exp_month_end']").click()
-
-
-
-        # # get a box is from this location
-        # self.set_pallet_location(1,1,1, self.START_LOCATION)
-        # self.browser.find_element_by_xpath("//h2[contains(text(),'Enter location to move pallet to')]")
-        #
-        # # send a box to this empty location
-        # self.set_pallet_location(1, 3, 2, not self.START_LOCATION)
-        # self.assertIn(
-        #     self.browser.find_element_by_tag_name('p').text,
-
 
     def test_2_BuildPallet(self):
         fname = 'test_2_BuildefdPallet'
@@ -227,11 +178,10 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         self.delay_for_recording()
 
         # get to next screen on same page
-        scan_box = self.browser.find_element_by_xpath("//button[contains(text("
-                                                     "), 'Scan a Box')]")
 
         self.set_pallet_location(2, 2, 2)
-
+        scan_box = self.browser.find_element_by_xpath("//button[contains(text("
+                                                      "), 'Scan a Box')]")
         scan_box.click()
         self.delay_for_recording()
         box_number = self.browser.find_element_by_id("boxNumber")
@@ -244,8 +194,17 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         select_product = Select(self.browser.find_element_by_id(
             "id_box_forms-0-product"))
         self.delay_for_recording()
-        select_product.select_by_index(8)
+        select_product.select_by_index(self.select_random_dropdown(18))
         self.delay_for_recording()
+        month_start = self.browser.find_element_by_id(
+            "id_box_forms-0-exp_month_start")
+        month_start.send_keys("1")
+
+        month_end = self.browser.find_element_by_id(
+            "id_box_forms-0-exp_month_end")
+        month_end.send_keys(self.select_random_dropdown(12))
+        self.delay_for_recording()
+
         pallet_complete = self.browser.find_element_by_xpath("//button["
                               "contains(text(), 'Pallet Complete')]")
         pallet_complete.click()
