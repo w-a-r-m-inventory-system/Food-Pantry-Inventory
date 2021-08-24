@@ -101,7 +101,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         cls.browser.quit()
         super().tearDownClass()
 
-    RECORD = False
+    RECORD = True
     def delay_for_recording(self):
         # Need to delay for (1) wait for page load (2) recording
         if self.RECORD:
@@ -147,22 +147,21 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
                                                     "@value='Select']")
         select_button.click()
         self.delay_for_recording()
-        # self.set_pallet_location(2,3,4)
-        self.set_pallet_location(2,2,2)
+        self.set_pallet_location(2,3,4)
+        # self.set_pallet_location(2,2,2)
+        self.delay_for_recording()
         self.delay_for_recording()
 
         pallet_complete = self.browser.find_element_by_xpath("//button["
-                                                             "contains(text(), 'Pallet Complete')]")
+                                         "contains(text(), 'Pallet Complete')]")
         pallet_complete.click()
+        self.delay_for_recording()
 
         self.assertIn("Build Pallet Confirmation", self.browser.title)
         self.delay_for_recording()
         self.browser.find_element_by_xpath("//a[contains(text(), "
                                            "'Return to main page.')]").click()
         self.delay_for_recording()
-
-
-
 
      # self.browser.get('%s/%s' % (self.live_server_url, 'fpiweb/index/'))
      # self.delay_for_recording()
@@ -211,12 +210,11 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         # # send a box to this empty location
         # self.set_pallet_location(1, 3, 2, not self.START_LOCATION)
         # self.assertIn(
-        #     self.browser.find_element_by_tag_name('p').text, '1 boxes moved to: row 01, bin 03, tier A2.'
-        #)
+        #     self.browser.find_element_by_tag_name('p').text,
 
 
     def test_2_BuildPallet(self):
-        fname = 'test_2_BuildPallet'
+        fname = 'test_2_BuildefdPallet'
         self.browser.get(
             '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
         self.delay_for_recording()
@@ -237,13 +235,15 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         scan_box.click()
         self.delay_for_recording()
         box_number = self.browser.find_element_by_id("boxNumber")
-        box_number.send_keys('55555')
+        box_number.send_keys('12350')
         self.delay_for_recording()
         scan_button = self.browser.find_element_by_id("scanButton")
         scan_button.click()
         self.delay_for_recording()
+        self.browser.find_element_by_id("id_box_forms-0-product").click()
         select_product = Select(self.browser.find_element_by_id(
             "id_box_forms-0-product"))
+        self.delay_for_recording()
         select_product.select_by_index(8)
         self.delay_for_recording()
         pallet_complete = self.browser.find_element_by_xpath("//button["

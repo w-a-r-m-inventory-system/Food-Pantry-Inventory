@@ -4,7 +4,7 @@
     "pk": 3,
     "fields": {
       "pallet_id": 2,
-      "box_id": 16,
+      "box_id": 20,
       "box_number": "BOX12371",
       "product": 1,
       "exp_year": 2020,
