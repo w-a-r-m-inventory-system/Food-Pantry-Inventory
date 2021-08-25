@@ -222,8 +222,8 @@ This is what a typical **Build Pallet** screen looks like. In the screen
 below you have a pallet with 2 boxes already in this pallet. There may be
 several boxes or none. (Each box contains smaller boxes/cans which are the
 individual items to be distributed). You may also add additional boxes to
-this pallet. How to add boxes is shown in the **Scan a Box** part of
-the **Add** pallet section which follows this **Select** section.
+this pallet. How to add boxes is shown in the **Build Pallet Screen** and
+**Scan a Box Popup** following the **Add** section below.
 
 .. image:: InventoryManagementImages/PMV2SelectPalletF05_0_00_19Crop.png
 
@@ -237,7 +237,7 @@ place where there is a pallet already.
 Once you have a location and boxes for the selected *Pallet*, click on the
 blue **Pallet Complete** section. The **Expiration Month** section is
 optional. If you need to fill out the  **Expiration Month** section, that  is
-shown in the **Add** section after this **Select** section.
+shown in the **Return to Build Pallet** section below.
 
 .. image:: InventoryManagementImages/PMV2SelectPalletF07_0_00_52Crop.png
 
@@ -251,10 +251,10 @@ Add
 ====
 
 Enter or key in a pallet name. In the screen below the pallet name
-‘purple’ has been entered. You can pick any name you choose. After keying in
-the new pallet name click on **Add** for the **Build Pallet** screen.
+‘green’ has been entered. After keying in the new pallet name click on
+**Add** to go to the  **Build Pallet** screen.
 
-.. image:: InventoryManagementImages/AddPallet.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF01_01_00_36Crop.png
 
 Build Pallet Screen
 ====================
@@ -262,19 +262,19 @@ Build Pallet Screen
 The next screen you will come to is the **Build Pallet** screen. On this
 screen the first thing you should do is to create a location for the pallet.
 
-.. image:: InventoryManagementImages/BuildPallet.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF02_01_07_59Crop.png
 
 You will create the pallets location for ‘Row’, ‘Bin’ and ‘Tier’. Row refers to
-which long row the pallet is on. Currently rows are 2 bins wide. Bin refers
+which long row the pallet is on. Currently rows are 2 bins wide. Bin refers to
 pallet bins located down the length of the row. Tier refers to the height level
 of the location. Use the drop down list boxes to enter ‘Row’, ‘Bin’ and ‘Tier’.
 
-.. image:: InventoryManagementImages/LocatePallet.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF03_01_08_06Crop.png
 
 Once you have entered the pallet location, click on the **Scan a Box** button
 in the middle of the **Build Pallet** page.
 
-.. image:: InventoryManagementImages/ScanABoxButton.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF04_01_08_07Crop.png
 
 Scan a Box Popup
 =================
@@ -309,49 +309,60 @@ bottom left of the screen. You can enter any number but it must contain exactly
 5 digits. Once you have entered the number click on the **Scan** button in the
 bottom right of the popup window.
 
-.. image:: InventoryManagementImages/ScanBoxPopUp.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF05_01_08_11Crop.png
 
 Return to Build Pallet
 =======================
 
 After clicking on the **Scan Button** you will be returned to the **Build Pallet**
 screen. You should see the ‘Box Number’ you have entered as well as a small
-white ‘X’ in a red box at the left of your screen. On this screen you will
+white ‘X’ in a red box at the left of your screen. (Click on this 'X' if you
+wish to remove this box number from the pallet.) On this screen you will
 select a product to go in the box from a drop down product list. Click on
-the ‘Dropdown icon’ at the bottom right of the ‘Product’ rectangle’. Then
-choose an item from the list.
+the ‘Dropdown icon’ at the bottom right of the ‘Product’ rectangle.
 
-.. image:: InventoryManagementImages/EnterProduct.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF06_01_08_14Crop.png
 
-Once you have entered the product, use the ‘Expiration Year’ drop down list
-to enter the ‘Expiration Year’.
+When the list pops up, choose an item from the list.
 
-Entering the ‘Expiration Month’ is optional. Months are entered from a drop
-down list that holds numbers from 1 to 12 that correspond to the months of
-the year- January to December. If you do decide to enter the ‘Expiration Month’
-please make sure that the ‘Start’ month **is always less than** the ‘End’
-month. This means the ‘End’ month **must not equal** the 'Start' month and
-**must be greater than** the ‘Start’ month. *Not all food items will have
-an ‘Expiration Month’ with a ‘Start’ and an ‘End’ month.* Once you have
-entered everything on this page the page should look similar to what is below.
+.. image:: InventoryManagementImages/PMV2BuildPalletF07_01_08_17Crop.png
 
-.. image:: InventoryManagementImages/PalletCompleteBefore.png
+The produce 'Breakfast Food' has been chosen below. Once you have entered the
+product, use the ‘Expiration Year’ drop down list to enter the ‘Expiration
+Year’.
+
+.. image:: InventoryManagementImages/PMV2BuildPalletF08_01_08_19Crop.png
+
+Entering the ‘Expiration Month’ is optional. Months are entered using the
+stepper arrows to the right of the **Start** and **End** input boxes.
+Clicking on the top stepper arrow increases the month to 12 or 'December'.
+Clicking on the bottom stepper arrow decreases the month to 1 or 'January'.
+
+If you do decide to enter the ‘Expiration Month’ please make sure that the
+*Start* month **is always less than** the *End* month. This means the *End*
+month **must always be greater than** the *Start* month. Not all food items
+will have an ‘Expiration Month’ with a *Start* and an *End* month. Once you
+have entered everything on this page the page should look similar to what is
+below.
+
+.. image:: InventoryManagementImages/PMV2BuildPalletF09_01_08_21Crop.png
 
 From here if you click on **Scan a Box** you will be directed back to the
 **Scan a Box** popup window. There you can add another box in the same
 manner as you did before. If you click **Pallet Complete** you will be
 directed to the **Pallet Complete** screen.
 
-.. image:: InventoryManagementImages/PalletCompleteScanBoxButtons.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF10_01_08_21Crop.png
 
 Pallet Complete
 ================
 
-You should now see the **Pallet Complete** screen.
+If you clicked on the blue **Pallet Complete** button, you should now see the
+**Pallet Complete** screen.
 
-.. image:: InventoryManagementImages/PalletCompleted.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF11_01_08_23Crop.png
 
-From here you can return to the main screen by clicking ‘Return to main page’.
+From here you can return to the main screen by clicking *Return to main page*.
 
 
 

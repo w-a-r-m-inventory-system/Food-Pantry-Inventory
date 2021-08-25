@@ -40,7 +40,7 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
 
     # sets browser to run in headless mode or browser mode
     # depending on True/False value of HEADLESS_MODE
-    HEADLESS_MODE = False
+    HEADLESS_MODE = True
     @classmethod
     def run_headless_mode(cls):
         options = Options()  # headless mode
@@ -135,35 +135,34 @@ class ManualPalletMaintenance(StaticLiveServerTestCase):
         tier_location.select_by_index(tier)
 
 
+    def test_1_SelectPallet(self):
+        fname = "test_1_SelectPallet"
+        self.browser.get(
+            '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
+        self.delay_for_recording()
+        self.assertIn("Build Pallet", self.browser.title)
 
-    # def test_1_SelectPallet(self):
-    #     fname = "test_1_SelectPallet"
-    #     self.browser.get(
-    #         '%s/%s' % (self.live_server_url, "fpiweb/build_pallet/"))
-    #     self.delay_for_recording()
-    #     self.assertIn("Build Pallet", self.browser.title)
-    #
-    #     self.browser.find_element_by_id("id_pallet").click()
-    #     select_pallet = Select(self.browser.find_element_by_id(
-    #         "id_pallet"))
-    #     select_pallet.select_by_index(1)
-    #     select_button = self.browser.find_element_by_xpath("//input["
-    #                                                 "@value='Select']")
-    #     select_button.click()
-    #     self.delay_for_recording()
-    #     self.set_pallet_location(2,3,4)
-    #
-    #     pallet_complete = self.browser.find_element_by_xpath("//button["
-    #                                      "contains(text(), 'Pallet Complete')]")
-    #     pallet_complete.click()
-    #     self.delay_for_recording()
-    #
-    #     self.assertIn("Build Pallet Confirmation", self.browser.title)
-    #     self.delay_for_recording()
-    #     self.browser.find_element_by_xpath("//a[contains(text(), "
-    #                                        "'Return to main page.')]").click()
-    #     self.delay_for_recording()
-    #
+        self.browser.find_element_by_id("id_pallet").click()
+        select_pallet = Select(self.browser.find_element_by_id(
+            "id_pallet"))
+        select_pallet.select_by_index(1)
+        select_button = self.browser.find_element_by_xpath("//input["
+                                                    "@value='Select']")
+        select_button.click()
+        self.delay_for_recording()
+        self.set_pallet_location(2,3,4)
+
+        pallet_complete = self.browser.find_element_by_xpath("//button["
+                                         "contains(text(), 'Pallet Complete')]")
+        pallet_complete.click()
+        self.delay_for_recording()
+
+        self.assertIn("Build Pallet Confirmation", self.browser.title)
+        self.delay_for_recording()
+        self.browser.find_element_by_xpath("//a[contains(text(), "
+                                           "'Return to main page.')]").click()
+        self.delay_for_recording()
+
 
     def test_2_BuildPallet(self):
         fname = 'test_2_BuildefdPallet'
