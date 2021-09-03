@@ -2,44 +2,48 @@
 Inventory Management
 ######################
 
-Check the Status of a Box
+Check Status of a Box
 **************************
 
-From the Inventory Management section on the Manin screen clicking on
-**Check the status of a box** will bring you
-to the **Manual Status a Box** screen. Here you can check the box status by entering a 5 digit
-box number and then clicking on the **Search** button.
+From the Inventory Management section on the Mainn screen clicking on **Check
+Status of a Box** will bring you to the **Manual Status a Box** screen. Here
+you can check the box status by entering a 5 digit box number and then
+clicking on the **Search** button.
 
-.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_00_32_10.png
+.. image:: InventoryManagementImages/BMV2CheckStatusBoxF1Crop_0_00_10.png
 
-After clicking on the **Search** button you should see a screen listing the Box Number,
-Box Type, Box Contents, Contents Expire (expiration date) and location- Row, Bin and Tier
-number.
 
-.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_00_44_26.png
+After clicking on the **Search** button you should see a screen listing the Box
+Number, Box Type, Box Contents, Contents Expire (expiration date) and
+location- Row, Bin and Tier number.
 
-From this screen you can click on **Check another box** or **Return to Main Menu**.
+.. image:: InventoryManagementImages/BMV2CheckStatusBoxF2Crop_0_00_14.png
 
-If you see the screen below that means the **Box Number** is invalid or has not been entered
-into inventory.
+From this screen you can click on **Check another box** or **Return to Main
+Menu**.
 
-.. image:: InventoryManagementImages/InventoryCheckStatusCrop_0_01_15_08.png
+If you see the screen below that means the **Box Number** is invalid or has not
+been entered into inventory. In this screen you can enter a new **Box
+Number** and click **Search** to see if the new **Box Number** works.
 
-Checkin a Box
+.. image:: InventoryManagementImages/BMV2CheckStatusBoxF3Crop_0_00_33.png
+
+Check In a Box
 **************
 
-With this screen you can add all the information needed to check in a box of food
-items to warehouse inventory. The blank **Checkin a Box** screen is shown below.
+With this screen you can add all the information needed to check in a box of
+food items to warehouse inventory. The blank **Checkin a Box** screen is
+shown below.
 
-.. image:: InventoryManagementImages/CheckinBox_0_01_26.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF1_0_00_47Crop.png
 
 
-The first two items to enter are the **Box number** and **Product**. With the keyboard
-enter a 5 digit 'Box number' in the **Box number** field. Then click on the small
-triangle in the circle at the right of the **Product** drop down list to select a
-product with your mouse.
+The first two items to enter are the **Box number** and **Product**. With the
+keyboard enter a 5 digit 'Box number' in the **Box number** field. Then click on
+the small 'v' or triangle in the circle at the right of the **Product** drop
+down list to select a product with your mouse.
 
-.. image:: InventoryManagementImages/CheckinBoxSelectProduct_0_01_31.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF2_0_00_56Crop.png
 
 After entering the **Product** the next step is to  enter the pallet location.
 You will have to select 3 different entries with your mouse.
@@ -48,106 +52,209 @@ You will have to select 3 different entries with your mouse.
     (2) Bin number ( Bin number in the length of a row)
     (3) Tier number (level up or down
 
-Each entry uses a drop down list and you will make a choice from each drop down list.
-In the graphic below the **Row** and **Bin** numbers have been chosen and the drop down
+Each entry uses a drop down list and you will make a choice from each drop
+down list. In the graphic below the **Row** and **Bin** numbers have been
+chosen and the drop down
 list is shown with the **Tier** number.
 
-.. image:: InventoryManagementImages/CheckinBoxLocation_0_01_49.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF3_0_01_27Crop.png
 
-After entering the location enter the expiration year by clicking on the small triangle
-to the right of the **Exp year** field and making a selection from the drop down list.
+After entering the location enter the expiration year by clicking on the
+small 'v' or triangle to the right of the **Exp year** field and making a
+selection from the drop down list.
 
-.. image:: InventoryManagementImages/CheckinBoxExpYear_0_01_55.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF4_0_01_39Crop.png
 
-The last selection you will have to make is the expiration month. There are 2 drop down
-list fields here **Exp month start** and **Exp month end**. These fields are optional and
-it is not necessary to fill these fields out. These drop down lists show a list of all
-the months in the year. You can also choose to **only** fill out the **Exp month start**
-field also. However if you choose to fill out the **Exp month end** field you must make
-sure it is a later month in the year than the **Exp month start** field. So if you enter
-**April** in the **Exp month start** field, then you must enter **May** or a later month
-in the **Exp month end** field.
+The last selection you will have to make is the expiration month. There are 2
+drop down list fields here **Exp month start** and **Exp month end**. These
+fields are optional and it is not necessary to fill these fields out. These
+drop down lists show a list of all the months in the year. You can also
+choose to **only** fill out the **Exp month start** field. However if you
+choose to fill out the **Exp month end** field you must make sure it is a
+later month in the year than the **Exp month start** field. So if you enter
+**April** in the **Exp month start** field, then you must enter **May** or a
+later month in the **Exp month end** field.
 
-When you are through with the **Exp month** fields click on the blue **Set Box Checkin
-Information** button to enter all the Checkin data.
+When you are through with the **Exp month** fields click on the blue **Set Box
+Checkin Information** button to enter all the Check In data.
 
-.. image:: InventoryManagementImages/CheckinBoxExpMonth_0_02_08.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF5_0_02_07Crop.png
 
-If everything has worked correctly you should see the following screen below. Simply click
-on the **Return to Main Menu** link to continue.
+If everything has worked correctly you should see the following screen below.
+Simply click on the **Return to Main Menu** link to continue.
 
-.. image:: InventoryManagementImages/CheckinBoxSuccessCrop_0_03_05_22.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF6_0_02_14Crop.png
 
 If there is an error you should see a screen like the one below. The
-red arrows point to what has to be fixed before a box can be Checked in. Click on the
-**Cancel Box Checkin** link at the bottom of the page to go back to the **Main Menu**
-screen to start over.
+red arrows point to what has to be fixed before a box can be Checked in.
+The green arrows points to the green check mark which indicates that box is
+correctly filled out. Click on the **Cancel Box Checkin** link at the bottom
+of the page to go back to the **Main Menu** screen to start over.
 
-.. image:: InventoryManagementImages/CheckinBoxFailure_0_03_05.png
+.. image:: InventoryManagementImages/BMV2CheckInBoxF7_0_03_59.png
 
 
-Checkout (Consume Product in) a Box
+Checkout (Consume Product In) a Box
 **************************************
 
-To consume or empty a box enter a 5 digit box number in the **Box Number** field. Then
-click on the blue **Search** button.
+To consume or empty a box enter a 5 digit box number in the **Box Number**
+field. Then click on the blue **Search** button.
 
-.. image:: InventoryManagementImages/ConsumeBox_0_03_15.png
+.. image:: InventoryManagementImages/BMV2ConsumeF1_0_04_44Crop.png
 
-If everything went ok you should see the box information on the next screen. The box
-information includes the Box Number, the Box Type, the Box Contents, the year the
-Contents Expire and the location- Row, Bin, Tier. Click on the blue **Consume** button
-to continue if all the information seems correct.
+If everything went ok you should see the box information on the next screen. The
+box information includes the Box Number, the Box Type, the Box Contents, the
+year the Contents Expire and the location- Row, Bin, Tier. Click on the blue
+**Consume** button to continue if all the information seems correct.
 
-.. image:: InventoryManagementImages/ConsumeBoxMessage_0_03_22.png
+.. image:: InventoryManagementImages/BMV2ConsumeF2_0_04_53Crop.png
 
 
-The next screen should contain a message stating that a box 'has been succesfully
-consumed'. Click on the **Return to Main Menu** link to return to the **Main Menu**
-page.
+The next screen should contain a message stating that a box 'has been
+succesfully consumed'. Click on the **Return to Main Menu** link to return to
+the **Main Menu** page.
 
-.. image:: InventoryManagementImages/ConsumeBoxSuccessScreenshot.png
+.. image:: InventoryManagementImages/BMV2ConsumeF3_0_04_57Crop.png
 
-In case of error you should see a screen similar to the one below listing the error.
-Click on the **Cancel Box Consumption** link to return to the **Main Menu Page**
-page.
+In case of error you should see a screen similar to the one below listing the
+error. Click on the **Cancel Box Consumption** link to return to the **Main
+Menu Page** page. Or enter a different **Box number** in the **Box number**
+entry box and click on the **Search** button.
 
-.. image:: InventoryManagementImages/ConsumeBoxFailure_0_03_40.png
+.. image:: InventoryManagementImages/BMV2ConsumeF4_0_05_32Crop.png
+
+
+Move a Box
+************
+
+To move a box to a different pallet enter the 5 digit box number in the **Box
+Number** field and then click on the blue **Search** button.
+
+.. image:: InventoryManagementImages/BMV2MoveBoxF1_0_05_58Crop.png
+
+The next **Move Box** screen contains all the box information. In this screen
+you can choose a new location by entering new **Row**, **Bin**, **Tier**
+locations. Click on the small 'v' or triangle to the right of each **Row**,
+**Bin**, **Tier** entry box to get your drop down list choices. After
+choosing your new location entries click on the blue **Move** button to
+change the information in the database.
+
+.. image:: InventoryManagementImages/BMV2MoveBoxF2_0_06_40Crop.png
+
+If there are no errors you should see a screen similar to the one below. Click
+on the **Return to Main Menu** link to return to the **Main Menu Page**
+screen.
+
+.. image:: InventoryManagementImages/BMV2MoveBoxF3_0_06_46Crop.png
+
+In case of error you will see a screen similar to the one below with an error
+message. Click on the **Cancel Box Move** link to return to the **Main Menu**
+screen. Or you can enter a different **Box number** in the **Box number**
+entry box and then click on the **Search** button.
+
+.. image:: InventoryManagementImages/BMV2MoveBoxF4_0_07_03Crop.png
+
+
+Add a New Box to Inventory
+****************************
+
+With this screen you can add a new box following the 4 steps listed below.
+
+    (1) Enter a 5 digit box number.
+    (2) Click on the drop down list triangle at the far right.
+    (3) Choose an item from the drop down list.
+    (4) Finally click on the **Add Box** button (hidden from view in the below
+        it is under the drop down box in shown in the graphic).
+
+.. image:: InventoryManagementImages/BMV2NewBoxF1_0_07_34Crop.png
+
+After clicking on **Add Box** you should see the following screen. From there
+you can **Add another box** or **Return to Main Menu** by clicking on the
+links in the**New Box** screen.
+
+.. image:: InventoryManagementImages/BMV2NewBoxF2_0_07_45Crop.png
+
+If there was an error you will see the following screen. The red arrows
+point to the **Box number** error messages while the green arrow points to the
+green checkmark that indicates the **Box type** entry is valid or ok. Click
+on the **Cancel Box Adding a Box** link to return to the **Main Menu** screen.
+Or you can enter a different **Box number** in the **Box number** entry box
+and then click on the blue **Add Box** button.
+
+.. image:: InventoryManagementImages/BMV2NewBoxF3_0_08_15Crop.png
 
 
 
 Build a Pallet
 ***************
 
-The next screen you will see is the **Build Pallet** screen. Here you will have
+A pallet is a large container which contains a number indivual boxes or items
+that will be distributed. To *Build a Pallet* you will need to click **Build
+Pallet** from the main menu as shown below.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF01_0_01_16Crop.png
+
+The next screen you will see is the **Pallet** screen. Here you will have
 two choices, **Select** or **Add**. **Select** gives you a choice of pallets
-to work with. If there are no pallets in **Select**, you must create a new
-pallet listing using **Add**.
+to work with. If there are no pallet choices in **Select**, you can create a
+new pallet using **Add**.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF02_0_00_10Crop.png
 
 Select
 =======
 To check if there are pallets that you can select click on the ‘Dropdown icon’
 shown below. If there are pallets available you will see a drop down list as
-shown below. Select one of the pallets from the drop down list.
+shown below. Select one of the pallets from the drop down list. The screen
+below only shows one selection but you may have more.
 
 If there are no pallets available nothing will show on the drop down list.
 You will have to go the **Add** section.
 
-.. image:: InventoryManagementImages/SelectPallet.png
+.. image:: InventoryManagementImages/PMV2SelectPalletF03_0_00_10Crop.png
 
-After selecting a pallet click on the **Select** button to go to the
+After selecting a pallet, click on the **Select** button to go to the
 **Build Pallet** screen as shown below.
 
-.. image:: InventoryManagementImages/SelectPalletButton.png
+.. image:: InventoryManagementImages/PMV2SelectPalletF04_0_00_11Crop.png
+
+This is what a typical **Build Pallet** screen looks like. In the screen
+below you have a pallet with 2 boxes already in this pallet. There may be
+several boxes or none. (Each box contains smaller boxes/cans which are the
+individual items to be distributed). You may also add additional boxes to
+this pallet. How to add boxes is shown in the **Build Pallet Screen** and
+**Scan a Box Popup** following the **Add** section below.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF05_0_00_19Crop.png
+
+You will have to place this pallet in a specific **Row** - **Bin** - **Tier**
+location. Click on the dropdown icon in the **Row**, **Bin** and **Tier**
+sections as shown below. Of course you should not place this pallet in a
+place where there is a pallet already.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF06_0_00_35Crop.png
+
+Once you have a location and boxes for the selected *Pallet*, click on the
+blue **Pallet Complete** section. The **Expiration Month** section is
+optional. If you need to fill out the  **Expiration Month** section, that  is
+shown in the **Return to Build Pallet** section below.
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF07_0_00_52Crop.png
+
+If everything has worked out you should see the **Pallet Complete** screen as
+shown below. From there you can *Return to main page.*
+
+.. image:: InventoryManagementImages/PMV2SelectPalletF08_0_00_58Crop.png
+
 
 Add
 ====
 
 Enter or key in a pallet name. In the screen below the pallet name
-‘purple’ has been entered. You can pick any name you choose. After keying in
-the new pallet name click on **Add** for the **Build Pallet** screen.
+‘green’ has been entered. After keying in the new pallet name click on
+**Add** to go to the  **Build Pallet** screen.
 
-.. image:: InventoryManagementImages/AddPallet.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF01_01_00_36Crop.png
 
 Build Pallet Screen
 ====================
@@ -155,19 +262,19 @@ Build Pallet Screen
 The next screen you will come to is the **Build Pallet** screen. On this
 screen the first thing you should do is to create a location for the pallet.
 
-.. image:: InventoryManagementImages/BuildPallet.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF02_01_07_59Crop.png
 
 You will create the pallets location for ‘Row’, ‘Bin’ and ‘Tier’. Row refers to
-which long row the pallet is on. Currently rows are 2 bins wide. Bin refers
+which long row the pallet is on. Currently rows are 2 bins wide. Bin refers to
 pallet bins located down the length of the row. Tier refers to the height level
 of the location. Use the drop down list boxes to enter ‘Row’, ‘Bin’ and ‘Tier’.
 
-.. image:: InventoryManagementImages/LocatePallet.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF03_01_08_06Crop.png
 
 Once you have entered the pallet location, click on the **Scan a Box** button
 in the middle of the **Build Pallet** page.
 
-.. image:: InventoryManagementImages/ScanABoxButton.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF04_01_08_07Crop.png
 
 Scan a Box Popup
 =================
@@ -202,66 +309,72 @@ bottom left of the screen. You can enter any number but it must contain exactly
 5 digits. Once you have entered the number click on the **Scan** button in the
 bottom right of the popup window.
 
-.. image:: InventoryManagementImages/ScanBoxPopUp.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF05_01_08_11Crop.png
 
 Return to Build Pallet
 =======================
 
 After clicking on the **Scan Button** you will be returned to the **Build Pallet**
 screen. You should see the ‘Box Number’ you have entered as well as a small
-white ‘X’ in a red box at the left of your screen. On this screen you will
+white ‘X’ in a red box at the left of your screen. (Click on this 'X' if you
+wish to remove this box number from the pallet.) On this screen you will
 select a product to go in the box from a drop down product list. Click on
-the ‘Dropdown icon’ at the bottom right of the ‘Product’ rectangle’. Then
-choose an item from the list.
+the ‘Dropdown icon’ at the bottom right of the ‘Product’ rectangle.
 
-.. image:: InventoryManagementImages/EnterProduct.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF06_01_08_14Crop.png
 
-Once you have entered the product, use the ‘Expiration Year’ drop down list
-to enter the ‘Expiration Year’.
+When the list pops up, choose an item from the list.
 
-Entering the ‘Expiration Month’ is optional. Months are entered from a drop
-down list that holds numbers from 1 to 12 that correspond to the months of
-the year- January to December. If you do decide to enter the ‘Expiration Month’
-please make sure that the ‘Start’ month **is always less than** the ‘End’
-month. This means the ‘End’ month **must not equal** the 'Start' month and
-**must be greater than** the ‘Start’ month. *Not all food items will have
-an ‘Expiration Month’ with a ‘Start’ and an ‘End’ month.* Once you have
-entered everything on this page the page should look similar to what is below.
+.. image:: InventoryManagementImages/PMV2BuildPalletF07_01_08_17Crop.png
 
-.. image:: InventoryManagementImages/PalletCompleteBefore.png
+The produce 'Breakfast Food' has been chosen below. Once you have entered the
+product, use the ‘Expiration Year’ drop down list to enter the ‘Expiration
+Year’.
+
+.. image:: InventoryManagementImages/PMV2BuildPalletF08_01_08_19Crop.png
+
+Entering the ‘Expiration Month’ is optional. Months are entered using the
+stepper arrows to the right of the **Start** and **End** input boxes.
+Clicking on the top stepper arrow increases the month to 12 or 'December'.
+Clicking on the bottom stepper arrow decreases the month to 1 or 'January'.
+
+If you do decide to enter the ‘Expiration Month’ please make sure that the
+*Start* month **is always less than** the *End* month. This means the *End*
+month **must always be greater than** the *Start* month. Not all food items
+will have an ‘Expiration Month’ with a *Start* and an *End* month. Once you
+have entered everything on this page the page should look similar to what is
+below.
+
+.. image:: InventoryManagementImages/PMV2BuildPalletF09_01_08_21Crop.png
 
 From here if you click on **Scan a Box** you will be directed back to the
 **Scan a Box** popup window. There you can add another box in the same
 manner as you did before. If you click **Pallet Complete** you will be
 directed to the **Pallet Complete** screen.
 
-.. image:: InventoryManagementImages/PalletCompleteScanBoxButtons.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF10_01_08_21Crop.png
 
 Pallet Complete
 ================
 
-You should now see the **Pallet Complete** screen.
+If you clicked on the blue **Pallet Complete** button, you should now see the
+**Pallet Complete** screen.
 
-.. image:: InventoryManagementImages/PalletCompleted.png
+.. image:: InventoryManagementImages/PMV2BuildPalletF11_01_08_23Crop.png
 
-From here you can return to the main screen by clicking ‘Return to main page’.
+From here you can return to the main screen by clicking *Return to main page*.
 
 
 
 Move a Pallet
 **************
 
-**Currently the Move Pallet screen has an error or bug in it. There is a link on
-the Move Pallet screen which states 'Return to Manual Pallet Menu'. This link should
-NOT be clicked and should be ignored. If you do not see this link then the bug has been
-fixed but the User Documentation has not been updated.**
+After clicking on **Move a Pallet** from the *Main Menu* you should see a
+screen like the one below. This screen allows you to move the location of
+each pallet along with its boxes in the database records. Basically if you
+move a pallet you are also moving the boxes the pallet contains.
 
-After clicking on **Move a Pallet** you should see a screen like the one below. This
-screen allows you to move the location of each pallet along with its boxes in the
-database records. Basically if you move a pallet you are also moving the boxes the pallet
-contains.
-
-.. image:: InventoryManagementImages/MovePalletStart_0_00_11.png
+.. image:: InventoryManagementImages/PMV2MovePalletF01_0_00_11Crop.png
 
 When moving a pallet (with its boxes) three different conditions can occur.
 
@@ -275,116 +388,89 @@ Move a Pallet to an Empty Pallet Location
 ==========================================
 
 When moving a pallet and its boxes to a new location the first thing you need to
-do is to "Enter location to move pallet from". You enter the position of the pallet
-by selecting the Row, Bin, and Tier dropdown lists by using the mouse to click on the down
-arrow at the right of each dropdown list. Selecting the down arrow as shown below in the
-Row dropdown list brings a set of choices. Simply click on the current Row location choice
-to "Enter the location to move pallet from".
+do is to **Enter location to move pallet from**. You enter the position of the
+pallet by selecting the Row, Bin, and Tier dropdown lists by using the mouse
+to click on the down arrow at the right of each dropdown list. Selecting the
+down arrow as shown below in the Row dropdown list brings a set of choices.
+Simply click on the current Row location choice to select the Row that the
+pallet is curently located in.
 
-.. image:: InventoryManagementImages/SelectRowFromDropDownList_0_00_21.png
+.. image:: InventoryManagementImages/PMV2MovePalletF02_0_00_20Crop.png
 
-Do the same with the Row and Tier locations. Once that is done you should see the
-**Move Pallet** screen as filled out below with Row, Bin, and Tier locations filled out.
-Then click on the blue **Submit Query** button.
+Do the same with the Bin and Tier locations. Once that is done you should see
+the **Move Pallet** screen as filled out below with Row, Bin, and Tier
+locations filled out. Then click on the blue **Submit Query** button.
 
-.. image:: InventoryManagementImages/SubmitQuery_0_00_23.png
+.. image:: InventoryManagementImages/PMV2MovePalletF03_0_00_21Crop.png
 
-This will bring you to a similar screen but this new screen will say "Enter location
-to move pallet **to**". Enter the Row, Bin, and Tier location for where the pallet
-and it's boxes will be moved to. The screen below shows the new Tier location being
-chosen.
+This will bring you to a similar screen but this new screen will say "Enter
+location to move pallet **to**" instead of **from**. Enter the Row, Bin, and
+Tier location for where the pallet and it's boxes will be moved to. The
+screen below shows the new Tier location being chosen.
 
-.. image:: InventoryManagementImages/SelectTierTo2_0_00_20.png
+.. image:: InventoryManagementImages/PMV2MovePalletF04_0_00_33Crop.png
 
-Once the **Enter location to move pallet to** screen has been filled out click on the
-blue **Submit Query** button. If the new location you want to move the pallet is empty
-and has no boxes you should see a screen similar to the one shown immediately below.
+Once the **Enter location to move pallet to** screen has been filled out click
+on the blue **Submit Query** button. The **Submit Query** button is hidden
+behind the **Tier selection dropdown list** in the screen above. If the new
+location you want to move the pallet to is empty at that location you should
+see a screen similar to the one shown immediately below.
 
-.. image:: InventoryManagementImages/MovePalletFinish_0_00_39.png
+.. image:: InventoryManagementImages/PMV2MovePalletF05_0_00_44Crop.png
 
-If the "Enter location to move pallet to" is NOT EMPTY then you will see a screen like
-the one shown in the next section below.
+If the "Enter location to move pallet to" is NOT EMPTY then you will have to
+follow the directions in the section below.
 
 Move a Pallet and Its Boxes to a Non-Empty Pallet Location
 ===========================================================
 
-The screen below shows up when you try to move a pallet to a location where a pallet is
-already located. Notice that the message states "There are 2 boxes at 01,03,C2".
+The screen below shows up when you try to move a pallet to a location where a
+pallet is already located. Notice that the message states "There are 2 boxes
+at 01,03,C2".
 
-.. image:: InventoryManagementImages/BoxesAtLocation_0_01_21.png
+.. image:: InventoryManagementImages/PMV2MovePalletF06_0_01_19Crop.png
 
-This means you will have to make a decision, either (1) choose a new location by clicking
-the **Change To Location** choice or (2) merge the pallets by clicking the **Merge Pallets**
-choice.
+This means you will have to make a decision, either (1) choose a new location
+by clicking the **Change To Location** choice or (2) merge the pallets by
+clicking the **Merge Pallets** choice.
 
-.. image:: InventoryManagementImages/SelectOptionLocationMerge_0_01_30.png
+f you click on **Merge Pallets** both pallets along with their boxes will be
+merged into the new locatio from the original location **Enter
+location to move pallet to** screen. In the below case the location that was
+picked was 01, 03, C2 or Row 01, Bin 03, Tier C2.
 
-If you click on **Change to Location** you will be directed back to the **Enter location
-to move pallet to** screen as shown above. From there you can select another location to
-move the pallet to.
+.. image:: InventoryManagementImages/PMV2MovePalletF08_0_01_59Crop.png
 
-If you click on **Merge Pallets** both pallets along with their boxes will be merged
-into the new location you picked from the **Enter location to move pallet to** screen.
-You will see a screen stating "boxes move to row, bin, tier".
+After you have chosen the **Merge Pallets** choice click on the blue **Submit
+Query** button which is hidden under the **Action** drop down menu in the
+screen above. Upon success you should see a screen similar to the one below.
+
+.. image:: InventoryManagementImages/PMV2MovePalletF09_0_02_59Crop.png
+
+If you click on **Change to Location** you will be directed back to the
+**Move Pallet -> Enter location to move pallet to** screen as shown
+several screens above in the previous section. From that screen you can select
+another location to move the pallet to.
+
+.. image:: InventoryManagementImages/PMV2MovePalletF07_0_01_31Crop.png
+
+Once you have entered a new valid location to in the **Move Pallet -> Enter
+location to move pallet to** screen your final screen should be one similar to
+the screen below.
+
+.. image:: InventoryManagementImages/PMV2MovePalletF10_0_03_23Crop.png
+
 
 Attempt to Move an Empty Pallet
 ================================
 
-If you attempt "Enter location to move pallet from" and there are no boxes recorded
-in the database for that pallet location you will see a screen similar to the one shown
-below.
+If you attempt "Enter location to move pallet from" and there are no boxes
+recorded in the database for that pallet location you will see a screen
+similar to the one shown below. The red arrow points to the "Error Message"
+while the green arrows point to valid or good input.
 
-.. image:: InventoryManagementImages/MoveEmptyPallet_0_03_01.png
+.. image:: InventoryManagementImages/PMV2MovePalletF11_0_02_34Crop.png
 
-
-Move a Box
-************
-
-To move a box to a different pallet enter the 5 digit box number in the **Box Number**
-field and then click on the blue **Search** button.
-
-.. image:: InventoryManagementImages/MoveBox_0_03_55.png
-
-The next **Move Box** screen contains all the box information. In this screen
-you can choose a new location by entering new **Row**, **Bin**, **Tier** locations. Click
-on the small triangle to the right of each **Row**, **Bin**, **Tier** to get your drop down
-list choices. After choosing your new location entries click on the blue **Move**
-button to change the information in the database.
-
-.. image:: InventoryManagementImages/MoveBoxFillIn_0_04_19.png
-
-If there are no errors you should see a screen similar to the one below. Click on the
-**Return to Main Menu** link to return to the **Main Menu Page**
-screen.
-
-.. image:: InventoryManagementImages/MoveBoxSuccess.png
-
-In case of error you will see a screen similar to the one below with an error message.
-Click on the **Cancel Box Move** link to return to the **Main Menu** screen.
-
-.. image:: InventoryManagementImages/MoveBoxFailure_0_04_32.png
-
-
-Add a New Box to Inventory
-****************************
-
-With this screen you can add a new box following the 4 steps listed below.
-
-    (1) Enter a 5 digit box number.
-    (2) Click on the drop down list triangle at the far right.
-    (3) Choose an item from the drop down list.
-    (4) Finally click on the **Add Box** button (hidden from view in the below graphic).
-
-.. image:: InventoryManagementImages/AddNewBox_0_00_58.png
-
-After clicking on **Add Box** you should see the following screen. From there you can
-**Add another box** or **Return to Main Menu** by clicking on the links in the
-**New Box** screen.
-
-.. image:: InventoryManagementImages/AddNewBoxSuccess.png
-
-If there was an error you will see the following screen. Simply click on **Cancel Adding
-a Box** to return to the **Main Menu** screen.
-
-.. image:: InventoryManagementImages/AddNewBoxFailure_0_01_14.png
-
+It makes no sense to move an empty pallet as the database does not record
+empty pallets. But you may want to make sure the pallet is actually empty and
+has no boxes.

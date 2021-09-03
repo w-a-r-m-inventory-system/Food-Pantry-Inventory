@@ -141,6 +141,9 @@ DATABASES = {
             'PASSWORD': DB_PSWD,
             'HOST': DB_HOST,
             'PORT': DB_PORT,
+            'TEST': {
+                'NAME': 'testDB'
+            }
     }
 }
 
